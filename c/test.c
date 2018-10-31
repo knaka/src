@@ -9,3 +9,5 @@ int main (int argc, char * * argv) {
     printf("d: %p", & (((struct s *) 0)->n1));
     return (0);
 }
+
+// test0
