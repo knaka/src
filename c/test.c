@@ -1,5 +1,7 @@
 #include <stdio.h>
 
+// foo bar
+
 struct s {
   int n0;
   int n1;
