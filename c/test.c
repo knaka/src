@@ -2,6 +2,8 @@
 
 // foo bar
 
+// baz baz
+
 struct s {
   int n0;
   int n1;
