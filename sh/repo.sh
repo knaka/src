@@ -31,16 +31,14 @@ ghq() {
 if test "${1+set}" = "set"
 then
   case "$1" in
-    (st|stat)
-      set -- ghq root
-      ;;
     (*)
-      ghq "$@"
+      finalize
+      exec ghq "$@"
       ;;
   esac
 fi
 
-# If not subcommand is specified, list repositories.
+# If not subcommand is specified, show the list of repos.
 repo=$(ghq list | peco)
 if test -z "${repo}"
 then
