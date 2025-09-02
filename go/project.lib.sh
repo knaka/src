@@ -3,8 +3,8 @@
 "${sourced_c572edd-false}" && return 0; sourced_c572edd=true
 
 . ./task.sh
-. ./task-go.lib.sh
-. ./task-embedded-go.lib.sh
+. ./go.lib.sh
+. ./embedded-go.lib.sh
 
 task_go_hello__gen() { # Generate go-embedded sample scripts.
   local out_sh=go-hello

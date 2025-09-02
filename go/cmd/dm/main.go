@@ -30,7 +30,7 @@ const (
 
 const stdinFilename = "-"
 
-// Dump dumps a file in hex format. If the filename is "-", it reads from stdin. If the writer is a terminal, it uses colors.
+// dumpFile dumps a file in hex format. If the filename is "-", it reads from stdin. If the writer is a terminal, it uses colors.
 func dumpFile(filePath string, writer io.Writer) {
 	colored := false
 	if file, ok := writer.(*os.File); ok {
