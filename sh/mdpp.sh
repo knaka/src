@@ -4,6 +4,8 @@
 "${sourced_1862275-false}" && return 0; sourced_1862275=true
 
 set -- "$PWD" "${0%/*}" "$@"; if test "$2" != "$0"; then cd "$2" 2>/dev/null || :; fi
+. ./task.sh
+  init_temp_dir
 . ./mdpp.lib.sh
 cd "$1"; shift 2
 

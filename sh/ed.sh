@@ -68,6 +68,8 @@ ed() {
   done
 
   # VSCode
+  # Path for VSCode has disappeared from $PATH ... ???
+  export PATH="$PATH:$LOCALAPPDATA/Programs/Microsoft VS Code"
   if command -v code >/dev/null 2>&1
   then
     if $should_block

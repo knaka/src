@@ -1,4 +1,4 @@
 tasks/task-sh:
-  repository: git@github.com:knaka/task-sh.git
+  repository: https://github.com/knaka/task-sh.git
   branch: main
 
