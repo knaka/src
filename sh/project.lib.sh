@@ -33,7 +33,7 @@ subcmd_install() (
     cat <<EOF >"$sh_bin_dir_path"/"$sh_name".sh
 #!/usr/bin/env sh
 unset PROJECT_DIR
-exec /bin/sh "$PROJECT_DIR"/"$sh_file" "\$@"
+exec "$SH" "$PROJECT_DIR"/"$sh_file" "\$@"
 EOF
   done
   if is_windows
