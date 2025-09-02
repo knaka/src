@@ -1,0 +1,108 @@
+# vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
+# shellcheck shell=sh
+"${sourced_e6646fd-false}" && return 0; sourced_e6646fd=true
+
+. ./task.sh
+. ./volta.lib.sh
+
+export PATH="$PROJECT_DIR/node_modules/.bin:$PATH"
+
+# Run npm.
+subcmd_npm() {
+  set_node_env
+  invoke npm "$@"
+}
+
+# Run npx.
+subcmd_npx() {
+  set_node_env
+  invoke npx "$@"
+} 
+
+# Run Node.js.
+subcmd_node() {
+  set_node_env
+  invoke node "$@"
+}
+
+last_check_path="$PROJECT_DIR"/node_modules/.npm_last_check
+
+npm_depinstall() {
+  push_dir "$PROJECT_DIR" || exit 1
+  ! test -f "$PROJECT_DIR"/package.json && return 1
+  while true
+  do
+    test "$#" -gt 0 && break
+    first_call ac87fe4 || return 0
+    ! test -d "$PROJECT_DIR"/node_modules/ && break
+    ! test -f "$PROJECT_DIR"/package-lock.json && break
+    ! test -f "$last_check_path" && break
+    newer "$PROJECT_DIR"/package.json --than "$last_check_path" && break
+    newer "$PROJECT_DIR"/package-lock.json --than "$last_check_path" && break
+    pop_dir || exit 1
+    return 0
+  done
+  subcmd_npm install "$@"
+  touch "$last_check_path"
+  pop_dir || exit 1
+}
+
+# Install the npm packages if the package.json is modified.
+subcmd_npm__install() {
+  npm_depinstall "$@"
+}
+
+run_node_modules_bin() { # Run the bin file in the node_modules.
+  local pkg="$1"
+  shift
+  local bin_path="$1"
+  shift
+  subcmd_npm__install
+  local p="$PROJECT_DIR"/node_modules/"$pkg"/"$bin_path"
+  if test -f "$p" && head -1 "$p" | grep -q '^#!.*node'
+  then
+    subcmd_node "$p" "$@"
+    return $?
+  fi
+  if is_windows
+  then
+    for ext in .exe .cmd .bat
+    do
+      if test -f "$p$ext"
+      then
+        p="$p$ext"
+        break
+      fi
+    done
+  fi
+  invoke "$p" "$@"
+}
+
+# Install the npm packages for development.
+subcmd_npm__dev__install() {
+  subcmd_npm install --save-dev "$@"
+  touch "$last_check_path"
+}
+
+# Ensure the npm packages are installed.
+subcmd_npm__ensure() {
+  local package
+  for package in "$@"
+  do
+    if ! subcmd_node -e "require.resolve('${package}')" >/dev/null 2>&1
+    then
+      subcmd_npm install --save-dev "${package}"
+    fi
+  done
+  touch "$last_check_path"
+}
+
+set_local_node_env() {
+  first_call 76e8009 || return 0
+  push_dir "$PROJECT_DIR" || exit 1
+  local node_cmd_path="$(volta which node)"
+  local node_bin_dir_path="${node_cmd_path%/*}"
+  export PATH="$node_bin_dir_path:$PROJECT_DIR/node_modules/.bin:$PATH"
+  npm_depinstall
+  pop_dir || exit 1
+}
