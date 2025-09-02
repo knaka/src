@@ -7,7 +7,6 @@
 ghq_version="1.8.0"
 
 set -- "$PWD" "${0%/*}" "$@"; if test "$2" != "$0"; then cd "$2" 2>/dev/null || :; fi
-. ./task.sh
 . ./peco.sh
 cd "$1"; shift 2
 
@@ -33,7 +32,8 @@ then
   case "$1" in
     (*)
       finalize
-      exec ghq "$@"
+      ghq "$@"
+      exit $?
       ;;
   esac
 fi
