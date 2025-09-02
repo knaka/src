@@ -14,7 +14,7 @@ subcmd_install() (
     fi
     excluded_scripts="$excluded_scripts:$file:"
   done
-  sh_bin_dir_path="$HOME"/bin
+  sh_bin_dir_path="$HOME"/sh-bin
   mkdir -p "$sh_bin_dir_path"
   rm -f "$sh_bin_dir_path"/*
   for sh_file in *.sh
