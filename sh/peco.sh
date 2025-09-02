@@ -4,7 +4,7 @@
 "${sourced_6a33077-false}" && return 0; sourced_6a33077=true
 
 set -- "$PWD" "${0%/*}" "$@"; if test "$2" != "$0"; then cd "$2" 2>/dev/null || :; fi
-. ./task-go-install-cmd-run.lib.sh
+. ./go-install-cmd-run.lib.sh
 cd "$1"; shift 2
 
 peco() {

@@ -19,7 +19,7 @@ set_cowsay_node_version() {
 }
 
 set -- "$PWD" "${0%/*}" "$@"; if test "$2" != "$0"; then cd "$2" 2>/dev/null || :; fi
-. ./task-volta.lib.sh
+. ./volta.lib.sh
 cd "$1"; shift 2
 
 cowsay() {
