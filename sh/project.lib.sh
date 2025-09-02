@@ -6,7 +6,7 @@ test "${guard_b6c071a+set}" = set && return 0; guard_b6c071a=-
 # Install shell scripts.
 subcmd_install() (
   excluded_scripts=":task.sh:"
-  for file in task-*.sh *.lib.sh
+  for file in task-*.sh *.lib.sh _*.sh
   do
     if ! test -r "$file"
     then
