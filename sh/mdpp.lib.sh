@@ -1,1 +1,1 @@
-tasks/task-sh/mdpp.lib.sh
+task-sh/mdpp.lib.sh

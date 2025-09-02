@@ -1,1 +1,1 @@
-tasks/task-sh/yq.lib.sh
+task-sh/yq.lib.sh

@@ -1,1 +1,1 @@
-tasks/task-sh/go.lib.sh
+task-sh/go.lib.sh

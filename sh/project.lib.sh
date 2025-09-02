@@ -3,7 +3,8 @@ test "${guard_b6c071a+set}" = set && return 0; guard_b6c071a=-
 
 . ./task.sh
 
-subcmd_install() ( # Install shell scripts.
+# Install shell scripts.
+subcmd_install() (
   excluded_scripts=":task.sh:"
   for file in task-*.sh *.lib.sh
   do
@@ -32,7 +33,7 @@ subcmd_install() ( # Install shell scripts.
     cat <<EOF >"$sh_bin_dir_path"/"$sh_name".sh
 #!/usr/bin/env sh
 unset PROJECT_DIR
-exec "$SH" "$PROJECT_DIR"/"$sh_file" "\$@"
+exec /bin/sh "$PROJECT_DIR"/"$sh_file" "\$@"
 EOF
   done
   if is_windows
