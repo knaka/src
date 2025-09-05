@@ -1,4 +1,4 @@
-# mlr --csv put -f process_ledger.mlr ledger.csv
+# 次の行を読まないと現在の行の内容を確定できない場合の例
 
 begin {
   @prev = null;
@@ -6,9 +6,12 @@ begin {
 }
 
 func emitPrev() {
+  # 最初の行では何もしない。
   is_null(@prev) {
     return null;
   }
+  # "取引No" が存在しない行は、前の行から継続しているので、そのまま出力する。
+  # "取引No" が存在したら・もしくは行が尽きたら、前行までで締めて出力する。
   (is_not_empty($取引No) || is_null($*)) {
     @prev["貸借一致"] = (@prev["借方合計"] == @prev["貸方合計"]) ? "OK" : "NG";
   }
@@ -34,6 +37,7 @@ $貸借一致 = "";
 
 @prev = $*;
 
+# 現行のデフォルト出力を抑制する。
 filter false;
 
 end {
