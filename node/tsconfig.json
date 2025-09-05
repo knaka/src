@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    // foo bar
     "target": "ES2022",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
@@ -27,7 +28,7 @@
     "allowUnusedLabels": false,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "verbatimModuleSyntax": true
+    "verbatimModuleSyntax": true,
   },
   "include": [
     "**/*.ts"
