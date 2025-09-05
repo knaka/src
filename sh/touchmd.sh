@@ -6,7 +6,7 @@ set -o nounset -o errexit
 
 set -- "$PWD" "${0%/*}" "$@"; if test "$2" != "$0"; then cd "$2" 2>/dev/null || :; fi
 . ./rand7.sh
-. ./datetime-rfc.sh
+. ./date-iso.sh
 cd "$1"; shift 2
 
 force=false
@@ -50,7 +50,7 @@ do
 		Id: $(rand7)
 		Title: Memo
 		Tags:
-		CreatedAtRfc: $(datetime_iso)
+		CreatedAtRfc: $(date_iso)
 		---
 
 		← <!-- mdpplink href=../README.md -->[Memo](../README.md)<!-- /mdpplink -->
