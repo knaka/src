@@ -33,7 +33,6 @@ ed() {
   do
     if test -e "$arg"
     then
-      arg="$(realpath "$arg")"
       if test -d "$arg"
       then
         printf "%s is a directory. " "$arg" >&2
@@ -43,7 +42,15 @@ ed() {
         fi
       elif test -f "$arg"
       then
-        arg="$(realpath "$arg")"
+        case "$(readlink "$arg")" in
+          (/*)
+            # echo abs
+            ;;
+          (*)
+            # echo rel
+            # arg="$(realpath "$arg")"
+            ;;
+        esac
       else
         exit 1
       fi
@@ -69,7 +76,10 @@ ed() {
 
   # VSCode
   # Path for VSCode has disappeared from $PATH ... ???
-  export PATH="$PATH:$LOCALAPPDATA/Programs/Microsoft VS Code"
+  if is_windows
+  then
+    export PATH="$PATH:$LOCALAPPDATA/Programs/Microsoft VS Code"
+  fi
   if command -v code >/dev/null 2>&1
   then
     if $should_block
@@ -78,8 +88,7 @@ ed() {
     fi
     set -- code "$@"
   fi
-  finalize
-  exec "$@"
+  "$@"
 }
 
 if test "${0##*/}" = "ed.sh"

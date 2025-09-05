@@ -18,7 +18,7 @@ then
     if command -v "$sh" >/dev/null 2>&1
     then
       export ARG0="$0"
-      export ARG0BASE="$(basename "$0")"s
+      export ARG0BASE="$(basename "$0")"
       export PROJECT_DIR="$PWD"
       export TASKS_DIR="$PWD/tasks"
       exec "$sh" ./tasks/task.sh "$@"
