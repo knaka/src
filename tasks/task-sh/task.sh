@@ -7,10 +7,6 @@
 # Constants
 # --------------------------------------------------------------------------
 
-# Return code when a delegate task does not provide the task
-# shellcheck disable=SC2034
-rc_delegate_task_not_found=10
-
 # Return code when a test is skipped
 # shellcheck disable=SC2034
 rc_test_skipped=11
@@ -1023,10 +1019,10 @@ kill_child_processes() {
 # Invoke command with proper executable extension, with the specified invocation mode.
 #
 # Invocation mode can be specified via INVOCATION_MODE environment variable:
+#   INVOCATION_MODE=standard: (Default) Run the command in the current process.
 #   INVOCATION_MODE=exec: Replace the process with the command.
-#   INVOCATION_MODE=exec-sub: Replace the process with the command, without calling cleanups.
+#   INVOCATION_MODE=exec-direct: Replace the process with the command, without calling cleanups.
 #   INVOCATION_MODE=background: Run the command in the background.
-#   INVOCATION_MODE=standard: Run the command in the current process.
 invoke() {
   local invocation_mode="${INVOCATION_MODE:-standard}"
   if test $# -eq 0
@@ -1083,7 +1079,7 @@ invoke() {
       finalize
       exec "$@"
       ;;
-    (exec-sub) exec "$@";;
+    (exec-direct) exec "$@";;
     (background) command "$@" &;;
     (standard)
       command "$@"
@@ -1332,8 +1328,16 @@ is_dir_empty() {
 # Main.
 # --------------------------------------------------------------------------
 
+sub_helps_e4c531b=""
+
+# Add a function to print a sub help section
+add_sub_help() {
+  sub_helps_e4c531b="$sub_helps_e4c531b$1 "
+}
+
 psv_task_file_paths_4a5f3ab=
 
+# Show task-sh help
 tasksh_help() {
   cat <<EOF
 Usage:
@@ -1346,14 +1350,13 @@ Options:
   -v, --verbose          Verbose mode.
 EOF
 
-  local ifs_saved="$IFS"
-  IFS="|"
   # shellcheck disable=SC2086
   lines="$(
+    IFS="|"
     awk '
       /^#/ { 
-        comment = $0
-        gsub(/^#+[ ]*/, "", comment)
+        desc = $0
+        gsub(/^#+[ ]*/, "", desc)
         next
       }
       /^(task_|subcmd_)[[:alnum:]_]()/ { 
@@ -1364,16 +1367,15 @@ EOF
         name = func_name
         sub(/^[^_]+_/, "", name)
         gsub(/__/, ":", name)
-        print type " " name " " comment
-        comment = ""
+        print type " " name " " desc
+        desc = ""
         next
       }
       {
-        comment = "" 
+        desc = ""
       }
     ' $psv_task_file_paths_4a5f3ab
   )"
-  IFS="$ifs_saved"
   
   local i
   for i in subcmd task
@@ -1395,11 +1397,17 @@ EOF
       | sort -nr \
       | head -1
     )"
-    echo "$lines" | while read -r t name desc
+    echo "$lines" | while read -r type name desc
     do
-      test "$t" = "$i" || continue
+      test "$type" = "$i" || continue
       printf "  %-${max_name_len}s  %s\n" "$name" "$desc"
     done | sort
+  done
+  local sub_help
+  for sub_help in $sub_helps_e4c531b
+  do
+    echo
+    "$sub_help"
   done
 }
 
@@ -1412,20 +1420,58 @@ subcmd_task__exec() {
   restore_shell_flags
 }
 
-run_pre_task() {
-  if type pre_"$1" > /dev/null 2>&1
-  then
-    echo "Running pre-task for $1" >&2
-    pre_"$1"
-  fi
-}
+usv_called_task_7ef15a7="$us"
 
-run_post_task() {
-  if type post_"$1" > /dev/null 2>&1
-  then
-    echo "Running post-task for $1" >&2
-    post_"$1"
-  fi
+# Call the task/subcommand. If the unique task (including the arguments) is already called before, this returns immediately. Calls before/after hooks accordingly.
+call_task() {
+  local func_name="$1"
+  shift
+  local task_name=
+  case "$func_name" in
+    (task_*)
+      local cmd_with_args="$func_name $*"
+      case "$usv_called_task_7ef15a7" in
+        (*"$us$cmd_with_args$us"*)
+          return 0
+          ;;
+      esac
+      usv_called_task_7ef15a7="$usv_called_task_7ef15a7$cmd_with_args$us"
+      task_name="${func_name#task_}"
+      ;;
+    (subcmd_*) task_name="${func_name#subcmd_}";;
+    (*) return 1;;
+  esac
+  local prefix
+  prefix="$task_name"
+  while :
+  do
+    if type "before_$prefix" >/dev/null 2>&1
+    then
+      "$VERBOSE" && echo "Calling before function:" "before_$prefix" "$func_name" "$@" >&2
+      "before_$prefix" "$func_name" "$@"
+    fi
+    test -z "$prefix" && break
+    case "$prefix" in
+      (*__*) prefix="${prefix%__*}";;
+      (*) prefix=;;
+    esac
+  done
+  "$VERBOSE" && echo "Calling task function:" "$func_name" "$@" >&2
+  "$func_name" "$@"
+  prefix="$task_name"
+  while :
+  do
+    if type "after_$prefix" >/dev/null 2>&1
+    then
+      "$VERBOSE" && echo "Calling after function:" "after_$prefix" "$func_name" "$@" >&2
+      "after_$prefix" "$func_name" "$@"
+    fi
+    case "$prefix" in
+      (*__*) ;;
+      (*) break;;
+    esac
+    prefix="${prefix%__*}"
+  done
 }
 
 tasksh_main() {
@@ -1467,7 +1513,9 @@ tasksh_main() {
       (h|help) shows_help=true;;
       (s|skip-missing) skip_missing=true;;
       (i|ignore-missing) ignore_missing=true;;
-      (v|verbose) VERBOSE=true;;
+      (v|verbose)
+        export VERBOSE=true
+        ;;
       (\?) tasksh_help; exit 1;;
       (*) echo "Unexpected option: $OPT" >&2; exit 1;;
     esac
@@ -1482,77 +1530,62 @@ tasksh_main() {
   fi
 
   # Execute the subcommand and exit.
-  subcmd="$(echo "$1" | sed -r -e 's/:/__/g')"
-  if type subcmd_"$subcmd" > /dev/null 2>&1
+  local subcmd="$1"
+  TASK_NAME="$subcmd"
+  subcmd="$(echo "$subcmd" | sed -r -e 's/:/__/g')"
+  if type subcmd_"$subcmd" >/dev/null 2>&1
   then
     shift
-    if alias subcmd_"$subcmd" > /dev/null 2>&1
+    if alias subcmd_"$subcmd" >/dev/null 2>&1
     then
-      # run_pre_task subcmd_"$subcmd"
       # shellcheck disable=SC2294
-      eval subcmd_"$subcmd" "$@"
-      # run_post_task subcmd_"$subcmd"
+      eval call_task subcmd_"$subcmd" "$@"
       exit $?
     fi
-    # run_pre_task subcmd_"$subcmd"
-    subcmd_"$subcmd" "$@"
+    call_task subcmd_"$subcmd" "$@"
     exit $?
   fi
+  # Called by not subcmd name but by function name.
   case "$subcmd" in
     (subcmd_*)
-      if type "$subcmd" > /dev/null 2>&1
+      if type "$subcmd" >/dev/null 2>&1
       then
-        # run_pre_task "$subcmd"
         shift
-        "$subcmd" "$@"
-        # run_post_task "$subcmd"
+        call_task "$subcmd" "$@"
         exit $?
       fi
       ;;
   esac
 
   # Run tasks.
+  local task_with_args
   for task_with_args in "$@"
   do
-    task_name="$task_with_args"
+    local task_name="$task_with_args"
     args=""
     case "$task_with_args" in
+      # Task with arguments.
       (*\[*)
         task_name="${task_with_args%%\[*}"
         args="$(echo "$task_with_args" | sed -r -e 's/^.*\[//' -e 's/\]$//' -e 's/,/ /')"
         ;;
     esac
+    TASK_NAME="$task_name"
     task_name="$(echo "$task_name" | sed -r -e 's/:/__/g')"
-    if type task_"$task_name" > /dev/null 2>&1
+    if type task_"$task_name" >/dev/null 2>&1
     then
-      # run_pre_task "task_$task_name"
       # shellcheck disable=SC2086
-      task_"$task_name" $args
-      # run_post_task "task_$task_name"
+      call_task task_"$task_name" $args
       continue
     fi
+    # Called not by task name but task function name.
     case "$task_name" in
       (task_*)
-        # run_pre_task "$task_name"
         # shellcheck disable=SC2086
-        "$task_name" $args
-        # run_post_task "$task_name"
+        call_task "$task_name" $args
         continue
         ;;
     esac
-    if type delegate_tasks > /dev/null 2>&1
-    then
-      "$VERBOSE" && echo "Delegating to delegate_tasks: $task_with_args" >&2
-      if delegate_tasks "$@"
-      then
-        continue
-      else
-        if ! test $? -eq "$rc_delegate_task_not_found"
-        then
-          exit 1
-        fi
-      fi
-    fi
     if ! $skip_missing
     then
       echo "Unknown task: $task_with_args" >&2

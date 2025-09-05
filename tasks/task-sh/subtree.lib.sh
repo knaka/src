@@ -5,14 +5,20 @@
 . ./task.sh
 . ./yq.lib.sh
 
+# Called before `subtree:*` tasks/subcommands by the task runner.
+before_subtree() {
+  local git_top
+  git_top="$(git rev-parse --show-toplevel)"
+  test "$(realpath "$git_top")" = "$(realpath "$PWD")" && return 0
+  cd "$git_top"
+  # shellcheck disable=SC2209
+  INVOCATION_MODE=exec invoke ./task "$@"
+  # Not reached
+  return 1
+}
+
 # Add git-subtree to this project.
 subcmd_subtree__add() {
-  local toplevel="$(git rev-parse --show-toplevel)"
-  if test "$(realpath "$toplevel")" != "$(realpath "$PWD")"
-  then
-    echo "Execute this command from the top-level directory of the git worktree." >&2
-    return 1
-  fi
   if test "$#" -eq 1
   then
     local name="$1"
@@ -58,7 +64,7 @@ subcmd_subtree__add() {
 Usage: subtree:add <target_dir> <repository> [<branch>]
    or: subtree:add <prefix|alias>
 
-Adds a subtree from the specified branch of <repository> to the current repository and records the repository and branch to .subtree.yaml. If no branch is specified, automatically detects and uses "main" or "master" from the repository. If only the prefix|alias is specified, repository and branch are picked from the configuration in .subtree.yaml.
+Adds a subtree from the specified branch of <repository> to the current repository and records the repository and branch in .subtree.yaml. If no branch is specified, it automatically detects and uses "main" or "master" from the repository. If only the prefix|alias is specified, the repository and branch are retrieved from the configuration in .subtree.yaml.
 EOF
     return 0
   fi
