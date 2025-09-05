@@ -3,9 +3,10 @@
 test "${sourced_9076e97-}" = true && return 0; sourced_9076e97=true
 
 . ./task.sh
-. ./task-node.lib.sh
+. ./node.lib.sh
 
-subcmd_install() ( # Install JS scripts.
+# Install JS scripts.
+subcmd_install() (
   excluded_scrs=",invalid.js,"
 
   js_bin_dir_path="$HOME"/js-bin
@@ -44,38 +45,39 @@ EOF
   done
 )
 
-subcmd_run() { # Run JS script in the original working directory.
-  subcmd_node "$PROJECT_DIR"/scripts/launch-script.cjs "$WORKING_DIR" "$@"
+# Run JS script in the original working directory.
+subcmd_run() {
+  node "$PROJECT_DIR"/scripts/launch-script.cjs "$WORKING_DIR" "$@"
 }
 
-. ./task-ip-utils.lib.sh
+# . ./task-ip-utils.lib.sh
 
-subcmd_vite_node() { # Run Vite-node
-  run_node_modules_bin vite-node vite-node.mjs "$@"
-}
+# subcmd_vite_node() { # Run Vite-node
+#   run_node_modules_bin vite-node vite-node.mjs "$@"
+# }
 
-subcmd_httpd() { # Run a simple HTTP server.
-  push_dir "$PROJECT_DIR"
-  local path="$WORKING_DIR"
-  if test "${1+set}" = set
-  then
-    path="$(cd "$WORKING_DIR"; realpath "$1")"
-  fi
-  local host=127.0.0.1
-  local port="$(ip_random_free_port)"
-  INVOCATION_MODE=background subcmd_vite_node "$PROJECT_DIR"/scripts/httpd-mini.ts "$path" "$host" "$port"
-  pop_dir
-  while true
-  do
-    menu \
-      "&Browse" \
-      "&List" \
-      "E&xit" \
-      # nop
-    case "$(get_key)" in
-      (b) browse "http://$host:$port" ;;
-      (l) ls -la ;;
-      (x) break ;;
-    esac
-  done
-}
+# subcmd_httpd() { # Run a simple HTTP server.
+#   push_dir "$PROJECT_DIR"
+#   local path="$WORKING_DIR"
+#   if test "${1+set}" = set
+#   then
+#     path="$(cd "$WORKING_DIR"; realpath "$1")"
+#   fi
+#   local host=127.0.0.1
+#   local port="$(ip_random_free_port)"
+#   INVOCATION_MODE=background subcmd_vite_node "$PROJECT_DIR"/scripts/httpd-mini.ts "$path" "$host" "$port"
+#   pop_dir
+#   while true
+#   do
+#     menu \
+#       "&Browse" \
+#       "&List" \
+#       "E&xit" \
+#       # nop
+#     case "$(get_key)" in
+#       (b) browse "http://$host:$port" ;;
+#       (l) ls -la ;;
+#       (x) break ;;
+#     esac
+#   done
+# }
