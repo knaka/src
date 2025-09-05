@@ -1,52 +1,59 @@
-#!/bin/sh
-set -o nounset -o errexit
-
-test "${guard_a24f1b4+set}" = set && return 0; guard_a24f1b4=x
+# vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
+# shellcheck shell=sh
+"${sourced_42ddef4-false}" && return 0; sourced_42ddef4=true
 
 . ./task.sh
-. ./task-rs.lib.sh
+. ./rust.lib.sh
 
-subcmd_build() (
-  chdir_script
-  force=false
-  while getopts f:-: OPT
-  do
-    if test "$OPT" = "-"
-    then
-      OPT="${OPTARG%%=*}"
-      # shellcheck disable=SC2030
-      OPTARG="${OPTARG#"$OPT"}"
-      OPTARG="${OPTARG#=}"
-    fi
-    case "$OPT" in
-      f|force) force=true;;
-      \?) usage; exit 2;;
-      *) echo "Unexpected option: $OPT" >&2; exit 2;;
-    esac
-  done
-  shift $((OPTIND-1))
-
-  if ! $force && ! newer Cargo.toml build.rs src/ --than target/debug/rsmain"$(exe_ext)"
-  then
-    return 0
-  fi
-  if ! subcmd_rustc --version | grep -q nightly
-  then
-    # compiler errors - Unable to compile Rust hello world on Windows: linker link.exe not found - Stack Overflow https://stackoverflow.com/questions/55603111/unable-to-compile-rust-hello-world-on-windows-linker-link-exe-not-found
-    # subcmd_rustup toolchain install stable-x86_64-pc-windows-gnu
-    # subcmd_rustup default stable-x86_64-pc-windows-gnu
-    subcmd_rustup toolchain install nightly-x86_64-pc-windows-gnu
-    subcmd_rustup default nightly-x86_64-pc-windows-gnu
-  fi
-  subcmd_cargo build
-)
-
-subcmd_run() {
-  "$SCRIPT_DIR"/target/debug/rsmain "$@"
+# Build
+subcmd_build() {
+  cargo build "$@"
 }
 
-subcmd_cargo_in_original() { # Run cargo in the original working directory.
-  chdir_original 
-  subcmd_cargo "$@"
-  chdir_script
+depbuild() {
+  newer Cargo.toml build.rs src/ --than target/debug/rsmain"$(exe_ext)" || return 0
+  subcmd_build
+}
+
+# Dependency build
+subcmd_depbuild() {
+  depbuild "$@"
+}
+
+rsmain_run() {
+  invoke "$PROJECT_DIR"/target/debug/rsmain "$@"
+}
+
+# Run rsmain
+subcmd_rsmain__run() {
+  rsmain_run "$@"
+}
+
+# Install shims
+subcmd_install() {
+  depbuild
+  local subcmds_to_ignore=":list:nop:help:"
+  local rs_bin_dir_path="$HOME"/rs-bin
+  rm -fr "$rs_bin_dir_path"
+  mkdir -p "$rs_bin_dir_path"
+  local subcmd
+  for subcmd in $(rsmain_run list)
+  do
+    echo "$subcmds_to_ignore" | grep -q ":$subcmd:" && continue
+    if is_windows
+    then
+      local rs_bin_file_path="$rs_bin_dir_path"/"$subcmd".cmd
+      cat <<EOF > "$rs_bin_file_path"
+@echo off
+"$PROJECT_DIR"\task.cmd rsmain:run "$subcmd" %* || exit /b !ERRORLEVEL!
+EOF
+    else
+      local rs_bin_file_path="$rs_bin_dir_path"/"$subcmd"
+      cat <<EOF > "$rs_bin_file_path"
+#!/bin/sh
+exec "$PROJECT_DIR"/task rsmain:run "$subcmd" "\$@"
+EOF
+      chmod +x "$rs_bin_file_path"
+    fi
+  done
 }
