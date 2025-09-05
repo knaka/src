@@ -1,2 +1,2 @@
-var s: string = "ddd";
+var s: string = "Hello, Node!";
 console.log(s);
