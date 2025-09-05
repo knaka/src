@@ -19,7 +19,7 @@ task_watchbuild() {
 
 # Run JavaScript script in the original working directory
 subcmd_run() {
-  node "$PROJECT_DIR"/helper/launch-script.cjs "$PWD" "$@"
+  node "$PROJECT_DIR"/dist/helper/launch-script.js "$PWD" "$@"
 }
 
 # Install the shims for scripts
