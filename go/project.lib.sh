@@ -96,25 +96,3 @@ EOF
     fi
   done
 }
-
-# Build with debug information.
-subcmd_go__build() {
-  go build -gcflags='all=-N -l' "$@"
-}
-
-# [exec_package] Run with debug information.
-subcmd_go__run() {
-  # If the directory from which a command is executed is in a symlink and it appears outside of the workspace the IDE is working in, the debugger treats breakpoints as not set.
-  push_dir "$(realpath "$PWD")"
-  local exe=./build/db065e3
-  local pkg="$1"
-  shift
-  call_task subcmd_go__build -o "$exe" "$pkg"
-  export WAIT_DEBUGGER=true
-  if ! "$exe" "$@"
-  then
-    echo "Error returned." >&2
-  fi
-  rm -f "$exe"
-  pop_dir
-}
