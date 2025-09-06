@@ -6,7 +6,7 @@
 . ./go.lib.sh
 . ./embedded-go.lib.sh
 
-task_go_hello__gen() { # Generate go-embedded sample scripts.
+task_go_hello__gen() { # Generate Go-embedded sample scripts.
   local out_sh=go-hello
   subcmd_go__embedded__sh__gen \
     --url="https://raw.githubusercontent.com/knaka/src/go/$out_sh" \
@@ -41,7 +41,7 @@ subcmd_build() ( # Build Go source files incrementally.
     if test -r "$arg.go"
     then
       local target_bin_path="$go_bin_dir_path"/"$arg""$(exe_ext)"
-      if ! test -x "$target_bin_path" || newer "$go_file" --than "$target_bin_path"
+      if ! test -x "$target_bin_path" || newer "$arg.go" --than "$target_bin_path"
       then
         "$VERBOSE" && echo "Building $arg.go" >&2
         subcmd_go build -o "$target_bin_path" "$arg.go"
@@ -55,7 +55,7 @@ subcmd_build() ( # Build Go source files incrementally.
         subcmd_go build -o "$target_bin_path" ./cmd/"$arg"
       fi
     else
-      echo "No $arg.go or ./cmd/$arg" >&2
+      echo "No $arg.go or ./cmd/$arg found" >&2
       exit 1
     fi
   done
@@ -97,44 +97,24 @@ EOF
   done
 }
 
-task_install_bin() ( # Install the tools implemented in Go.
-  gopath="$HOME"/go
-  bin_dir_path="$gopath"/bin
-  mkdir -p "$bin_dir_path"
-  repos_dir_path="$HOME"/repos
-  mkdir -p "$repos_dir_path"
-  exe_ext=
-  if is_windows
+# Build with debug information.
+subcmd_go__build() {
+  go build -gcflags='all=-N -l' "$@"
+}
+
+# [exec_package] Run with debug information.
+subcmd_go__run() {
+  # If the directory from which a command is executed is in a symlink and it appears outside of the workspace the IDE is working in, the debugger treats breakpoints as not set.
+  push_dir "$(realpath "$PWD")"
+  local exe=./build/db065e3
+  local pkg="$1"
+  shift
+  call_task subcmd_go__build -o "$exe" "$pkg"
+  export WAIT_DEBUGGER=true
+  if ! "$exe" "$@"
   then
-    exe_ext=.exe
+    echo "Error returned." >&2
   fi
-  # shellcheck disable=SC2043
-  for repo_path in \
-    "https://github.com/knaka/peco.git cmd/peco"
-  do
-    repo=${repo_path%% *}
-    path=${repo_path#* }
-    cmd_name="$(basename "$path")"
-    if test -z "$cmd_name"
-    then
-      cmd_name=$(basename "$repo" .git)
-    fi
-    if type "$bin_dir_path"/"$cmd_name" > /dev/null 2>&1
-    then
-      continue
-    fi
-    # repo_dir_path="$repos_dir_path"/
-    repo_dir_name="$repo"
-    repo_dir_name=${repo_dir_name%%.git}
-    repo_dir_name=${repo_dir_name##https://}
-    repo_dir_path="$repos_dir_path"/"$repo_dir_name"
-    if ! test -d "$repo_dir_path"
-    then
-      subcmd_go run ./go-git-clone.go "$repo" "$repo_dir_path"
-    fi
-    (
-      cd "$repo_dir_path" || exit 1
-      subcmd_go build -o "$bin_dir_path"/"$cmd_name$exe_ext" ./"$path"
-    )
-  done
-)
+  rm -f "$exe"
+  pop_dir
+}

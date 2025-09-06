@@ -40,17 +40,15 @@ ed() {
         then
           exit 0
         fi
+        # It is preferable to open the workspace with the actual path rather than the symlink location. When tools open files with real paths, they may not recognize them as being within the workspace.
+        arg="$(realpath "$arg")"
       elif test -f "$arg"
       then
-        case "$(readlink "$arg")" in
-          (/*)
-            # echo abs
-            ;;
-          (*)
-            # echo rel
-            # arg="$(realpath "$arg")"
-            ;;
-        esac
+        # Resolve only directory.
+        local dir="$(dirname "$arg")"
+        local base="$(basename "$arg")"
+        arg="$(realpath "$dir")"/"$base"
+        echo d: "$arg" >&2
       else
         exit 1
       fi
@@ -88,6 +86,7 @@ ed() {
     fi
     set -- code "$@"
   fi
+  echo "$@"
   "$@"
 }
 

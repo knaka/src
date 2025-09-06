@@ -9,8 +9,6 @@
       "type": "go",
       "request": "attach",
       "mode":"local",
-      // If stopOnEntry is false, the process occasionally stops or does not stop at breakpoints.
-      "stopOnEntry": true,
     },
     {
       "name": "Launch gendiary",
