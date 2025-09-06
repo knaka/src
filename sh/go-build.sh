@@ -8,6 +8,7 @@ set -- "$PWD" "${0%/*}" "$@"; if test "$2" != "$0"; then cd "$2" 2>/dev/null || 
 cd "$1"; shift 2
 
 go_build() {
+  # If the directory from which a command is executed is in a symlink and it appears outside of the workspace the IDE is working in, the debugger treats breakpoints as not set.
   push_dir "$(realpath "$PWD")"
   local arg
   local found=false
@@ -17,7 +18,6 @@ go_build() {
     test "$arg" = "--" && found=true
     ! "$found" && set -- "$@" "$arg"
   done
-  # If the directory from which a command is executed is in a symlink and it appears outside of the workspace the IDE is working in, the debugger treats breakpoints as not set.
   echo go build -gcflags='all=-N -l' "$@" 2>&1
   go build -gcflags='all=-N -l' "$@"
   pop_dir

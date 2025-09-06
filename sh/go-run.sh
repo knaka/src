@@ -9,9 +9,19 @@ set -- "$PWD" "${0%/*}" "$@"; if test "$2" != "$0"; then cd "$2" 2>/dev/null || 
 . ./go-build.sh
 cd "$1"; shift 2
 
+show_help_b83799b() {
+  cat <<EOF
+Build Go executable package with debugger option and run in debug mode.
+
+Usage: $0 <package> [<cmd_arg>...]
+       $0 [<build_opt>...] <package> -- [<cmd_arg>...]
+EOF
+}
+
 go_run() {
-  local exe="$TEMP_DIR/go_run_out$exe_ext"
-  go_build -o "$exe" "$@"
+  test "$#" -lt 1 && show_help_b83799b && return 1
+  local a_out="$TEMP_DIR/a_out$exe_ext"
+  go_build -o "$a_out" "$@"
   local count=1
   for arg in "$@"
   do
@@ -23,7 +33,7 @@ go_run() {
     count=1
   fi
   shift "$count"
-  WAIT_DEBUGGER=true "$exe" "$@"
+  WAIT_DEBUGGER=true "$a_out" "$@"
 }
 
 case "${0##*/}" in
