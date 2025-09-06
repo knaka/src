@@ -4,10 +4,10 @@
 "${sourced_fcad6c8-false}" && return 0; sourced_fcad6c8=true
 
 # cowsay - npm https://www.npmjs.com/package/cowsay
-version_14ac6ce=1.6.0
+cowsay_version_14ac6ce=1.6.0
 
 set_cowsay_version() {
-  version_14ac6ce="$1"
+  cowsay_version_14ac6ce="$1"
 }
 
 # Releases · nodejs/node https://github.com/nodejs/node/releases
@@ -22,12 +22,7 @@ set -- "$PWD" "${0%/*}" "$@"; if test "$2" != "$0"; then cd "$2" 2>/dev/null || 
 cd "$1"; shift 2
 
 cowsay() {
-  set -- "cowsay@$version_14ac6ce" -- "$@"
-  if test -n "$cowsay_node_version_07c311e"
-  then
-    set -- --node-version="$cowsay_node_version_07c311e" "$@"
-  fi
-  run_npm_pkg "$@"
+  run_npm_pkg --node-version="$cowsay_node_version_07c311e" "cowsay@$cowsay_version_14ac6ce" -- "$@" "$@"
 }
 
 case "${0##*/}" in
