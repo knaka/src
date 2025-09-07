@@ -48,7 +48,6 @@ ed() {
         local dir="$(dirname "$arg")"
         local base="$(basename "$arg")"
         arg="$(realpath "$dir")"/"$base"
-        echo d: "$arg" >&2
       else
         exit 1
       fi
@@ -86,7 +85,6 @@ ed() {
     fi
     set -- code "$@"
   fi
-  echo "$@"
   "$@"
 }
 
