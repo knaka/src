@@ -20,7 +20,7 @@ EOF
 
 go_run() {
   test "$#" -lt 1 && show_help_b83799b && return 1
-  local a_out="$TEMP_DIR/a_out$exe_ext"
+  local a_out="$TEMP_DIR/a.out$exe_ext"
   go_build -o "$a_out" "$@"
   local count=1
   for arg in "$@"
@@ -33,7 +33,7 @@ go_run() {
     count=1
   fi
   shift "$count"
-  WAIT_DEBUGGER=true "$a_out" "$@"
+  "$a_out" "$@"
 }
 
 case "${0##*/}" in

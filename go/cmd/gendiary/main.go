@@ -29,7 +29,6 @@ func writeMonthlyNotes(writer *bufio.Writer, year, month int) (err error) {
 }
 
 func main() {
-	Debugger()
 	pflag.Usage = func() {
 		_ = V(fmt.Fprintf(os.Stderr, "Usage: %s [options] <year> <month>\n", filepath.Base(os.Args[0])))
 		pflag.PrintDefaults()
