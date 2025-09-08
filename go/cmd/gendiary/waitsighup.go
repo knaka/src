@@ -1,4 +1,5 @@
-//go:build darwin || linux
+//go:build debug && (darwin || linux)
+// +build debug
 // +build darwin linux
 
 package main
