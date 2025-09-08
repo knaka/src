@@ -1,1 +1,1 @@
-tasks/task-sh/task.cmd
+task-sh/task.cmd
