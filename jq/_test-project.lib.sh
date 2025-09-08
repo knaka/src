@@ -9,4 +9,44 @@ test_examples() (
   set -o errexit
 
   assert_eq "aaabbbccc" "$(echo '["a", "b", "c"]' | jq -r 'map(. * 3) | join("")')" "Apply map to the array and join the resulting array"
+
+  json="$TEMP_DIR"/8f57625.json
+  echo '
+    [
+      { "name": "Alice, ALICE", "email": "alice@example.com" },
+      { "name": "Alice, ALICE", "email": "another_alice@example.com" },
+      { "name": "Bob, BOB", "email": "bob@example.com" }
+    ]
+  ' >"$json"
+
+  printf "%s$us%s$us%s\n" \
+    'Alice, ALICE' true '{"name":"Alice, ALICE","email":"alice@example.com"}' \
+    'Bob, BOB' true '{"name":"Bob, BOB","email":"bob@example.com"}' \
+    'Charlie, CHARLIE' false '' \
+    'David, DAVID' false '' \
+  | (
+    IFS="$us"
+    count=0
+    while read -r name must_succeed expected
+    do
+      if result="$(jq -c -e --arg name "$name" '[.[] | select(.name == $name)][0]' <"$json")"
+      then
+        if "$must_succeed"
+        then
+          assert_eq "$expected" "$result"
+        else
+          echo "Must fail (87fea64)" >&2
+          false
+        fi
+      else
+        if "$must_succeed"
+        then
+          echo "Must succeed (43c9be7)" >&2
+          false
+        fi
+      fi
+      count=$((count + 1))
+    done
+    assert_true test "$count" -eq 4
+  )
 )
