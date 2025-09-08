@@ -13,15 +13,18 @@ import (
 )
 
 // waitSIGHUP waits for a SIGHUP signal on Unixy systems.
-// Activated by --waitsighup flag or WAITSIGHUP environment variable.
+// Activated by --waitsighup or --wait-sighup flags, or WAITSIGHUP or WAIT_SIGHUP environment variables.
 // User can run 'kill -HUP <pid>' to proceed. Signal handling is restored to default after first signal.
 func waitSIGHUP() {
 	waitsSig := false
-	if len(os.Args) > 1 && os.Args[1] == "--waitsighup" {
+	if len(os.Args) > 1 &&
+		(os.Args[1] == "--waitsighup" || os.Args[1] == "--wait-sighup") {
 		waitsSig = true
 		os.Args = append(os.Args[:1], os.Args[2:]...)
 	}
-	if !waitsSig && os.Getenv("WAITSIGHUP") == "" {
+	if !waitsSig &&
+		os.Getenv("WAITSIGHUP") == "" &&
+		os.Getenv("WAIT_SIGHUP") == "" {
 		return
 	}
 	pid := os.Getpid()
