@@ -13,4 +13,4 @@ fi
 
 BB_GLOBBING=1
 export BB_GLOBBING
-ls"$(exe_ext)" -l "$@"
+ls"$exe_ext" -l "$@"
