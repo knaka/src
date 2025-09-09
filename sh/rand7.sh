@@ -8,7 +8,7 @@ set -- "$PWD" "${0%/*}" "$@"; if test "$2" != "$0"; then cd "$2" 2>/dev/null || 
 cd "$1"; shift 2
 
 # Generates a random 7-digit hexadecimal number
-rand7() (
+rand7() {
   local seed
   if test -r /dev/urandom
   then
@@ -26,7 +26,7 @@ rand7() (
   # 268435456 = 0xFFFFFFF + 1
   # Hexadecimal integer literal is available only on GAwk.
   awk -v seed="$seed" 'BEGIN { srand(seed); printf "%07x\n", int(rand() * 268435456) }'
-)
+}
 
 if test "${0##*/}" = rand7.sh
 then
