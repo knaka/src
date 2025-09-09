@@ -24,8 +24,9 @@ def to_sh(prefix):
       # Convert key to shell-safe identifier
       if .key | type == "number" then 
         .key | tostring
-      else 
-        .key | gsub("[-\\.]"; "_")  # Replace hyphens and dots with underscores
+      else
+        # Replace hyphens and dots with underscores
+        .key | gsub("[-\\.]"; "_")
       end
     ) as $shell_key
   | if .value | type == "object" or type == "array" then
@@ -37,7 +38,6 @@ def to_sh(prefix):
     end
 ;
 
-# Main processing: start conversion with specified prefix
 .
 | $ARGS.named.prefix // "json__" as $prefix
 | to_sh($prefix)
