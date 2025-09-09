@@ -50,3 +50,24 @@ test_examples() (
     assert_true test "$count" -eq 4
   )
 )
+
+json2sh_expected() {
+  cat <<EOF
+json__user_name="Alice"
+json__user_age="30"
+json__items_0="apple"
+json__items_1="banana"
+EOF
+}
+
+test_json2sh() {
+  local expected="$TEMP_DIR/0fff639.sh"
+  json2sh_expected >"$expected"
+
+  local actual="$TEMP_DIR/ffe3871.sh"
+  echo '{"user":{"name":"Alice","age":30},"items":["apple","banana"]}' | jq -r -f json2sh.jq >"$actual"
+
+  assert_eq \
+    "$(sha256sum "$expected" | field 1)" \
+    "$(sha256sum "$actual" | field 1)"
+}
