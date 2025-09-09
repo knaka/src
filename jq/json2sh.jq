@@ -4,21 +4,21 @@
 #
 # Parameters:
 #   prefix:     Variable name prefix (default: "json__")
-#   delim:      Delimiter for nested keys (default: "_")
+#   delim:      Delimiter for nested keys (default: "__")
 #   local_decl: Declaration prefix, e.g. "local " or "export " (default: "")
 #
 # Example:
 #   echo '{"user":{"name":"Alice","age":30},"items":["apple","banana"]}' | jq -r -f json2sh.jq
 #   # Output:
-#   # json__user_name="Alice"
-#   # json__user_age="30"
-#   # json__items_0="apple"
-#   # json__items_1="banana"
+#   # json__user__name="Alice"
+#   # json__user__age="30"
+#   # json__items__0="apple"
+#   # json__items__1="banana"
 
 # Recursively convert JSON object/array to shell variable declarations
 def to_sh(prefix):
   to_entries[]
-  | $ARGS.named.delim // "_" as $delim
+  | $ARGS.named.delim // "__" as $delim
   | $ARGS.named.local_decl // "" as $local_decl
   | (
       # Convert key to shell-safe identifier

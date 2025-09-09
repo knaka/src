@@ -53,10 +53,10 @@ test_examples() (
 
 json2sh_expected() {
   cat <<EOF
-json__user_name="Alice"
-json__user_age="30"
-json__items_0="apple"
-json__items_1="banana"
+json__user__name="Alice"
+json__user__age="30"
+json__items__0="apple"
+json__items__1="banana"
 EOF
 }
 
