@@ -25,7 +25,7 @@ task_gen() { # Generate files.
   task_go_hello__gen
 }
 
-subcmd_build() ( # Build Go source files incrementally.
+subcmd_build() { # Build Go source files incrementally.
   cd "$PROJECT_DIR"
   local go_bin_dir_path=./build
   mkdir -p "$go_bin_dir_path"
@@ -59,7 +59,7 @@ subcmd_build() ( # Build Go source files incrementally.
       exit 1
     fi
   done
-)
+}
 
 task_install() { # Install Go tools.
   cd "$PROJECT_DIR"
