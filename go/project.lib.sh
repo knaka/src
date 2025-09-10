@@ -40,7 +40,7 @@ subcmd_build() ( # Build Go source files incrementally.
     arg="${arg%.go}"
     if test -r "$arg.go"
     then
-      local target_bin_path="$go_bin_dir_path"/"$arg""$(exe_ext)"
+      local target_bin_path="$go_bin_dir_path"/"$arg""$exe_ext"
       if ! test -x "$target_bin_path" || newer "$arg.go" --than "$target_bin_path"
       then
         "$VERBOSE" && echo "Building $arg.go" >&2
@@ -48,7 +48,7 @@ subcmd_build() ( # Build Go source files incrementally.
       fi
     elif test -d ./cmd/"$arg"
     then
-      local target_bin_path="$go_bin_dir_path"/"$arg""$(exe_ext)"
+      local target_bin_path="$go_bin_dir_path"/"$arg""$exe_ext"
       if ! test -x "$target_bin_path" || newer ./cmd/"$arg" --than "$target_bin_path"
       then
         "$VERBOSE" && echo "Building ./cmd/$arg" >&2
