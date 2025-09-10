@@ -213,7 +213,7 @@ set_ifs_newline() {
 }
 
 # shellcheck disable=SC2034
-readonly newline="
+readonly newline_char="
 "
 
 # To split paths.
@@ -399,13 +399,7 @@ run_fetched_cmd() {
   local macos_remove_signature=false
   OPTIND=1; while getopts _-: OPT
   do
-    if test "$OPT" = "-"
-    then
-      OPT="${OPTARG%%=*}"
-      # shellcheck disable=SC2030
-      OPTARG="${OPTARG#"$OPT"}"
-      OPTARG="${OPTARG#=}"
-    fi
+    test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
     case "$OPT" in
       (name) name=$OPTARG;;
       (ver) ver=$OPTARG;;
@@ -419,7 +413,6 @@ run_fetched_cmd() {
       (rel-dir-template) rel_dir_template=$OPTARG;;
       (print-dir) print_dir=true;;
       (macos-remove-signature) macos_remove_signature=true;;
-      (\?) exit 1;;
       (*) echo "Unexpected option: $OPT" >&2; exit 1;;
     esac
   done
@@ -514,7 +507,7 @@ goos_camel_map=\
 # shellcheck disable=SC2034
 goarch_map=\
 "x86_64 amd64 "\
-"aarch64 arm64 "\
+"arm64 arm64 "\
 "armv7l arm "\
 "i386 386 "\
 ""
@@ -556,13 +549,7 @@ require_pkg_cmd() {
   local winget_id=
   OPTIND=1; while getopts _-: OPT
   do
-    if test "$OPT" = "-"
-    then
-      OPT="${OPTARG%%=*}"
-      # shellcheck disable=SC2030
-      OPTARG="${OPTARG#"$OPT"}"
-      OPTARG="${OPTARG#=}"
-    fi
+    test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
     case "$OPT" in
       (brew-id) brew_id=$OPTARG;;
       (deb-id) deb_id=$OPTARG;;
@@ -692,6 +679,10 @@ set_jq_version() {
 }
 
 jq() {
+  if is_windows
+  then
+    set -- --binary "$@"
+  fi
   if "$jq_prefer_pkg_ec51165"
   then
     run_pkg_cmd jq "$@"
@@ -766,6 +757,14 @@ load_env() {
 
 # ==========================================================================
 # Misc
+
+# shellcheck disable=SC2034
+escape_char=""
+
+strip_escape_sequences() {
+  # BusyBox sed(1) does not accept `\octal` or `\xhex`.
+  sed -E -e 's/'"$escape_char"'[[0-9;]*[JKmsu]//g'
+}
 
 # Absolute path to relative path
 abs2rel() {
@@ -1356,7 +1355,7 @@ github_api_request() {
   then
     set -- "$@" --header "Authorization: Bearer $GITHUB_TOKEN"
   fi
-  "$VERBOSE" && echo "Accessing GitHub API: $url"
+  "$VERBOSE" && echo "Accessing GitHub API: $url" >&2
   curl "$@" "$url"
 }
 
@@ -1364,7 +1363,7 @@ github_tree_get() {
   local owner=
   local repos=
   local tree_sha=main
-  OPTIND=1; while getopts -: OPT
+  OPTIND=1; while getopts _-: OPT
   do
     test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
     case "$OPT" in
@@ -1386,7 +1385,7 @@ github_raw_fetch() {
   local repos=
   local tree_sha=main
   local path=
-  OPTIND=1; while getopts -: OPT
+  OPTIND=1; while getopts _-: OPT
   do
     test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
     case "$OPT" in
@@ -1417,7 +1416,6 @@ subcmd_task__install() {
   local rc=0
   local resp
   local main_branch=main
-  # resp="$(curl --silent --fail "${tasksh_github_tree_api_base}/${main_branch}")"
   resp="$(github_tree_get --owner="knaka" --repos="task-sh")"
   local latest_commit="$(printf "%s" "$resp" | jq -r .sha)"
   "$VERBOSE" && echo "Latest commit of \"$main_branch\" is \"$latest_commit\"." >&2
@@ -1464,7 +1462,8 @@ subcmd_task__install() {
     fi
     local new_sha
     new_sha="$(echo "$node" | jq -r .sha)"
-    if ! "$force" && test -n "$local_sha" -a "$new_sha" = "$local_sha"
+    "$VERBOSE" && echo "${indent}Remote SHA:" "$new_sha" >&2
+    if ! "$force" && test -n "$local_sha" -a "$new_sha" = "$last_sha"
     then
       echo "\"$name\" is up to date. Skipping." >&2
       continue
@@ -1682,16 +1681,7 @@ tasksh_main() {
   ignore_missing=false
   OPTIND=1; while getopts hvsi-: OPT
   do
-    if test "$OPT" = "-"
-    then
-      # Extract long option name.
-      # shellcheck disable=SC2031
-      OPT="${OPTARG%%=*}"
-      # Extract long option argument.
-      # shellcheck disable=SC2031
-      OPTARG="${OPTARG#"$OPT"}"
-      OPTARG="${OPTARG#=}"
-    fi
+    test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
     case "$OPT" in
       (h|help) shows_help=true;;
       (s|skip-missing) skip_missing=true;;
