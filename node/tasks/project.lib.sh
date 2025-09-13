@@ -5,6 +5,7 @@
 . ./task.sh
 . ./node.lib.sh
   add_sub_help_for_npm
+. ./ip-utils.lib.sh
 
 # Build
 task_build() {
@@ -52,4 +53,29 @@ EOF
     fi
   done
   pop_dir
+}
+
+# [<dir = $PWD>] Run a simple HTTP server.
+subcmd_httpd() {
+  push_dir "$PROJECT_DIR"
+  local path="$ORIGINAL_DIR"
+  if test "${1+set}" = set
+  then
+    path="$(cd "$ORIGINAL_DIR"; realpath "$1")"
+  fi
+  local host=127.0.0.1
+  local port="$(ip_random_free_port)"
+  INVOCATION_MODE=background node "$PROJECT_DIR"/dist/helper/httpd-mini.js "$path" "$host" "$port"
+  pop_dir
+  while true
+  do
+    menu \
+      "&Browse" \
+      "E&xit" \
+      # nop
+    case "$(get_key)" in
+      (b) browse "http://$host:$port" ;;
+      (x) break ;;
+    esac
+  done
 }

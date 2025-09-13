@@ -11,6 +11,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
+    "mime-types": "^2.1.35",
+    "@types/mime-types": "^2.1.4",
     "@types/node": "^20.0.0",
     "typescript": "^5.0.0",
     "tsx": "^4.0.0"

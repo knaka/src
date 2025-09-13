@@ -7,6 +7,8 @@
 ghq_version="1.8.0"
 
 set -- "$PWD" "${0%/*}" "$@"; if test "$2" != "$0"; then cd "$2" 2>/dev/null || :; fi
+. ./task.sh
+  init_temp_dir
 . ./peco.sh
 cd "$1"; shift 2
 
@@ -27,19 +29,30 @@ ghq() {
     "$@"
 }
 
+s=
 if test "${1+set}" = "set"
 then
   case "$1" in
-    (*)
-      finalize
+    (get|clone|list|rm|root|create|help|h)
       ghq "$@"
       exit $?
+      ;;
+    (*)
+      s="$1"
       ;;
   esac
 fi
 
-# If not subcommand is specified, show the list of repos.
-repo=$(ghq list | peco)
+# If no ghq-subcommand is specified, show the list of repos.
+repo=
+if test -n "$s"
+then
+  file="$TEMP_DIR/a427745"
+  ghq list >"$file"
+  repo="$(grep --word-regexp -e "$s" "$file" | sort | head -n1)"
+else
+  repo=$(ghq list | peco)
+fi
 if test -z "${repo}"
 then
   exit 1
