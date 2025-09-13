@@ -58,10 +58,10 @@ EOF
 # [<dir = $PWD>] Run a simple HTTP server.
 subcmd_httpd() {
   push_dir "$PROJECT_DIR"
-  local path="$ORIGINAL_DIR"
+  local path="$INITIAL_PWD"
   if test "${1+set}" = set
   then
-    path="$(cd "$ORIGINAL_DIR"; realpath "$1")"
+    path="$(cd "$INITIAL_PWD"; realpath "$1")"
   fi
   local host=127.0.0.1
   local port="$(ip_random_free_port)"
