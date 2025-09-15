@@ -354,6 +354,105 @@ ifsm_values() {
 # ==========================================================================
 # Fetch and run a command from an archive
 
+windows_exe_extensions=".exe .EXE .cmd .CMD .bat .BAT"
+
+# Invoke command with proper executable extension, with the specified invocation mode.
+#
+# Invocation mode can be specified via INVOCATION_MODE environment variable:
+#   INVOCATION_MODE=standard: (Default) Run the command in the current process.
+#   INVOCATION_MODE=exec: Replace the process with the command.
+#   INVOCATION_MODE=exec-direct: Replace the process with the command, without calling cleanups.
+#   INVOCATION_MODE=background: Run the command in the background.
+#
+# Command-specific invocation mode can be set using INVOCATION_MODE_<command> variables:
+#   INVOCATION_MODE_foo=background: Run external command `foo` in the background.
+#   The command name is extracted from the basename of the first argument, with Windows
+#   executable extensions (.exe, .cmd, etc.) stripped if on Windows platform.
+invoke() {
+  if test $# -eq 0
+  then
+    echo "No command specified" >&2
+    exit 1
+  fi
+  local invocation_mode="${INVOCATION_MODE:-standard}"
+  local base="${1##*/}"
+  if is_windows
+  then
+    local ext
+    for ext in $windows_exe_extensions
+    do
+      base="${base%"$ext"}"
+    done
+  fi
+  if eval "test \"\${INVOCATION_MODE_$base+set}\" = set"
+  then
+    eval "invocation_mode=\"\${INVOCATION_MODE_$base}\""
+  fi
+  local cmd="$1"
+  case "$1" in
+    (*/*)
+      if is_windows
+      then
+        local ext
+        for ext in $windows_exe_extensions
+        do
+          if test -x "$cmd$ext"
+          then
+            shift
+            set -- "$cmd$ext" "$@"
+            break
+          fi
+        done
+      fi
+      if ! test -x "$1"
+      then
+        echo "Command not found: $1" >&2
+        exit 1
+      fi
+      ;;
+    (*)
+      if is_windows
+      then
+        local ext
+        for ext in $windows_exe_extensions
+        do
+          if command -v "$1$ext" >/dev/null 2>&1
+          then
+            shift
+            set -- "$cmd$ext" "$@"
+            break
+          fi
+        done
+      fi
+      if ! command -v "$1" >/dev/null 2>&1
+      then
+        echo "Command not found: $1" >&2
+        exit 1
+      fi
+      ;;
+  esac
+  case "$invocation_mode" in
+    (exec)
+      finalize
+      # exec executes the external command even if a function with the same name is defined.
+      exec "$@"
+      ;;
+    (exec-direct)
+      exec "$@"
+      ;;
+    (background)
+      command "$@" &
+      ;;
+    (standard)
+      command "$@"
+      ;;
+    (*)
+      echo "Unknown invocation mode: $invocation_mode" >&2
+      exit 1
+      ;;
+  esac
+}
+
 # Canonicalize `uname -s` result
 uname_s() {
   local os_name="$(uname -s)"
@@ -482,7 +581,7 @@ run_fetched_cmd() {
   then
     echo "$app_dir_path"
   else
-    PATH="$app_dir_path":$PATH "$cmd_path" "$@"
+    PATH="$app_dir_path":$PATH invoke "$cmd_path" "$@"
   fi
 }
 
@@ -761,6 +860,41 @@ load_env() {
 # ==========================================================================
 # Misc
 
+# [regex replacement ...] Substitute text that matches regex patterns in stdin input. Takes pairs of regex/replacement arguments and applies them via sed(1).
+resubst() {
+  local sentinel=08ee2b1
+  set -- "$@" "$sentinel"
+  while test "$1" != "$sentinel"
+  do
+    set -- "$@" -e "s${us}$1${us}$2${us}g"
+    shift 2
+  done
+  shift
+  sed "$@"
+}
+
+wait_for_server() {
+  local url="$1"
+  echo "Waiting for server at $url to be ready ..."
+  local attempts=0
+  local max_attempts=60
+  while test $attempts -lt $max_attempts
+  do
+    if curl -s -o /dev/null -w "%{http_code}" "$url" | grep -q "200"
+    then
+      echo "✓ Server is ready at $url"
+      return 0
+    fi
+    attempts=$((attempts + 1))
+    if test $attempts -eq $max_attempts
+    then
+      echo "✗ Server at $url did not respond with 200 after $max_attempts seconds"
+      return 1
+    fi
+    sleep 1
+  done
+}
+
 strip_escape_sequences() {
   # ANSI escape code - Wikipedia https://en.wikipedia.org/wiki/ANSI_escape_code
   # BusyBox sed(1) does not accept `\octal` or `\xhex`.
@@ -1013,81 +1147,6 @@ kill_child_processes() {
   fi
 }
 
-# Invoke command with proper executable extension, with the specified invocation mode.
-#
-# Invocation mode can be specified via INVOCATION_MODE environment variable:
-#   INVOCATION_MODE=standard: (Default) Run the command in the current process.
-#   INVOCATION_MODE=exec: Replace the process with the command.
-#   INVOCATION_MODE=exec-direct: Replace the process with the command, without calling cleanups.
-#   INVOCATION_MODE=background: Run the command in the background.
-invoke() {
-  local invocation_mode="${INVOCATION_MODE:-standard}"
-  if test $# -eq 0
-  then
-    echo "No command specified" >&2
-    exit 1
-  fi
-  case "$1" in
-    (*/*)
-      if is_windows
-      then
-        local cmd="$1"
-        local ext
-        for ext in .exe .cmd .bat
-        do
-          if test -x "$cmd$ext"
-          then
-            shift
-            set -- "$cmd$ext" "$@"
-            break
-          fi
-        done
-      fi
-      if ! test -x "$1"
-      then
-        echo "Command not found: $1" >&2
-        exit 1
-      fi
-      ;;
-    (*)
-      if is_windows
-      then
-        local cmd="$1"
-        local ext
-        for ext in .exe .cmd .bat
-        do
-          if command -v "$1$ext" >/dev/null 2>&1
-          then
-            shift
-            set -- "$cmd$ext" "$@"
-            break
-          fi
-        done
-      fi
-      if ! command -v "$1" >/dev/null 2>&1
-      then
-        echo "Command not found: $1" >&2
-        exit 1
-      fi
-      ;;
-  esac
-  case "$invocation_mode" in
-    (exec)
-      finalize
-      exec "$@"
-      ;;
-    (exec-direct) exec "$@";;
-    (background) command "$@" &;;
-    (standard)
-      command "$@"
-      ;;
-    (*)
-      echo "Unknown invocation mode: $invocation_mode" >&2
-      exit 1
-      ;;
-  esac
-}
-
 # Open the URL in the browser.
 browse() {
   if is_linux
@@ -1320,6 +1379,14 @@ is_dir_empty() {
     return 0
   fi
   return 1
+}
+
+# [<file>] Read the file and print substituting environment variables. Unlike envsubst(1), this tries to expand undefined environment variables and fails for that.
+env_subst() {
+  local template_file="$1"
+  eval "cat <<EOF
+$(cat "$template_file")
+EOF"
 }
 
 # ==========================================================================
