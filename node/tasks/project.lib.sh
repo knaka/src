@@ -10,12 +10,12 @@
 # Build
 task_build() {
   rm -fr dist/
-  run_node_modules_cmd tsc
+  run_node_modules_bin .bin/tsc
 }
 
 # Watch input and build accordingly
 task_watchbuild() {
-  run_node_modules_cmd tsc --watch
+  run_node_modules_bin .bin/tsc --watch
 }
 
 # Run JavaScript script in the original working directory
@@ -35,6 +35,9 @@ subcmd_install() {
   for js_file in *.js
   do
     test -r "$js_file" || continue
+    case "$js_file" in
+      (_*) continue;;
+    esac
     local js_name="${js_file%.*}"
     if is_windows
     then
