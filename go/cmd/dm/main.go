@@ -13,6 +13,7 @@ import (
 	//revive:disable:dot-imports
 	. "github.com/knaka/go-utils"
 	//revive:enable:dot-imports
+	_ "github.com/knaka/go-utils/initwait"
 )
 
 func printable(ch byte) bool {
@@ -73,7 +74,6 @@ func dumpFile(filePath string, writer io.Writer) {
 }
 
 func main() {
-	Debugger()
 	if len(os.Args) == 1 {
 		os.Args = append(os.Args, stdinFilename)
 	}

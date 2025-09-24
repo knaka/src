@@ -3,8 +3,10 @@ github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/friendsofgo/errors v0.9.2 h1:X6NYxef4efCBdwI7BgS820zFaN7Cphrmb+Pljdzjtgk=
 github.com/friendsofgo/errors v0.9.2/go.mod h1:yCvFW5AkDIL9qn7suHVLiI/gH228n7PC4Pn44IGoTOI=
-github.com/knaka/go-utils v0.1.4 h1:DrZDBhOWPB85wkY4P8KDBTQAFYXFkNrAva30mt9/WcU=
-github.com/knaka/go-utils v0.1.4/go.mod h1:7sM//+pz6yT7fgSkM7KUyHv8l8l83goUDBLDbBaguJM=
+github.com/knaka/go-utils v0.1.6 h1:apIpG57Qy2tNc8wtY0Pr6RUq30u9pICGYwXj39B53fw=
+github.com/knaka/go-utils v0.1.6/go.mod h1:7sM//+pz6yT7fgSkM7KUyHv8l8l83goUDBLDbBaguJM=
+github.com/knaka/go-utils v0.1.7 h1:NIIw36dKYh9Ox8RVFvbR1UJqajFtvbc6T1aITBCw1lA=
+github.com/knaka/go-utils v0.1.7/go.mod h1:7sM//+pz6yT7fgSkM7KUyHv8l8l83goUDBLDbBaguJM=
 github.com/likexian/gokit v0.25.2/go.mod h1:NCv1RDZK5kR0T2SfAl/vjIO6rsjszt2C/25TKxJalhs=
 github.com/pkg/errors v0.9.1 h1:FEBLx1zS214owpjy7qsBeixbURkuhQAwrK5UwLGTwt4=
 github.com/pkg/errors v0.9.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=

@@ -21,18 +21,19 @@ EOF
 go_run() {
   test "$#" -lt 1 && show_help_b83799b && return 1
   local a_out="$TEMP_DIR/a.out$exe_ext"
-  go_build -o "$a_out" "$@"
+  go_build -tags=debug -o "$a_out" "$@"
   local count=1
   for arg in "$@"
   do
     test "$arg" = -- && break
     count=$((count + 1))
   done
-  if test "$count" -ge "$#"
+  if test "$count" -gt "$#"
   then
-    count=1
+    count=$#
   fi
   shift "$count"
+  echo "$a_out" "$@" >&2
   "$a_out" "$@"
 }
 
