@@ -43,18 +43,32 @@ then
   esac
 fi
 
+ghq_list() {
+  # `ghq list` takes too long to walk recursively.
+  # ghq list
+  local p
+  find "$GHQ_ROOT" -type d -maxdepth 4 -name '.git' \
+  | while read -r p
+    do
+      p="${p%/.git}"
+      p="${p#"$GHQ_ROOT"}"
+      p="${p#/}"
+      echo "$p"
+    done
+}
+
 # If no ghq-subcommand is specified, show the list of repos.
 repo=
 if test -n "$s"
 then
   file="$TEMP_DIR/a427745"
-  ghq list >"$file"
+  ghq_list >"$file"
   repo="$(grep --word-regexp -e "$s" "$file" | sort | head -n1)"
 else
-  repo=$(ghq list | peco)
+  repo=$(ghq_list | peco)
 fi
 if test -z "${repo}"
 then
   exit 1
 fi
-echo "$(ghq root)"/"${repo}"
+echo "$GHQ_ROOT"/"${repo}"
