@@ -4,7 +4,11 @@
 test "${sourced_91d5357-}" = true && return 0; sourced_91d5357=true
 
 gc() {
-  if test -d "c:/" # Windows
+  if test "${SSH_CONNECTION+set}" = set
+  then
+    local reader_port="${READER_PORT-10002}"
+    nc -q0 127.0.0.1 "$reader_port" </dev/null
+  elif test -d "c:/" # Windows
   then
     # The sed(1) script is to remove the trailing newline.
     powershell.exe -command "Get-Clipboard" | sed -e ':a; $!N; $ s/\n$//; ta'

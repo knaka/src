@@ -4,7 +4,11 @@
 test "${sourced_251a1db-}" = true && return 0; sourced_251a1db=true
 
 sc() {
-  if command -v clip.exe >/dev/null 2>&1 # Windows
+  if test "${SSH_CONNECTION+set}" = set
+  then
+    local writer_port="${WRITER_PORT-10001}"
+    nc -q0 127.0.0.1 "$writer_port"
+  elif command -v clip.exe >/dev/null 2>&1 # Windows
   then
     clip.exe
   elif command -v pbcopy >/dev/null 2>&1 # macOS
