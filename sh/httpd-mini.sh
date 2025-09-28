@@ -22,6 +22,7 @@ httpd_mini() {
   local port="$(ip_random_free_port)"
   local url="http://$host:$port"
   echo "HTTP Server running at $url , providing the content of the directory $dir ."
+  # -b, --browse: Enable directory browsing
   caddy file-server --listen="$host":"$port" --browse --root="$dir"
 }
 
