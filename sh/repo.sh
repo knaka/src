@@ -47,9 +47,10 @@ ghq_list() {
   # `ghq list` takes too long to walk recursively.
   # ghq list
   local p
-  find "$GHQ_ROOT" -type d -maxdepth 4 -name '.git' \
+  find "$GHQ_ROOT"/*/.git "$GHQ_ROOT"/*/*/.git "$GHQ_ROOT"/*/*/*/.git -type d -maxdepth 0 \
   | while read -r p
     do
+      test -d "$p" || continue
       p="${p%/.git}"
       p="${p#"$GHQ_ROOT"}"
       p="${p#/}"
