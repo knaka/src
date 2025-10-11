@@ -6,10 +6,48 @@ import (
 	"testing"
 )
 
+func TestDeobfuscate(_ *testing.T) {
+	pairs := []struct {
+		source   []byte
+		expected []byte
+	}{
+		{[]byte{0x00, 0x00, 0x00, 0x00}, []byte{0x0c, 0xff, 0xc4, 0xe6}},
+		{[]byte{0x00, 0x00, 0x00, 0x01}, []byte{0x6c, 0xcb, 0x75, 0x60}},
+		{[]byte{0x00, 0x00, 0x00, 0x02}, []byte{0xcc, 0x97, 0x26, 0xda}},
+		{[]byte{0x00, 0x00, 0x00, 0x03}, []byte{0x2c, 0x64, 0xd7, 0x53}},
+		{[]byte{0x00, 0x00, 0x00, 0x04}, []byte{0x94, 0x30, 0x88, 0xcd}},
+		{[]byte{0x00, 0x00, 0x00, 0x05}, []byte{0xf4, 0xfc, 0x39, 0x47}},
+		{[]byte{0x00, 0x00, 0x00, 0x06}, []byte{0x54, 0xc9, 0xea, 0xc0}},
+		{[]byte{0x00, 0x00, 0x00, 0x07}, []byte{0xb4, 0x95, 0x9b, 0x3a}},
+		{[]byte{0x00, 0x00, 0x00, 0x08}, []byte{0x1c, 0x62, 0x4c, 0xb4}},
+		{[]byte{0x00, 0x00, 0x00, 0x09}, []byte{0x7c, 0x2e, 0xfd, 0x2d}},
+		{[]byte{0xff, 0xff, 0xff, 0xfd}, []byte{0x8b, 0x78, 0x4e, 0x86}},
+		{[]byte{0xff, 0xff, 0xff, 0xfe}, []byte{0xeb, 0x44, 0x9d, 0x0c}},
+		{[]byte{0xff, 0xff, 0xff, 0xff}, []byte{0x4b, 0x11, 0xec, 0x92}},
+		{[]byte{0xde, 0xad, 0xbe, 0xaf}, []byte{0x39, 0x1f, 0x6e, 0xaa}},
+	}
+	for _, pair := range pairs {
+		sourceBytes := make([]byte, len(pair.source))
+		copy(sourceBytes, pair.source)
+		obfuscated := Obfuscate(sourceBytes)
+		deobfuscated := Deobfuscate(obfuscated)
+		fmt.Fprintf(os.Stderr, "%02X -> Obfuscated bytes: %02X -> Deobfuscated bytes: %02X\n",
+			pair.source,
+			obfuscated,
+			deobfuscated,
+		)
+		expectedBytes := make([]byte, len(pair.expected))
+		copy(expectedBytes, pair.expected)
+		if fmt.Sprintf("%02X", pair.expected) != fmt.Sprintf("%02X", obfuscated) {
+			fmt.Fprintf(os.Stderr, "Expected obfuscated value: %02X\n", pair.expected)
+		}
+	}
+}
+
 func TestDeobfuscate32(_ *testing.T) {
 	originalExpected := []struct {
-		n    uint32
-		want uint32
+		source   uint32
+		expected uint32
 	}{
 		{0x00000000, 0xe6c4ff0c},
 		{0x00000001, 0x6075cb6c},
@@ -27,15 +65,15 @@ func TestDeobfuscate32(_ *testing.T) {
 		{0xdeadbeaf, 0xaa6e1f39},
 	}
 	for _, origExp := range originalExpected {
-		obfuscated := Obfuscate32(origExp.n)
+		obfuscated := Obfuscate32(origExp.source)
 		deobfuscated := Deobfuscate32(obfuscated)
 		fmt.Fprintf(os.Stderr, "0x%08X -> Obfuscated uint32: 0x%08X -> Deobfuscated uint32: 0x%08X\n",
-			origExp.n,
+			origExp.source,
 			obfuscated,
 			deobfuscated,
 		)
-		if origExp.want != obfuscated {
-			fmt.Fprintf(os.Stderr, "Expected obfuscated value: 0x%08X\n", origExp.want)
+		if origExp.expected != obfuscated {
+			fmt.Fprintf(os.Stderr, "Expected obfuscated value: 0x%08X\n", origExp.expected)
 		}
 	}
 }
