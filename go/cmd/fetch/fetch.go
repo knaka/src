@@ -29,7 +29,6 @@ func applyOptions[T any](params *T, opts []FuncOption[T]) (err error) {
 
 // fetchParams holds configuration parameters for fetch operations.
 type fetchParams struct {
-	stdout           io.Writer
 	stderr           io.Writer
 	workingDirectory string
 	verbose          bool
@@ -39,14 +38,6 @@ type fetchParams struct {
 func WithDir(dir string) FuncOption[fetchParams] {
 	return func(params *fetchParams) (err error) {
 		params.workingDirectory = dir
-		return
-	}
-}
-
-// WithStdout sets the stdout stream for the fetch operation.
-func WithStdout(stdout io.Writer) FuncOption[fetchParams] {
-	return func(params *fetchParams) (err error) {
-		params.stdout = stdout
 		return
 	}
 }
@@ -72,7 +63,6 @@ func Fetch(url string, opts ...FuncOption[fetchParams]) (err error) {
 	params := fetchParams{
 		workingDirectory: ".",
 		verbose:          false,
-		stdout:           os.Stdout,
 		stderr:           os.Stderr,
 	}
 	err = applyOptions(&params, opts)

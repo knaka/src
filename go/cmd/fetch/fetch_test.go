@@ -81,44 +81,6 @@ func TestFetchWithVerbose(t *testing.T) {
 	}
 }
 
-func TestFetchWithCustomStdout(t *testing.T) {
-	// Create a test HTTP server
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-		w.Header().Set("Content-Type", "text/plain")
-		fmt.Fprint(w, "stdout test content")
-	}))
-	defer server.Close()
-
-	// Create a temporary directory for testing
-	tempDir, err := os.MkdirTemp("", "fetch_stdout_test")
-	if err != nil {
-		t.Fatalf("Failed to create temp dir: %v", err)
-	}
-	defer os.RemoveAll(tempDir)
-
-	// Create a custom stdout buffer
-	var stdoutBuf bytes.Buffer
-
-	// Test fetch with custom stdout
-	err = Fetch(server.URL+"/stdout.txt",
-		WithDir(tempDir),
-		WithStdout(&stdoutBuf))
-	if err != nil {
-		t.Fatalf("Fetch failed: %v", err)
-	}
-
-	// Verify file was still created (stdout doesn't affect file creation)
-	filePath := filepath.Join(tempDir, "stdout.txt")
-	if _, err := os.Stat(filePath); os.IsNotExist(err) {
-		t.Error("Expected file to be created even with custom stdout")
-	}
-
-	// Stdout buffer should be empty since fetch doesn't write to stdout
-	if stdoutBuf.Len() > 0 {
-		t.Errorf("Expected stdout buffer to be empty, got: %s", stdoutBuf.String())
-	}
-}
-
 func TestFetchNonExistentURL(t *testing.T) {
 	tempDir, err := os.MkdirTemp("", "fetch_error_test")
 	if err != nil {
