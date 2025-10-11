@@ -1,7 +1,6 @@
 package main
 
 import (
-	"app/funcopt"
 	"fmt"
 	"io"
 	"net/http"
@@ -11,6 +10,7 @@ import (
 
 	//revive:disable-next-line:dot-imports
 	. "github.com/knaka/go-utils"
+	"github.com/knaka/go-utils/funcopt"
 )
 
 // fetchParams holds configuration parameters for fetch operations.
