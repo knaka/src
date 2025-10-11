@@ -7,6 +7,7 @@ import (
 
 	//revive:disable-next-line:dot-imports
 	. "github.com/knaka/go-utils"
+	_ "github.com/knaka/go-utils/initwait"
 )
 
 const appID = "fetch"
