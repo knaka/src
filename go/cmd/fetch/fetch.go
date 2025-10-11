@@ -2,6 +2,7 @@
 package main
 
 import (
+	"app/funcopt"
 	"fmt"
 	"io"
 	"log"
@@ -16,65 +17,46 @@ import (
 
 const appID = "fetch"
 
-// FuncOption represents a configuration option for functional option.
-type FuncOption[T any] func(params *T) error
-
-// applyOptions applies a slice of functional options to the given parameters.
-func applyOptions[T any](params *T, opts []FuncOption[T]) (err error) {
-	for _, opt := range opts {
-		err = opt(params)
-		if err != nil {
-			return
-		}
-	}
-	return
-}
-
 // fetchParams holds configuration parameters for fetch operations.
 type fetchParams struct {
-	stderr           io.Writer
-	workingDirectory string
-	verbose          bool
+	stderr  io.Writer
+	dir     string
+	verbose bool
 }
 
 // WithDir sets the working directory for the fetch operation.
-func WithDir(dir string) FuncOption[fetchParams] {
-	return func(params *fetchParams) (err error) {
-		params.workingDirectory = dir
-		return
+var WithDir = funcopt.NewFailable(func(params *fetchParams, dir string) error {
+	if _, err := os.Stat(dir); os.IsNotExist(err) {
+		return fmt.Errorf("directory does not exist: %s", dir)
 	}
-}
+	params.dir = dir
+	return nil
+})
 
 // WithStderr sets the stderr stream for the fetch operation.
-func WithStderr(stderr io.Writer) FuncOption[fetchParams] {
-	return func(params *fetchParams) (err error) {
-		params.stderr = stderr
-		return
-	}
-}
+var WithStderr = funcopt.New(func(params *fetchParams, stderr io.Writer) {
+	params.stderr = stderr
+})
 
 // WithVerbose sets the verbosity.
-func WithVerbose(f bool) FuncOption[fetchParams] {
-	return func(params *fetchParams) (err error) {
-		params.verbose = f
-		return
-	}
-}
+var WithVerbose = funcopt.New(func(params *fetchParams, verbose bool) {
+	params.verbose = verbose
+})
 
 // Fetch downloads a file from the given URL to the local filesystem.
-func Fetch(url string, opts ...FuncOption[fetchParams]) (err error) {
+func Fetch(url string, opts ...funcopt.Option[fetchParams]) (err error) {
 	defer Catch(&err)
 	params := fetchParams{
-		workingDirectory: ".",
-		verbose:          false,
-		stderr:           os.Stderr,
+		dir:     ".",
+		verbose: false,
+		stderr:  os.Stderr,
 	}
-	V0(applyOptions(&params, opts))
+	V0(funcopt.Apply(&params, opts))
 	if params.verbose {
 		fmt.Fprintf(params.stderr, "Fetching %s ...\n", url)
 	}
 	base := path.Base(url)
-	outPath := filepath.Join(params.workingDirectory, base)
+	outPath := filepath.Join(params.dir, base)
 	// `Get` follows 30* redirection.
 	resp := V(http.Get(url))
 	defer resp.Body.Close()
