@@ -14,7 +14,7 @@ const appID = "fetch"
 func fetchMain(args []string) (err error) {
 	defer Catch(&err)
 	for _, arg := range args {
-		V0(Fetch(arg, WithVerbose(true)))
+		Must(Fetch(arg, WithVerbose(true)))
 	}
 	return
 }

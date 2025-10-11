@@ -47,7 +47,7 @@ func Fetch(url string, opts ...funcopt.Option[fetchParams]) (err error) {
 		verbose: false,
 		stderr:  os.Stderr,
 	}
-	V0(funcopt.Apply(&params, opts))
+	Must(funcopt.Apply(&params, opts))
 	if params.verbose {
 		fmt.Fprintf(params.stderr, "Fetching %s ...\n", url)
 	}
@@ -61,7 +61,7 @@ func Fetch(url string, opts ...funcopt.Option[fetchParams]) (err error) {
 	}
 	outFile := V(os.Create(outPath))
 	defer outFile.Close()
-	V0(io.Copy(outFile, resp.Body))
+	Must(io.Copy(outFile, resp.Body))
 	if params.verbose {
 		fmt.Fprintf(params.stderr, "Saved to %s\n", outPath)
 	}
