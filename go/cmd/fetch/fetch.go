@@ -9,6 +9,9 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+
+	//revive:disable-next-line:dot-imports
+	. "github.com/knaka/go-utils"
 )
 
 const appID = "fetch"
@@ -60,47 +63,37 @@ func WithVerbose(f bool) FuncOption[fetchParams] {
 
 // Fetch downloads a file from the given URL to the local filesystem.
 func Fetch(url string, opts ...FuncOption[fetchParams]) (err error) {
+	defer Catch(&err)
 	params := fetchParams{
 		workingDirectory: ".",
 		verbose:          false,
 		stderr:           os.Stderr,
 	}
-	err = applyOptions(&params, opts)
-	if err != nil {
-		return
-	}
+	V0(applyOptions(&params, opts))
 	if params.verbose {
 		fmt.Fprintf(params.stderr, "Fetching %s ...\n", url)
 	}
 	base := path.Base(url)
 	outPath := filepath.Join(params.workingDirectory, base)
-	// Get follows 30* redirect.
-	resp, err := http.Get(url)
-	if err != nil {
-		return err
-	}
+	// `Get` follows 30* redirection.
+	resp := V(http.Get(url))
 	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("HTTP %d: %s", resp.StatusCode, resp.Status)
+		Throw(fmt.Errorf("HTTP %d: %s", resp.StatusCode, resp.Status))
 	}
-	outFile, err := os.Create(outPath)
-	if err != nil {
-		return err
-	}
+	outFile := V(os.Create(outPath))
 	defer outFile.Close()
-	_, err = io.Copy(outFile, resp.Body)
-	if err != nil {
-		return err
-	}
+	V0(io.Copy(outFile, resp.Body))
 	if params.verbose {
 		fmt.Fprintf(params.stderr, "Saved to %s\n", outPath)
 	}
-	return nil
+	return
 }
 
 func fetchMain(args []string) (err error) {
+	defer Catch(&err)
 	for _, arg := range args {
-		Fetch(arg, WithVerbose(true))
+		V0(Fetch(arg, WithVerbose(true)))
 	}
 	return
 }
