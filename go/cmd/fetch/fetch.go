@@ -1,11 +1,9 @@
-//revive:disable-next-line
 package main
 
 import (
 	"app/funcopt"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"os"
 	"path"
@@ -14,8 +12,6 @@ import (
 	//revive:disable-next-line:dot-imports
 	. "github.com/knaka/go-utils"
 )
-
-const appID = "fetch"
 
 // fetchParams holds configuration parameters for fetch operations.
 type fetchParams struct {
@@ -70,19 +66,4 @@ func Fetch(url string, opts ...funcopt.Option[fetchParams]) (err error) {
 		fmt.Fprintf(params.stderr, "Saved to %s\n", outPath)
 	}
 	return
-}
-
-func fetchMain(args []string) (err error) {
-	defer Catch(&err)
-	for _, arg := range args {
-		V0(Fetch(arg, WithVerbose(true)))
-	}
-	return
-}
-
-func main() {
-	err := fetchMain(os.Args[1:])
-	if err != nil {
-		log.Fatalf("%s: %v\n", appID, err)
-	}
 }
