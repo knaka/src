@@ -3,8 +3,8 @@ github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/friendsofgo/errors v0.9.2 h1:X6NYxef4efCBdwI7BgS820zFaN7Cphrmb+Pljdzjtgk=
 github.com/friendsofgo/errors v0.9.2/go.mod h1:yCvFW5AkDIL9qn7suHVLiI/gH228n7PC4Pn44IGoTOI=
-github.com/knaka/go-utils v0.1.9 h1:tOuqcVBoosflxonsnqOToX/bu1SdJsmzcjylGwiCwgs=
-github.com/knaka/go-utils v0.1.9/go.mod h1:0cuHp2JPJyDCivZsgYX/f/g9hFQoYd75934I7LOwspI=
+github.com/knaka/go-utils v0.1.10 h1:HaMUiFsOP+vXviZO8Si6nz8Fw5bb2o+2Fl3//ZdyQ8s=
+github.com/knaka/go-utils v0.1.10/go.mod h1:0cuHp2JPJyDCivZsgYX/f/g9hFQoYd75934I7LOwspI=
 github.com/likexian/gokit v0.25.2/go.mod h1:NCv1RDZK5kR0T2SfAl/vjIO6rsjszt2C/25TKxJalhs=
 github.com/pkg/errors v0.9.1 h1:FEBLx1zS214owpjy7qsBeixbURkuhQAwrK5UwLGTwt4=
 github.com/pkg/errors v0.9.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=

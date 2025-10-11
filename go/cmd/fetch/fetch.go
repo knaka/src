@@ -54,12 +54,12 @@ func Fetch(url string, opts ...funcopt.Option[fetchParams]) (err error) {
 	base := path.Base(url)
 	outPath := filepath.Join(params.dir, base)
 	// `Get` follows 30* redirection.
-	resp := V(http.Get(url))
+	resp := Value(http.Get(url))
 	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusOK {
 		Throw(fmt.Errorf("HTTP %d: %s", resp.StatusCode, resp.Status))
 	}
-	outFile := V(os.Create(outPath))
+	outFile := Value(os.Create(outPath))
 	defer outFile.Close()
 	Must(io.Copy(outFile, resp.Body))
 	if params.verbose {
