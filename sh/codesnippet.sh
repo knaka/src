@@ -4,12 +4,14 @@
 "${sourced_39e61b5-false}" && return 0; sourced_39e61b5=true
 
 codesnippet() {
+  # shellcheck disable=SC2016
   sed -E \
     -e 's/"/\\"/g' \
     -e 's/(\\[0-9a-z])/\\\1/g' \
     -e 's/\t/\\t/g' \
     -e 's/\$/\\\\$/g' \
     -e 's/^(.*)$/"\1",/' \
+    -e 's/foobar/$1/g' \
     -e 's/^/\t\t\t/'
 }
 
