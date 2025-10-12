@@ -1,4 +1,4 @@
-// Main for `fetch` command.
+// Main template.
 package main
 
 import (
@@ -7,24 +7,18 @@ import (
 	"log"
 	"os"
 
-	"github.com/knaka/go-utils/net"
 	"github.com/spf13/pflag"
-
-	//revive:disable-next-line:dot-imports
-	. "github.com/knaka/go-utils"
-	_ "github.com/knaka/go-utils/initwait"
 )
 
-const appID = "fetch"
+var appID = "foo"
 
 func showUsage(cmdln *pflag.FlagSet, stderr io.Writer) {
-	fmt.Fprintf(os.Stderr, "Usage: %s [options] url\n", appID)
+	fmt.Fprintf(os.Stderr, "Usage: %s [options] [file...]\n", appID)
 	cmdln.SetOutput(stderr)
 	cmdln.PrintDefaults()
 }
 
-func fetchEntry(args []string) (err error) {
-	defer Catch(&err)
+func fooEntry(args []string) (err error) {
 	flags := pflag.NewFlagSet(appID, pflag.ContinueOnError)
 	var shouldPrintHelp bool
 	flags.BoolVarP(&shouldPrintHelp, "help", "h", false, "Show help")
@@ -37,14 +31,11 @@ func fetchEntry(args []string) (err error) {
 		showUsage(flags, os.Stderr)
 		return
 	}
-	for _, arg := range args {
-		Must(net.Fetch(arg, net.WithVerbose(true)))
-	}
 	return
 }
 
 func main() {
-	err := fetchEntry(os.Args[1:])
+	err := fooEntry(os.Args[1:])
 	if err != nil {
 		log.Fatalf("%s: %v\n", appID, err)
 	}
