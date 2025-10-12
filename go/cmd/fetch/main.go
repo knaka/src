@@ -8,6 +8,7 @@ import (
 	//revive:disable-next-line:dot-imports
 	. "github.com/knaka/go-utils"
 	_ "github.com/knaka/go-utils/initwait"
+	"github.com/knaka/go-utils/net"
 )
 
 const appID = "fetch"
@@ -15,7 +16,7 @@ const appID = "fetch"
 func fetchMain(args []string) (err error) {
 	defer Catch(&err)
 	for _, arg := range args {
-		Must(Fetch(arg, WithVerbose(true)))
+		Must(net.Fetch(arg, net.WithVerbose(true)))
 	}
 	return
 }
