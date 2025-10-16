@@ -26,6 +26,13 @@ go_has_debuginfo() {
   go tool objdump -s main.main "$1" | tee "$file" >&2
   if test -s "$file"
   then
+    go tool objdump -s waitSTDIN "$1" >"$file"
+    if test -s "$file"
+    then
+      echo "The binary provides \"initwait\" feature." >&2
+    else
+      echo "The binary DOES NOT provide \"initwait\" feature. To enable it, you should include \"initwait\" code and add \"-tags debug\" flag to compile." >&2
+    fi
     return 0
   fi
   echo "The binary does not contain debug info. You should build the binary with \"go ... -gcflags='all=-N -l' ...\" flag and not run strip(1)." >&2
