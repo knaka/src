@@ -21,20 +21,25 @@ EOF
 go_run() {
   test "$#" -lt 1 && show_help_b83799b && return 1
   local a_out="$TEMP_DIR/a.out$exe_ext"
-  go_build -tags=debug -o "$a_out" "$@"
-  local count=1
-  for arg in "$@"
+  local arg
+  local separated=false
+  local first=true
+  for arg in "$@" --
   do
-    test "$arg" = -- && break
-    count=$((count + 1))
+    "$first" && set -- && first=false
+    if test "$arg" = --
+    then
+      "$separated" && break
+      separated=true
+      go_build -tags=debug -o "$a_out" "$@"
+      set --
+      continue
+    fi
+    set -- "$@" "$arg"
   done
-  if test "$count" -gt "$#"
-  then
-    count=$#
-  fi
-  shift "$count"
-  echo "$a_out" "$@" >&2
-  "$a_out" "$@"
+  set -- "$a_out" "$@"
+  echo Executing: "$@" >&2
+  "$@"
 }
 
 case "${0##*/}" in

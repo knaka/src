@@ -10,16 +10,9 @@ cd "$1"; shift 2
 go_build() {
   # If the directory from which a command is executed is in a symlink and it appears outside of the workspace the IDE is working in, the debugger treats breakpoints as not set.
   push_dir "$(realpath "$PWD")"
-  local arg
-  local found=false
-  for arg in "$@"
-  do
-    shift
-    test "$arg" = "--" && found=true
-    ! "$found" && set -- "$@" "$arg"
-  done
-  echo go build -gcflags='all=-N -l' "$@" 2>&1
-  go build -gcflags='all=-N -l' "$@"
+  set -- go build -gcflags='all=-N -l' "$@"
+  echo Executing: "$@" 2>&1
+  "$@"
   pop_dir
 }
 
