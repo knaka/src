@@ -9,6 +9,9 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
+// Root represents the main GUI widget that contains a text input, counter display,
+// and control buttons. It implements the guigui.Widget interface to provide
+// a complete interactive interface with increment/decrement functionality.
 type Root struct {
 	guigui.DefaultWidget
 
@@ -26,7 +29,12 @@ type Root struct {
 	initialized     bool
 }
 
-func (r *Root) AddChildren(context *guigui.Context, adder *guigui.ChildAdder) {
+var _ guigui.Widget = &Root{}
+
+// AddChildren adds all child widgets to the root widget including background,
+// text input, counter display, and control buttons. This method is called by
+// the guigui framework during widget initialization.
+func (r *Root) AddChildren(_ *guigui.Context, adder *guigui.ChildAdder) {
 	adder.AddChild(&r.background)
 	adder.AddChild(&r.textInput)
 	// context.SetFocused(&r.textInput, true)
@@ -41,6 +49,9 @@ func (r *Root) AddChildren(context *guigui.Context, adder *guigui.ChildAdder) {
 	adder.AddChild(&r.incButton)
 }
 
+// Update handles the widget state updates, event handling, and termination logic.
+// It configures widget properties, sets up event handlers for user input,
+// and returns ebiten.Termination when the application should exit.
 func (r *Root) Update(context *guigui.Context) error {
 	if r.shouldTerminate {
 		return ebiten.Termination
@@ -90,6 +101,9 @@ func (r *Root) Update(context *guigui.Context) error {
 	return nil
 }
 
+// Layout defines the positioning and sizing of child widgets within the root widget.
+// It implements a vertical layout with a text input at the top, counter display
+// in the middle, and a horizontal row of control buttons at the bottom.
 func (r *Root) Layout(context *guigui.Context, widget guigui.Widget) image.Rectangle {
 	switch widget {
 	case &r.background:

@@ -13,7 +13,7 @@ import (
 	"github.com/spf13/pflag"
 )
 
-var appID = ""
+var appID = "timer"
 
 const timerTimeoutSeconds = 10
 
@@ -41,10 +41,10 @@ func DefaultTimerConfig() TimerConfig {
 
 // NewTimer creates a new timer with the given configuration
 func NewTimer(ctx context.Context, config TimerConfig) <-chan string {
-	timeCh := make(chan string, config.BufferSize)
+	timeStrCh := make(chan string, config.BufferSize)
 
 	go func() {
-		defer close(timeCh)
+		defer close(timeStrCh)
 		ticker := time.NewTicker(config.Interval)
 		defer ticker.Stop()
 
@@ -55,7 +55,7 @@ func NewTimer(ctx context.Context, config TimerConfig) <-chan string {
 			case <-ticker.C:
 				timeStr := time.Now().Format(config.TimeFormat)
 				select {
-				case timeCh <- timeStr:
+				case timeStrCh <- timeStr:
 					// Successfully sent
 				case <-ctx.Done():
 					// Context cancelled while trying to send
@@ -65,7 +65,7 @@ func NewTimer(ctx context.Context, config TimerConfig) <-chan string {
 		}
 	}()
 
-	return timeCh
+	return timeStrCh
 }
 
 // timerEntry is the entrypoint.
@@ -126,7 +126,7 @@ loop:
 	case context.Canceled:
 		fmt.Fprintf(os.Stderr, "Timer stopped (Enter pressed).\n")
 	default:
-		err = fmt.Errorf("unknown cause %v", ctxErr)
+		return fmt.Errorf("unknown cause %v", ctxErr)
 	}
 	return
 }
