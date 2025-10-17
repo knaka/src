@@ -1,4 +1,4 @@
-// Main template.
+// Main package.
 package main
 
 import (
@@ -18,6 +18,7 @@ func showUsage(cmdln *pflag.FlagSet, stderr io.Writer) {
 	cmdln.PrintDefaults()
 }
 
+// foobarEntry is the entrypoint.
 func foobarEntry(args []string) (err error) {
 	flags := pflag.NewFlagSet(appID, pflag.ContinueOnError)
 	var shouldPrintHelp bool
