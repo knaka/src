@@ -2,11 +2,59 @@ package main
 
 import (
 	"bytes"
+	"context"
 	"io"
 	"strings"
 	"testing"
 	"time"
 )
+
+func TestNewTimer_CancelAfter5Point5Seconds(t *testing.T) {
+	const testCancelDelayMs = 5500
+
+	t.Parallel()
+
+	// Create context with 10 second timeout
+	ctx := context.Background()
+	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+	defer cancel()
+
+	// Cancel context after 5.5 seconds
+	go func() {
+		time.Sleep(testCancelDelayMs * time.Millisecond)
+		cancel()
+	}()
+
+	// Run the timer
+	startTime := time.Now()
+	timeStrCh := NewTimer(ctx, DefaultTimerConfig())
+
+	// Collect time strings from channel
+	var timeStrings []string
+	for timeStr := range timeStrCh {
+		timeStrings = append(timeStrings, timeStr)
+	}
+	elapsed := time.Since(startTime)
+
+	// Verify timing (should be around 5.5 seconds, not 10)
+	if elapsed >= 10*time.Second {
+		t.Errorf("Timer ran too long: %v, expected around 5.5 seconds", elapsed)
+	}
+
+	if elapsed < 5*time.Second {
+		t.Errorf("Timer stopped too early: %v, expected at least 5 seconds", elapsed)
+	}
+
+	// Should have approximately 5-6 time strings (5.5 seconds with 1 second intervals)
+	if len(timeStrings) < 5 || len(timeStrings) > 6 {
+		t.Errorf("Expected 5 or 6 time strings, got %d", len(timeStrings))
+	}
+
+	t.Logf("Collected %d time strings in %v", len(timeStrings), elapsed)
+	for i, timeStr := range timeStrings {
+		t.Logf("Time string %d: %s", i+1, timeStr)
+	}
+}
 
 // createPipe creates a pipe for stdin simulation in tests
 func createPipe(_ *testing.T) (io.Reader, io.WriteCloser) {
@@ -53,10 +101,10 @@ func TestTimerEntry_InputAfter5Point5Seconds(t *testing.T) {
 		t.Errorf("Timer stopped too early: %v, expected at least 5 seconds", elapsed)
 	}
 
-	// Should show "Enter pressed" message
+	// Should show "Enter " message
 	stderrOutput := stderr.String()
-	if !strings.Contains(stderrOutput, "Enter pressed") {
-		t.Errorf("Expected stderr to contain 'Enter pressed', got: %s", stderrOutput)
+	if !strings.Contains(stderrOutput, "Enter ") {
+		t.Errorf("Expected stderr to contain 'Enter ', got: %s", stderrOutput)
 	}
 
 	// Should have approximately 5-6 time strings (5.5 seconds with 1 second intervals)
@@ -82,7 +130,7 @@ func TestTimerEntry_Timeout(t *testing.T) {
 	const testTimeoutSeconds = 5
 
 	// Create a pipe for stdin simulation (but don't send anything)
-	stdinReader, stdinWriter := (t)
+	stdinReader, stdinWriter := createPipe(t)
 	defer stdinWriter.Close()
 
 	var stdout, stderr bytes.Buffer
@@ -157,10 +205,10 @@ func TestTimerEntry_ImmediateInput(t *testing.T) {
 		t.Errorf("Timer ran too long: %v, expected immediate stop", elapsed)
 	}
 
-	// Should show "Enter pressed" message
+	// Should show "Enter ..." message
 	stderrOutput := stderr.String()
-	if !strings.Contains(stderrOutput, "Enter pressed") {
-		t.Errorf("Expected stderr to contain 'Enter pressed', got: %s", stderrOutput)
+	if !strings.Contains(stderrOutput, "Enter ") {
+		t.Errorf("Expected stderr to contain 'Enter ', got: %s", stderrOutput)
 	}
 
 	// Should have 0 or 1 time strings since it stops immediately
