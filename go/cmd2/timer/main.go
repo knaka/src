@@ -8,6 +8,8 @@ import (
 	"io"
 	"log"
 	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/spf13/pflag"
@@ -94,6 +96,14 @@ func timerEntry(args []string, params *entryParams) (err error) {
 	ctx, cancel := context.WithTimeout(ctx, time.Duration(timeoutSeconds)*time.Second)
 	defer cancel()
 
+	// Set up signal handling for graceful shutdown
+	sigCh := make(chan os.Signal, 1)
+	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
+	go func() {
+		<-sigCh
+		cancel()
+	}()
+
 	// Create timer with default configuration
 	timeStrCh := NewTimer(ctx, DefaultTimerConfig())
 
@@ -107,7 +117,7 @@ func timerEntry(args []string, params *entryParams) (err error) {
 		}
 	})()
 
-	fmt.Fprintf(params.stderr, "Timer started. Press Enter to stop.\n")
+	fmt.Fprintf(params.stderr, "Timer started. Press Enter or Ctrl+C to stop.\n")
 
 	for timeStr := range timeStrCh {
 		fmt.Fprintln(params.stdout, timeStr)
@@ -119,7 +129,7 @@ func timerEntry(args []string, params *entryParams) (err error) {
 	case context.DeadlineExceeded:
 		fmt.Fprintf(params.stderr, "Timer stopped (timeout after %d seconds).\n", timeoutSeconds)
 	case context.Canceled:
-		fmt.Fprintf(params.stderr, "Timer stopped (Enter pressed).\n")
+		fmt.Fprintf(params.stderr, "Timer stopped (interrupted).\n")
 	default:
 		if ctxErr != nil {
 			return fmt.Errorf("unknown cause %v", ctxErr)
