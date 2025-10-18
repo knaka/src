@@ -32,6 +32,7 @@ require (
 require (
 	github.com/friendsofgo/errors v0.9.2 // indirect
 	github.com/guigui-gui/guigui v0.0.0-20251016161606-e998ebf57e0f
+	github.com/mattn/go-isatty v0.0.20
 	github.com/pkg/errors v0.9.1 // indirect
 	golang.org/x/sys v0.36.0 // indirect
 	golang.org/x/xerrors v0.0.0-20190717185122-a985d3407aa7 // indirect
