@@ -15,12 +15,17 @@ import (
 
 var appID = "timer"
 
-const timerTimeoutSeconds = 10
+type entryParams struct {
+	exeName string
+	stdin   io.Reader
+	stdout  io.Writer
+	stderr  io.Writer
+}
 
-func showUsage(cmdln *pflag.FlagSet, stderr io.Writer) {
-	fmt.Fprintf(os.Stderr, "Usage: %s [options] [file...]\n", appID)
-	cmdln.SetOutput(stderr)
-	cmdln.PrintDefaults()
+func showUsage(flags *pflag.FlagSet, stderr io.Writer) {
+	fmt.Fprintf(stderr, "Usage: %s [options] [arg...]\n", appID)
+	flags.SetOutput(stderr)
+	flags.PrintDefaults()
 }
 
 // TimerConfig holds configuration for the timer
@@ -69,31 +74,32 @@ func NewTimer(ctx context.Context, config TimerConfig) <-chan string {
 }
 
 // timerEntry is the entrypoint.
-func timerEntry(args []string) (err error) {
+func timerEntry(args []string, params *entryParams) (err error) {
 	flags := pflag.NewFlagSet(appID, pflag.ContinueOnError)
 	var shouldPrintHelp bool
 	flags.BoolVarP(&shouldPrintHelp, "help", "h", false, "Show help")
+	var timeoutSeconds int
+	flags.IntVarP(&timeoutSeconds, "timeout", "t", 30, "Timeout in seconds")
 	err = flags.Parse(args)
 	if err != nil {
 		return
 	}
 	args = flags.Args()
 	if shouldPrintHelp {
-		showUsage(flags, os.Stderr)
+		showUsage(flags, params.stderr)
 		return
 	}
 
 	ctx := context.Background()
-	ctx, cancel := context.WithTimeout(ctx, timerTimeoutSeconds*time.Second)
+	ctx, cancel := context.WithTimeout(ctx, time.Duration(timeoutSeconds)*time.Second)
 	defer cancel()
 
 	// Create timer with default configuration
-	timerConfig := DefaultTimerConfig()
-	timeStrCh := NewTimer(ctx, timerConfig)
+	timeStrCh := NewTimer(ctx, DefaultTimerConfig())
 
 	// Start input monitoring
 	go (func() {
-		scanner := bufio.NewScanner(os.Stdin)
+		scanner := bufio.NewScanner(params.stdin)
 		for scanner.Scan() {
 			// Cancel when Enter is pressed
 			cancel()
@@ -101,38 +107,29 @@ func timerEntry(args []string) (err error) {
 		}
 	})()
 
-	fmt.Fprintf(os.Stderr, "Timer started. Press Enter to stop.\n")
+	fmt.Fprintf(params.stderr, "Timer started. Press Enter to stop.\n")
 
-loop:
-	for {
-		select {
-		case <-ctx.Done():
-			break loop
-		case timeStr, ok := <-timeStrCh:
-			if !ok {
-				// Channel closed
-				break loop
-			}
-			// Print time string to stdout
-			fmt.Println(timeStr)
-		}
+	for timeStr := range timeStrCh {
+		fmt.Fprintln(params.stdout, timeStr)
 	}
 
 	// Determine the cause of cancellation
 	ctxErr := ctx.Err()
 	switch ctxErr {
 	case context.DeadlineExceeded:
-		fmt.Fprintf(os.Stderr, "Timer stopped (timeout after %d seconds).\n", timerTimeoutSeconds)
+		fmt.Fprintf(params.stderr, "Timer stopped (timeout after %d seconds).\n", timeoutSeconds)
 	case context.Canceled:
-		fmt.Fprintf(os.Stderr, "Timer stopped (Enter pressed).\n")
+		fmt.Fprintf(params.stderr, "Timer stopped (Enter pressed).\n")
 	default:
-		return fmt.Errorf("unknown cause %v", ctxErr)
+		if ctxErr != nil {
+			return fmt.Errorf("unknown cause %v", ctxErr)
+		}
 	}
 	return
 }
 
 func main() {
-	err := timerEntry(os.Args[1:])
+	err := timerEntry(os.Args[1:], &entryParams{exeName: os.Args[0], stdin: os.Stdin, stdout: os.Stdout, stderr: os.Stderr})
 	if err != nil {
 		log.Fatalf("%s: %v\n", appID, err)
 	}
