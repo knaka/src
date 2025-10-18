@@ -10,9 +10,9 @@ import (
 )
 
 func TestNewTimer_CancelAfter5Point5Seconds(t *testing.T) {
-	const testCancelDelayMs = 5500
-
 	t.Parallel()
+
+	const testCancelDelayMs = 5500
 
 	// Create context with 10 second timeout
 	ctx := context.Background()
