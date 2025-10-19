@@ -23,8 +23,7 @@ var WithVerbose = funcopt.New(func(params *foobarParams, verbose bool) {
 // foobar does something.
 func foobar(opts ...funcopt.Option[foobarParams]) (err error) {
 	params := foobarParams{}
-	err = funcopt.Apply(&params, opts)
-	if err != nil {
+	if err = funcopt.Apply(&params, opts); err != nil {
 		return
 	}
 	log.Println("Done")

@@ -41,7 +41,15 @@ func funcoptEntry(args []string, params *entryParams) (err error) {
 		showUsage(flags, params.stderr)
 		return
 	}
-	Must(foobar())
+
+	var opts1 Options
+	opts1 = append(opts1, WithVerbose(true))
+	Must(foobar(opts1...))
+
+	var opts2 barbazOptions
+	opts2 = append(opts2, WithName("World"))
+	Must(barbaz(opts2...))
+
 	return
 }
 
