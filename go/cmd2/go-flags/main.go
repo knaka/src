@@ -27,13 +27,6 @@ func showUsage(flags *pflag.FlagSet, stderr io.Writer) {
 
 // foobarEntry is the entry point.
 func foobarEntry(args []string, params *entryParams) (err error) {
-	// isTerminal := (func() bool {
-	// 	if file, ok := params.stdout.(*os.File); ok {
-	// 		// github.com/mattn/go-isatty
-	// 		return isatty.IsTerminal(file.Fd())
-	// 	}
-	// 	return false
-	// })()
 	flags := pflag.NewFlagSet(appID, pflag.ContinueOnError)
 	var shouldPrintHelp bool
 	flags.BoolVarP(&shouldPrintHelp, "help", "h", false, "Show help")
