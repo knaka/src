@@ -7,10 +7,7 @@ import (
 	"log"
 	"os"
 
-	mainctx "app/cmd2/context-value/ctx"
-
-	//revive:disable-next-line:dot-imports
-	. "github.com/knaka/go-utils"
+	"app/cmd2/context-value/lib"
 )
 
 var appID = "contextValue"
@@ -22,14 +19,22 @@ type entryParams struct {
 	stderr  io.Writer
 }
 
+type serviceLocatorT struct{}
+
+func (*serviceLocatorT) GetFooService() int {
+	return 123
+}
+
+func (*serviceLocatorT) GetBarService() string {
+	return "BAR"
+}
+
 // contextValueEntry is the entry point.
 func contextValueEntry(_ []string, _ *entryParams) (err error) {
-	ctx := mainctx.WithValue(context.Background(), &mainctx.Params{
-		Foo: 123,
-		Bar: "abc",
-	})
-	val := Value(mainctx.Value(ctx))
-	log.Println("a783815:", val.Foo, val.Bar)
+	sl := serviceLocatorT{}
+	ctx := context.Background()
+	ctx = lib.ContextWithServiceLocator(ctx, &sl)
+	lib.DoSomething(ctx)
 	return
 }
 
