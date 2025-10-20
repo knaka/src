@@ -33,7 +33,7 @@ const (
 const stdinFilename = "-"
 
 // dumpFile dumps a file in hex format. If the filename is "-", it reads from stdin. If the writer is a terminal, it uses colors.
-func dumpFile(filePath string, params *entryParams) (err error) {
+func dumpFile(filePath string, params *dmParams) (err error) {
 	reader := params.stdin
 	if filePath != stdinFilename {
 		file, errTemp := os.Open(filePath)
@@ -57,7 +57,7 @@ func dumpFile(filePath string, params *entryParams) (err error) {
 				if printable(buf[i]) {
 					readable += string(buf[i])
 				} else {
-					if params.isTerminal {
+					if params.isTerm {
 						readable += escSeqRed + chNotPrintable + escSeqEnd
 					} else {
 						readable += chNotPrintable
@@ -79,19 +79,20 @@ func dumpFile(filePath string, params *entryParams) (err error) {
 
 var appID = "dm"
 
-type entryParams struct {
-	exeName     string
-	stdin       io.Reader
-	stdout      io.Writer
-	stderr      io.Writer
-	stdinIsTerm bool
-	isTerminal  bool
+type dmParams struct {
+	exeName string
+	stdin   io.Reader
+	stdout  io.Writer
+	stderr  io.Writer
+	isTerm  bool
+	args    []string
 
 	verbose bool
 }
 
 // dmEntry is the entry point.
-func dmEntry(files []string, params *entryParams) (err error) {
+func dmEntry(params *dmParams) (err error) {
+	files := params.args
 	if len(files) == 0 {
 		files = append(files, stdinFilename)
 	}
@@ -105,18 +106,17 @@ func dmEntry(files []string, params *entryParams) (err error) {
 }
 
 func main() {
-	params := entryParams{
+	params := dmParams{
 		exeName: appID,
 		stdin:   os.Stdin,
 		stdout:  os.Stdout,
 		stderr:  os.Stderr,
+		isTerm:  term.IsTerminal(int(os.Stdout.Fd())),
 	}
 	if !term.IsTerminal(int(os.Stdin.Fd())) {
 		params.stdin = bufio.NewReader(os.Stdin)
 	}
-	if term.IsTerminal(int(os.Stdout.Fd())) {
-		params.isTerminal = true
-	} else {
+	if !params.isTerm {
 		bufStdout := bufio.NewWriter(os.Stdout)
 		defer bufStdout.Flush()
 		params.stdout = bufStdout
@@ -128,11 +128,12 @@ func main() {
 	flags.BoolVarP(&params.verbose, "verbose", "v", false, "Verbosity")
 
 	flags.Parse(os.Args[1:])
+	params.args = flags.Args()
 	if shouldPrintHelp {
 		// showUsage(flags, os.Stderr)
 		return
 	}
-	err := dmEntry(flags.Args(), &params)
+	err := dmEntry(&params)
 	if err != nil {
 		log.Fatalf("%s: %v\n", appID, err)
 	}

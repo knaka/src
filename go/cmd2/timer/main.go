@@ -1,4 +1,4 @@
-// Timer.
+// timer
 package main
 
 import (
@@ -13,21 +13,20 @@ import (
 	"time"
 
 	"github.com/spf13/pflag"
+	"golang.org/x/term"
 )
 
 var appID = "timer"
 
 type entryParams struct {
-	exeName string
-	stdin   io.Reader
-	stdout  io.Writer
-	stderr  io.Writer
-}
+	exeName    string
+	stdin      io.Reader
+	stdout     io.Writer
+	stderr     io.Writer
+	isTerminal bool
 
-func showUsage(flags *pflag.FlagSet, stderr io.Writer) {
-	fmt.Fprintf(stderr, "Usage: %s [options] [arg...]\n", appID)
-	flags.SetOutput(stderr)
-	flags.PrintDefaults()
+	verbose bool
+	timeout int
 }
 
 // TimerConfig holds configuration for the timer
@@ -75,25 +74,10 @@ func NewTimer(ctx context.Context, config TimerConfig) <-chan string {
 	return timeStrCh
 }
 
-// timerEntry is the entrypoint.
-func timerEntry(args []string, params *entryParams) (err error) {
-	flags := pflag.NewFlagSet(appID, pflag.ContinueOnError)
-	var shouldPrintHelp bool
-	flags.BoolVarP(&shouldPrintHelp, "help", "h", false, "Show help")
-	var timeoutSeconds int
-	flags.IntVarP(&timeoutSeconds, "timeout", "t", 30, "Timeout in seconds")
-	err = flags.Parse(args)
-	if err != nil {
-		return
-	}
-	args = flags.Args()
-	if shouldPrintHelp {
-		showUsage(flags, params.stderr)
-		return
-	}
-
+// timerEntry is the entry point.
+func timerEntry(_ []string, params *entryParams) (err error) {
 	ctx := context.Background()
-	ctx, cancel := context.WithTimeout(ctx, time.Duration(timeoutSeconds)*time.Second)
+	ctx, cancel := context.WithTimeout(ctx, time.Duration(params.timeout)*time.Second)
 	defer cancel()
 
 	// Set up signal handling for graceful shutdown
@@ -127,7 +111,7 @@ func timerEntry(args []string, params *entryParams) (err error) {
 	ctxErr := ctx.Err()
 	switch ctxErr {
 	case context.DeadlineExceeded:
-		fmt.Fprintf(params.stderr, "Timer stopped (timeout after %d seconds).\n", timeoutSeconds)
+		fmt.Fprintf(params.stderr, "Timer stopped (timeout after %d seconds).\n", params.timeout)
 	case context.Canceled:
 		fmt.Fprintf(params.stderr, "Timer stopped (interrupted).\n")
 	default:
@@ -138,8 +122,45 @@ func timerEntry(args []string, params *entryParams) (err error) {
 	return
 }
 
+func showUsage(flags *pflag.FlagSet, stderr io.Writer) {
+	fmt.Fprintf(stderr, `Usage: %s [options] [arg...]
+
+Options:
+`, appID)
+	flags.SetOutput(stderr)
+	flags.PrintDefaults()
+}
+
 func main() {
-	err := timerEntry(os.Args[1:], &entryParams{exeName: os.Args[0], stdin: os.Stdin, stdout: os.Stdout, stderr: os.Stderr})
+	params := entryParams{
+		exeName: appID,
+		stdin:   os.Stdin,
+		stdout:  os.Stdout,
+		stderr:  os.Stderr,
+	}
+	if !term.IsTerminal(int(os.Stdin.Fd())) {
+		params.stdin = bufio.NewReader(os.Stdin)
+	}
+	if term.IsTerminal(int(os.Stdout.Fd())) {
+		params.isTerminal = true
+	} else {
+		bufStdout := bufio.NewWriter(os.Stdout)
+		defer bufStdout.Flush()
+		params.stdout = bufStdout
+	}
+	flags := pflag.NewFlagSet(appID, pflag.PanicOnError)
+	var shouldPrintHelp bool
+	flags.BoolVarP(&shouldPrintHelp, "help", "h", false, "Show help")
+
+	flags.BoolVarP(&params.verbose, "verbose", "v", false, "verbosity")
+	flags.IntVarP(&params.timeout, "timeout", "t", 30, "timeout in seconds")
+
+	flags.Parse(os.Args[1:])
+	if shouldPrintHelp {
+		showUsage(flags, os.Stderr)
+		return
+	}
+	err := timerEntry(flags.Args(), &params)
 	if err != nil {
 		log.Fatalf("%s: %v\n", appID, err)
 	}

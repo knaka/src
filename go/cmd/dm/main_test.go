@@ -16,7 +16,7 @@ func TestDumpFile(t *testing.T) {
 	Must(tempFile.Write(data))
 	Must(tempFile.Close())
 	var buf bytes.Buffer
-	err := dumpFile(tempFile.Name(), &entryParams{
+	err := dumpFile(tempFile.Name(), &dmParams{
 		stdout: &buf,
 	})
 	if err != nil {

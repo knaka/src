@@ -16,6 +16,7 @@ type Root struct {
 	guigui.DefaultWidget
 
 	textInput   basicwidget.TextInput
+	timeText    basicwidget.Text
 	counterText basicwidget.Text
 
 	background  basicwidget.Background
@@ -36,6 +37,7 @@ var _ guigui.Widget = &Root{}
 // the guigui framework during widget initialization.
 func (r *Root) AddChildren(_ *guigui.Context, adder *guigui.ChildAdder) {
 	adder.AddChild(&r.background)
+	adder.AddChild(&r.timeText)
 	adder.AddChild(&r.textInput)
 	// context.SetFocused(&r.textInput, true)
 	// r.textInput.SetValue(r.text)
@@ -82,6 +84,12 @@ func (r *Root) Update(context *guigui.Context) error {
 		r.text = text
 	})
 
+	r.timeText.SetBold()
+
+	// r.timeText.SetOnValueChanged(func(text string, _ bool) {
+
+	// }
+
 	r.resetButton.SetText("Reset")
 	r.resetButton.SetOnUp(func() {
 		r.counter = 0
@@ -116,6 +124,10 @@ func (r *Root) Layout(context *guigui.Context, widget guigui.Widget) image.Recta
 		Items: []guigui.LinearLayoutItem{
 			{
 				Widget: &r.textInput,
+				Size:   guigui.FixedSize(u),
+			},
+			{
+				Widget: &r.timeText,
 				Size:   guigui.FixedSize(u),
 			},
 			{

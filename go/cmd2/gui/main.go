@@ -7,6 +7,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"time"
 
 	"github.com/guigui-gui/guigui"
 	"github.com/hajimehoshi/ebiten/v2"
@@ -45,7 +46,8 @@ func Entry(args []string) (err error) {
 		showUsage(flags, os.Stderr)
 		return
 	}
-	opt := &guigui.RunOptions{
+
+	opt := guigui.RunOptions{
 		Title:         "Counter",
 		WindowMinSize: image.Pt(600, 300),
 		RunGameOptions: &ebiten.RunGameOptions{
@@ -53,10 +55,21 @@ func Entry(args []string) (err error) {
 			SingleThread:             true,
 		},
 	}
-	if err := guigui.Run(&root, opt); err != nil {
+	go (func() {
+		for true {
+			t := time.Now()
+			s := t.Format(time.RFC3339)
+			log.Println(s)
+			root.timeText.SetValue(s)
+			guigui.RequestRedraw(&root.timeText)
+			time.Sleep(1 * time.Second)
+		}
+	})()
+	if err := guigui.Run(&root, &opt); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
+
 	return
 }
 
