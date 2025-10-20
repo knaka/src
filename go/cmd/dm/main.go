@@ -1,19 +1,20 @@
-// dm CLI command to dump a file in hex format
+// CLI command to dump a file in hex format.
 package main
 
 import (
 	"bufio"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"strings"
 
+	_ "github.com/knaka/go-utils/initwait"
+	"github.com/spf13/pflag"
 	"golang.org/x/term"
 
 	//revive:disable:dot-imports
 	. "github.com/knaka/go-utils"
-	//revive:enable:dot-imports
-	_ "github.com/knaka/go-utils/initwait"
 )
 
 func printable(ch byte) bool {
@@ -22,7 +23,7 @@ func printable(ch byte) bool {
 
 const chNotPrintable = "."
 
-const bytesPerLine = 16
+const numPerLine = 16
 
 const (
 	escSeqRed = "\033[31m"
@@ -32,32 +33,31 @@ const (
 const stdinFilename = "-"
 
 // dumpFile dumps a file in hex format. If the filename is "-", it reads from stdin. If the writer is a terminal, it uses colors.
-func dumpFile(filePath string, writer io.Writer) {
-	colored := false
-	if file, ok := writer.(*os.File); ok {
-		colored = term.IsTerminal(int(file.Fd()))
-	}
-	rawReader := os.Stdin
+func dumpFile(filePath string, params *entryParams) (err error) {
+	reader := params.stdin
 	if filePath != stdinFilename {
-		rawReader = V(os.Open(filePath))
-		defer (func() { V0(rawReader.Close()) })()
+		file, errTmp := os.Open(filePath)
+		if errTmp != nil {
+			return errTmp
+		}
+		defer file.Close()
+		reader = bufio.NewReader(file)
 	}
-	reader := bufio.NewReader(rawReader)
-	buf := make([]byte, bytesPerLine)
-	for addr := 0; ; addr += bytesPerLine {
-		pn := PR(reader.Read(buf)).NilIf(io.EOF)
+	buf := make([]byte, numPerLine)
+	for addr := 0; ; addr += numPerLine {
+		pn := PtrResult(reader.Read(buf)).NilIf(io.EOF)
 		if pn == nil {
 			break
 		}
 		var hexes []string
 		readable := ""
-		for i := 0; i < bytesPerLine; i++ {
+		for i := range numPerLine {
 			if i < *pn {
 				hexes = append(hexes, fmt.Sprintf("%02X", buf[i]))
 				if printable(buf[i]) {
 					readable += string(buf[i])
 				} else {
-					if colored {
+					if params.isTerminal {
 						readable += escSeqRed + chNotPrintable + escSeqEnd
 					} else {
 						readable += chNotPrintable
@@ -68,16 +68,71 @@ func dumpFile(filePath string, writer io.Writer) {
 				readable += " "
 			}
 		}
-		V0(fmt.Fprintf(writer, "%08X | %s | %s\n",
-			addr, strings.Join(hexes, " "), readable))
+		Must(fmt.Fprintf(params.stdout, "%08X | %s | %s\n",
+			addr,
+			strings.Join(hexes, " "),
+			readable,
+		))
 	}
+	return
+}
+
+var appID = "dm"
+
+type entryParams struct {
+	exeName     string
+	stdin       io.Reader
+	stdout      io.Writer
+	stderr      io.Writer
+	stdinIsTerm bool
+	isTerminal  bool
+
+	verbose bool
+}
+
+// dmEntry is the entry point.
+func dmEntry(files []string, params *entryParams) (err error) {
+	if len(files) == 0 {
+		files = append(files, stdinFilename)
+	}
+	for _, file := range files {
+		err = dumpFile(file, params)
+		if err != nil {
+			return
+		}
+	}
+	return
 }
 
 func main() {
-	if len(os.Args) == 1 {
-		os.Args = append(os.Args, stdinFilename)
+	params := entryParams{
+		exeName:    appID,
+		stdin:      os.Stdin,
+		stdout:     os.Stdout,
+		stderr:     os.Stderr,
+		isTerminal: term.IsTerminal(int(os.Stdout.Fd())),
 	}
-	for _, arg := range os.Args[1:] {
-		dumpFile(arg, os.Stdout)
+	if !term.IsTerminal(int(os.Stdin.Fd())) {
+		params.stdin = bufio.NewReader(os.Stdin)
+	}
+	if !params.isTerminal {
+		bufStdout := bufio.NewWriter(os.Stdout)
+		defer bufStdout.Flush()
+		params.stdout = bufStdout
+	}
+	flags := pflag.NewFlagSet(appID, pflag.PanicOnError)
+	var shouldPrintHelp bool
+	flags.BoolVarP(&shouldPrintHelp, "help", "h", false, "Show help")
+
+	flags.BoolVarP(&params.verbose, "verbose", "v", false, "Verbosity")
+
+	flags.Parse(os.Args[1:])
+	if shouldPrintHelp {
+		// showUsage(flags, os.Stderr)
+		return
+	}
+	err := dmEntry(flags.Args(), &params)
+	if err != nil {
+		log.Fatalf("%s: %v\n", appID, err)
 	}
 }
