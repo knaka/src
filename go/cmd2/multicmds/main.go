@@ -22,6 +22,7 @@ type entryParams struct {
 	isTerminal bool
 
 	verbose bool
+	bar     bool
 }
 
 type subcmd struct {
@@ -50,7 +51,8 @@ func main() {
 		defer bufStdout.Flush()
 		params.stdout = bufStdout
 	}
-	var command = &cobra.Command{
+
+	command := &cobra.Command{
 		Use:   appID,
 		Short: "Multi-commands demo",
 		Long:  `Multi-commands demo`,
@@ -59,13 +61,16 @@ func main() {
 		},
 	}
 	command.PersistentFlags().BoolVarP(&params.verbose, "verbose", "v", false, "verbose output")
-	command.SetArgs(os.Args[1:])
+	flags := command.Flags()
+	flags.BoolVarP(&params.bar, "bar", "b", false, "bar")
+
 	for _, subcmd := range subcmds {
 		command.AddCommand(subcmd.command)
 		if subcmd.params != nil {
 			*subcmd.params = &params
 		}
 	}
+	command.SetArgs(os.Args[1:])
 	err := command.Execute()
 	if err != nil {
 		log.Fatalf("%s: %v\n", appID, err)

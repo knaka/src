@@ -35,7 +35,10 @@ func foobarEntry(args []string, params *entryParams) (err error) {
 }
 
 func showUsage(flags *pflag.FlagSet, stderr io.Writer) {
-	fmt.Fprintf(stderr, "Usage: %s [options] [arg...]\n", appID)
+	fmt.Fprintf(stderr, `Usage: %s [options] [arg...]
+
+Options:
+`, appID)
 	flags.SetOutput(stderr)
 	flags.PrintDefaults()
 }
@@ -56,7 +59,9 @@ func main() {
 	flags := pflag.NewFlagSet(appID, pflag.PanicOnError)
 	var shouldPrintHelp bool
 	flags.BoolVarP(&shouldPrintHelp, "help", "h", false, "Show help")
+
 	flags.BoolVarP(&params.verbose, "verbose", "v", false, "Verbosity")
+
 	flags.Parse(os.Args[1:])
 	if shouldPrintHelp {
 		showUsage(flags, os.Stderr)

@@ -23,16 +23,18 @@ func fooEntry(args []string, params *fooEntryParams) (err error) {
 
 func init() {
 	var params fooEntryParams
-	var command = cobra.Command{
+
+	command := cobra.Command{
 		Use:   "foo",
 		Short: "Foo",
-		Long:  `Foo`,
+		Long:  `Foo Foo`,
 		RunE: func(_ *cobra.Command, args []string) (err error) {
 			return fooEntry(args, &params)
 		},
 	}
 	flags := command.Flags()
 	flags.BoolVarP(&params.fuga, "fuga", "f", false, "Fuga")
+
 	subcmds = append(subcmds, &subcmd{
 		command: &command,
 		params:  &params.entryParams,
