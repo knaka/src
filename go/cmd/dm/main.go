@@ -36,9 +36,9 @@ const stdinFilename = "-"
 func dumpFile(filePath string, params *entryParams) (err error) {
 	reader := params.stdin
 	if filePath != stdinFilename {
-		file, errTmp := os.Open(filePath)
-		if errTmp != nil {
-			return errTmp
+		file, errTemp := os.Open(filePath)
+		if errTemp != nil {
+			return errTemp
 		}
 		defer file.Close()
 		reader = bufio.NewReader(file)
