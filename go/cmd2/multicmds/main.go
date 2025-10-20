@@ -10,7 +10,6 @@ import (
 
 	"github.com/mattn/go-isatty"
 	"github.com/spf13/cobra"
-	"github.com/spf13/pflag"
 )
 
 var appID = "multicmds"
@@ -23,12 +22,6 @@ type entryParams struct {
 	isTerminal bool
 
 	verbose bool
-}
-
-func showUsage(flags *pflag.FlagSet, stderr io.Writer) {
-	fmt.Fprintf(stderr, "Usage: %s [options] [arg...]\n", appID)
-	flags.SetOutput(stderr)
-	flags.PrintDefaults()
 }
 
 type subcmd struct {
@@ -57,7 +50,7 @@ func main() {
 		defer bufStdout.Flush()
 		params.stdout = bufStdout
 	}
-	var rootCmd = &cobra.Command{
+	var command = &cobra.Command{
 		Use:   appID,
 		Short: "Multi-commands demo",
 		Long:  `Multi-commands demo`,
@@ -65,15 +58,15 @@ func main() {
 			return multicmdsEntry(args, &params)
 		},
 	}
-	rootCmd.PersistentFlags().BoolVarP(&params.verbose, "verbose", "v", false, "verbose output")
-	rootCmd.SetArgs(os.Args[1:])
+	command.PersistentFlags().BoolVarP(&params.verbose, "verbose", "v", false, "verbose output")
+	command.SetArgs(os.Args[1:])
 	for _, subcmd := range subcmds {
-		rootCmd.AddCommand(subcmd.command)
+		command.AddCommand(subcmd.command)
 		if subcmd.params != nil {
 			*subcmd.params = &params
 		}
 	}
-	err := rootCmd.Execute()
+	err := command.Execute()
 	if err != nil {
 		log.Fatalf("%s: %v\n", appID, err)
 	}
