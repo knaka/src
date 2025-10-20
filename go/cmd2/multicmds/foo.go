@@ -25,9 +25,9 @@ func init() {
 	var params fooEntryParams
 
 	command := cobra.Command{
-		Use:   "foo",
-		Short: "Foo",
-		Long:  `Foo Foo`,
+		Use:   "foo [flags]",
+		Short: "Foo Short",
+		Long:  `Foo Long`,
 		RunE: func(_ *cobra.Command, args []string) (err error) {
 			return fooEntry(args, &params)
 		},

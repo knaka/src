@@ -57,9 +57,9 @@ func main() {
 	}
 
 	command := &cobra.Command{
-		Use:   appID,
-		Short: "Multi-commands demo",
-		Long:  `Multi-commands demo`,
+		Use:   appID + " [flags]",
+		Short: "Multi-commands Short",
+		Long:  `Multi-commands Long`,
 		RunE: func(_ *cobra.Command, args []string) (err error) {
 			return multicmdsEntry(args, &params)
 		},
