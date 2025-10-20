@@ -15,14 +15,14 @@ func main() {
 
 	state, err := db.NewStorageFactory("/tmp/db.yaml")
 	if err != nil {
-		logger.Fatalf(err.Error())
+		logger.Fatalf("%s", err.Error())
 	}
 	logger.Infof("state: %v", state)
 	//V0(state.AddDoc())
 	V0(state.Read())
 	keys, err := state.FindKeys("key-1")
 	if err != nil {
-		logger.Fatalf(err.Error())
+		logger.Fatalf("%s", err.Error())
 	}
 	logger.Info(keys)
 	V0(state.Upsert(
