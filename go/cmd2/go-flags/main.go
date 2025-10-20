@@ -2,21 +2,24 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"io"
 	"log"
 	"os"
 
+	"github.com/mattn/go-isatty"
 	"github.com/spf13/pflag"
 )
 
 var appID = "foobar"
 
 type entryParams struct {
-	exeName string
-	stdin   io.Reader
-	stdout  io.Writer
-	stderr  io.Writer
+	exeName    string
+	stdin      io.Reader
+	stdout     io.Writer
+	stderr     io.Writer
+	isTerminal bool
 }
 
 func showUsage(flags *pflag.FlagSet, stderr io.Writer) {
@@ -43,7 +46,14 @@ func foobarEntry(args []string, params *entryParams) (err error) {
 }
 
 func main() {
-	err := foobarEntry(os.Args[1:], &entryParams{exeName: os.Args[0], stdin: os.Stdin, stdout: os.Stdout, stderr: os.Stderr})
+	var stdout io.Writer = os.Stdout
+	isTerminal := isatty.IsTerminal(os.Stdout.Fd())
+	if !isTerminal {
+		bufStdout := bufio.NewWriter(os.Stdout)
+		defer bufStdout.Flush()
+		stdout = bufStdout
+	}
+	err := foobarEntry(os.Args[1:], &entryParams{exeName: os.Args[0], stdin: os.Stdin, stdout: stdout, stderr: os.Stderr, isTerminal: isTerminal})
 	if err != nil {
 		log.Fatalf("%s: %v\n", appID, err)
 	}
