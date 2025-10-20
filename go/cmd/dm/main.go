@@ -106,16 +106,17 @@ func dmEntry(files []string, params *entryParams) (err error) {
 
 func main() {
 	params := entryParams{
-		exeName:    appID,
-		stdin:      os.Stdin,
-		stdout:     os.Stdout,
-		stderr:     os.Stderr,
-		isTerminal: term.IsTerminal(int(os.Stdout.Fd())),
+		exeName: appID,
+		stdin:   os.Stdin,
+		stdout:  os.Stdout,
+		stderr:  os.Stderr,
 	}
 	if !term.IsTerminal(int(os.Stdin.Fd())) {
 		params.stdin = bufio.NewReader(os.Stdin)
 	}
-	if !params.isTerminal {
+	if term.IsTerminal(int(os.Stdout.Fd())) {
+		params.isTerminal = true
+	} else {
 		bufStdout := bufio.NewWriter(os.Stdout)
 		defer bufStdout.Flush()
 		params.stdout = bufStdout

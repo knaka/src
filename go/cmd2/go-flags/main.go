@@ -8,8 +8,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/mattn/go-isatty"
 	"github.com/spf13/pflag"
+	"golang.org/x/term"
 )
 
 var appID = "foobar"
@@ -45,13 +45,17 @@ Options:
 
 func main() {
 	params := entryParams{
-		exeName:    appID,
-		stdin:      os.Stdin,
-		stdout:     os.Stdout,
-		stderr:     os.Stderr,
-		isTerminal: isatty.IsTerminal(os.Stdout.Fd()),
+		exeName: appID,
+		stdin:   os.Stdin,
+		stdout:  os.Stdout,
+		stderr:  os.Stderr,
 	}
-	if !params.isTerminal {
+	if !term.IsTerminal(int(os.Stdin.Fd())) {
+		params.stdin = bufio.NewReader(os.Stdin)
+	}
+	if term.IsTerminal(int(os.Stdout.Fd())) {
+		params.isTerminal = true
+	} else {
 		bufStdout := bufio.NewWriter(os.Stdout)
 		defer bufStdout.Flush()
 		params.stdout = bufStdout
