@@ -8,7 +8,7 @@ require (
 	github.com/hajimehoshi/ebiten/v2 v2.10.0-alpha.3
 	github.com/knaka/go-utils v0.1.11
 	github.com/sirupsen/logrus v1.9.3
-	github.com/spf13/pflag v1.0.5
+	github.com/spf13/pflag v1.0.9
 	github.com/ulfox/dby v0.3.3
 	golang.org/x/term v0.25.0
 )
@@ -20,9 +20,11 @@ require (
 	github.com/ebitengine/purego v0.10.0-alpha.2 // indirect
 	github.com/go-text/typesetting v0.3.0 // indirect
 	github.com/hajimehoshi/oklab v0.1.0 // indirect
+	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jeandeaual/go-locale v0.0.0-20250612000132-0ef82f21eade // indirect
 	github.com/jezek/xgb v1.1.1 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
+	github.com/spf13/cobra v1.10.1 // indirect
 	golang.org/x/image v0.31.0 // indirect
 	golang.org/x/sync v0.17.0 // indirect
 	golang.org/x/text v0.29.0 // indirect

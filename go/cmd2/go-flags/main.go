@@ -20,6 +20,18 @@ type entryParams struct {
 	stdout     io.Writer
 	stderr     io.Writer
 	isTerminal bool
+
+	verbose bool
+}
+
+// foobarEntry is the entry point.
+func foobarEntry(args []string, params *entryParams) (err error) {
+	if params.verbose {
+		for i, arg := range args {
+			log.Println(i, arg)
+		}
+	}
+	return
 }
 
 func showUsage(flags *pflag.FlagSet, stderr io.Writer) {
@@ -28,32 +40,29 @@ func showUsage(flags *pflag.FlagSet, stderr io.Writer) {
 	flags.PrintDefaults()
 }
 
-// foobarEntry is the entry point.
-func foobarEntry(args []string, params *entryParams) (err error) {
-	flags := pflag.NewFlagSet(appID, pflag.ContinueOnError)
-	var shouldPrintHelp bool
-	flags.BoolVarP(&shouldPrintHelp, "help", "h", false, "Show help")
-	err = flags.Parse(args)
-	if err != nil {
-		return
-	}
-	args = flags.Args()
-	if shouldPrintHelp {
-		showUsage(flags, params.stderr)
-		return
-	}
-	return
-}
-
 func main() {
-	var stdout io.Writer = os.Stdout
-	isTerminal := isatty.IsTerminal(os.Stdout.Fd())
-	if !isTerminal {
+	params := entryParams{
+		exeName:    appID,
+		stdin:      os.Stdin,
+		stdout:     os.Stdout,
+		stderr:     os.Stderr,
+		isTerminal: isatty.IsTerminal(os.Stdout.Fd()),
+	}
+	if !params.isTerminal {
 		bufStdout := bufio.NewWriter(os.Stdout)
 		defer bufStdout.Flush()
-		stdout = bufStdout
+		params.stdout = bufStdout
 	}
-	err := foobarEntry(os.Args[1:], &entryParams{exeName: os.Args[0], stdin: os.Stdin, stdout: stdout, stderr: os.Stderr, isTerminal: isTerminal})
+	flags := pflag.NewFlagSet(appID, pflag.PanicOnError)
+	var shouldPrintHelp bool
+	flags.BoolVarP(&shouldPrintHelp, "help", "h", false, "Show help")
+	flags.BoolVarP(&params.verbose, "verbose", "v", false, "Verbosity")
+	flags.Parse(os.Args[1:])
+	if shouldPrintHelp {
+		showUsage(flags, os.Stderr)
+		return
+	}
+	err := foobarEntry(flags.Args(), &params)
 	if err != nil {
 		log.Fatalf("%s: %v\n", appID, err)
 	}

@@ -1,3 +1,4 @@
+// Usage example of ulfox/dby: Simple Yaml DB https://github.com/ulfox/dby
 package main
 
 import (
