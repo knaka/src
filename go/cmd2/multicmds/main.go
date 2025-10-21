@@ -27,8 +27,8 @@ type rootParams struct {
 }
 
 type subcmd struct {
-	command *cobra.Command
-	params  **rootParams
+	command       *cobra.Command
+	rootParamsRef **rootParams
 }
 
 var subcmds []*subcmd
@@ -72,8 +72,8 @@ func main() {
 
 	for _, subcmd := range subcmds {
 		command.AddCommand(subcmd.command)
-		if subcmd.params != nil {
-			*subcmd.params = &params
+		if subcmd.rootParamsRef != nil {
+			*subcmd.rootParamsRef = &params
 		}
 	}
 	command.SetArgs(os.Args[1:])

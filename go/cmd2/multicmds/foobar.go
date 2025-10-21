@@ -38,7 +38,7 @@ func init() {
 	flags.BoolVarP(&params.fuga, "fuga", "f", false, "Fuga")
 
 	subcmds = append(subcmds, &subcmd{
-		command: &command,
-		params:  &params.rootParams,
+		command:       &command,
+		rootParamsRef: &params.rootParams,
 	})
 }

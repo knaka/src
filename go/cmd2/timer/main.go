@@ -74,7 +74,7 @@ func timerEntry(params *timerParams) (err error) {
 	defer cancel()
 
 	sigCh := make(chan os.Signal, 1)
-	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
+	signal.Notify(sigCh, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 	go (func() {
 		<-sigCh
 		cancel()
