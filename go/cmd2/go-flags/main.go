@@ -51,12 +51,13 @@ func main() {
 		stdin:   os.Stdin,
 		stdout:  os.Stdout,
 		stderr:  os.Stderr,
-		isTerm:  term.IsTerminal(int(os.Stdout.Fd())),
 	}
 	if !term.IsTerminal(int(os.Stdin.Fd())) {
 		params.stdin = bufio.NewReader(os.Stdin)
 	}
-	if !params.isTerm {
+	if term.IsTerminal(int(os.Stdout.Fd())) {
+		params.isTerm = true
+	} else {
 		bufStdout := bufio.NewWriter(os.Stdout)
 		defer bufStdout.Flush()
 		params.stdout = bufStdout

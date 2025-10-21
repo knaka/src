@@ -14,12 +14,13 @@ import (
 
 var appID = "multicmds"
 
-type entryParams struct {
-	exeName    string
-	stdin      io.Reader
-	stdout     io.Writer
-	stderr     io.Writer
-	isTerminal bool
+type rootParams struct {
+	exeName string
+	stdin   io.Reader
+	stdout  io.Writer
+	stderr  io.Writer
+	isTerm  bool
+	args    []string
 
 	verbose bool
 	bar     bool
@@ -27,19 +28,19 @@ type entryParams struct {
 
 type subcmd struct {
 	command *cobra.Command
-	params  **entryParams
+	params  **rootParams
 }
 
 var subcmds []*subcmd
 
-func multicmdsEntry(_ []string, params *entryParams) (err error) {
+func multicmdsEntry(params *rootParams) (err error) {
 	fmt.Fprintln(params.stderr, "Without subcommand")
 	fmt.Fprintln(params.stderr, "verbose:", params.verbose)
 	return
 }
 
 func main() {
-	params := entryParams{
+	params := rootParams{
 		exeName: appID,
 		stdin:   os.Stdin,
 		stdout:  os.Stdout,
@@ -49,7 +50,7 @@ func main() {
 		params.stdin = bufio.NewReader(os.Stdin)
 	}
 	if term.IsTerminal(int(os.Stdout.Fd())) {
-		params.isTerminal = true
+		params.isTerm = true
 	} else {
 		bufStdout := bufio.NewWriter(os.Stdout)
 		defer bufStdout.Flush()
@@ -61,7 +62,8 @@ func main() {
 		Short: "Multi-commands Short",
 		Long:  `Multi-commands Long`,
 		RunE: func(_ *cobra.Command, args []string) (err error) {
-			return multicmdsEntry(args, &params)
+			params.args = args
+			return multicmdsEntry(&params)
 		},
 	}
 	command.PersistentFlags().BoolVarP(&params.verbose, "verbose", "v", false, "verbose output")

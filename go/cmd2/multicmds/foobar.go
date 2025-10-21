@@ -6,30 +6,32 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type fooEntryParams struct {
-	*entryParams
+type foobarParams struct {
+	*rootParams
+
 	fuga bool
 }
 
-func fooEntry(args []string, params *fooEntryParams) (err error) {
-	fmt.Fprintln(params.stderr, "isTerminal:", params.isTerminal)
+func foobarEntry(params *foobarParams) (err error) {
+	fmt.Fprintln(params.stderr, "isTerminal:", params.isTerm)
 	fmt.Fprintln(params.stderr, "verbose:", params.verbose)
 	fmt.Fprintln(params.stderr, "fuga:", params.fuga)
-	for _, arg := range args {
+	for _, arg := range params.args {
 		fmt.Fprintf(params.stdout, "  %s\n", arg)
 	}
 	return
 }
 
 func init() {
-	var params fooEntryParams
+	var params foobarParams
 
 	command := cobra.Command{
-		Use:   "foo [flags]",
-		Short: "Foo Short",
-		Long:  `Foo Long`,
+		Use:   "foobar" + " [flags] [file...]",
+		Short: "foobar Short",
+		Long:  `foobar Long`,
 		RunE: func(_ *cobra.Command, args []string) (err error) {
-			return fooEntry(args, &params)
+			params.args = args
+			return foobarEntry(&params)
 		},
 	}
 	flags := command.Flags()
@@ -37,6 +39,6 @@ func init() {
 
 	subcmds = append(subcmds, &subcmd{
 		command: &command,
-		params:  &params.entryParams,
+		params:  &params.rootParams,
 	})
 }
