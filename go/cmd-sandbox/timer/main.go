@@ -99,6 +99,8 @@ func timerEntry(params *timerParams) (err error) {
 		}
 	})()
 
+	fmt.Fprintf(params.stderr, "Started timer(s).")
+
 	wg.Wait()
 
 	// Determine the cause of cancellation

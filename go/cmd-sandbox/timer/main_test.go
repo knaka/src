@@ -83,6 +83,7 @@ func TestTimerEntry_InputAfter5Point5Seconds(t *testing.T) {
 		stdout:  &stdout,
 		stderr:  &stderr,
 		timeout: 10,
+		num:     1,
 	})
 	elapsed := time.Since(startTime)
 
@@ -99,10 +100,10 @@ func TestTimerEntry_InputAfter5Point5Seconds(t *testing.T) {
 		t.Errorf("Timer stopped too early: %v, expected at least 5 seconds", elapsed)
 	}
 
-	// Should show "Starting timer" message
+	// Should show "Started timer" message
 	stderrOutput := stderr.String()
-	if !strings.Contains(stderrOutput, "Starting timer") {
-		t.Errorf("Expected stderr to contain 'Starting timer', got: %s", stderrOutput)
+	if !strings.Contains(stderrOutput, "Started timer") {
+		t.Errorf("Expected stderr to contain 'Started timer', got: %s", stderrOutput)
 	}
 
 	// Should have approximately 5-6 time strings (5.5 seconds with 1 second intervals)
@@ -141,6 +142,7 @@ func TestTimerEntry_Timeout(t *testing.T) {
 		stdout:  &stdout,
 		stderr:  &stderr,
 		timeout: 5,
+		num:     1,
 	})
 	elapsed := time.Since(startTime)
 
@@ -189,6 +191,7 @@ func TestTimerEntry_ImmediateInput(t *testing.T) {
 		stdout:  &stdout,
 		stderr:  &stderr,
 		timeout: 10,
+		num:     1,
 	}
 
 	// Run the timer
@@ -205,10 +208,10 @@ func TestTimerEntry_ImmediateInput(t *testing.T) {
 		t.Errorf("Timer ran too long: %v, expected immediate stop", elapsed)
 	}
 
-	// Should show "Starting timer" message
+	// Should show "Started timer" message
 	stderrOutput := stderr.String()
-	if !strings.Contains(stderrOutput, "Starting timer") {
-		t.Errorf("Expected stderr to contain 'Starting timer', got: %s", stderrOutput)
+	if !strings.Contains(stderrOutput, "Started timer") {
+		t.Errorf("Expected stderr to contain 'Started timer', got: %s", stderrOutput)
 	}
 
 	// Should have 0 or 1 time strings since it stops immediately
