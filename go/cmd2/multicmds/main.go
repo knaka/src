@@ -56,7 +56,6 @@ func main() {
 		defer bufStdout.Flush()
 		params.stdout = bufStdout
 	}
-
 	command := &cobra.Command{
 		Use:   appID + " [flags]",
 		Short: "Multi-commands Short",
@@ -69,7 +68,6 @@ func main() {
 	command.PersistentFlags().BoolVarP(&params.verbose, "verbose", "v", false, "verbose output")
 	flags := command.Flags()
 	flags.BoolVarP(&params.bar, "bar", "b", false, "bar")
-
 	for _, subcmd := range subcmds {
 		command.AddCommand(subcmd.command)
 		if subcmd.rootParamsRef != nil {

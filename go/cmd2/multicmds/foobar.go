@@ -24,7 +24,6 @@ func foobarEntry(params *foobarParams) (err error) {
 
 func init() {
 	var params foobarParams
-
 	command := cobra.Command{
 		Use:   "foobar" + " [flags] [file...]",
 		Short: "foobar Short",
@@ -36,7 +35,6 @@ func init() {
 	}
 	flags := command.Flags()
 	flags.BoolVarP(&params.fuga, "fuga", "f", false, "Fuga")
-
 	subcmds = append(subcmds, &subcmd{
 		command:       &command,
 		rootParamsRef: &params.rootParams,
