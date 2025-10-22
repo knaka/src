@@ -15,6 +15,11 @@ import (
 // NoValue represents an empty value type for situations where no actual value is needed.
 type NoValue = struct{}
 
+// Finalizer is an interface that need cleanup when destroyed.
+type Finalizer interface {
+	Finalize()
+}
+
 // TimerWidget is timer widget.
 type TimerWidget struct {
 	guigui.DefaultWidget
@@ -235,11 +240,14 @@ func entryGUITimer(params *timerParams) (err error) {
 		},
 	}
 	err = guigui.Run(rootWindow, &opt)
+	if err != nil {
+		return
+	}
 	for _, widget := range childWidgets {
-		if finalizer, ok := widget.(interface{ Finalize() }); ok {
+		if finalizer, ok := widget.(Finalizer); ok {
 			finalizer.Finalize()
 		}
 	}
 	wg.Wait()
-	return err
+	return
 }
