@@ -30,6 +30,7 @@ type timerParams struct {
 	verbose bool
 	timeout int
 	num     int
+	gui     bool
 }
 
 // runTicker creates a new timer with the given configuration
@@ -56,6 +57,9 @@ func runTicker(
 func timerEntry(params *timerParams) (err error) {
 	if params.num <= 0 {
 		return
+	}
+	if params.gui {
+		return entryGUITimer(params)
 	}
 	var ctx0 context.Context
 	var cancels []context.CancelFunc
@@ -144,6 +148,7 @@ func main() {
 	flags.BoolVarP(&params.verbose, "verbose", "v", false, "verbosity")
 	flags.IntVarP(&params.timeout, "timeout", "t", 30, "timeout in seconds")
 	flags.IntVarP(&params.num, "num", "n", 1, "number of timer")
+	flags.BoolVarP(&params.gui, "gui", "g", false, "GUI mode")
 
 	flags.Parse(os.Args[1:])
 	params.args = flags.Args()
