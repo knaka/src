@@ -129,26 +129,26 @@ func (w *TimerWidget) Finalize() {
 
 var _ guigui.Widget = &TimerWidget{}
 
-// MultiWidget is a generic widget that manages multiple child widgets with a sidebar list.
-type MultiWidget[T guigui.Widget] struct {
+// MultiWidget is a widget that manages multiple child widgets with a sidebar list.
+type MultiWidget struct {
 	guigui.DefaultWidget
 
 	background basicwidget.Background
 	panel      basicwidget.Panel
 	list       basicwidget.List[NoValue]
 
-	widgets []T
+	widgets []guigui.Widget
 	index   int
 }
 
 // AddChildren adds child widgets to the MultiWidget.
-func (w *MultiWidget[T]) AddChildren(_ *guigui.Context, adder *guigui.ChildAdder) {
+func (w *MultiWidget) AddChildren(_ *guigui.Context, adder *guigui.ChildAdder) {
 	adder.AddChild(&w.panel)
 	adder.AddChild(w.widgets[w.index])
 }
 
 // Update updates the MultiWidget's state and configures the panel and list.
-func (w *MultiWidget[T]) Update(_ *guigui.Context) error {
+func (w *MultiWidget) Update(_ *guigui.Context) error {
 	w.panel.SetStyle(basicwidget.PanelStyleSide)
 	w.panel.SetBorders(basicwidget.PanelBorder{
 		End: true,
@@ -167,7 +167,7 @@ func (w *MultiWidget[T]) Update(_ *guigui.Context) error {
 }
 
 // Layout calculates the layout for child widgets within the MultiWidget.
-func (w *MultiWidget[T]) Layout(context *guigui.Context, widget guigui.Widget) image.Rectangle {
+func (w *MultiWidget) Layout(context *guigui.Context, widget guigui.Widget) image.Rectangle {
 	switch widget {
 	case &w.background:
 		return context.Bounds(w)
@@ -210,22 +210,23 @@ func entryGUITimer(params *timerParams) (err error) {
 	} else {
 		title = "Timers"
 		var listItems []basicwidget.ListItem[NoValue]
-		var timerWidgets []*TimerWidget
+		var widgets []guigui.Widget
 		for i := range params.num {
 			listItems = append(listItems, basicwidget.ListItem[NoValue]{
 				Text: fmt.Sprintf("Timer %d", i),
 			},
 			)
-			timerWidgets = append(timerWidgets, &TimerWidget{
+			timeWidget := TimerWidget{
 				index:  i,
 				params: params,
 				wg:     &wg,
-			})
-			timerWidgets[i].timeText.SetValue(fmt.Sprintf("N/A (%d)", i))
-			childWidgets = append(childWidgets, timerWidgets[i])
+			}
+			timeWidget.timeText.SetValue(fmt.Sprintf("N/A (%d)", i))
+			widgets = append(widgets, &timeWidget)
+			childWidgets = append(childWidgets, &timeWidget)
 		}
-		multiWidget := MultiWidget[*TimerWidget]{
-			widgets: timerWidgets,
+		multiWidget := MultiWidget{
+			widgets: widgets,
 			index:   0,
 		}
 		multiWidget.list.SetItems(listItems)
