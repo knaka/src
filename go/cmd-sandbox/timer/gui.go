@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"image"
+	"sync"
 	"time"
 
 	"github.com/guigui-gui/guigui"
@@ -26,6 +27,7 @@ type TimerWidget struct {
 	index  int
 	params *timerParams
 	cancel context.CancelFunc
+	wg     *sync.WaitGroup
 }
 
 // AddChildren adds child widgets.
@@ -84,11 +86,19 @@ func (w *TimerWidget) Update(gctx *guigui.Context) (err error) {
 	gctx.SetEnabled(&w.startButton, w.cancel == nil)
 	w.startButton.SetOnUp(func() {
 		ctx, cancel := context.WithTimeout(context.Background(), time.Duration(w.params.timeout)*time.Second)
-		go runTicker(ctx, func(timeStr string) {
-			fmt.Fprintf(w.params.stdout, "Timer %d ticked: %s\n", w.index, timeStr)
-			w.timeText.SetValue(timeStr)
-			guigui.RequestRedraw(&w.timeText)
-		})
+		if w.wg != nil {
+			w.wg.Add(1)
+		}
+		go func() {
+			if w.wg != nil {
+				defer w.wg.Done()
+			}
+			runTicker(ctx, func(timeStr string) {
+				fmt.Fprintf(w.params.stdout, "Timer %d ticked: %s\n", w.index, timeStr)
+				w.timeText.SetValue(timeStr)
+				guigui.RequestRedraw(&w.timeText)
+			})
+		}()
 		w.cancel = cancel
 	})
 
@@ -102,6 +112,14 @@ func (w *TimerWidget) Update(gctx *guigui.Context) (err error) {
 	})
 
 	return
+}
+
+// Finalize cleans up resources.
+func (w *TimerWidget) Finalize() {
+	if w.cancel != nil {
+		w.cancel()
+		w.cancel = nil
+	}
 }
 
 var _ guigui.Widget = &TimerWidget{}
@@ -170,6 +188,8 @@ func (w *MultiWidget[T]) Layout(context *guigui.Context, widget guigui.Widget) i
 func entryGUITimer(params *timerParams) (err error) {
 	var rootWindow guigui.Widget
 	var title string
+	var childWidgets []guigui.Widget
+	var wg sync.WaitGroup
 	if params.num == 0 {
 		return nil
 	} else if params.num == 1 {
@@ -177,9 +197,11 @@ func entryGUITimer(params *timerParams) (err error) {
 		timerWidget := TimerWidget{
 			params: params,
 			index:  0,
+			wg:     &wg,
 		}
 		timerWidget.timeText.SetValue("N/A")
 		rootWindow = &timerWidget
+		childWidgets = append(childWidgets, &timerWidget)
 	} else {
 		title = "Timers"
 		var listItems []basicwidget.ListItem[NoValue]
@@ -192,8 +214,10 @@ func entryGUITimer(params *timerParams) (err error) {
 			timerWidgets = append(timerWidgets, &TimerWidget{
 				index:  i,
 				params: params,
+				wg:     &wg,
 			})
 			timerWidgets[i].timeText.SetValue(fmt.Sprintf("N/A (%d)", i))
+			childWidgets = append(childWidgets, timerWidgets[i])
 		}
 		multiWidget := MultiWidget[*TimerWidget]{
 			widgets: timerWidgets,
@@ -210,5 +234,12 @@ func entryGUITimer(params *timerParams) (err error) {
 			ApplePressAndHoldEnabled: true,
 		},
 	}
-	return guigui.Run(rootWindow, &opt)
+	err = guigui.Run(rootWindow, &opt)
+	for _, widget := range childWidgets {
+		if finalizer, ok := widget.(interface{ Finalize() }); ok {
+			finalizer.Finalize()
+		}
+	}
+	wg.Wait()
+	return err
 }
