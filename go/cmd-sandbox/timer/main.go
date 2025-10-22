@@ -1,4 +1,4 @@
-// timer
+// Timer example.
 package main
 
 import (
@@ -9,6 +9,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"sync"
 	"syscall"
 	"time"
 
@@ -28,38 +29,22 @@ type timerParams struct {
 
 	verbose bool
 	timeout int
-}
-
-// TimerConfig holds configuration for the timer
-type TimerConfig struct {
-	Interval   time.Duration
-	TimeFormat string
-	BufferSize int
-}
-
-// DefaultTimerConfig returns a default timer configuration
-func DefaultTimerConfig() TimerConfig {
-	return TimerConfig{
-		Interval:   1 * time.Second,
-		TimeFormat: time.RFC3339,
-		BufferSize: 10,
-	}
+	num     int
 }
 
 // runTicker creates a new timer with the given configuration
 func runTicker(
 	ctx context.Context,
-	config TimerConfig,
 	callback func(string),
 ) {
-	ticker := time.NewTicker(config.Interval)
+	ticker := time.NewTicker(1 * time.Second)
 	defer ticker.Stop()
 	for {
 		select {
 		case <-ctx.Done():
 			return
 		case <-ticker.C:
-			timeStr := time.Now().Format(config.TimeFormat)
+			timeStr := time.Now().Format(time.RFC3339)
 			if callback != nil {
 				callback(timeStr)
 			}
@@ -69,32 +54,51 @@ func runTicker(
 
 // timerEntry is the entry point.
 func timerEntry(params *timerParams) (err error) {
-	ctx := context.Background()
-	ctx, cancel := context.WithTimeout(ctx, time.Duration(params.timeout)*time.Second)
-	defer cancel()
+	if params.num <= 0 {
+		return
+	}
+	var ctx0 context.Context
+	var cancels []context.CancelFunc
+	var wg sync.WaitGroup
+	for i := range params.num {
+		ctx, cancel := context.WithTimeout(context.Background(), time.Duration(params.timeout)*time.Second)
+		if ctx0 == nil {
+			ctx0 = ctx
+		}
+		cancels = append(cancels, cancel)
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			runTicker(ctx, func(timeStr string) {
+				fmt.Fprintf(params.stdout, "Timer %d ticked: %s\n", i, timeStr)
+			})
+		}()
+	}
+	cancelAll := func() {
+		for _, cancel := range cancels {
+			cancel()
+		}
+	}
+	defer cancelAll()
 
 	sigCh := make(chan os.Signal, 1)
 	signal.Notify(sigCh, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 	go (func() {
 		<-sigCh
-		cancel()
+		cancelAll()
 	})()
 
 	go (func() {
 		for bufio.NewScanner(params.stdin).Scan() {
-			cancel()
+			cancelAll()
 			break
 		}
 	})()
 
-	fmt.Fprintf(params.stderr, "Starting timer. Press Enter or Ctrl+C to stop.\n")
-
-	runTicker(ctx, DefaultTimerConfig(), func(timeStr string) {
-		fmt.Fprintln(params.stdout, timeStr)
-	})
+	wg.Wait()
 
 	// Determine the cause of cancellation
-	ctxErr := ctx.Err()
+	ctxErr := ctx0.Err()
 	switch ctxErr {
 	case nil:
 	case context.DeadlineExceeded:
@@ -139,6 +143,7 @@ func main() {
 
 	flags.BoolVarP(&params.verbose, "verbose", "v", false, "verbosity")
 	flags.IntVarP(&params.timeout, "timeout", "t", 30, "timeout in seconds")
+	flags.IntVarP(&params.num, "num", "n", 1, "number of timer")
 
 	flags.Parse(os.Args[1:])
 	params.args = flags.Args()
