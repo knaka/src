@@ -28,7 +28,7 @@ func TestNewTimer_CancelAfter5Point5Seconds(t *testing.T) {
 	// Run the timer
 	startTime := time.Now()
 	var timeStrings []string
-	runTicker(ctx, DefaultTimerConfig(), func(timeStr string) {
+	runTicker(ctx, func(timeStr string) {
 		timeStrings = append(timeStrings, timeStr)
 	})
 	elapsed := time.Since(startTime)
