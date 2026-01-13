@@ -5,37 +5,34 @@
 . ./task.sh
 . ./_assert.lib.sh
 
-test_examples() (
-  set -o errexit
-
+test_examples() {
   assert_eq "aaabbbccc" "$(echo '["a", "b", "c"]' | jq -r 'map(. * 3) | join("")')" "Apply map to the array and join the resulting array"
 
-  json="$TEMP_DIR"/8f57625.json
+  local input_json="$TEMP_DIR"/8f57625.json
   echo '
     [
       { "name": "Alice, ALICE", "email": "alice@example.com" },
       { "name": "Alice, ALICE", "email": "another_alice@example.com" },
       { "name": "Bob, BOB", "email": "bob@example.com" }
     ]
-  ' >"$json"
+  ' | jq -c >"$input_json"
 
-  printf "%s$us%s$us%s\n" \
-    'Alice, ALICE' true '{"name":"Alice, ALICE","email":"alice@example.com"}' \
-    'Bob, BOB' true '{"name":"Bob, BOB","email":"bob@example.com"}' \
-    'Charlie, CHARLIE' false '' \
-    'David, DAVID' false '' \
+  printf "%s$us%s$us%s$us%s\n" \
+    'Alice, ALICE' true '{"name":"Alice, ALICE","email":"alice@example.com"}' 'Returns the first matching entry' \
+    'Bob, BOB' true '{"name":"Bob, BOB","email":"bob@example.com"}' 'Returns the matching entry' \
+    'Charlie, CHARLIE' false '' 'Does not exist' \
+    'David, DAVID' false '' 'Does not exist' \
   | (
-    IFS="$us"
     count=0
-    while read -r name must_succeed expected
+    while IFS="$us" read -r name must_succeed expected message
     do
-      if result="$(jq -c -e --arg name "$name" '[.[] | select(.name == $name)][0]' <"$json")"
+      if result="$(jq -c -e --arg name "$name" '[.[] | select(.name == $name)][0]' <"$input_json")"
       then
         if "$must_succeed"
         then
-          assert_eq "$expected" "$result"
+          assert_eq "$expected" "$result" "$message"
         else
-          echo "Must fail (87fea64)" >&2
+          echo "Must fail (87fea64): $message" >&2
           false
         fi
       else
@@ -47,9 +44,9 @@ test_examples() (
       fi
       count=$((count + 1))
     done
-    assert_true test "$count" -eq 4
+    assert_eq "$count" 4
   )
-)
+}
 
 json2sh_expected() {
   cat <<EOF
