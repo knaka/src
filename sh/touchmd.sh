@@ -50,19 +50,13 @@ do
 	cat <<-EOF
 		---
 		id: "$(rand7)"
-		title: "Memo ($(date_iso))"
+		title: "Markdown ($(date_iso))"
 		tags: []
-		CreatedAtRfc: "$(date_iso)"
 		created_at: "$(date_iso)"
-		created_at_iso: "$(date_iso)"
 		---
 
-		← <!-- mdpplink href=../README.md -->[Memo](../README.md)<!-- /mdpplink -->
-
-		<!-- mdppindex pattern=*.md -->
-		<!-- /mdppindex -->
+		# Markdown ($(date_iso))
 
 		---
-
 EOF
 done

@@ -6,7 +6,8 @@
 . ./go.lib.sh
 . ./embedded-go.lib.sh
 
-task_go_hello__gen() { # Generate Go-embedded sample scripts.
+# Generate Go-embedded sample scripts.
+task_go_hello__gen() {
   local out_sh=go-hello
   subcmd_go__embedded__sh__gen \
     --url="https://raw.githubusercontent.com/knaka/src/go/$out_sh" \
@@ -21,11 +22,13 @@ task_go_hello__gen() { # Generate Go-embedded sample scripts.
     --out-cmd=./"$out_cmd"
 }
 
-task_gen() { # Generate files.
+# Generate files.
+task_gen() {
   task_go_hello__gen
 }
 
-subcmd_build() { # Build Go source files incrementally.
+# Build Go source files incrementally.
+subcmd_build() {
   cd "$PROJECT_DIR"
   local go_bin_dir_path=./build
   mkdir -p "$go_bin_dir_path"
@@ -61,7 +64,8 @@ subcmd_build() { # Build Go source files incrementally.
   done
 }
 
-task_install() { # Install Go tools.
+# Install Go tools.
+task_install() {
   cd "$PROJECT_DIR"
   local go_sim_dir_path="$HOME"/go-bin
   mkdir -p "$go_sim_dir_path"

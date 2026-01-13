@@ -1,31 +1,21 @@
-#!/bin/sh
-set -o nounset -o errexit
+#!/usr/bin/env sh
+# vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
+# shellcheck shell=sh
+"${sourced_4e43a4f-false}" && return 0; sourced_4e43a4f=true
 
-test "${guard_c6d16e2+set}" = set && return 0; guard_c6d16e2=x
+root_dir=/
+cmd_base=task
+if test -d "c:/"
+then
+  root_dir="c:/"
+  cmd_base=task.cmd
+fi
 
-if test -d "c:/" && test -r "./task.cmd"
-then
-  exec ./task.cmd "$@"
-fi
-if type ./task >/dev/null 2>&1
-then
-  exec ./task "$@"
-fi
-if test -d ./tasks
-then
-  for sh in /bin/dash /bin/bash
-  do
-    if command -v "$sh" >/dev/null 2>&1
-    then
-      export ARG0="$0"
-      export ARG0BASE="$(basename "$0")"
-      export PROJECT_DIR="$PWD"
-      export TASKS_DIR="$PWD/tasks"
-      exec "$sh" ./tasks/task.sh "$@"
-    fi
-  done
-elif test -r "package.json"
-then
-  npm run "$@"
-fi
-exit 1
+dir=.
+while :
+do
+  p="$(realpath "$dir")"
+  test "$p" = "$root_dir" && exit 1
+  test -x "$p"/"$cmd_base" && exec "$p"/"$cmd_base" "$@"
+  dir=../"$dir"
+done

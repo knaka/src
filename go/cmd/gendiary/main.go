@@ -1,52 +1,120 @@
-// Generate monthly notes in a diary format.
+// Generate monthly/yearly notes template in a diary format.
 package main
 
 import (
 	"bufio"
 	"fmt"
+	"io"
+	"log"
 	"os"
-	"path/filepath"
 	"strconv"
 	"time"
 
 	"github.com/spf13/pflag"
+	"golang.org/x/term"
 
 	//revive:disable-next-line dot-import
 	. "github.com/knaka/go-utils"
 )
 
+var appID = "gendiary"
+
+type gendiaryParams struct {
+	exeName string
+	stdin   io.Reader
+	stdout  io.Writer
+	stderr  io.Writer
+	isTerm  bool
+	args    []string
+
+	year            int
+	month           int
+	woMonthlyHeader bool
+}
+
 var weekDays = []string{"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"}
 
-func writeMonthlyNotes(writer *bufio.Writer, year, month int) (err error) {
-	defer Catch(&err)
-	V0(fmt.Fprintf(writer, "# %04d-%02d Monthly Notes\n", year, month))
-	daysInMonth := time.Date(year, time.Month(month+1), 0, 0, 0, 0, 0, time.UTC).Day()
+// writeMonthlyNotes generates a monthly diary template with a header for each day.
+func writeMonthlyNotes(params *gendiaryParams) (err error) {
+	if !params.woMonthlyHeader {
+		fmt.Fprintf(params.stdout, "# %04d-%02d Monthly Notes\n", params.year, params.month)
+	}
+	daysInMonth := time.Date(params.year, time.Month(params.month+1), 0, 0, 0, 0, 0, time.UTC).Day()
 	for day := 1; day <= daysInMonth; day++ {
-		t := time.Date(year, time.Month(month), day, 0, 0, 0, 0, time.UTC)
-		V0(fmt.Fprintf(writer, "\n## %04d-%02d-%02d %s\n", year, month, day, weekDays[t.Weekday()]))
+		t := time.Date(params.year, time.Month(params.month), day, 0, 0, 0, 0, time.UTC)
+		fmt.Fprintf(params.stdout, "\n## %04d-%02d-%02d %s\n", params.year, params.month, day, weekDays[t.Weekday()])
 	}
 	return nil
 }
 
+// writeYearlyNotes generates a yearly diary template with a header for each day.
+func writeYearlyNotes(params *gendiaryParams) (err error) {
+	fmt.Fprintf(params.stdout, "# %04d Yearly Notes\n", params.year)
+	params.woMonthlyHeader = true
+	for month := 1; month <= 12; month++ {
+		params.month = month
+		Must(writeMonthlyNotes(params))
+	}
+	return nil
+}
+
+// gendiaryEntry is the entry point.
+func gendiaryEntry(params *gendiaryParams) (err error) {
+	defer Catch(&err)
+	if params.year <= 0 && len(params.args) >= 1 {
+		params.year = Value(strconv.Atoi(params.args[0]))
+	}
+	if params.month <= 0 && len(params.args) >= 2 {
+		params.month = Value(strconv.Atoi(params.args[1]))
+	}
+	if params.year <= 0 && params.month <= 0 {
+		return fmt.Errorf(
+			"invalid year or month | year: %d, month: %d", params.year, params.month,
+		)
+	}
+	if params.month > 0 {
+		return writeMonthlyNotes(params)
+	} else {
+		return writeYearlyNotes(params)
+	}
+}
+
 func main() {
+	params := gendiaryParams{
+		exeName: appID,
+		stdin:   os.Stdin,
+		stdout:  os.Stdout,
+		stderr:  os.Stderr,
+	}
+	if !term.IsTerminal(int(os.Stdin.Fd())) {
+		params.stdin = bufio.NewReader(os.Stdin)
+	}
+	if term.IsTerminal(int(os.Stdout.Fd())) {
+		params.isTerm = true
+	} else {
+		bufStdout := bufio.NewWriter(os.Stdout)
+		defer bufStdout.Flush()
+		params.stdout = bufStdout
+	}
+	var shouldPrintHelp bool
+	pflag.BoolVarP(&shouldPrintHelp, "help", "h", false, "show help")
+
 	pflag.Usage = func() {
-		_ = V(fmt.Fprintf(os.Stderr, "Usage: %s [options] <year> <month>\n", filepath.Base(os.Args[0])))
+		fmt.Fprintf(os.Stderr, `Usage: %s [options] <year> <month>
+       %s [options] <year>
+
+`, appID, appID)
 		pflag.PrintDefaults()
 	}
-	var putsHelp bool
-	pflag.BoolVarP(&putsHelp, "help", "h", false, "Prints help message.")
-	V0(pflag.CommandLine.Parse(os.Args[1:]))
-	if putsHelp {
+
+	pflag.Parse()
+	params.args = pflag.Args()
+	if shouldPrintHelp {
 		pflag.Usage()
-		os.Exit(0)
+		return
 	}
-	if pflag.NArg() < 2 {
-		pflag.Usage()
-		os.Exit(1)
+	err := gendiaryEntry(&params)
+	if err != nil {
+		log.Fatalf("%s: %v\n", appID, err)
 	}
-	year := V(strconv.Atoi(pflag.Arg(0)))
-	month := V(strconv.Atoi(pflag.Arg(1)))
-	writer := bufio.NewWriter(os.Stdout)
-	V0(writeMonthlyNotes(writer, year, month))
-	V0(writer.Flush())
 }

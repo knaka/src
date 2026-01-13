@@ -36,15 +36,6 @@ func foobarEntry(params *foobarParams) (err error) {
 	return
 }
 
-func showUsage(flags *pflag.FlagSet, stderr io.Writer) {
-	fmt.Fprintf(stderr, `Usage: %s [flags] [arg...]
-
-Flags:
-`, appID)
-	flags.SetOutput(stderr)
-	flags.PrintDefaults()
-}
-
 func main() {
 	params := foobarParams{
 		exeName: appID,
@@ -62,17 +53,20 @@ func main() {
 		defer bufStdout.Flush()
 		params.stdout = bufStdout
 	}
-	flags := pflag.NewFlagSet(appID, pflag.PanicOnError)
 	var shouldPrintHelp bool
-	flags.BoolVarP(&shouldPrintHelp, "help", "h", false, "show help")
+	pflag.BoolVarP(&shouldPrintHelp, "help", "h", false, "show help")
 
-	flags.BoolVarP(&params.verbose, "verbose", "v", false, "verbosity")
-	flags.BoolVarP(&params.colored, "coloroed", "c", params.isTerm, "colored")
+	pflag.Usage = func() {
+		fmt.Fprintf(os.Stderr, "Usage: %s [flags] [arg...]\n\nFlags:\n", appID)
+		pflag.PrintDefaults()
+	}
+	pflag.BoolVarP(&params.verbose, "verbose", "v", false, "verbosity")
+	pflag.BoolVarP(&params.colored, "coloroed", "c", params.isTerm, "colored")
 
-	flags.Parse(os.Args[1:])
-	params.args = flags.Args()
+	pflag.Parse()
+	params.args = pflag.Args()
 	if shouldPrintHelp {
-		showUsage(flags, os.Stderr)
+		pflag.Usage()
 		return
 	}
 	err := foobarEntry(&params)
