@@ -107,6 +107,10 @@ first_call() {
   eval "called_$1=true"
 }
 
+is_terminal() {
+  test -t 1
+}
+
 #endregion
 
 # ==========================================================================
@@ -825,25 +829,29 @@ load_env() {
 # ==========================================================================
 #region Misc
 
+# Wait for one or more servers to respond with HTTP 200. Checks each URL sequentially with a 60-second timeout per URL.
 wait_for_server() {
-  local url="$1"
-  echo "Waiting for server at $url to be ready ..."
-  local attempts=0
+  local url
   local max_attempts=60
-  while test $attempts -lt $max_attempts
+  for url in "$@"
   do
-    if curl -s -o /dev/null -w "%{http_code}" "$url" | grep -q "200"
-    then
-      echo "✓ Server is ready at $url"
-      return 0
-    fi
-    attempts=$((attempts + 1))
-    if test $attempts -eq $max_attempts
-    then
-      echo "✗ Server at $url did not respond with 200 after $max_attempts seconds"
-      return 1
-    fi
-    sleep 1
+    echo "Waiting for server at $url to be ready ..." >&2
+    local attempts=0
+    while :
+    do
+      if curl -s -o /dev/null -w "%{http_code}" "$url" 2>/dev/null | grep -q "200"
+      then
+        echo "✓ Server is ready at $url" >&2
+        break
+      fi
+      attempts=$((attempts + 1))
+      if test $attempts -ge $max_attempts
+      then
+        echo "✗ Server at $url did not respond with 200 after $max_attempts seconds" >&2
+        return 1
+      fi
+      sleep 1
+    done
   done
 }
 
@@ -1034,6 +1042,11 @@ newer() {
     return 0
   fi
   test -n "$(find "$@" -newer "$dest" 2>/dev/null)"
+}
+
+# Returns true if any source file is older than the destination file.
+older() {
+  ! newer "$@"
 }
 
 # Kill child processes for each shell/platform.
@@ -1371,6 +1384,13 @@ github_tree_get() {
   github_api_request "$url"
 }
 
+# Fetch raw content of a file from a GitHub repository
+# Usage: github_raw_fetch [OPTIONS]
+# Options:
+#   --owner=OWNER         GitHub repository owner/organization
+#   --repos=REPOS         GitHub repository name
+#   --tree-sha=SHA        Tree SHA, branch name, or tag name (default: main). Aliases: --branch, --tag, --tree
+#   --path=PATH           Path to the file within the repository
 github_raw_fetch() {
   local owner=
   local repos=
@@ -1583,10 +1603,20 @@ EOF
       do
         test "$type" = "$i" || continue
         case "${basename}" in
+          # Emphasize project tasks/subcommands, not shared ones.
           (project*.lib.sh)
-            printf "  \033[01m%-${max_name_len}s  %s\033[00m\n" "$name" "$desc";;
+            if is_terminal
+            then
+              # Underline
+              local padding_len=$((max_name_len - ${#name}))
+              printf "  \033[4m%s\033[0m%-${padding_len}s  %s\n" "$name" "" "$desc"
+            else
+              # Asterisk
+              printf "* %-${max_name_len}s  %s\n" "$name" "$desc"
+            fi
+            ;;
           (*)
-            printf "  %-${max_name_len}s  %s (%s)\n" "$name" "$desc"
+            printf "  %-${max_name_len}s  %s\n" "$name" "$desc"
             ;;
         esac
       done
@@ -1654,9 +1684,9 @@ call_task() {
   if alias "$func_name" >/dev/null 2>&1
   then
     # shellcheck disable=SC2294
-    eval "$func_name" "$@" || return $?
+    eval "$func_name" "$@"
   else
-    "$func_name" "$@" || return $?
+    "$func_name" "$@"
   fi
   prefix="$task_name"
   while :
