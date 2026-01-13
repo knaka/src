@@ -26,11 +26,11 @@ test_examples() {
     count=0
     while IFS="$us" read -r name must_succeed expected message
     do
-      if result="$(jq -c -e --arg name "$name" '[.[] | select(.name == $name)][0]' <"$input_json")"
+      if actual="$(jq -c -e --arg name "$name" '[.[] | select(.name == $name)][0]' <"$input_json")"
       then
         if "$must_succeed"
         then
-          assert_eq "$expected" "$result" "$message"
+          assert_eq "$expected" "$actual" "$message"
         else
           echo "Must fail (87fea64): $message" >&2
           false
@@ -38,7 +38,7 @@ test_examples() {
       else
         if "$must_succeed"
         then
-          echo "Must succeed (43c9be7)" >&2
+          echo "Must succeed (43c9be7): message" >&2
           false
         fi
       fi
