@@ -60,17 +60,14 @@ repo() {
     esac
   fi
   # If no ghq-subcommand is specified, show the list of repos.
-  local saved_ifs="$IFS"; IFS="$newline_char"
+  local IFS="$newline_char"
   # shellcheck disable=SC2046
   set -- $(ghq_list)
-  IFS="$saved_ifs"
   if test -n "$prefix"
   then
-    re_prefix="\b$prefix"
-    local saved_ifs="$IFS"; IFS="$newline_char"
+    local IFS="$newline_char"
     # shellcheck disable=SC2046
-    set -- $(printf "%s\n" "$@" | grep -E -e "$re_prefix")
-    IFS="$saved_ifs"
+    set -- $(printf "%s\n" "$@" | grep -E -e "\b$prefix")
     if test $# -eq 0
     then
       echo "No matching entry for '$prefix'." >&2
