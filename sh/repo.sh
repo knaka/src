@@ -29,7 +29,7 @@ ghq() {
     "$@"
 }
 
-s=
+prefix=
 if test "${1+set}" = "set"
 then
   case "$1" in
@@ -38,7 +38,7 @@ then
       exit $?
       ;;
     (*)
-      s="$1"
+      prefix="$1"
       ;;
   esac
 fi
@@ -60,16 +60,29 @@ ghq_list() {
 
 # If no ghq-subcommand is specified, show the list of repos.
 repo=
-if test -n "$s"
+if test -n "$prefix"
 then
+  re_prefix="\b$prefix"
   file="$TEMP_DIR/a427745"
   ghq_list >"$file"
-  repo="$(grep --word-regexp -e "$s" "$file" | sort | head -n1)"
+  count="$(grep -c -E "$re_prefix" "$file")"
+  if test "$count" -eq 0
+  then
+    echo "No matching entry for '$prefix'." >&2
+    exit 1
+  elif test "$count" -eq 1
+  then
+    repo="$(grep -E "$re_prefix" "$file")"
+  else
+    repos="$(grep -E "$re_prefix" "$file" | sort)"
+    repo="$(printf "%s" "$repos" | peco)"
+  fi
 else
   repo=$(ghq_list | peco)
 fi
 if test -z "${repo}"
 then
+  echo "No entry selected." >&2
   exit 1
 fi
 echo "$GHQ_ROOT"/"${repo}"
