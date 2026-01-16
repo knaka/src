@@ -8,12 +8,10 @@ ghq_version="1.8.0"
 
 set -- "$PWD" "${0%/*}" "$@"; if test "$2" != "$0"; then cd "$2" 2>/dev/null || :; fi
 . ./task.sh
-  init_temp_dir
 . ./peco.sh
 cd "$1"; shift 2
 
-GHQ_ROOT="$HOME"/repos
-export GHQ_ROOT
+export GHQ_ROOT="$HOME"/repos
 
 ghq() {
   # shellcheck disable=SC2016
@@ -29,25 +27,14 @@ ghq() {
     "$@"
 }
 
-prefix=
-if test "${1+set}" = "set"
-then
-  case "$1" in
-    (get|clone|list|rm|root|create|help|h)
-      ghq "$@"
-      exit $?
-      ;;
-    (*)
-      prefix="$1"
-      ;;
-  esac
-fi
-
+# `ghq list` takes too long to walk recursively. Instead, return paths of Git repositories found within a few levels of depth from $GHQ_ROOT.
 ghq_list() {
-  # `ghq list` takes too long to walk recursively.
-  # ghq list
-  local p
-  find "$GHQ_ROOT"/*/.git "$GHQ_ROOT"/*/*/.git "$GHQ_ROOT"/*/*/*/.git -type d -maxdepth 0 \
+  find \
+    "$GHQ_ROOT"/*/.git \
+    "$GHQ_ROOT"/*/*/.git \
+    "$GHQ_ROOT"/*/*/*/.git \
+    -type d \
+    -maxdepth 0 \
   | while read -r p
     do
       test -d "$p" || continue
@@ -58,31 +45,50 @@ ghq_list() {
     done
 }
 
-# If no ghq-subcommand is specified, show the list of repos.
-repo=
-if test -n "$prefix"
-then
-  re_prefix="\b$prefix"
-  file="$TEMP_DIR/a427745"
-  ghq_list >"$file"
-  count="$(grep -c -E "$re_prefix" "$file")"
-  if test "$count" -eq 0
+repo() {
+  local prefix=
+  if test "${1+set}" = "set"
   then
-    echo "No matching entry for '$prefix'." >&2
-    exit 1
-  elif test "$count" -eq 1
-  then
-    repo="$(grep -E "$re_prefix" "$file")"
-  else
-    repos="$(grep -E "$re_prefix" "$file" | sort)"
-    repo="$(printf "%s" "$repos" | peco)"
+    case "$1" in
+      (get|clone|list|rm|root|create|help|h)
+        ghq "$@"
+        return $?
+        ;;
+      (*)
+        prefix="$1"
+        ;;
+    esac
   fi
-else
-  repo=$(ghq_list | peco)
-fi
-if test -z "${repo}"
-then
-  echo "No entry selected." >&2
-  exit 1
-fi
-echo "$GHQ_ROOT"/"${repo}"
+  # If no ghq-subcommand is specified, show the list of repos.
+  local saved_ifs="$IFS"; IFS="$newline_char"
+  # shellcheck disable=SC2046
+  set -- $(ghq_list)
+  IFS="$saved_ifs"
+  if test -n "$prefix"
+  then
+    re_prefix="\b$prefix"
+    local saved_ifs="$IFS"; IFS="$newline_char"
+    # shellcheck disable=SC2046
+    set -- $(printf "%s\n" "$@" | grep -E -e "$re_prefix")
+    IFS="$saved_ifs"
+    if test $# -eq 0
+    then
+      echo "No matching entry for '$prefix'." >&2
+      return 1
+    fi
+  fi
+  test $# -eq 0 && return 1
+  if test $# -ge 2
+  then
+    set -- "$(printf "%s\n" "$@" | peco)"
+  fi
+  test -z "$1" && return 1
+  echo "$GHQ_ROOT"/"$1"
+}
+
+case "${0##*/}" in
+  (repo.sh|repo)
+    set -o nounset -o errexit
+    repo "$@"
+    ;;
+esac

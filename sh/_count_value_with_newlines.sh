@@ -117,3 +117,27 @@ s="$(grep xxx "$file")"; count_lines_b8ba285 "$s" # 0 (correct)
 s="$(grep foo "$file")"; count_lines_b8ba285 "$s" # 1 (correct)
 s="$(grep bar "$file")"; count_lines_b8ba285 "$s" # 2 (correct)
 s="$(grep baz "$file")"; count_lines_b8ba285 "$s" # 3 (correct)
+
+echo Solution 7: Use positional parameters. >&2
+
+# Note: Command substitution behaves differently with set -e depending on context:
+# - Pure assignment: x=$(failing_cmd) DOES trigger set -e
+# - Declaration with assignment: local x=$(failing_cmd) does NOT (local's success masks it)
+# - Command argument: set -- $(failing_cmd) does NOT (set's success masks it) bash-errexit-and-command-substitution-32edaeaae36d
+#
+# shellcheck disable=SC2046
+x2702fbe() {
+  local saved_ifs="$IFS"
+  IFS="$newline_char"
+  set -- $(grep xxx "$file"); echo "$#" # 0 (correct)
+  # shellcheck disable=SC2046
+  set -- $(grep foo "$file"); echo "$#" # 1 (correct)
+  # shellcheck disable=SC2046
+  set -- $(grep bar "$file"); echo "$#" # 2 (correct)
+  # shellcheck disable=SC2046
+  set -- $(grep baz "$file"); echo "$#" # 3 (correct)
+  IFS="$saved_ifs"
+}
+
+set -o errexit
+x2702fbe
