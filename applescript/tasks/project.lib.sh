@@ -12,7 +12,7 @@ task_build() {
   do
     test -f "$source" || continue
     dest="${source%.applescript}.scpt"
-    older "$source" --than "$dest" && continue
+    newer "$source" --than "$dest" || continue
     osacompile -o "$dest" "$source"
     echo "Compiled $source ." >&2
   done
