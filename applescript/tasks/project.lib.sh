@@ -4,6 +4,7 @@
 
 . ./task.sh
 
+# Compiles all .applescript files to .scpt (compiled binary) format. This function iterates through all .applescript source files in the current directory and compiles them using osacompile(1).
 task_build() {
   local source
   local dest
@@ -13,5 +14,6 @@ task_build() {
     dest="${source%.applescript}.scpt"
     older "$source" --than "$dest" && continue
     osacompile -o "$dest" "$source"
+    echo "Compiled $source ." >&2
   done
 }
