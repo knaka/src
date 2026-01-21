@@ -2,7 +2,6 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"io"
 	"log"
@@ -28,11 +27,6 @@ type foobarParams struct {
 
 // foobarEntry is the entry point.
 func foobarEntry(params *foobarParams) (err error) {
-	if params.verbose {
-		for i, arg := range params.args {
-			log.Println(i, arg)
-		}
-	}
 	return
 }
 
@@ -42,16 +36,7 @@ func main() {
 		stdin:   os.Stdin,
 		stdout:  os.Stdout,
 		stderr:  os.Stderr,
-	}
-	if !term.IsTerminal(int(os.Stdin.Fd())) {
-		params.stdin = bufio.NewReader(os.Stdin)
-	}
-	if term.IsTerminal(int(os.Stdout.Fd())) {
-		params.isTerm = true
-	} else {
-		bufStdout := bufio.NewWriter(os.Stdout)
-		defer bufStdout.Flush()
-		params.stdout = bufStdout
+		isTerm:  term.IsTerminal(int(os.Stdout.Fd())),
 	}
 	var shouldPrintHelp bool
 	pflag.BoolVarP(&shouldPrintHelp, "help", "h", false, "show help")

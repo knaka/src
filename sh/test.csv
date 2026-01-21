@@ -1,3 +1,4 @@
+# +TBLFM: foo::bar
 Item,UnitPrice,Quantity,Total
 Apple,1.5,10,15
 Banana,2.0,5,10
