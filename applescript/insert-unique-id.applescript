@@ -44,7 +44,9 @@ tell application "System Events"
 	set idStr to my generateRandomHexId(7)
 	repeat with i from 1 to length of idStr
 		set idChar to character i of idStr
+		-- Sometimes, this starts outputting capitalized characters, which does not stop until the OS is restarted. While this is happening, an external keyboard's caps lock does not affect the main keyboard's caps lock status. Switching the external keyboard off and on sometimes seems to resolve the problem. Restarting Karabiner-Elements also can do. I am not certain.
 		keystroke idChar
+		-- This does not work. // AppleScript keystroke sometimes capitalizing letters? - Stack Overflow https://stackoverflow.com/questions/41227700/applescript-keystroke-sometimes-capitalizing-letters
 		delay 5.0E-4
 	end repeat
 end tell
