@@ -17,3 +17,29 @@ test_dasel() {
   local json2="$(echo "$toml" | dasel --read=toml --write=json | jq -cS)"
   assert_eq "$json2" "$json"
 }
+
+toml_5bd7f91() {
+  cat <<EOF
+foo: FOO
+# comment
+bar: BAR
+baz: BAZ
+EOF
+}
+
+yaml_expected_6d39916() {
+  cat <<EOF
+foo: FOO
+# comment
+bar: BAR HOGE
+baz: BAZ
+EOF
+}
+
+test_dasel_comment() {
+  local toml="$(toml_5bd7f91 | dasel '.bar = .bar + " HOGE"')"
+  assert_eq "$(yaml_expected_6d39916)" "$toml"
+}
+
+# Not kept
+# $ printf "'foo' = 'FOO BAR'\n# hoge hoge\nbar = 'BAZ'" | t dasel3 --root -i toml -o toml 'foo = foo + ""'
