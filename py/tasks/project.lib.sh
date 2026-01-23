@@ -1,12 +1,13 @@
-#!/bin/sh
-set -o nounset -o errexit
-
-test "${guard_9ac5215+set}" = set && return 0; guard_9ac5215=-
+#!/usr/bin/env sh
+# vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
+# shellcheck shell=sh
+"${sourced_517f312-false}" && return 0; sourced_517f312=true
 
 . ./task.sh
-. ./task-python.lib.sh
+. ./python.lib.sh
 
-task_install() ( # Install scripts.
+# Install scripts.
+task_install() (
   py_bin_dir_path="$HOME"/py-bin
   mkdir -p "$py_bin_dir_path"
   rm -f "$py_bin_dir_path"/*
@@ -39,7 +40,8 @@ EOF
   done
 )
 
-subcmd_run() ( # Run a script.
+# Run a script.
+subcmd_run() (
   cd "$PROJECT_DIR"
   no_indent_script="$(cat <<'EOF'
 import sys
@@ -54,12 +56,13 @@ sys.exit(process.returncode)
 EOF
 )"
   no_indent_script="$(echo "$no_indent_script" | tr '\n' ';')"
-  subcmd_uv run python -c "$no_indent_script" "$WORKING_DIR" "$@"
+  uv run python -c "$no_indent_script" "$INITIAL_PWD" "$@"
 )
 
-subcmd_sync() { # Updates the UV virtualenv.
+# Updates the UV virtualenv.
+subcmd_sync() {
   cd "$PROJECT_DIR"
-  subcmd_uv sync "$@"
+  uv sync "$@"
 }
 
 subcmd_foo() {
@@ -71,5 +74,5 @@ print('This is a Python script.')
 EOF
 )"
   no_indent_script="$(echo "$no_indent_script" | tr '\n' ';')"
-  subcmd_uv run python -c "$no_indent_script"
+  uv run python -c "$no_indent_script"
 }
