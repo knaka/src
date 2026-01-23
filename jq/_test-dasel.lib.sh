@@ -20,10 +20,10 @@ test_dasel() {
 
 toml_5bd7f91() {
   cat <<EOF
-foo: FOO
+foo = "FOO"
 # comment
-bar: BAR
-baz: BAZ
+bar = "BAR"
+baz = "BAZ"
 EOF
 }
 
@@ -44,3 +44,13 @@ EOF
 
 # Not kept
 # $ printf "'foo' = 'FOO BAR'\n# hoge hoge\nbar = 'BAZ'" | t dasel3 --root -i toml -o toml 'foo = foo + ""'
+
+# . ./task-sh/qq.lib.sh
+
+# qq does not support TOML comment
+# test_qq_comment() {
+#   # local toml="$(toml_5bd7f91 | qq --input=toml '.bar = .bar + " HOGE"')"
+#   local toml="$(toml_5bd7f91 | qq --input=toml '.')"
+#   echo d: "$toml"
+#   # assert_eq "$(yaml_expected_6d39916)" "$toml"
+# }
