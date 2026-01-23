@@ -966,6 +966,24 @@
               {
                 "type": "basic",
                 "from": {
+                  "key_code": "d",
+                  "modifiers": {
+                    "mandatory": [
+                      "command",
+                      "shift"
+                    ],
+                    "optional": []
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "osascript $HOME/src/applescript/insert-dateserial.scpt"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "from": {
                   "key_code": "h",
                   "modifiers": {
                     "mandatory": [
@@ -977,7 +995,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "osascript $HOME/Library/CloudStorage/Dropbox/swh/scpt/insert-unique-id.scpt"
+                    "shell_command": "osascript $HOME/src/applescript/insert-unique-id.scpt"
                   }
                 ]
               },
