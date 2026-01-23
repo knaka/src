@@ -1,0 +1,571 @@
+# vim: set filetype=zsh tabstop=2 shiftwidth=2 expandtab :
+
+append_path() {
+  local arg
+  local delim=
+  for arg in "$@"
+  do
+    test -d "$arg" || continue
+    test -n "$PATH" && delim=:
+    PATH="$PATH$delim$arg"
+  done
+}
+
+# ==========================================================================
+#region グローバル変数
+
+export EDITOR="edw"
+export GIT_EDITOR="edw"
+export VOLTA_HOME="$HOME/.volta"
+
+#endregion
+
+# ==========================================================================
+#region $PATH env var
+
+PATH=
+
+append_path "$HOME"/*-bin
+
+# Homebrew Keg-only
+append_path /usr/local/opt/sqlite/bin
+append_path /usr/local/opt/mysql-client/bin
+# append_path /usr/local/opt/postgresql@16/bin
+
+append_path "$VOLTA_HOME"/bin
+
+repos="$HOME/repos"
+export CHEZMOISOURCEDIR="$repos"/github.com/knaka/src/conf/chezmoi-source
+
+# システムの実行ファイルパス
+append_path /bin
+append_path /sbin
+# /usr は bin よりも local を優先
+append_path /usr/local/bin
+append_path /usr/bin
+append_path /usr/sbin
+append_path /usr/local/sbin
+
+#endregion
+
+# ==========================================================================
+#region よく使う変数
+
+d="$HOME"/doc
+doc="$d"
+D="$d"
+y="$doc"/$(date +%Y)
+Y="$y"
+# Anonymous function — zsh: 9 Functions https://zsh.sourceforge.io/Doc/Release/Functions.html
+() {
+  local year
+  for year in $(seq 2020 2030)
+  do
+    eval y$year="$doc"/$year
+    # ${year: -2} は bash/zsh の拡張機能で、文字列の末尾から2文字を取得する (POSIX sh には無い)
+    #
+    # "Note that a negative offset must be separated from the colon by at least one space to avoid being confused with the ':-' expansion."
+    #
+    # — Shell Parameter Expansion (Bash Reference Manual) https://www.gnu.org/software/bash/manual/html_node/Shell-Parameter-Expansion.html
+    eval y${year: -2}="$doc"/$year
+  done
+}
+dl="$HOME"/Downloads
+
+test -x /usr/local/bin/less && export PAGER=/usr/local/bin/less
+
+#endregion
+
+# ==========================================================================
+#region Zsh の設定
+
+# コマンドラインヒストリのサイズ設定
+HISTFILE="$HOME"/.zsh-history
+HISTSIZE=100000
+SAVEHIST=1000000
+
+# 入力されたコマンドラインは、incremental にヒストリに入るようになる
+setopt inc_append_history
+
+# zsh セッション間で、コマンド履歴を共有しないように
+unsetopt share_history
+
+# パスにマッチしない `*` は文字列として許容する
+setopt nonomatch
+
+# ワイルドカードの全展開ではなく、候補を表示するのみにする
+setopt GLOB_COMPLETE
+# よく分からない // zsh.d/zshrc at master · clear-code/zsh.d https://github.com/clear-code/zsh.d/blob/master/zshrc
+## 補完方法の設定。指定した順番に実行する。
+### _oldlist 前回の補完結果を再利用する。
+### _complete: 補完する。
+### _match: globを展開しないで候補の一覧から補完する。
+### _ignored: 補完候補にださないと指定したものも補完候補とする。
+### _approximate: 似ている補完候補も補完候補とする。
+### _prefix: カーソル以降を無視してカーソル位置までで補完する。
+# zstyle ':completion:*' completer _oldlist _complete _match _ignored _approximate _prefix
+
+# 補完
+
+autoload -Uz compinit && compinit
+
+# zshの補完 - Qiita https://qiita.com/minnsou/items/3e9f200f9f2cc9a92920
+
+# 自作補完スクリプトのパス // Zsh: 自作コマンドで補完できるようにする https://zenn.dev/noraworld/articles/self-made-command-zsh-completion
+# FPATH="$HOME/swh/zsh/site-functions:$FPATH"
+
+# macでzshでzsh compinit: insecure directoriesの警告が出る問題 - Qiita https://qiita.com/ayihis@github/items/88f627b2566d6341a741
+# zshで適度なcase-insensitive補完 - Qiita https://qiita.com/watertight/items/2454f3e9e43ef647eb6b
+
+# -U: 関数上書き防止？
+# -z: zsh 形式強制？
+# $FPATH を更新してから、compinit の呼び出しが必要？
+compinit
+
+zstyle ':completion:*' matcher-list 'm:{[a-z]}={[A-Z]}'
+
+# zshのcompinitに指定してるautoloadのオプション -Uz について | by ルク | Medium https://medium.com/@rukurx/zsh%E3%81%AEcompinit%E3%81%AB%E6%8C%87%E5%AE%9A%E3%81%97%E3%81%A6%E3%82%8Bautoload%E3%81%AE%E3%82%AA%E3%83%97%E3%82%B7%E3%83%A7%E3%83%B3-uz-%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6-ad471efd84c3
+
+# どうも自前補完スクリプトの autoload ができたりできなかったりしている間に、できてしまった…。
+# fpath と autoload の順序とかか？ もういいや、これでとりあえず様子を見る
+
+#endregion
+
+# ==========================================================================
+#region プロンプト
+
+# The top directory of the git repository
+gtop=
+
+executed_something_f881915=false
+
+# Enter を押下して、コマンドが実行される直前のフック関数
+preexec() {
+  executed_something_f881915=true
+}
+
+is_linux() {
+  test -d /proc -o -d /sys
+}
+
+# `precmd` は、コマンドプロンプトを表示する直前に実行される。他の名前で、`add-zsh-hook precmd <function>` として登録することもできるようだ
+# スクリーン: 2
+# ステータス: 20
+# デリミタ: 2
+# しめて 24 なので、パスに 56 使える
+precmd() {
+  local rc=$?
+  "$executed_something_f881915" || rc=0
+
+  # black, red, green, yellow, blue, magenta, cyan and white // zsh: 18 Zsh Line Editor https://zsh.sourceforge.io/Doc/Release/Zsh-Line-Editor.html
+  __prompt_fgcolor=black
+  __prompt_bgcolor=green
+  if is_linux
+  then
+    __prompt_bgcolor=cyan
+  fi
+  __prompt_bold="%b"
+  if test "$rc" != 0
+  then
+    __prompt_fgcolor=white
+    __prompt_bgcolor=red
+    if is_linux
+    then
+      __prompt_bgcolor=magenta
+    fi
+    __prompt_bold="%B"
+  fi
+
+  local main_str="-"
+  test "${WINDOW+set}" = set && main_str="$WINDOW"
+
+  local p="${PWD/$HOME/~}"
+
+  # If remote, prepend hostname
+  if test "${SSH_CONNECTION+set}" = set
+  then
+    p="$(hostname):$p"
+  fi
+
+  main_str="$main_str $p"
+
+  local right_str=
+  local delim=
+
+  local git_branch
+  git_branch="$(command -v git >/dev/null 2>&1 && git branch 2>/dev/null)" || :
+  if test -n "$git_branch"
+  then
+    gtop="$(git rev-parse --show-toplevel 2>/dev/null)" || :
+    git_branch="${git_branch##* }"
+    right_str="${delim}${right_str} $git_branch"
+    delim=" "
+  fi
+
+  # * main, stat を確立させます
+  # * 右マージン (margin) 確定
+  #   * 必要行数 required_line_num = (#main / width) + 1
+  #   * 必要桁数 required_column_num = required_line_num * width
+  #   * rmargin = required_column_num - #main
+  # * 埋め草 padding_num
+  #   * rmargin += width while rmargin < #stat
+  #   * padding_num = rmargin - #stat
+  # * 出力
+  #   * main + padding_num . ' ' + $stat + プロンプト
+
+  local line_num=$(((${#main_str} / COLUMNS) + 1))
+  local column_num=$((line_num * COLUMNS))
+  local rmargin_num=$((column_num - ${#main_str}))
+  while test $rmargin_num -lt $((${#right_str} + 1))
+  do
+    rmargin_num=$((rmargin_num + COLUMNS))
+  done
+  local padding_num=$((rmargin_num - ${#right_str}))
+
+  __prompt_str="${main_str}$(printf "%0.s " {1..${padding_num}})${right_str}"
+
+  # case "$TERM" in
+  #   (xterm*)
+  #     print -Pn "\e]0;%n@%m: %~\a"
+  #     ;;
+  #   (screen*)
+  #     print -Pn "???"
+  #     ;;
+  # esac
+}
+
+# zsh: 13 Prompt Expansion https://zsh.sourceforge.io/Doc/Release/Prompt-Expansion.html
+setopt promptsubst
+# PS1='%K{${prompt_bgcolor}}$leftstr${(l,COLUMNS-${#${(%)centerstr}},)${${:-$rightstr}//[%]/%%}}%k$ '
+# PS1='%K{${prompt_bgcolor}}$leftstr $centerstr $rightstr%k$ '
+#ツメツメ行でのプロンプト
+#PS1='%F{black}%K{${prompt_bgcolor}}$main_str $right_str%k%f$ '
+
+# zsh: 13 Prompt Expansion https://zsh.sourceforge.io/Doc/Release/Prompt-Expansion.html
+#   %F, %f: Foreground color
+#   %K, %k: Background color
+#   %B, %b: prompt_bold
+PS1='%F{${__prompt_fgcolor}}%K{${__prompt_bgcolor}}$__prompt_bold$__prompt_str%b%k%f'$'\n''$ '
+
+#endregion
+
+# ==========================================================================
+#region Bindings
+
+
+# MacのVimでCtrl + sとCtrl + qのキーマップ割り当てが効かない問題 - Qiita https://qiita.com/minamijoyo/items/727e97956a118bae1a99
+stty stop undef
+stty start undef
+
+# zshzle(1): zsh editor - Linux man page https://linux.die.net/man/1/zshzle
+
+setopt ignore_eof
+
+# zshのzstyleでの補完時の挙動について - voidy21の日記 https://voidy21.hatenablog.jp/entry/20090902/1251918174
+
+unsetopt auto_menu # 補完キー連打で順に補完候補をローテートで補完
+setopt magic_equal_subst # コマンドラインの引数で --prefix=/usr などの = 以降でも補完できる
+
+# Emacs モードだと ^x がマルチストロークの 1 キー目になってしまうので、vi モードに（これ、何とか Emacs モードから ^x～ だけ削除できないものか）
+
+bindkey -v
+
+# To use C-s
+# stty コマンド - IBM Documentation https://www.ibm.com/docs/ja/aix/7.1?topic=s-stty-command
+stty -ixon
+
+# Delete と Backspace は、リージョンありならばそれを消すように
+
+function delete-region() {
+  zle kill-region
+  CUTBUFFER=$killring[1]
+  shift killring
+}
+# -“N widget [ function ]” で、New Widget の意 // zshzle(1): zsh editor - Linux man page https://linux.die.net/man/1/zshzle
+zle -N delete-region
+
+function backward-delete-char-or-region() {
+  ((REGION_ACTIVE)) && zle delete-region || zle backward-delete-char
+}
+zle -N backward-delete-char-or-region
+
+function delete-char-or-list-or-region() {
+  ((REGION_ACTIVE)) && zle delete-region || zle delete-char-or-list
+}
+zle -N delete-char-or-list-or-region
+
+# shell - Zsh zle shift selection - Stack Overflow https://stackoverflow.com/questions/5407916/zsh-zle-shift-selection
+
+# Shift + カーソル移動で、マークをしつつ region 拡縮
+
+shift-move() {
+  ((REGION_ACTIVE)) || zle set-mark-command
+  zle $1
+}
+
+# “kcap” は terminfo(5) に載っている
+# これ zsh のループ文法のようで、shellcheck が読めない
+# shellcheck disable=SC1073
+# shellcheck disable=SC1058
+# shellcheck disable=SC1072
+for key             kcap seq         widget (
+    left            LFT  $'\e[1;2D'  backward-char
+    right           RIT  $'\e[1;2C'  forward-char
+    alt-shift-left  x    $'\e[1;10D' backward-word
+    alt-shift-right x    $'\e[1;10C' forward-word
+    shome           kHOM $'\e[1;2H'  beginning-of-line
+    send            kEND $'\e[1;2F'  end-of-line
+) {
+  functions[shift-$key]="shift-move $widget"
+  zle -N shift-$key
+  bindkey ${terminfo[$kcap]:-$seq} shift-$key
+}
+
+# あれ？ 以下が効かなくなっていた 2025-09-18T09:55:19+0900
+bindkey "^[[H" beginning-of-line
+bindkey "^[[F" end-of-line
+
+# カーソル移動（モダンな GUI のように、単純なカーソル移動でリージョン選択無効化）
+
+unmark-move() {
+  ((REGION_ACTIVE)) && zle deactivate-region
+  zle $1
+}
+
+for widget (
+  backward-char
+  forward-char
+  backward-word
+  forward-word
+  up-line-or-history
+  down-line-or-history
+  beginning-of-line
+  end-of-line
+) {
+  functions[unmark-$widget]="unmark-move $widget"
+  zle -N unmark-$widget
+}
+
+# モダン GUI ライクなカットとコピー、全選択
+
+x-kill-region() {
+  ((REGION_ACTIVE)) || return
+  zle kill-region
+  print -rn -- "$CUTBUFFER" | (
+    if command -v pbcopy >/dev/null 2>&1
+    then
+      pbcopy
+    else
+      sc
+    fi
+  )
+}
+zle -N x-kill-region
+
+x-copy-region-as-kill() {
+  ((REGION_ACTIVE)) || return
+   zle copy-region-as-kill
+   print -rn -- "$CUTBUFFER" | (
+    if command -v pbcopy >/dev/null 2>&1
+    then
+      pbcopy
+    else
+      sc
+    fi
+  )
+}
+zle -N x-copy-region-as-kill
+
+select-all() {
+  # zle beginning-of-line
+  # あれ？ 複数行一括選択、以前はできていたのに
+  # zle beginning-of-buffer-or-history
+  CURSOR=0
+  zle set-mark-command
+  # zle end-of-line
+  CURSOR=$#BUFFER
+  # zle end-of-buffer-or-history
+}
+zle -N select-all
+
+bindkey '^[.' insert-last-word
+# bindkey '^[[F' unmark-end-of-line
+# bindkey '^[[H' unmark-beginning-of-line
+bindkey  "^[[1~"   unmark-beginning-of-line
+bindkey  "^[[4~"   unmark-end-of-line
+bindkey '^[a' select-all
+# 効いていない
+# bindkey '^[w' x-copy-region-as-kill
+# これなら karabiner での remap が効く
+bindkey '^z' x-copy-region-as-kill
+
+bindkey '^a' unmark-backward-word
+bindkey '^d' unmark-forward-char
+bindkey '^e' unmark-up-line-or-history
+bindkey '^f' unmark-forward-word
+bindkey '^g' delete-char-or-list-or-region
+bindkey '^h' backward-delete-char-or-region
+bindkey '^n' down-line-or-history
+bindkey '^p' up-line-or-history
+bindkey '^r' history-incremental-search-backward
+bindkey '^s' unmark-backward-char
+# 効いている
+bindkey '^w' x-kill-region
+bindkey '^x' unmark-down-line-or-history
+
+# function peco-history-selection() {
+#   #
+#   # BUFFER=$(printf "$(history -n 1 | tac | awk '!a[$0]++' | peco)")
+#   BUFFER=$(printf "$(history -n 1 | tac | peco)")
+#   CURSOR=$#BUFFER
+#   zle reset-prompt
+# }
+
+# zle -N peco-history-selection
+# bindkey '^R' peco-history-selection
+
+# macos - How to expand aliases inline in zsh? - Super User https://superuser.com/questions/1514569/how-to-expand-aliases-inline-in-zsh
+# *エイリアスをコマンドライン上の補完で展開することもできる
+# できるんだが、これなら alias の command substitution 展開した方が良いかも？ そうすれば、peco 等の選択結果がヒストリに残るのだ（グローバルエイリアスだと、ヒストリに残るのはエイリアス）。` をもっと打ちやすいところへ移動させて`
+# やり方としては、下記二種類が考えられる
+#   * command substitution で置換する
+#   * 何らかのショートカットで widget を起動して ZLE で挿入する
+# 後者が素直で効率的だが、キーが限られる？ いやそもそも、peco 併用でいろいろ起動するショートカットを作ればいいのか
+
+
+# autoload -Uz compinit; compinit;
+# bindkey "^k" _expand_alias
+# zstyle ':completion:*' completer _expand_alias _complete _ignored
+# zstyle ':completion:*' regular true
+
+#endregion
+
+# ==========================================================================
+#region Functions
+
+# function も alias も機能的には違いはないので、皆ここへ入れる
+
+# これも、unfuction, autoload 以外は別スクリプトで良いかも
+zreload() {
+  if test "${1+SET}" = SET
+  then
+    file="$(zfn "$1")"
+  else
+    file="$(zfn)"
+  fi
+  local basename
+  basename="$(basename "$file")"
+  local func_name=${basename%.*}
+  unfunction "$func_name" || :
+  autoload -Uz +X "$func_name"
+}
+
+alias attach='test "$TERM" != "screen" && screen -r'
+alias cls=clear
+alias ll='ls -l'
+! which tac >/dev/null && alias tac="tail -r" || :
+alias 1psignin='eval $(1p signin)'
+alias 1plogin=1psignin
+export HOMEBREW_NO_AUTO_UPDATE=1
+alias brew-apply='command brew-apply && PATH=$PATH'
+alias brew-upgrade='command brew update && command brew upgrade && PATH=$PATH'
+alias any-apply='command brew-apply && command gobin-apply && command npm-apply && PATH=$PATH'
+# alias task="launch-task"
+# alias t="launch-task"
+
+# 何かおかしいので、一旦外す
+# alias go="command go-wrap"
+#alias go-install='command go-install && PATH=$PATH'
+#alias go-apply='command go-apply && PATH=$PATH'
+
+aws-switch-profile() {
+  AWS_PROFILE="$(command aws-switch-profile "$@")"
+  if test -n "$AWS_PROFILE"
+  then
+    export AWS_PROFILE
+    unset AWS_ACCESS_KEY_ID
+    unset AWS_DEFAULT_REGION
+    unset AWS_SECRET_ACCESS_KEY
+  else
+    unset AWS_PROFILE
+  fi
+}
+
+oci-switch-profile() {
+  OCI_PROFILE="$(command oci-switch-profile "$@")"
+  if test -n "$OCI_PROFILE"
+  then
+    export OCI_PROFILE
+  else
+    unset OCI_PROFILE
+  fi
+}
+
+# for x in /usr/local/Caskroom/drawio/*/draw.io.app/Contents/MacOS/draw.io
+# do
+#   if test -x "$x"
+#   then
+#     # shellcheck disable=SC2139
+#     alias drawio="$x"
+#     break
+#   fi
+# done
+
+# heroku の app 名をデフォルトとして環境変数へ。要ログイン。envvar セット以外は別スクリプトにした方が良いかも
+heroku-set-app-env() {
+  local app_name
+  if test "${1+SET}" = SET
+  then
+    app_name="$1"
+  else
+    app_name="$(heroku apps --json | jq -r '.[].name' | peco)"
+  fi
+  export HEROKU_APP="$app_name"
+  echo HEROKU_APP set to "$app_name" >&2
+}
+
+# $PATH 上のコマンドキャッシュの更新。zsh は、$PATH を更新するまではコマンド補完用テーブルを更新しない（逆に言えば、補完時には走査が入らないので良いとも言える）
+# shell - How does lookup in $PATH work under the hood? - Unix & Linux Stack Exchange https://unix.stackexchange.com/questions/332948/how-does-lookup-in-path-work-under-the-hood
+alias scanpath='PATH=$PATH'
+
+# 元の tty 設定を、復元のために保持しておく
+original_tty="$(stty -g)"
+
+# tty 設定を復元する
+restoretty() {
+  reset
+  stty "$original_tty"
+}
+
+#endregion
+
+# ==========================================================================
+#region Misc
+
+# # Homebrew の NVM 設定（brew info nvm 参照）
+# # Linux が加わったら直さないと
+
+if test -e /usr/local/opt/nvm/nvm.sh
+then
+  export NVM_DIR="$HOME/.nvm"
+  [ -s "/usr/local/opt/nvm/nvm.sh" ] && \. "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
+  [ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/usr/local/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+fi
+
+# if type brew > /dev/null 2>&1
+# then
+#   export SCALA_HOME="$(brew --prefix scala)/libexec"
+# fi
+
+# # これも Mac 依存
+# # export SDKMAN_DIR=$(brew --prefix sdkman-cli)/libexec
+# # [[ -s "${SDKMAN_DIR}/bin/sdkman-init.sh" ]] && source "${SDKMAN_DIR}/bin/sdkman-init.sh"
+
+# bun completions
+[ -s "/Users/knaka/.bun/_bun" ] && source "/Users/knaka/.bun/_bun"
+
+#endregion
+
+export PATH
+
+unfunction append_path

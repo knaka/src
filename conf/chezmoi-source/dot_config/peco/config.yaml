@@ -1,0 +1,8 @@
+# ln -sf ../etc/peco ~/.config/peco
+Keymap:
+  C-e: peco.SelectUp
+  # デフォルトで入っているイースターエッグが C-x へのマップを不可能にしているので要ソース修正 https://github.com/peco/peco/blob/d8b6fb5/action.go
+  C-x: peco.SelectDown
+  C-r: peco.ScrollPageUp
+  C-c: peco.ScrollPageDown
+  Space: peco.ToggleSelectionAndSelectNext

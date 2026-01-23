@@ -1,0 +1,10 @@
+{
+  "last_sha": {
+    "task": "a0de64221c18b8599ee57973cc8cd115bd2dbc13",
+    "task.cmd": "5b9485b8f51fa0c3a7eaa35babe88cb3d7e8e648",
+    "task.sh": "e80e22934e92cabcfb231c6dfccd99a1177501c7",
+    "yq.lib.sh": "38af785f11367f26e3e461dd9bdfd21b27e1e296",
+    "chezmoi.lib.sh": "150513bcca9a70f7e88682852ff0ce8f043aa123",
+    "yj.lib.sh": "5790d6f3af656920895a8a24727bd32746447700"
+  }
+}
