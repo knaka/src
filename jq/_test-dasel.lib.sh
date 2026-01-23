@@ -36,10 +36,11 @@ baz: BAZ
 EOF
 }
 
-test_dasel_comment() {
-  local toml="$(toml_5bd7f91 | dasel '.bar = .bar + " HOGE"')"
-  assert_eq "$(yaml_expected_6d39916)" "$toml"
-}
+# Dasel does not support TOML comment
+# test_dasel_comment() {
+#   local toml="$(toml_5bd7f91 | dasel '.bar = .bar + " HOGE"')"
+#   assert_eq "$(yaml_expected_6d39916)" "$toml"
+# }
 
 # Not kept
 # $ printf "'foo' = 'FOO BAR'\n# hoge hoge\nbar = 'BAZ'" | t dasel3 --root -i toml -o toml 'foo = foo + ""'

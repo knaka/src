@@ -9,8 +9,3 @@ subcmd_test() {
   echo "Running tests with shell ${SH}."
   subcmd_task__test "$@"
 }
-
-# dasel(1)
-subcmd_dasel() {
-  dasel "$@"
-}
