@@ -34,7 +34,7 @@ ghq_list() {
     "$GHQ_ROOT"/*/*/.git \
     "$GHQ_ROOT"/*/*/*/.git \
     -type d \
-    -maxdepth 0 \
+    -maxdepth 0 2>/dev/null \
   | while read -r p
     do
       test -d "$p" || continue
@@ -77,6 +77,7 @@ repo() {
   test $# -eq 0 && return 1
   if test $# -ge 2
   then
+    echo 39b0757 "$@" >&2
     set -- "$(printf "%s\n" "$@" | peco)"
   fi
   test -z "$1" && return 1
