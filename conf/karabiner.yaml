@@ -278,17 +278,18 @@ profiles:
         - description: "グローバルな 1 ストローク機能(主に Command + Shift + ?)"
           manipulators:
             # d: dateserial
-            - type: basic
-              from: {key_code: d, modifiers: {mandatory: [command, shift], optional: []}}
-              to: [{shell_command: "osascript $HOME/src/applescript/insert-dateserial.scpt"}]
+            # - type: basic
+            #   from: {key_code: d, modifiers: {mandatory: [command, shift], optional: []}}
+            #   to: [{shell_command: "osascript $HOME/src/applescript/insert-dateserial.scpt"}]
             # h: 小文字ハッシュ hash
-            - type: basic
-              from: {key_code: h, modifiers: {mandatory: [command, shift], optional: []}}
-              to: [{shell_command: "osascript $HOME/src/applescript/insert-unique-id.scpt"}]
+            # - type: basic
+            #   from: {key_code: h, modifiers: {mandatory: [command, shift], optional: []}}
+            #   # to: [{shell_command: "osascript $HOME/src/applescript/insert-unique-id.scpt"}]
+            #   to: [{shell_command: "open 'hammerspoon://insertText'"}]
             # h (shift): 大文字ハッシュ hash
-            - type: basic
-              from: {key_code: h, modifiers: {mandatory: [command, shift, control], optional: []}}
-              to: [{shell_command: "osascript $HOME/Library/CloudStorage/Dropbox/swh/scpt/insert-unique-upper-id.scpt"}]
+            # - type: basic
+            #   from: {key_code: h, modifiers: {mandatory: [command, shift, control], optional: []}}
+            #   to: [{shell_command: "osascript $HOME/Library/CloudStorage/Dropbox/swh/scpt/insert-unique-upper-id.scpt"}]
             # r: "Readability" chrome://extensions/shortcuts
             # t: "Current tab in default format chrome://extensions/shortcuts
             # \: backslash
