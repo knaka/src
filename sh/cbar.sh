@@ -1,13 +1,29 @@
-#!/bin/sh
-set -o nounset -o errexit
+#!/usr/bin/env sh
+# vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
+# shellcheck shell=sh
+"${sourced_b361d7d-false}" && return 0; sourced_b361d7d=true
 
-# Clipboard Archiver
+# ClipBoard ARchiver
 
-if test "${1+SET}" = SET
-then
-  # 引数が指定されたらそれらをファイル・ディレクトリとしてアーカイブしてテキストにしクリップボードへ
-  tar czvf - "$@" | base64 | sh "$(dirname "$0")/"/sc.sh
-else
-  # 引数が指定されなかったら、クリップボードの内容のテキストをアーカイブとして展開
-  sh "$(dirname "$0")"/gc.sh | base64 -d | tar zxvf -
-fi
+set -- "$PWD" "${0%/*}" "$@"; if test "$2" != "$0"; then cd "$2" 2>/dev/null || :; fi
+. ./sc.sh
+. ./gc.sh
+cd "$1"; shift 2
+
+cbar() {
+  if test $# -ge 1
+  then
+    # If arguments are specified, archive them as files/directories, convert to text, and set to clipboard.
+    tar czvf - "$@" | base64 | sc
+  else
+    # If no arguments are specified, extract the clipboard content as an archive.
+    gc | base64 -d | tar zxvf -
+  fi
+}
+
+case "${0##*/}" in
+  (cbar.sh|cbar)
+    set -o nounset -o errexit
+    cbar "$@"
+    ;;
+esac
