@@ -3,6 +3,8 @@
 ; ^ Ctrl
 ; + Shift
 
+; ChgKey で Windows キーは右 Ctrl になっているので、基本的に `#` は使われないはず
+
 #Requires AutoHotkey v2.0
 #SingleInstance force
 
@@ -69,7 +71,8 @@
 <^+z:: Send "!^{Down}"
 ; Rename...
 +>^n::Send "{f2}"
-; Accept Inline Suggestion
+; Open は、Shift + 右 Ctrl で、Ctrl + P を send
++>^o:: Send "^{p}"
 #HotIf
 
 +<^s::Send "+{Left}"
@@ -171,7 +174,6 @@
 <^+z::Send "^+{z}"
 ; Copilot Apply ... → Alt  + Tab
 #HotIf
-
 
 LAlt & LButton:: Send "^{LButton}"
 

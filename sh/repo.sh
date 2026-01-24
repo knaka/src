@@ -77,7 +77,6 @@ repo() {
   test $# -eq 0 && return 1
   if test $# -ge 2
   then
-    echo 39b0757 "$@" >&2
     set -- "$(printf "%s\n" "$@" | peco)"
   fi
   test -z "$1" && return 1
