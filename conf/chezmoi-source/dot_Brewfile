@@ -6,6 +6,8 @@
 
 cask_args appdir: '/Applications'
 
+tap 'jmespath/jmespath' # for 'jp'
+
 # ==========================================================================
 #region fomulae 一覧・検索 https://formulae.brew.sh/formula/
 
