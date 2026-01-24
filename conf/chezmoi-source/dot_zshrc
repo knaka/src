@@ -351,28 +351,27 @@ for widget (
 x-kill-region() {
   ((REGION_ACTIVE)) || return
   zle kill-region
-  print -rn -- "$CUTBUFFER" | (
-    if command -v pbcopy >/dev/null 2>&1
+  print -rn -- "$CUTBUFFER" \
+  | if command -v pbcopy >/dev/null 2>&1
     then
       pbcopy
     else
       sc
     fi
-  )
 }
 zle -N x-kill-region
 
 x-copy-region-as-kill() {
   ((REGION_ACTIVE)) || return
-   zle copy-region-as-kill
-   print -rn -- "$CUTBUFFER" | (
-    if command -v pbcopy >/dev/null 2>&1
+  # zsh: 18 Zsh Line Editor https://zsh.sourceforge.io/Doc/Release/Zsh-Line-Editor.html
+  zle copy-region-as-kill
+  print -rn -- "$CUTBUFFER" \
+  | if command -v pbcopy >/dev/null 2>&1
     then
       pbcopy
     else
       sc
     fi
-  )
 }
 zle -N x-copy-region-as-kill
 

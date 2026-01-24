@@ -1,8 +1,7 @@
-"//0caa65a": "もしこのファイルが JSON ファイルであるならば、それは YAML ファイルから生成されたものなので、直接編集しないでください。ソースの YAML は karabiner.yaml です。"
-"//beb12ae": "JSON ファイルは、 ~/.config/karabiner/ 以下へ「ハードリンク」してください。なぜならば、シンボリックリンクすると、Ventura 以降の Karabiner-Elements と Dropbox との連携がおかしいようだから。"
-"//adc7ccb": "タスク `karabiner_json:install` で、更新＆ハードリンクをします。"
-# configuration files の置き場所 // File locations | Karabiner-Elements https://karabiner-elements.pqrs.org/docs/json/location/
-# 設定ファイルの構成 // karabiner.json data structure | Karabiner-Elements https://karabiner-elements.pqrs.org/docs/json/root-data-structure/
+"//2026012432": "もしこのファイルが JSON ファイルであるならば、それは YAML ファイルから生成されたものなので、直接編集しないでください。ソースの YAML は karabiner.yaml です。"
+"//2026012434": "タスク `karabiner_json:install` で、更新＆ハードリンクをします。"
+# configuration files の置き場所については右記を参照。 — File locations | Karabiner-Elements https://karabiner-elements.pqrs.org/docs/json/location/
+# 設定ファイルの構成。 — karabiner.json data structure | Karabiner-Elements https://karabiner-elements.pqrs.org/docs/json/root-data-structure/
 global:
   check_for_updates_on_startup: true
   show_in_menu_bar: true
@@ -18,55 +17,6 @@ profiles:
       mouse_key_xy_scale: 100
       keyboard_type_v2: ansi
     devices: []
-    fn_function_keys:
-      - from:
-          key_code: f1
-        to:
-          - consumer_key_code: display_brightness_decrement
-      - from:
-          key_code: f2
-        to:
-          - consumer_key_code: display_brightness_increment
-      - from:
-          key_code: f3
-        to:
-          - key_code: mission_control
-      - from:
-          key_code: f4
-        to:
-          - key_code: launchpad
-      - from:
-          key_code: f5
-        to:
-          - key_code: illumination_decrement
-      - from:
-          key_code: f6
-        to:
-          - key_code: illumination_increment
-      - from:
-          key_code: f7
-        to:
-          - consumer_key_code: rewind
-      - from:
-          key_code: f8
-        to:
-          - consumer_key_code: play_or_pause
-      - from:
-          key_code: f9
-        to:
-          - consumer_key_code: fastforward
-      - from:
-          key_code: f10
-        to:
-          - consumer_key_code: mute
-      - from:
-          key_code: f11
-        to:
-          - consumer_key_code: volume_decrement
-      - from:
-          key_code: f12
-        to:
-          - consumer_key_code: volume_increment
     complex_modifications:
       parameters:
         basic.simultaneous_threshold_milliseconds: 50
@@ -75,85 +25,85 @@ profiles:
         basic.to_if_held_down_threshold_milliseconds: 500
         mouse_motion_to_scroll.speed: 100
       rules:
-        # 最初に、個別のアプリごとの設定。Karabiner-Elements の設定は先勝ちなので、個別のカスタマイズを先に、アプリごとの設定を後に書くこと
-        - description: "Terminal"
+        # 最初に、個別のアプリケーションごとの設定を行う。Karabiner-Elements の各設定は「先勝ち」なので、個別のカスタマイズを先に、アプリごとの設定を後に書くこと
+        - description: "ターミナル（iTerm2 + zsh + GNU Screen）"
           manipulators:
-              # 選択左
+            # 左へ選択
             - type: basic
-              conditions: &conditions_shell
+              conditions: &conditions_terminal
                 - type: frontmost_application_if
                   bundle_identifiers:
                     - ^com.googlecode.iterm2$
               from: {key_code: s, modifiers: {mandatory: [control, shift], optional: []}}
               to: [{key_code: left_arrow, modifiers: [shift]}]
-              # 選択右
+              # 右へ選択
             - type: basic
-              conditions: *conditions_shell
+              conditions: *conditions_terminal
               from: {key_code: d, modifiers: {mandatory: [control, shift], optional: []}}
               to: [{key_code: right_arrow, modifiers: [shift]}]
-            # 選択左ワード
+            # 左ワードへ選択
             - type: basic
-              conditions: *conditions_shell
+              conditions: *conditions_terminal
               from: {key_code: a, modifiers: {mandatory: [control, shift], optional: []}}
               to: [{key_code: left_arrow, modifiers: [left_option, left_shift]}]
-            # 選択右ワード
+            # 右ワードへ選択
             - type: basic
-              conditions: *conditions_shell
+              conditions: *conditions_terminal
               from: {key_code: f, modifiers: {mandatory: [control, shift], optional: []}}
               to: [{key_code: right_arrow, modifiers: [left_option, left_shift]}]
+            # 行頭へ選択
+            - type: basic
+              conditions: *conditions_terminal
+              from: {key_code: a, modifiers: {mandatory: [control, command, shift], optional: []}}
+              to: [{key_code: home, modifiers: [shift]}]
+            # 行末へ選択
+            - type: basic
+              conditions: *conditions_terminal
+              from: {key_code: f, modifiers: {mandatory: [control, command, shift], optional: []}}
+              to: [{key_code: end, modifiers: [shift]}]
             # 行頭
             - type: basic
-              conditions: *conditions_shell
+              conditions: *conditions_terminal
               from: {key_code: a, modifiers: {mandatory: [control, command], optional: []}}
               to: [{key_code: home, modifiers: []}]
             # 行末
             - type: basic
-              conditions: *conditions_shell
+              conditions: *conditions_terminal
               from: {key_code: f, modifiers: {mandatory: [control, command], optional: []}}
               to: [{key_code: end, modifiers: []}]
-            # 選択行頭
+            # カット: zsh で kill-region 風にクリップボードへもコピーする "x-kill-region" が bind されている key へ
             - type: basic
-              conditions: *conditions_shell
-              from: {key_code: a, modifiers: {mandatory: [control, command, shift], optional: []}}
-              to: [{key_code: home, modifiers: [shift]}]
-            # 選択行末
-            - type: basic
-              conditions: *conditions_shell
-              from: {key_code: f, modifiers: {mandatory: [control, command, shift], optional: []}}
-              to: [{key_code: end, modifiers: [shift]}]
-            # カット → kill-region 風
-            - type: basic
-              conditions: *conditions_shell
+              conditions: *conditions_terminal
               from: {key_code: x, modifiers: {mandatory: [command], optional: []}}
               to: [{key_code: w, modifiers: [control]}]
-            # コピー → copy-region-as-kill 風
+            # コピー: zsh で copy-region-as-kill 風にクリップボードへもコピーする "x-copy-region-as-kill" が bind された key へ
             - type: basic
-              conditions: *conditions_shell
+              conditions: *conditions_terminal
               from: {key_code: c, modifiers: {mandatory: [command]}}
-              # to: [{key_code: w, modifiers: [option]}]
               to: [{key_code: z, modifiers: [control]}]
             # 全選択
             - type: basic
-              conditions: *conditions_shell
+              conditions: *conditions_terminal
               from: {key_code: a, modifiers: {mandatory: [command], optional: []}}
               to: [{key_code: a, modifiers: [option]}]
             # Ctrl + Tab でタブ移動
             - type: basic
-              conditions: *conditions_shell
+              conditions: *conditions_terminal
               from: {key_code: "tab", modifiers: {mandatory: ["control"], optional: []}}
               to: [{key_code: "open_bracket", modifiers: ["shift", "command"]}]
+            # 同、逆移動
             - type: basic
-              conditions: *conditions_shell
+              conditions: *conditions_terminal
               from: {key_code: "tab", modifiers: {mandatory: ["control", "shift"], optional: []}}
               to: [{key_code: "close_bracket", modifiers: ["shift", "command"]}]
-        - description: "VSCode"
+        - description: "Visual Studio Code"
           manipulators:
             # Open (Search files by name)
             - type: basic
               conditions: &conditions_vscode
-              - type: frontmost_application_if
-                bundle_identifiers:
-                  - ^com\.microsoft\.VSCode$
+                - type: frontmost_application_if
+                  bundle_identifiers:
+                    - ^com\.microsoft\.VSCode$
               from: {key_code: o, modifiers: {mandatory: [shift, command]}}
               to: [{key_code: p, modifiers: [command]}]          
             # 変則的なタブ移動の修正（Recently-used ではなく Visual-order に）。順方向
@@ -166,7 +116,12 @@ profiles:
               conditions: *conditions_vscode
               from: { "key_code": "tab", "modifiers": { "mandatory": ["control", "shift"] } }
               to: [{ "key_code": "open_bracket", "modifiers": ["command", "shift"] }]
-        # 続いて、システム全体の設定。
+            # Ctrl - \ で、プロンプトで送信せず改行
+            - type: basic
+              conditions: *conditions_vscode
+              from: {key_code: "backslash", modifiers: {mandatory: [control], optional: []}}
+              to: [{key_code: "return_or_enter", modifiers: [shift]},]
+        # 以下、システム全体の設定
         - description: "international1（ろ） → Shift"
           # 英語設定にした日本語キーボードで、右下の「_ ろ」キーが余るので、遠すぎる `~ を単押しへ移動。modifier としては右 Shift。
           manipulators:
@@ -175,141 +130,64 @@ profiles:
               to: [{key_code: "right_shift"}]
               to_if_alone: [{key_code: "international3"}]
               to_if_held_down: [{key_code: "right_shift"}]
-        - description: "Backquotes (Backticks)。2 つの backquotes を挿入。Shift も押せば tilde 挿入"
+        - description: "左 Command → Backquotes (Backticks) / tilde"
           manipulators:
             - type: basic
               from: {key_code: spacebar, modifiers: {mandatory: [left_command]}}
               to: [
+                # 日本語変換をオフにしてから
                 {key_code: "japanese_eisuu", modifiers: []},
                 {key_code: "international3", modifiers: []},
               ]
             - type: basic
               from: {key_code: spacebar, modifiers: {mandatory: [left_command, shift]}}
               to: [
+                # 日本語変換をオフにしてから
                 {key_code: "japanese_eisuu", modifiers: []},
                 {key_code: "international3", modifiers: [shift]},
-              ]
-        - description: "&Command Substitution \"$(...)\""
-          manipulators:
-            - type: basic
-              from: {key_code: "c", modifiers: {mandatory: [option]}}
-              to: [
-                { key_code: "quote", modifiers: [shift] },
-                { key_code: "4", modifiers: [shift] },
-                { key_code: "9", modifiers: [shift] },
-                { key_code: "0", modifiers: [shift] },
-                { key_code: "quote", modifiers: [shift] },
-                { key_code: "left_arrow" },
-                { key_code: "left_arrow" },
-              ]
-        - description: "Option + Open Bracket → Double Open and Closing Quotation Marks, Left Arrow"
-          manipulators:
-            - type: basic
-              from: {key_code: open_bracket, modifiers: {mandatory: [option]}}
-              to: [
-                {key_code: open_bracket, modifiers: [option]},
-                {key_code: open_bracket, modifiers: [option, shift]},
-                {key_code: left_arrow, modifiers: []},
-              ]
-        - description: "&Variable Expansion (parameter expansion)"
-          manipulators:
-            - type: basic
-              from: {key_code: "v", modifiers: {mandatory: [option]}}
-              to: [
-                { key_code: "quote", modifiers: [shift] },
-                { key_code: "4", modifiers: [shift] },
-                { key_code: "open_bracket", modifiers: [shift] },
-                { key_code: "close_bracket", modifiers: [shift] },
-                { key_code: "quote", modifiers: [shift] },
-                { key_code: "left_arrow" },
-                { key_code: "left_arrow" },
               ]
         - description: "右 Command + Space → Escape"
           manipulators:
             - type: basic
               from: {key_code: spacebar, modifiers: {mandatory: [right_command]}}
               to: [{key_code: escape}]
-        - description: "IME オン（ALt + Space -> かな）"
+        - description: "IME オン（Option + Space → かな）"
           manipulators:
             - type: basic
-              from:
-                key_code: spacebar
-                modifiers:
-                  mandatory:
-                    - right_option
-              to:
-                - key_code: japanese_kana
-        - description: "IME オフ（Ctrl + Shift -> 英数）"
+              from: {key_code: spacebar, modifiers: {mandatory: [right_option]}}
+              to: { key_code: "japanese_kana" }
+        - description: "IME オフ（Ctrl + Shift → 英数）"
           manipulators:
             - type: basic
-              from:
-                key_code: spacebar
-                modifiers:
-                  mandatory:
-                    - control
-              to:
-                - key_code: japanese_eisuu
+              from: {key_code: spacebar, modifiers: {mandatory: [control]}}
+              to: { key_code: "japanese_eisuu" }
         - description: "かな → Option"
           manipulators:
             - type: basic
               from:
                 key_code: japanese_kana
-                # この modifier がないと、先に他の modifier が入るとヒットしなくなる
+                # この modifier は指定する必要がある。さもないと、先に他の modifier が入るとヒットしなくなってしまう
                 modifiers:
                   optional:
                     - any
-              to:
-                - key_code: right_option
+              to: {key_code: right_option}
         - description: "英数 → Control"
           manipulators:
             - type: basic
               from:
                 key_code: japanese_eisuu
-                # この modifier がないと、先に他の modifier が入るとヒットしなくなる
+                # この modifier は指定する必要がある。さもないと、先に他の modifier が入るとヒットしなくなってしまう
                 modifiers:
                   optional:
                     - any
-              to:
-                - key_code: left_control
-              to_if_alone:
-                - key_code: left_control
-              to_if_held_down:
-                - key_code: left_control
-        - description: "グローバルな 1 ストローク機能(主に Command + Shift + ?)"
+              to: {key_code: left_control}
+        - description: "Ctrl + \ で、送信せず改行"
           manipulators:
-            # d: dateserial
-            # - type: basic
-            #   from: {key_code: d, modifiers: {mandatory: [command, shift], optional: []}}
-            #   to: [{shell_command: "osascript $HOME/src/applescript/insert-dateserial.scpt"}]
-            # h: 小文字ハッシュ hash
-            # - type: basic
-            #   from: {key_code: h, modifiers: {mandatory: [command, shift], optional: []}}
-            #   # to: [{shell_command: "osascript $HOME/src/applescript/insert-unique-id.scpt"}]
-            #   to: [{shell_command: "open 'hammerspoon://insertText'"}]
-            # h (shift): 大文字ハッシュ hash
-            # - type: basic
-            #   from: {key_code: h, modifiers: {mandatory: [command, shift, control], optional: []}}
-            #   to: [{shell_command: "osascript $HOME/Library/CloudStorage/Dropbox/swh/scpt/insert-unique-upper-id.scpt"}]
-            # r: "Readability" chrome://extensions/shortcuts
-            # t: "Current tab in default format chrome://extensions/shortcuts
-            # \: backslash
-            - type: basic
-              conditions: *conditions_vscode
-              from: {key_code: "backslash", modifiers: {mandatory: [control], optional: []}}
-              # Claude COde CLI モードならば `\` で継続
-              # to: [
-              #   {key_code: "backslash", modifiers: []},
-              #   {key_code: "return_or_enter", modifiers: []},
-              # ]
-              # GUI ならば Shift + Enter
-              to: [{key_code: "return_or_enter", modifiers: [shift]},]
             - type: basic
               from: {key_code: "backslash", modifiers: {mandatory: [control], optional: []}}
-              to: [
-                {key_code: "return_or_enter", modifiers: [shift]},
-              ]
-
-        - description: "スリープ, sleep (sLeep)"
+              to: {key_code: "return_or_enter", modifiers: [shift]}
+        - description: "スリープ, S&leep"
+          # ログインの画面からでも効く。Hammerspoon だと効かない
           manipulators: 
             - type: basic
               from:
@@ -319,7 +197,7 @@ profiles:
                     - command
               to:
                 - shell_command: pmset sleepnow
-        - description: "スクリーンロック, Screen Lock, screenlock (locK)"
+        - description: "スクリーンロック, Screen Loc&k"
           manipulators: 
             - type: basic
               from:
@@ -333,7 +211,7 @@ profiles:
           manipulators:
             # 上
             - type: basic
-              conditions: &conditions_not_shell
+              conditions: &conditions_not_terminal
                 - type: frontmost_application_unless
                   bundle_identifiers:
                     - ^com.googlecode.iterm2$
@@ -341,82 +219,82 @@ profiles:
               to: [{key_code: up_arrow}]
             # 上選択
             - type: basic
-              conditions: *conditions_not_shell
+              conditions: *conditions_not_terminal
               from: {key_code: e, modifiers: {mandatory: [control, caps_lock], optional: []}}
               to: [{key_code: up_arrow, modifiers: [shift]}]
             # 下
             - type: basic
-              conditions: *conditions_not_shell
+              conditions: *conditions_not_terminal
               from: {key_code: x, modifiers: {mandatory: [control], optional: [shift]}}
               to: [{key_code: down_arrow}]
             # 下選択
             - type: basic
-              conditions: *conditions_not_shell
+              conditions: *conditions_not_terminal
               from: {key_code: x, modifiers: {mandatory: [control, caps_lock], optional: []}}
               to: [{key_code: down_arrow, modifiers: [shift]}]
             # 左
             - type: basic
-              conditions: *conditions_not_shell
+              conditions: *conditions_not_terminal
               from: {key_code: s, modifiers: {mandatory: [control], optional: [shift]}}
               to: [{key_code: left_arrow}]
             # 左選択
             - type: basic
-              conditions: *conditions_not_shell
+              conditions: *conditions_not_terminal
               from: {key_code: s, modifiers: {mandatory: [control, caps_lock], optional: []}}
               to: [{key_code: left_arrow, modifiers: [shift]}]
             # 右
             - type: basic
-              conditions: *conditions_not_shell
+              conditions: *conditions_not_terminal
               from: {key_code: d, modifiers: {mandatory: [control], optional: [shift]}}
               to: [{key_code: right_arrow}]
             # 右選択
             - type: basic
-              conditions: *conditions_not_shell
+              conditions: *conditions_not_terminal
               from: {key_code: d, modifiers: {mandatory: [control, caps_lock], optional: []}}
               to: [{key_code: right_arrow, modifiers: [shift]}]
             # 左ワード
             - type: basic
-              conditions: *conditions_not_shell
+              conditions: *conditions_not_terminal
               from: {key_code: a, modifiers: {mandatory: [control], optional: [shift]}}
               to: [{key_code: left_arrow, modifiers: [left_option]}]
               # to: [{key_code: home, modifiers: []}]
             # 右ワード
             - type: basic
-              conditions: *conditions_not_shell
+              conditions: *conditions_not_terminal
               from: {key_code: f, modifiers: {mandatory: [control], optional: [shift]}}
               to: [{key_code: right_arrow, modifiers: [left_option]}]
             # 行頭
             - type: basic
-              conditions: *conditions_not_shell
+              conditions: *conditions_not_terminal
               from: {key_code: a, modifiers: {mandatory: [control, command], optional: [shift]}}
               # from: {key_code: a, modifiers: {mandatory: [control, command]}}
               to: [{key_code: left_arrow, modifiers: [left_command]}]
               # to: [{key_code: home, modifiers: []}]
             # 行末
             - type: basic
-              conditions: *conditions_not_shell
+              conditions: *conditions_not_terminal
               from: {key_code: f, modifiers: {mandatory: [control, command], optional: [shift]}}
               # from: {key_code: f, modifiers: {mandatory: [control, command]}}
               to: [{key_code: right_arrow, modifiers: [left_command]}]
               # to: [{key_code: end, modifiers: []}]
             # 前ページ
             - type: basic
-              conditions: *conditions_not_shell
+              conditions: *conditions_not_terminal
               from: {key_code: r, modifiers: {mandatory: [control], optional: [shift]}}
               to: [{key_code: page_up}]
             # 次ページ
             - type: basic
-              conditions: *conditions_not_shell
+              conditions: *conditions_not_terminal
               from: {key_code: c, modifiers: {mandatory: [control], optional: [shift]}}
               to: [{key_code: page_down}]
             # ページ先頭
             - type: basic
-              conditions: *conditions_not_shell
+              conditions: *conditions_not_terminal
               from: {key_code: r, modifiers: {mandatory: [control, command], optional: [shift]}}
               to: [{key_code: up_arrow, modifiers: [left_command]}]
             # ページ末尾
             - type: basic
-              conditions: *conditions_not_shell
+              conditions: *conditions_not_terminal
               from: {key_code: c, modifiers: {mandatory: [control, command], optional: [shift]}}
               to: [{key_code: down_arrow, modifiers: [left_command]}]
             # マルチカーソル上延長（エディタのみ）
@@ -431,41 +309,42 @@ profiles:
               to: [{key_code: down_arrow, modifiers: [left_option, left_command]}]
             # スクロールアップ（マウスを利用）
             - type: basic
-              conditions: *conditions_not_shell
+              conditions: *conditions_not_terminal
               from: {key_code: w, modifiers: {mandatory: [control], optional: []}}
               to: [{mouse_key: {vertical_wheel: -40}}]
             # スクロールダウン（マウスを利用）
             - type: basic
-              conditions: *conditions_not_shell
+              conditions: *conditions_not_terminal
               from: {key_code: z, modifiers: {mandatory: [control], optional: []}}
               to: [{mouse_key: {vertical_wheel: +40}}]
             # 削除
             - type: basic
-              conditions: *conditions_not_shell
+              conditions: *conditions_not_terminal
               from: {key_code: g, modifiers: {mandatory: [control], optional: []}}
               to: [{key_code: delete_forward, modifiers: []}]
             # バックスペース
             - type: basic
-              conditions: *conditions_not_shell
+              conditions: *conditions_not_terminal
               from: {key_code: h, modifiers: {mandatory: [control], optional: []}}
               to: [{key_code: delete_or_backspace, modifiers: []}]
             # Enter
             - type: basic
-              conditions: *conditions_not_shell
+              conditions: *conditions_not_terminal
               from: {key_code: m, modifiers: {mandatory: [control], optional: []}}
               to: [{key_code: return_or_enter, modifiers: []}]
             # Tab
             - type: basic
-              conditions: *conditions_not_shell
+              conditions: *conditions_not_terminal
               from: {key_code: i, modifiers: {mandatory: [control], optional: []}}
               to: [{key_code: tab, modifiers: []}]
-            # Ctrl-n, Ctrl-p
+            # Ctrl-n
             - type: basic
-              conditions: *conditions_not_shell
+              conditions: *conditions_not_terminal
               from: {key_code: n, modifiers: {mandatory: [control], optional: []}}
               to: [{key_code: down_arrow, modifiers: []}]
+            # Ctrl-p
             - type: basic
-              conditions: *conditions_not_shell
+              conditions: *conditions_not_terminal
               from: {key_code: p, modifiers: {mandatory: [control], optional: []}}
               to: [{key_code: up_arrow, modifiers: []}]
         - description: "ランチャー (Option + Command + ?)"
@@ -473,326 +352,63 @@ profiles:
             # 1
             - type: basic
               from: {key_code: "1", modifiers: {mandatory: [option, command]}}
-              # to: [{shell_command: "osascript $HOME/Library/CloudStorage/Dropbox/swh/scpt/activate-browser-tab.scpt https://mail.google.com/mail/u/0/#inbox"}]          
-              to: [{shell_command: "osascript $HOME/Library/CloudStorage/Dropbox/swh/scpt/activate-browser-tab.scpt https://mail.google.com/mail/u/0/"}]          
+              to: [{shell_command: "osascript $HOME/src/applescript/activate-browser-tab.scpt https://mail.google.com/mail/u/0/"}]          
             # 2
             - type: basic
               from: {key_code: "2", modifiers: {mandatory: [option, command]}}
-              # to: [{shell_command: "osascript $HOME/Library/CloudStorage/Dropbox/swh/scpt/activate-browser-tab.scpt https://mail.google.com/mail/u/1/#inbox"}]          
-              to: [{shell_command: "osascript $HOME/Library/CloudStorage/Dropbox/swh/scpt/activate-browser-tab.scpt https://mail.google.com/mail/u/1/#inbox"}]          
-            # A ～ iPhone via Thunderbolt Audio
-            - type: basic
-              from: {key_code: a, modifiers: {mandatory: [option, command]}}
-              to: [{shell_command: "osascript $HOME/Library/CloudStorage/Dropbox/swh/scpt/launch-quicktime_player.scpt"}]
+              to: [{shell_command: "osascript $HOME/src/applescript/activate-browser-tab.scpt https://mail.google.com/mail/u/1/"}]
             # Browser
             - type: basic
               from: {key_code: b, modifiers: {mandatory: [option, command]}}
               to: [{shell_command: "open -b com.google.Chrome"}]
-              # to: [{shell_command: "open -b company.thebrowser.Browser"}]
-            # Calendar
-            # Client IDE (WebStorm と Android Studio  )
-            - type: basic
-              from: {key_code: c, modifiers: {mandatory: [option, command]}}
-              # to: [{shell_command: "open -a '$HOME/bin/activate_client_ide'"}]
-              to: [{shell_command: "osascript $HOME/Library/CloudStorage/Dropbox/swh/scpt/activate-browser-tab.scpt https://calendar.google.com/"}]          
+            # C
             # Dictionary
             - type: basic
               from: {key_code: d, modifiers: {mandatory: [option, command]}}
-              to: [{shell_command: "open -a 'Dictionary.app'"}]
+              to: [{shell_command: "open -b com.apple.Dictionary"}]
             # Editor
             - type: basic
               from: {key_code: e, modifiers: {mandatory: [option, command]}}
-             #  to: [{shell_command: "open -a 'Visual Studio Code.app'"}]
               to: [{shell_command: "open -b com.microsoft.VSCode"}]
             # Filer
             - type: basic
               from: {key_code: f, modifiers: {mandatory: [option, command]}}
-              to: [{shell_command: "open -a 'Finder.app'"}]
-            # Goland
-            # - type: basic
-            #   from: {key_code: g, modifiers: {mandatory: [option, command]}}
-            #   to: [{shell_command: "open -b com.jetbrains.goland"}]
-            # diaGram.net
-            - type: basic
-              from: {key_code: g, modifiers: {mandatory: [option, command]}}
-              to: [{shell_command: "open -b com.jgraph.drawio.desktop"}]
+              to: [{shell_command: "open -b com.apple.finder"}]
+            # G
             # H
-            # IDE。IntelliJ にすべきか
-            # - type: basic
-            #   from: {key_code: i, modifiers: {mandatory: [option, command]}}
-            #   # to: [{shell_command: "open -a '$HOME/bin/activate_ide'"}]
-            #   to: [{shell_command: "open -b com.jetbrains.intellij"}]
+            # I
             # J
-            # Kindle
-            - type: basic
-              from: {key_code: k, modifiers: {mandatory: [option, command]}}
-              to: [{shell_command: "open -b com.amazon.Kindle"}]
+            # K
             # sLack
             - type: basic
               from: {key_code: l, modifiers: {mandatory: [option, command]}}
               to: [{shell_command: "open -b com.tinyspeck.slackmacgap"}]
-            # Music
-            - type: basic
-              from: {key_code: m, modifiers: {mandatory: [option, command]}}
-              # to: [{shell_command: "open -b com.amazon.music"}]
-              to: [{shell_command: "osascript $HOME/Library/CloudStorage/Dropbox/swh/scpt/activate-browser-tab.scpt https://music.amazon.co.jp"}]
+            # M
             # N: liNe
             - type: basic
               from: {key_code: n, modifiers: {mandatory: [option, command]}}
               to: [{shell_command: "open -b jp.naver.line.mac"}]
-            # O: cliOn
-            # - type: basic
-            #   from: {key_code: o, modifiers: {mandatory: [option, command]}}
-            #   to: [{shell_command: "open -b com.jetbrains.clion"}]
+            # O
             # P
             # Q
-            - type: basic
-              from: {key_code: q, modifiers: {mandatory: [option, command]}}
-              to: [{shell_command: "open -a '/Users/knaka/repos/github.com/knaka/biblioseeq/wails/build/bin/BiblioSeeQ.app'"}]
-            # R (Remote Development)
-            # - type: basic
-            #   from: {key_code: r, modifiers: {mandatory: [option, command]}}
-            #   to: [{shell_command: "open -b com.jetbrains.cwm.guest"}]
+            # R
             # Shell
             - type: basic
               from: {key_code: s, modifiers: {mandatory: [option, command]}}
-              to: [{shell_command: "open -a 'iTerm.app'"}]
+              to: [{shell_command: "open -b com.googlecode.iterm2"}]
             # Twitter
             - type: basic
               from: {key_code: t, modifiers: {mandatory: [option, command]}}
-              # to: [{shell_command: "$HOME/bin/activate-chrome-app https://tweetdeck.twitter.com TweetDeck"}]
-              # to: [{shell_command: "osascript $HOME/Library/CloudStorage/Dropbox/swh/scpt/activate-browser-tab.scpt https://tweetdeck.twitter.com"}]
-              # to: [{shell_command: "osascript $HOME/Library/CloudStorage/Dropbox/swh/scpt/activate-browser-tab.scpt https://twitter.com"}]
-              to: [{shell_command: "osascript $HOME/Library/CloudStorage/Dropbox/swh/scpt/activate-browser-tab.scpt https://x.com"}]
+              to: [{shell_command: "osascript $HOME/src/applescript/activate-browser-tab.scpt https://x.com"}]
             # U
             # Viewer
             - type: basic
               from: {key_code: v, modifiers: {mandatory: [option, command]}}
-              to: [{shell_command: "open -a preview.app"}]
+              to: [{shell_command: "open -b com.apple.Preview"}]
             # W
             # X (TRNASformer)
             - type: basic
               from: {key_code: x, modifiers: {mandatory: [option, command]}}
-              # to: [{shell_command: "osascript $HOME/Library/CloudStorage/Dropbox/swh/scpt/activate-browser-tab.scpt https://chat.openai.com"}]
-              # to: [{shell_command: "osascript $HOME/Library/CloudStorage/Dropbox/swh/scpt/activate-browser-tab.scpt https://chatgpt.com"}]
-              # to: [{shell_command: "osascript $HOME/Library/CloudStorage/Dropbox/swh/scpt/activate-browser-tab.scpt https://gemini.google.com"}]
-              # to: [{shell_command: "osascript $HOME/Library/CloudStorage/Dropbox/swh/scpt/activate-browser-tab.scpt https://notebooklm.google.com/"}]
-              # to: [{shell_command: "osascript $HOME/Library/CloudStorage/Dropbox/swh/scpt/activate-browser-tab.scpt https://claude.ai"}]
               to: [{shell_command: "osascript $HOME/src/applescript/activate-browser-tab.scpt https://claude.ai https://gemini.google.com"}]
-            # Y (旧 skYpe で Teams)
-            # - type: basic
-            #   from: {key_code: y, modifiers: {mandatory: [option, command]}}
-            #   to: [{shell_command: "open -b com.microsoft.teams"}]
-            #
-        # - description: 左右反転
-        #   manipulators:
-        #     # CapsLock 反転記号（一段目の設定と競合するので、先行で
-        #     - type: basic
-        #       from: {key_code: "1", modifiers: {mandatory: [option, caps_lock], optional: []}}
-        #       to: [{key_code: "0", modifiers: [shift]}]
-        #     - type: basic
-        #       from: {key_code: "2", modifiers: {mandatory: [option, caps_lock], optional: []}}
-        #       to: [{key_code: "9", modifiers: [shift]}]
-        #     - type: basic
-        #       from: {key_code: "3", modifiers: {mandatory: [option, caps_lock], optional: []}}
-        #       to: [{key_code: "8", modifiers: [shift]}]
-        #     - type: basic
-        #       from: {key_code: "4", modifiers: {mandatory: [option, caps_lock], optional: []}}
-        #       to: [{key_code: "7", modifiers: [shift]}]
-        #     - type: basic
-        #       from: {key_code: "5", modifiers: {mandatory: [option, caps_lock], optional: []}}
-        #       to: [{key_code: "6", modifiers: [shift]}]
-        #     - type: basic
-        #       from: {key_code: "6", modifiers: {mandatory: [option, caps_lock], optional: []}}
-        #       to: [{key_code: "5", modifiers: [shift]}]
-        #     - type: basic
-        #       from: {key_code: "7", modifiers: {mandatory: [option, caps_lock], optional: []}}
-        #       to: [{key_code: "4", modifiers: [shift]}]
-        #     - type: basic
-        #       from: {key_code: "8", modifiers: {mandatory: [option, caps_lock], optional: []}}
-        #       to: [{key_code: "3", modifiers: [shift]}]
-        #     - type: basic
-        #       from: {key_code: "9", modifiers: {mandatory: [option, option, caps_lock], optional: []}}
-        #       to: [{key_code: "2", modifiers: [shift]}]
-        #     - type: basic
-        #       from: {key_code: "0", modifiers: {mandatory: [option, caps_lock], optional: []}}
-        #       to: [{key_code: "1", modifiers: [shift]}]
-
-        #     # 一段目
-        #     - type: basic
-        #       from: {key_code: "1", modifiers: {mandatory: [option], optional: [any]}}
-        #       to: [{key_code: "0"}]
-        #     - type: basic
-        #       from: {key_code: "2", modifiers: {mandatory: [option], optional: [any]}}
-        #       to: [{key_code: "9"}]
-        #     - type: basic
-        #       from: {key_code: "3", modifiers: {mandatory: [option], optional: [any]}}
-        #       to: [{key_code: "8"}]
-        #     - type: basic
-        #       from: {key_code: "4", modifiers: {mandatory: [option], optional: [any]}}
-        #       to: [{key_code: "7"}]
-        #     - type: basic
-        #       from: {key_code: "5", modifiers: {mandatory: [option], optional: [any]}}
-        #       to: [{key_code: "6"}]
-        #     - type: basic
-        #       from: {key_code: "6", modifiers: {mandatory: [option], optional: [any]}}
-        #       to: [{key_code: "5"}]
-        #     - type: basic
-        #       from: {key_code: "7", modifiers: {mandatory: [option], optional: [any]}}
-        #       to: [{key_code: "4"}]
-        #     - type: basic
-        #       from: {key_code: "8", modifiers: {mandatory: [option], optional: [any]}}
-        #       to: [{key_code: "3"}]
-        #     - type: basic
-        #       from: {key_code: "9", modifiers: {mandatory: [option], optional: [any]}}
-        #       to: [{key_code: "2"}]
-        #     - type: basic
-        #       from: {key_code: "0", modifiers: {mandatory: [option], optional: [any]}}
-        #       to: [{key_code: "1"}]
-        #     # 二段目
-        #     - type: basic
-        #       from: {key_code: q, modifiers: {mandatory: [option], optional: [any]}}
-        #       to: [{key_code: p, modifiers: [any]}]
-        #     - type: basic
-        #       from: {key_code: w, modifiers: {mandatory: [option], optional: [any]}}
-        #       to: [{key_code: o, modifiers: [any]}]
-        #     - type: basic
-        #       from: {key_code: e, modifiers: {mandatory: [option], optional: [any]}}
-        #       to: [{key_code: i, modifiers: [any]}]
-        #     - type: basic
-        #       from: {key_code: r, modifiers: {mandatory: [option], optional: [any]}}
-        #       to: [{key_code: u, modifiers: [any]}]
-        #     - type: basic
-        #       from: {key_code: t, modifiers: {mandatory: [option], optional: [any]}}
-        #       to: [{key_code: y, modifiers: [any]}]
-        #     - type: basic
-        #       from: {key_code: y, modifiers: {mandatory: [option], optional: [any]}}
-        #       to: [{key_code: t, modifiers: [any]}]
-        #     - type: basic
-        #       from: {key_code: u, modifiers: {mandatory: [option], optional: [any]}}
-        #       to: [{key_code: r, modifiers: [any]}]
-        #     - type: basic
-        #       from: {key_code: i, modifiers: {mandatory: [option], optional: [any]}}
-        #       to: [{key_code: e, modifiers: [any]}]
-        #     - type: basic
-        #       from: {key_code: o, modifiers: {mandatory: [option], optional: [any]}}
-        #       to: [{key_code: w, modifiers: [any]}]
-        #     - type: basic
-        #       from: {key_code: p, modifiers: {mandatory: [option], optional: [any]}}
-        #       to: [{key_code: q, modifiers: [any]}]
-        #     # 三段目
-        #     - type: basic
-        #       from: {key_code: a, modifiers: {mandatory: [option], optional: [any]}}
-        #       to: [{key_code: "semicolon", modifiers: [any]}]
-        #     - type: basic
-        #       from: {key_code: s, modifiers: {mandatory: [option], optional: [any]}}
-        #       to: [{key_code: l, modifiers: [any]}]
-        #     - type: basic
-        #       from: {key_code: d, modifiers: {mandatory: [option], optional: [any]}}
-        #       to: [{key_code: k, modifiers: [any]}]
-        #     - type: basic
-        #       from: {key_code: f, modifiers: {mandatory: [option], optional: [any]}}
-        #       to: [{key_code: j, modifiers: [any]}]
-        #     - type: basic
-        #       from: {key_code: g, modifiers: {mandatory: [option], optional: [any]}}
-        #       to: [{key_code: h, modifiers: [any]}]
-        #     - type: basic
-        #       from: {key_code: h, modifiers: {mandatory: [option], optional: [any]}}
-        #       to: [{key_code: g, modifiers: [any]}]
-        #     - type: basic
-        #       from: {key_code: j, modifiers: {mandatory: [option], optional: [any]}}
-        #       to: [{key_code: f, modifiers: [any]}]
-        #     - type: basic
-        #       from: {key_code: k, modifiers: {mandatory: [option], optional: [any]}}
-        #       to: [{key_code: d, modifiers: [any]}]
-        #     - type: basic
-        #       from: {key_code: l, modifiers: {mandatory: [option], optional: [any]}}
-        #       to: [{key_code: s, modifiers: [any]}]
-        #     - type: basic
-        #       from: {key_code: "semicolon", modifiers: {mandatory: [option], optional: [any]}}
-        #       to: [{key_code: a, modifiers: [any]}]
-        #     # 四段目
-        #     - type: basic
-        #       from: {key_code: z, modifiers: {mandatory: [option], optional: [any]}}
-        #       to: [{key_code: "slash", modifiers: [any]}]
-        #     - type: basic
-        #       from: {key_code: x, modifiers: {mandatory: [option], optional: [any]}}
-        #       to: [{key_code: "period", modifiers: [any]}]
-        #     - type: basic
-        #       from: {key_code: c, modifiers: {mandatory: [option], optional: [any]}}
-        #       to: [{key_code: "comma", modifiers: [any]}]
-        #     - type: basic
-        #       from: {key_code: v, modifiers: {mandatory: [option], optional: [any]}}
-        #       to: [{key_code: m, modifiers: [any]}]
-        #     - type: basic
-        #       from: {key_code: b, modifiers: {mandatory: [option], optional: [any]}}
-        #       to: [{key_code: n, modifiers: [any]}]
-        #     - type: basic
-        #       from: {key_code: n, modifiers: {mandatory: [option], optional: [any]}}
-        #       to: [{key_code: b, modifiers: [any]}]
-        #     - type: basic
-        #       from: {key_code: m, modifiers: {mandatory: [option], optional: [any]}}
-        #       to: [{key_code: v, modifiers: [any]}]
-        #     - type: basic
-        #       from: {key_code: "comma", modifiers: {mandatory: [option], optional: [any]}}
-        #       to: [{key_code: c, modifiers: [any]}]
-        #     # ああー、option 使ってた…これ、そもそもなぜ使ってるんだ？ Meta か…。そのうち別のキーに割り当てよう
-        #     # - type: basic
-        #     #   from: {key_code: "period", modifiers: {mandatory: [option], optional: [any]}}
-        #     #   to: [{key_code: x, modifiers: [any]}]
-        #     - type: basic
-        #       from: {key_code: "slash", modifiers: {mandatory: [option], optional: [any]}}
-        #       to: [{key_code: z, modifiers: [any]}]
-
-        #     # CapsLock 記号
-        #     - type: basic
-        #       from: {key_code: "1", modifiers: {mandatory: [caps_lock], optional: []}}
-        #       to: [{key_code: "1", modifiers: [shift]}]
-        #     - type: basic
-        #       from: {key_code: "2", modifiers: {mandatory: [caps_lock], optional: []}}
-        #       to: [{key_code: "2", modifiers: [shift]}]
-        #     - type: basic
-        #       from: {key_code: "3", modifiers: {mandatory: [caps_lock], optional: []}}
-        #       to: [{key_code: "3", modifiers: [shift]}]
-        #     - type: basic
-        #       from: {key_code: "4", modifiers: {mandatory: [caps_lock], optional: []}}
-        #       to: [{key_code: "4", modifiers: [shift]}]
-        #     - type: basic
-        #       from: {key_code: "5", modifiers: {mandatory: [caps_lock], optional: []}}
-        #       to: [{key_code: "5", modifiers: [shift]}]
-        #     - type: basic
-        #       from: {key_code: "6", modifiers: {mandatory: [caps_lock], optional: []}}
-        #       to: [{key_code: "6", modifiers: [shift]}]
-        #     - type: basic
-        #       from: {key_code: "7", modifiers: {mandatory: [caps_lock], optional: []}}
-        #       to: [{key_code: "7", modifiers: [shift]}]
-        #     - type: basic
-        #       from: {key_code: "8", modifiers: {mandatory: [caps_lock], optional: []}}
-        #       to: [{key_code: "8", modifiers: [shift]}]
-        #     - type: basic
-        #       from: {key_code: "9", modifiers: {mandatory: [caps_lock], optional: []}}
-        #       to: [{key_code: "9", modifiers: [shift]}]
-        #     - type: basic
-        #       from: {key_code: "0", modifiers: {mandatory: [caps_lock], optional: []}}
-        #       to: [{key_code: "0", modifiers: [shift]}]
-        #     - type: basic
-        #       from: {key_code: "hyphen", modifiers: {mandatory: [caps_lock], optional: []}}
-        #       to: [{key_code: "hyphen", modifiers: [shift]}]
-        #     - type: basic
-        #       from: {key_code: "equal_sign", modifiers: {mandatory: [caps_lock], optional: []}}
-        #       to: [{key_code: "equal_sign", modifiers: [shift]}]
-        #     - type: basic
-        #       from: {key_code: "international3", modifiers: {mandatory: [caps_lock], optional: []}}
-        #       to: [{key_code: "international3", modifiers: [shift]}]
-        #     - type: basic
-        #       from: {key_code: "open_bracket", modifiers: {mandatory: [caps_lock], optional: []}}
-        #       to: [{key_code: "open_bracket", modifiers: [shift]}]
-        #     - type: basic
-        #       from: {key_code: "close_bracket", modifiers: {mandatory: [caps_lock], optional: []}}
-        #       to: [{key_code: "close_bracket", modifiers: [shift]}]
-        #     - type: basic
-        #       from: {key_code: "quote", modifiers: {mandatory: [caps_lock], optional: []}}
-        #       to: [{key_code: "quote", modifiers: [shift]}]
-        #     - type: basic
-        #       from: {key_code: "backslash", modifiers: {mandatory: [caps_lock], optional: []}}
-        #       to: [{key_code: "backslash", modifiers: [shift]}]
+            # Y
+            # Z

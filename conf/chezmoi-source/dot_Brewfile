@@ -1,0 +1,55 @@
+#!/usr/bin/env sh
+# vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
+# shellcheck shell=sh
+
+# Usage — Homebrew-file documentation https://homebrew-file.readthedocs.io/en/latest/usage.html
+
+cask_args appdir: '/Applications'
+
+# ==========================================================================
+#region fomulae 一覧・検索 https://formulae.brew.sh/formula/
+
+brew 'coreutils'
+brew 'cpulimit' # https://github.com/opsengine/cpulimit
+brew 'gh' # GitHub CLI について - GitHub Docs https://docs.github.com/ja/github-cli/github-cli/about-github-cli
+brew 'go' # ~/go/ は $GOPATH であり、$GOROOT とは別であることが望ましいらしい？
+brew 'jp' # AWS CLI の query 言語である、JMESPath のツール // jmespath/jp: Command line interface to JMESPath - http://jmespath.org https://github.com/jmespath/jp
+brew 'jq'
+brew 'lua'
+brew 'mas' # Mac App Store command-line interface
+brew 'mysql' # brew services list で一覧 | brew services start/stop mysql は、即時の開始終了と同時に永続的な register/unregister を行う
+# brew 'mysql' # brew services list で一覧 | brew services start/stop mysql は、即時の開始終了と同時に永続的な register/unregister を行う
+# brew 'plantuml'
+brew 'postgresql@14' # brew services list で一覧 | brew services start/stop postgresql は、即時の開始終了と同時に永続的な register/unregister を行う | ログは /usr/local/var/log/postgresql@14.log
+brew 'postgresql@15'
+brew 'pstree'
+# brew 'python-yq' # https://formulae.brew.sh/formula/python-yq | yq コマンドはこれ // yq: Command-line YAML/XML/TOML processor - jq wrapper for YAML, XML, TOML documents — yq documentation https://kislyuk.github.io/yq/
+brew 'volta' # nvm は、nvm use するまで切り替えてくれない。avn を入れろと言われたが、npm パッケージのルート導入はしたくない。volta はどうか。…周辺のサポートや IDE のサポートを考え、NVM に戻すか。…と思ったが、やはり Volta は出来が良いな
+brew 'yq' # mikefarah の方の yq(1) // mikefarah/yq: yq is a portable command-line YAML, JSON, XML, CSV, TOML and properties processor https://github.com/mikefarah/yq
+
+#endregion
+ 
+# ==========================================================================
+#region homebrew-cask — Homebrew Formulae https://formulae.brew.sh/cask/
+
+cask "hammerspoon"
+cask 'alt-tab' # alt-tab — Homebrew Formulae https://formulae.brew.sh/cask/alt-tab
+cask 'chromium'
+cask 'docker'
+# cask 'drawio' # jgraph/drawio-desktop: Official electron build of draw.io https://github.com/jgraph/drawio-desktop
+cask 'dropbox'
+cask 'google-chrome'
+# cask 'google-japanese-ime' # システムに近いところにあるので、勝手に上げると変なことになる
+cask 'iterm2'
+cask 'jetbrains-toolbox' # https://formulae.brew.sh/cask/jetbrains-toolbox
+cask 'karabiner-elements'
+cask 'visual-studio-code'
+
+#endregion
+
+# ==========================================================================
+#region Mac App Store
+
+mas "Slack", id: 803453959
+
+#endregion

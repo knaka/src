@@ -1,7 +1,6 @@
 {
-  "//0caa65a": "もしこのファイルが JSON ファイルであるならば、それは YAML ファイルから生成されたものなので、直接編集しないでください。ソースの YAML は karabiner.yaml です。",
-  "//beb12ae": "JSON ファイルは、 ~/.config/karabiner/ 以下へ「ハードリンク」してください。なぜならば、シンボリックリンクすると、Ventura 以降の Karabiner-Elements と Dropbox との連携がおかしいようだから。",
-  "//adc7ccb": "タスク `karabiner_json:install` で、更新＆ハードリンクをします。",
+  "//2026012432": "もしこのファイルが JSON ファイルであるならば、それは YAML ファイルから生成されたものなので、直接編集しないでください。ソースの YAML は karabiner.yaml です。",
+  "//2026012434": "タスク `karabiner_json:install` で、更新＆ハードリンクをします。",
   "global": {
     "check_for_updates_on_startup": true,
     "show_in_menu_bar": true,
@@ -21,128 +20,6 @@
         "keyboard_type_v2": "ansi"
       },
       "devices": [],
-      "fn_function_keys": [
-        {
-          "from": {
-            "key_code": "f1"
-          },
-          "to": [
-            {
-              "consumer_key_code": "display_brightness_decrement"
-            }
-          ]
-        },
-        {
-          "from": {
-            "key_code": "f2"
-          },
-          "to": [
-            {
-              "consumer_key_code": "display_brightness_increment"
-            }
-          ]
-        },
-        {
-          "from": {
-            "key_code": "f3"
-          },
-          "to": [
-            {
-              "key_code": "mission_control"
-            }
-          ]
-        },
-        {
-          "from": {
-            "key_code": "f4"
-          },
-          "to": [
-            {
-              "key_code": "launchpad"
-            }
-          ]
-        },
-        {
-          "from": {
-            "key_code": "f5"
-          },
-          "to": [
-            {
-              "key_code": "illumination_decrement"
-            }
-          ]
-        },
-        {
-          "from": {
-            "key_code": "f6"
-          },
-          "to": [
-            {
-              "key_code": "illumination_increment"
-            }
-          ]
-        },
-        {
-          "from": {
-            "key_code": "f7"
-          },
-          "to": [
-            {
-              "consumer_key_code": "rewind"
-            }
-          ]
-        },
-        {
-          "from": {
-            "key_code": "f8"
-          },
-          "to": [
-            {
-              "consumer_key_code": "play_or_pause"
-            }
-          ]
-        },
-        {
-          "from": {
-            "key_code": "f9"
-          },
-          "to": [
-            {
-              "consumer_key_code": "fastforward"
-            }
-          ]
-        },
-        {
-          "from": {
-            "key_code": "f10"
-          },
-          "to": [
-            {
-              "consumer_key_code": "mute"
-            }
-          ]
-        },
-        {
-          "from": {
-            "key_code": "f11"
-          },
-          "to": [
-            {
-              "consumer_key_code": "volume_decrement"
-            }
-          ]
-        },
-        {
-          "from": {
-            "key_code": "f12"
-          },
-          "to": [
-            {
-              "consumer_key_code": "volume_increment"
-            }
-          ]
-        }
-      ],
       "complex_modifications": {
         "parameters": {
           "basic.simultaneous_threshold_milliseconds": 50,
@@ -153,7 +30,7 @@
         },
         "rules": [
           {
-            "description": "Terminal",
+            "description": "ターミナル（iTerm2 + zsh + GNU Screen）",
             "manipulators": [
               {
                 "type": "basic",
@@ -288,7 +165,8 @@
                   "modifiers": {
                     "mandatory": [
                       "control",
-                      "command"
+                      "command",
+                      "shift"
                     ],
                     "optional": []
                   }
@@ -296,7 +174,9 @@
                 "to": [
                   {
                     "key_code": "home",
-                    "modifiers": []
+                    "modifiers": [
+                      "shift"
+                    ]
                   }
                 ]
               },
@@ -315,7 +195,8 @@
                   "modifiers": {
                     "mandatory": [
                       "control",
-                      "command"
+                      "command",
+                      "shift"
                     ],
                     "optional": []
                   }
@@ -323,7 +204,9 @@
                 "to": [
                   {
                     "key_code": "end",
-                    "modifiers": []
+                    "modifiers": [
+                      "shift"
+                    ]
                   }
                 ]
               },
@@ -342,8 +225,7 @@
                   "modifiers": {
                     "mandatory": [
                       "control",
-                      "command",
-                      "shift"
+                      "command"
                     ],
                     "optional": []
                   }
@@ -351,9 +233,7 @@
                 "to": [
                   {
                     "key_code": "home",
-                    "modifiers": [
-                      "shift"
-                    ]
+                    "modifiers": []
                   }
                 ]
               },
@@ -372,8 +252,7 @@
                   "modifiers": {
                     "mandatory": [
                       "control",
-                      "command",
-                      "shift"
+                      "command"
                     ],
                     "optional": []
                   }
@@ -381,9 +260,7 @@
                 "to": [
                   {
                     "key_code": "end",
-                    "modifiers": [
-                      "shift"
-                    ]
+                    "modifiers": []
                   }
                 ]
               },
@@ -532,7 +409,7 @@
             ]
           },
           {
-            "description": "VSCode",
+            "description": "Visual Studio Code",
             "manipulators": [
               {
                 "type": "basic",
@@ -618,6 +495,34 @@
                     ]
                   }
                 ]
+              },
+              {
+                "type": "basic",
+                "conditions": [
+                  {
+                    "type": "frontmost_application_if",
+                    "bundle_identifiers": [
+                      "^com\\.microsoft\\.VSCode$"
+                    ]
+                  }
+                ],
+                "from": {
+                  "key_code": "backslash",
+                  "modifiers": {
+                    "mandatory": [
+                      "control"
+                    ],
+                    "optional": []
+                  }
+                },
+                "to": [
+                  {
+                    "key_code": "return_or_enter",
+                    "modifiers": [
+                      "shift"
+                    ]
+                  }
+                ]
               }
             ]
           },
@@ -653,7 +558,7 @@
             ]
           },
           {
-            "description": "Backquotes (Backticks)。2 つの backquotes を挿入。Shift も押せば tilde 挿入",
+            "description": "左 Command → Backquotes (Backticks) / tilde",
             "manipulators": [
               {
                 "type": "basic",
@@ -703,149 +608,6 @@
             ]
           },
           {
-            "description": "&Command Substitution \"$(...)\"",
-            "manipulators": [
-              {
-                "type": "basic",
-                "from": {
-                  "key_code": "c",
-                  "modifiers": {
-                    "mandatory": [
-                      "option"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "key_code": "quote",
-                    "modifiers": [
-                      "shift"
-                    ]
-                  },
-                  {
-                    "key_code": "4",
-                    "modifiers": [
-                      "shift"
-                    ]
-                  },
-                  {
-                    "key_code": "9",
-                    "modifiers": [
-                      "shift"
-                    ]
-                  },
-                  {
-                    "key_code": "0",
-                    "modifiers": [
-                      "shift"
-                    ]
-                  },
-                  {
-                    "key_code": "quote",
-                    "modifiers": [
-                      "shift"
-                    ]
-                  },
-                  {
-                    "key_code": "left_arrow"
-                  },
-                  {
-                    "key_code": "left_arrow"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "description": "Option + Open Bracket → Double Open and Closing Quotation Marks, Left Arrow",
-            "manipulators": [
-              {
-                "type": "basic",
-                "from": {
-                  "key_code": "open_bracket",
-                  "modifiers": {
-                    "mandatory": [
-                      "option"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "key_code": "open_bracket",
-                    "modifiers": [
-                      "option"
-                    ]
-                  },
-                  {
-                    "key_code": "open_bracket",
-                    "modifiers": [
-                      "option",
-                      "shift"
-                    ]
-                  },
-                  {
-                    "key_code": "left_arrow",
-                    "modifiers": []
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "description": "&Variable Expansion (parameter expansion)",
-            "manipulators": [
-              {
-                "type": "basic",
-                "from": {
-                  "key_code": "v",
-                  "modifiers": {
-                    "mandatory": [
-                      "option"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "key_code": "quote",
-                    "modifiers": [
-                      "shift"
-                    ]
-                  },
-                  {
-                    "key_code": "4",
-                    "modifiers": [
-                      "shift"
-                    ]
-                  },
-                  {
-                    "key_code": "open_bracket",
-                    "modifiers": [
-                      "shift"
-                    ]
-                  },
-                  {
-                    "key_code": "close_bracket",
-                    "modifiers": [
-                      "shift"
-                    ]
-                  },
-                  {
-                    "key_code": "quote",
-                    "modifiers": [
-                      "shift"
-                    ]
-                  },
-                  {
-                    "key_code": "left_arrow"
-                  },
-                  {
-                    "key_code": "left_arrow"
-                  }
-                ]
-              }
-            ]
-          },
-          {
             "description": "右 Command + Space → Escape",
             "manipulators": [
               {
@@ -867,7 +629,7 @@
             ]
           },
           {
-            "description": "IME オン（ALt + Space -> かな）",
+            "description": "IME オン（Option + Space → かな）",
             "manipulators": [
               {
                 "type": "basic",
@@ -879,16 +641,14 @@
                     ]
                   }
                 },
-                "to": [
-                  {
-                    "key_code": "japanese_kana"
-                  }
-                ]
+                "to": {
+                  "key_code": "japanese_kana"
+                }
               }
             ]
           },
           {
-            "description": "IME オフ（Ctrl + Shift -> 英数）",
+            "description": "IME オフ（Ctrl + Shift → 英数）",
             "manipulators": [
               {
                 "type": "basic",
@@ -900,11 +660,9 @@
                     ]
                   }
                 },
-                "to": [
-                  {
-                    "key_code": "japanese_eisuu"
-                  }
-                ]
+                "to": {
+                  "key_code": "japanese_eisuu"
+                }
               }
             ]
           },
@@ -921,11 +679,9 @@
                     ]
                   }
                 },
-                "to": [
-                  {
-                    "key_code": "right_option"
-                  }
-                ]
+                "to": {
+                  "key_code": "right_option"
+                }
               }
             ]
           },
@@ -942,37 +698,17 @@
                     ]
                   }
                 },
-                "to": [
-                  {
-                    "key_code": "left_control"
-                  }
-                ],
-                "to_if_alone": [
-                  {
-                    "key_code": "left_control"
-                  }
-                ],
-                "to_if_held_down": [
-                  {
-                    "key_code": "left_control"
-                  }
-                ]
+                "to": {
+                  "key_code": "left_control"
+                }
               }
             ]
           },
           {
-            "description": "グローバルな 1 ストローク機能(主に Command + Shift + ?)",
+            "description": "Ctrl +  で、送信せず改行",
             "manipulators": [
               {
                 "type": "basic",
-                "conditions": [
-                  {
-                    "type": "frontmost_application_if",
-                    "bundle_identifiers": [
-                      "^com\\.microsoft\\.VSCode$"
-                    ]
-                  }
-                ],
                 "from": {
                   "key_code": "backslash",
                   "modifiers": {
@@ -982,39 +718,17 @@
                     "optional": []
                   }
                 },
-                "to": [
-                  {
-                    "key_code": "return_or_enter",
-                    "modifiers": [
-                      "shift"
-                    ]
-                  }
-                ]
-              },
-              {
-                "type": "basic",
-                "from": {
-                  "key_code": "backslash",
-                  "modifiers": {
-                    "mandatory": [
-                      "control"
-                    ],
-                    "optional": []
-                  }
-                },
-                "to": [
-                  {
-                    "key_code": "return_or_enter",
-                    "modifiers": [
-                      "shift"
-                    ]
-                  }
-                ]
+                "to": {
+                  "key_code": "return_or_enter",
+                  "modifiers": [
+                    "shift"
+                  ]
+                }
               }
             ]
           },
           {
-            "description": "スリープ, sleep (sLeep)",
+            "description": "スリープ, S&leep",
             "manipulators": [
               {
                 "type": "basic",
@@ -1035,7 +749,7 @@
             ]
           },
           {
-            "description": "スクリーンロック, Screen Lock, screenlock (locK)",
+            "description": "スクリーンロック, Screen Loc&k",
             "manipulators": [
               {
                 "type": "basic",
@@ -1808,7 +1522,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "osascript $HOME/Library/CloudStorage/Dropbox/swh/scpt/activate-browser-tab.scpt https://mail.google.com/mail/u/0/"
+                    "shell_command": "osascript $HOME/src/applescript/activate-browser-tab.scpt https://mail.google.com/mail/u/0/"
                   }
                 ]
               },
@@ -1825,24 +1539,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "osascript $HOME/Library/CloudStorage/Dropbox/swh/scpt/activate-browser-tab.scpt https://mail.google.com/mail/u/1/#inbox"
-                  }
-                ]
-              },
-              {
-                "type": "basic",
-                "from": {
-                  "key_code": "a",
-                  "modifiers": {
-                    "mandatory": [
-                      "option",
-                      "command"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "shell_command": "osascript $HOME/Library/CloudStorage/Dropbox/swh/scpt/launch-quicktime_player.scpt"
+                    "shell_command": "osascript $HOME/src/applescript/activate-browser-tab.scpt https://mail.google.com/mail/u/1/"
                   }
                 ]
               },
@@ -1866,23 +1563,6 @@
               {
                 "type": "basic",
                 "from": {
-                  "key_code": "c",
-                  "modifiers": {
-                    "mandatory": [
-                      "option",
-                      "command"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "shell_command": "osascript $HOME/Library/CloudStorage/Dropbox/swh/scpt/activate-browser-tab.scpt https://calendar.google.com/"
-                  }
-                ]
-              },
-              {
-                "type": "basic",
-                "from": {
                   "key_code": "d",
                   "modifiers": {
                     "mandatory": [
@@ -1893,7 +1573,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "open -a 'Dictionary.app'"
+                    "shell_command": "open -b com.apple.Dictionary"
                   }
                 ]
               },
@@ -1927,41 +1607,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "open -a 'Finder.app'"
-                  }
-                ]
-              },
-              {
-                "type": "basic",
-                "from": {
-                  "key_code": "g",
-                  "modifiers": {
-                    "mandatory": [
-                      "option",
-                      "command"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "shell_command": "open -b com.jgraph.drawio.desktop"
-                  }
-                ]
-              },
-              {
-                "type": "basic",
-                "from": {
-                  "key_code": "k",
-                  "modifiers": {
-                    "mandatory": [
-                      "option",
-                      "command"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "shell_command": "open -b com.amazon.Kindle"
+                    "shell_command": "open -b com.apple.finder"
                   }
                 ]
               },
@@ -1985,23 +1631,6 @@
               {
                 "type": "basic",
                 "from": {
-                  "key_code": "m",
-                  "modifiers": {
-                    "mandatory": [
-                      "option",
-                      "command"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "shell_command": "osascript $HOME/Library/CloudStorage/Dropbox/swh/scpt/activate-browser-tab.scpt https://music.amazon.co.jp"
-                  }
-                ]
-              },
-              {
-                "type": "basic",
-                "from": {
                   "key_code": "n",
                   "modifiers": {
                     "mandatory": [
@@ -2019,23 +1648,6 @@
               {
                 "type": "basic",
                 "from": {
-                  "key_code": "q",
-                  "modifiers": {
-                    "mandatory": [
-                      "option",
-                      "command"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "shell_command": "open -a '/Users/knaka/repos/github.com/knaka/biblioseeq/wails/build/bin/BiblioSeeQ.app'"
-                  }
-                ]
-              },
-              {
-                "type": "basic",
-                "from": {
                   "key_code": "s",
                   "modifiers": {
                     "mandatory": [
@@ -2046,7 +1658,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "open -a 'iTerm.app'"
+                    "shell_command": "open -b com.googlecode.iterm2"
                   }
                 ]
               },
@@ -2063,7 +1675,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "osascript $HOME/Library/CloudStorage/Dropbox/swh/scpt/activate-browser-tab.scpt https://x.com"
+                    "shell_command": "osascript $HOME/src/applescript/activate-browser-tab.scpt https://x.com"
                   }
                 ]
               },
@@ -2080,7 +1692,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "open -a preview.app"
+                    "shell_command": "open -b com.apple.Preview"
                   }
                 ]
               },
