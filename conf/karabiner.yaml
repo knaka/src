@@ -125,6 +125,29 @@ profiles:
         - description: "international1（ろ） → Shift"
           # 英語設定にした日本語キーボードで、右下の「_ ろ」キーが余るので、遠すぎる `~ を単押しへ移動。modifier としては右 Shift。
           manipulators:
+            # 試しに、fenced-code-block 出力
+            - type: basic
+              from: {key_code: "international1", modifiers: {mandatory: [control]}}
+              to: [
+                {key_code: "japanese_eisuu", modifiers: []},
+                # 組で出すエディタがあるので、2 の倍数個を出す
+                {key_code: "international3", modifiers: []},
+                {key_code: "international3", modifiers: []},
+                {key_code: "international3", modifiers: []},
+                {key_code: "international3", modifiers: []},
+                # Enter だとプロンプトから送られてしまうので、Shift + Enter で
+                {key_code: "return_or_enter", modifiers: [shift]},
+                {key_code: "return_or_enter", modifiers: [shift]},
+                {key_code: "international3", modifiers: []},
+                {key_code: "international3", modifiers: []},
+                {key_code: "international3", modifiers: []},
+                {key_code: "international3", modifiers: []},
+                {key_code: "left_arrow"},
+                {key_code: "left_arrow"},
+                {key_code: "left_arrow"},
+                {key_code: "left_arrow"},
+                {key_code: "left_arrow"},
+              ]
             - type: basic
               from: {key_code: "international1", modifiers: {optional: [any]}}
               to: [{key_code: "right_shift"}]

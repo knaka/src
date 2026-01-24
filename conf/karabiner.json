@@ -534,6 +534,82 @@
                 "from": {
                   "key_code": "international1",
                   "modifiers": {
+                    "mandatory": [
+                      "control"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "key_code": "japanese_eisuu",
+                    "modifiers": []
+                  },
+                  {
+                    "key_code": "international3",
+                    "modifiers": []
+                  },
+                  {
+                    "key_code": "international3",
+                    "modifiers": []
+                  },
+                  {
+                    "key_code": "international3",
+                    "modifiers": []
+                  },
+                  {
+                    "key_code": "international3",
+                    "modifiers": []
+                  },
+                  {
+                    "key_code": "return_or_enter",
+                    "modifiers": [
+                      "shift"
+                    ]
+                  },
+                  {
+                    "key_code": "return_or_enter",
+                    "modifiers": [
+                      "shift"
+                    ]
+                  },
+                  {
+                    "key_code": "international3",
+                    "modifiers": []
+                  },
+                  {
+                    "key_code": "international3",
+                    "modifiers": []
+                  },
+                  {
+                    "key_code": "international3",
+                    "modifiers": []
+                  },
+                  {
+                    "key_code": "international3",
+                    "modifiers": []
+                  },
+                  {
+                    "key_code": "left_arrow"
+                  },
+                  {
+                    "key_code": "left_arrow"
+                  },
+                  {
+                    "key_code": "left_arrow"
+                  },
+                  {
+                    "key_code": "left_arrow"
+                  },
+                  {
+                    "key_code": "left_arrow"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "from": {
+                  "key_code": "international1",
+                  "modifiers": {
                     "optional": [
                       "any"
                     ]
