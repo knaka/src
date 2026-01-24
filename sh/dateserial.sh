@@ -5,5 +5,5 @@ set -o nounset -o errexit
 
 hour=$(date -u '+%H')
 minute=$(date -u '+%M')
-other="$(printf "%02d" $(( ((hour * 60 + minute) * 100) / (24 * 60) )) )"
-date -u '+%Y%m%d'"$other"
+day_progress="$(printf "%02d" $(( ((hour * 60 + minute) * 100) / (24 * 60) )) )"
+date -u '+%Y%m%d'"$day_progress"

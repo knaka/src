@@ -147,9 +147,19 @@
 >^z:: Send "^{z}"
 
 <!/:: Send "^{/}"
+; Hash value in 7 digits
 +>^h:: {
   n := Random(0, 268435455)
   Send Format("{:07x}", n)
+}
+
+; Date serial (YYYYMMDD + day progress percentage)
++>^d:: {
+  now := A_NowUTC
+  hour := Integer(SubStr(now, 9, 2))
+  minute := Integer(SubStr(now, 11, 2))
+  dayProgress := Format("{:02d}", ((hour * 60 + minute) * 100) // (24 * 60))
+  Send FormatTime(now, "yyyyMMdd") dayProgress
 }
 
 #HotIf WinActive("ahk_exe Idea64.exe")
