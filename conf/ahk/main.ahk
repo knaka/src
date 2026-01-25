@@ -47,6 +47,34 @@ ActivateChromeTab(domainPrefix) {
 ;#endregion  
 
 ; ==========================================================================
+;#region IME
+
+; Autohotkey v2.0のIME制御用 関数群 IMEv2.ahk #AutoHotkey - Qiita https://qiita.com/kenichiro_ayaki/items/d55005df2787da725c6f
+; k-ayaki/IMEv2.ahk: Autohotkey v2.0 でIMEを制御する関数群 https://github.com/k-ayaki/IMEv2.ahk
+#include imev2.ahk
+
+; オン・オフ
+>!Space:: IME_SET(1)
+<^Space:: IME_SET(0)
+
+; 右 Cmd + Space で Escape
+>^Space:: Send "{Escape}"
+
+; 左 Cmd + Space で backtick
+<!Space:: {
+  IME_SET(0)
+  Send Chr(0x60)
+}
+
+; 左 Cmd + Shift + Space で Tilde
+<!+Space:: {
+  IME_SET(0)
+  Send Chr(0x7e)
+}
+
+;#endregion
+
+; ==========================================================================
 ;#region Appication launching
 
 ; <!>!n:: ActivateOrRun("notepad.exe", "C:\foo.txt C:\bar.txt")
@@ -100,16 +128,19 @@ ActivateChromeTab(domainPrefix) {
 
 ; ろ
 F13:: {
+  IME_SET(0)
   SendText "``"
 }
 
 ; ろ
 +F13:: {
+  IME_SET(0)
   SendText "~"
 }
 
 ; ^ろ
 ^F13:: {
+  IME_SET(0)
   SendText "````````"
   Send "+{Enter}+{Enter}"
   SendText "````````"
@@ -334,31 +365,3 @@ F13:: {
 LAlt & LButton:: Send "^{LButton}"
 
 ;#endregion  
-
-; ==========================================================================
-;#region IME
-
-; Autohotkey v2.0のIME制御用 関数群 IMEv2.ahk #AutoHotkey - Qiita https://qiita.com/kenichiro_ayaki/items/d55005df2787da725c6f
-; k-ayaki/IMEv2.ahk: Autohotkey v2.0 でIMEを制御する関数群 https://github.com/k-ayaki/IMEv2.ahk
-#include imev2.ahk
-
-; オン・オフ
->!Space:: IME_SET(1)
-<^Space:: IME_SET(0)
-
-; 右 Cmd + Space で Escape
->^Space:: Send "{Escape}"
-
-; 左 Cmd + Space で backtick
-<!Space:: {
-  IME_SET(0)
-  Send Chr(0x60)
-}
-
-; 左 Cmd + Shift + Space で Tilde
-<!+Space:: {
-  IME_SET(0)
-  Send Chr(0x7e)
-}
-
-;#endregion
