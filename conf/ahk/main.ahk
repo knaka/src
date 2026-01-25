@@ -62,13 +62,17 @@ ActivateChromeTab(domainPrefix) {
 ; #Include Chrome.ahk
 
 ; Browser
-<!>!b:: ActivateOrRun("chrome.exe", "--remote-debugging-port=9222")
+<!>!b:: ActivateOrRun("chrome.exe")
 ; Editor
 <!>!e:: ActivateOrRun("code.exe")
 ; Filer
 <!>!f:: ActivateOrRun("explorer.exe")
 ; Shell
-<!>!s:: ActivateOrRun("WindowsTerminal.exe", "wt.exe") ; ASCII.jp：Windows 11のコンソール処理について解説する https://ascii.jp/elem/000/004/141/4141418/
+; ASCII.jp：Windows 11のコンソール処理について解説する https://ascii.jp/elem/000/004/141/4141418/
+;   * 「wt.exe」は標準の起動用実行ファイル
+;   * 「WindowsTerminal.exe」は、Windows Terminalの本体（コンソールウィンドウを表示するプログラム）
+; なので、起動は wt.exe でないとパス通っていないし、“WindowsTerminal.exe” で存否判定行わないと存在しない
+<!>!s:: ActivateOrRun("WindowsTerminal.exe", "wt.exe")
 <!>!t:: ActivateChromeTab("x.com")
 <!>!x:: ActivateChromeTab("claude.ai")
 
@@ -148,6 +152,7 @@ F13:: {
 <^>^+f::Send "+{End}"
 <^>^+a::Send "+{Home}"
 
+; 上下の動きは terminal の対象外
 #HotIf !WinActive("ahk_exe WindowsTerminal.exe")
 ; 上下
 <^e::Send "{Up}"
@@ -354,10 +359,6 @@ LAlt & LButton:: Send "^{LButton}"
 <!+Space:: {
   IME_SET(0)
   Send Chr(0x7e)
-}
-
-<^`::  {
-  SendText "Hello"
 }
 
 ;#endregion
