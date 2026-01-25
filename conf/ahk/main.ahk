@@ -3,10 +3,40 @@
 ; ^ Ctrl
 ; + Shift
 
-; ChgKey で Windows キーは右 Ctrl になっているので、基本的に `#` は使われないはず
+; ChgKey で Windows キーは右 Ctrl にマップしているので、Windows キー `#` は使われないはず
 
 #Requires AutoHotkey v2.0
 #SingleInstance force
+
+; Not to loop mapping.
+#UseHook
+
+; ==========================================================================
+;#region Helper functions
+
+/**
+ * Activate window by executable name, or launch if not running
+ * @param {String} cmdPath - Path to the executable (e.g., "notepad.exe" or "C:\Program Files\App\app.exe")
+ * @param {String} [params=""] - Optional command-line parameters to pass when launching
+ */
+ActivateOrRun(cmdPath, params := "") {
+  SplitPath cmdPath, &base
+  winTitle := "ahk_exe " base
+  if WinExist(winTitle) {
+    WinActivate(winTitle)
+  } else {
+    Run ((params = "")? cmdPath: cmdPath " " params)
+  }
+}
+
+;#endregion  
+
+; ==========================================================================
+;#region Appication launching
+
+; <!>!n:: ActivateOrRun("notepad.exe", "C:\foo.txt C:\bar.txt")
+
+; List of Keys (Keyboard, Mouse and Controller) | AutoHotkey v2 https://www.autohotkey.com/docs/v2/KeyList.htm
 
 ; How to remove-uninstall Game Bar? - Microsoft Community https://answers.microsoft.com/en-us/xbox/forum/all/how-to-remove-uninstall-game-bar/77cfbfd5-1588-4d0f-b9c6-4c47ed899049
 ; Get-AppxPackage -PackageTypeFilter Bundle -Name "*Microsoft.XboxGamingOverlay*" | Remove-AppxPackage
@@ -16,10 +46,10 @@
 <!>!i:: WinActivate("ahk_exe Idea64.exe")
 <!>!f:: WinActivate("ahk_exe Explorer.exe")
 
-; Not to loop mapping.
-#UseHook
+;#endregion  
 
-; List of Keys (Keyboard, Mouse and Controller) | AutoHotkey v2 https://www.autohotkey.com/docs/v2/KeyList.htm
+; ==========================================================================
+;#region Remapping
 
 ; WinActive - Syntax & Usage | AutoHotkey v2 https://www.autohotkey.com/docs/v2/lib/WinActive.htm
 ; #HotIf - Syntax & Usage | AutoHotkey v2 https://www.autohotkey.com/docs/v2/lib/_HotIf.htm
@@ -219,3 +249,5 @@ LAlt & LButton:: Send "^{LButton}"
 ![:: Send "“”{Left}"
 !c:: Send '"$()"{Left}{Left}'
 !v:: Send '"${{}}{}}"{Left}{Left}'
+
+;#endregion  
