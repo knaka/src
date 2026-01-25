@@ -18,15 +18,15 @@
 /**
  * Activate window by executable name, or launch if not running
  * @param {String} cmdPath - Path to the executable (e.g., "notepad.exe" or "C:\Program Files\App\app.exe")
- * @param {String} [params=""] - Optional command-line parameters to pass when launching
+ * @param {String} [launchArgs=""] - Optional command-line arguments including command itselfs
  */
-ActivateOrRun(cmdPath, params := "") {
+ActivateOrRun(cmdPath, launchArgs := "") {
   SplitPath cmdPath, &base
   winTitle := "ahk_exe " base
   if WinExist(winTitle) {
     WinActivate(winTitle)
   } else {
-    Run ((params = "")? cmdPath: cmdPath " " params)
+    Run ((launchArgs = "")? cmdPath: launchArgs)
   }
 }
 
@@ -64,17 +64,17 @@ ActivateChromeTab(domainPrefix) {
 ; Browser
 <!>!b:: ActivateOrRun("chrome.exe", "--remote-debugging-port=9222")
 ; Editor
-<!>!e:: ActivateOrRun("Code.exe")
+<!>!e:: ActivateOrRun("code.exe")
 ; Filer
-<!>!f:: ActivateOrRun("Explorer.exe")
+<!>!f:: ActivateOrRun("explorer.exe")
 ; Shell
-<!>!s:: ActivateOrRun("WindowsTerminal.exe")
+<!>!s:: ActivateOrRun("WindowsTerminal.exe", "wt.exe") ; ASCII.jp：Windows 11のコンソール処理について解説する https://ascii.jp/elem/000/004/141/4141418/
 <!>!t:: ActivateChromeTab("x.com")
 <!>!x:: ActivateChromeTab("claude.ai")
 
 ;#endregion  
 
-; ==========================================================================
+; ===================================================s=======================
 ;#region Remapping
 
 ; WinActive - Syntax & Usage | AutoHotkey v2 https://www.autohotkey.com/docs/v2/lib/WinActive.htm
@@ -87,23 +87,6 @@ ActivateChromeTab(domainPrefix) {
 ; Search next
 >^g:: Send "{f3}"
 +>^g:: Send "+{f3}"
-
-#HotIf WinActive("ahk_exe WindowsTerminal.exe")
-; Vertical Move
-<^p::Send "{Up}"
-<^n::Send "{Down}"
-
-; Rotate Tab
-<^Tab::Send "^{Tab}"
-+<^Tab::Send "+^{Tab}"
-
-; Find
->^f::Send "+^{f}"
-
-; New Tab
-<!T::Send "^+{T}"
->^T::Send "^+{T}"
-#HotIf
 
 <^m::Send "{Enter}"
 <^g::Send "{Delete}"
@@ -129,12 +112,23 @@ F13:: {
   Send "{Left}{Left}{Left}{Left}{Left}"
 }
 
-; 上下
-<^e::Send "{Up}"
-<^x::Send "{Down}"
-; 上下選択
-<^+e::Send "+{Up}"
-<^+x::Send "+{Down}"
+#HotIf WinActive("ahk_exe WindowsTerminal.exe")
+; Vertical Move
+<^p::Send "{Up}"
+<^n::Send "{Down}"
+
+; Rotate Tab
+<^Tab::Send "^{Tab}"
++<^Tab::Send "+^{Tab}"
+
+; Find
+>^f::Send "+^{f}"
+
+; New Tab
+<!T::Send "^+{T}"
+>^T::Send "^+{T}"
+#HotIf
+
 ; 左右
 <^s::Send "{Left}"
 <^d::Send "{Right}"
@@ -153,6 +147,14 @@ F13:: {
 ; 行頭・行末選択
 <^>^+f::Send "+{End}"
 <^>^+a::Send "+{Home}"
+
+#HotIf !WinActive("ahk_exe WindowsTerminal.exe")
+; 上下
+<^e::Send "{Up}"
+<^x::Send "{Down}"
+; 上下選択
+<^+e::Send "+{Up}"
+<^+x::Send "+{Down}"
 ; ページ
 <^r::Send "{PgUp}"
 <^c::Send "{PgDn}"
@@ -165,6 +167,7 @@ F13:: {
 ; 文頭・文末選択
 <^>^+r::Send "^+{Home}"
 <^>^+c::Send "^+{End}"
+#HotIf
 
 #HotIf WinActive("ahk_exe Code.exe")
 ; Multi-Cursor

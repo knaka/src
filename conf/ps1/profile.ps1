@@ -145,9 +145,8 @@ if ($PSVersionTable.PSVersion.Major -ge 7) {
 # cmd - How to make PowerShell tab completion work like Bash - Stack Overflow https://stackoverflow.com/questions/8264655/how-to-make-powershell-tab-completion-work-like-bash
 Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
 
-$y = "$HOME\Dropbox\doc\$(Get-Date -Format "yyyy")"
+$y = "$HOME\doc\$(Get-Date -Format "yyyy")"
 $dl = "$HOME\Downloads"
-
 
 # How can I modify PowerShell tab-completion to proritise certain file types over others? - Stack Overflow https://stackoverflow.com/questions/75509668/how-can-i-modify-powershell-tab-completion-to-proritise-certain-file-types-over
 if ($PSVersionTable.PSVersion.Major -ge 7) {

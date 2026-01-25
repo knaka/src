@@ -10,8 +10,9 @@ gc() {
     nc -q0 127.0.0.1 "$reader_port" </dev/null
   elif test -d "c:/" # Windows
   then
-    # The sed(1) script is to remove the trailing newline.
-    powershell.exe -command "Get-Clipboard" | sed -e ':a; $!N; $ s/\n$//; ta'
+    # `Get-Clipboard` appends a trailing newline. I do not know why, — What is the easiest way to remove 1st and last line from file with awk? - Stack Overflow https://stackoverflow.com/questions/15856733/what-is-the-easiest-way-to-remove-1st-and-last-line-from-file-with-awk
+    # shellcheck disable=SC2016
+    pwsh.exe -NoProfile -command '(Get-Clipboard -Raw).TrimEnd("`r`n")'
   elif command -v pbpaste > /dev/null 2>&1 # macOS
   then
     pbpaste
