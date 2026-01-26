@@ -15,12 +15,12 @@ task_hello_sh__gen() {
 
 # Generate files.
 task_gen() {
-  task_go_hello__gen
+  call_task task_hello_sh__gen
 }
 
-# Build Go source files incrementally.
+# Build Go source packages (*.go, ./cmd/*/) incrementally.
 subcmd_build() {
-  cd "$PROJECT_DIR"
+  cd "${PROJECT_DIR}"
   local go_bin_dir_path=./build
   mkdir -p "$go_bin_dir_path"
   if test "${1+set}" != "set"
@@ -57,10 +57,10 @@ subcmd_build() {
 
 # Install Go tools.
 task_install() {
-  cd "$PROJECT_DIR"
   local go_sim_dir_path="$HOME"/go-bin
   mkdir -p "$go_sim_dir_path"
   rm -f "$go_sim_dir_path"/*
+  local go_app_path
   for go_app_path in *.go cmd/*
   do
     if ! test -r "$go_app_path" && ! test -d "$go_app_path"

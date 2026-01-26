@@ -71,7 +71,6 @@ EMBED_FAA58B3
     go build -o "$cmd_path" "$main_file_path"
   )
 fi
-
 rm -fr "$TEMP_DIR"
 exec "$cmd_path" "$@"
 EOF
