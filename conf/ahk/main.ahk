@@ -13,40 +13,6 @@
 #UseHook
 
 ; ==========================================================================
-;#region Helper functions
-
-/**
- * Activate window by executable name, or launch if not running
- * @param {String} cmdPath - Path to the executable (e.g., "notepad.exe" or "C:\Program Files\App\app.exe")
- * @param {String} [launchArgs=""] - Optional command-line arguments including command itselfs
- */
-ActivateOrRun(cmdPath, launchArgs := "") {
-  SplitPath cmdPath, &base
-  winTitle := "ahk_exe " base
-  if WinExist(winTitle) {
-    WinActivate(winTitle)
-  } else {
-    Run ((launchArgs = "")? cmdPath: launchArgs)
-  }
-}
-
-ActivateChromeTab(domainPrefix) {
-  if !WinExist("ahk_exe chrome.exe") {
-    Run "chrome.exe"
-    WinWait "ahk_exe chrome.exe"
-  }
-  WinActivate "ahk_exe chrome.exe"
-  Sleep 100
-  Send "^+a"
-  Sleep 200
-  SendText domainPrefix
-  Sleep 100
-  Send "{Enter}"
-}
-
-;#endregion  
-
-; ==========================================================================
 ;#region IME
 
 ; Autohotkey v2.0のIME制御用 関数群 IMEv2.ahk #AutoHotkey - Qiita https://qiita.com/kenichiro_ayaki/items/d55005df2787da725c6f
@@ -73,6 +39,42 @@ ActivateChromeTab(domainPrefix) {
 }
 
 ;#endregion
+
+; ==========================================================================
+;#region Helper functions
+
+/**
+ * Activate window by executable name, or launch if not running
+ * @param {String} cmdPath - Path to the executable (e.g., "notepad.exe" or "C:\Program Files\App\app.exe")
+ * @param {String} [launchArgs=""] - Optional command-line arguments including command itselfs
+ */
+ActivateOrRun(cmdPath, launchArgs := "") {
+  IME_SET(0)
+  SplitPath cmdPath, &base
+  winTitle := "ahk_exe " base
+  if WinExist(winTitle) {
+    WinActivate(winTitle)
+  } else {
+    Run ((launchArgs = "")? cmdPath: launchArgs)
+  }
+}
+
+ActivateChromeTab(domainPrefix) {
+  IME_SET(0)
+  if !WinExist("ahk_exe chrome.exe") {
+    Run "chrome.exe"
+    WinWait "ahk_exe chrome.exe"
+  }
+  WinActivate "ahk_exe chrome.exe"
+  Sleep 100
+  Send "^+a"
+  Sleep 200
+  SendText domainPrefix
+  Sleep 100
+  Send "{Enter}"
+}
+
+;#endregion  
 
 ; ==========================================================================
 ;#region Appication launching
@@ -361,7 +363,7 @@ F13:: {
 ; ==========================================================================
 ;#region Mouse
 
-
+; Cmd + Click 風
 LAlt & LButton:: Send "^{LButton}"
 
 ;#endregion  
