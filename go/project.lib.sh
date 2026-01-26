@@ -4,22 +4,13 @@
 
 . ./task.sh
 . ./go.lib.sh
-. ./embedded-go.lib.sh
+. ./go-inlined.lib.sh
 
-# Generate Go-embedded sample scripts.
-task_go_hello__gen() {
-  local out_sh=go-hello
-  subcmd_go__embedded__sh__gen \
-    --url="https://raw.githubusercontent.com/knaka/src/go/$out_sh" \
-    --main-go=./hello.go \
-    --template-sh=./embedded-go \
-    --out-sh=./"$out_sh"
-  local out_cmd=go-hello.cmd
-  subcmd_go__embedded__cmd__gen \
-    --url="https://raw.githubusercontent.com/knaka/src/go/$out_cmd" \
-    --main-go=./hello.go \
-    --template-cmd=./embedded-go.cmd \
-    --out-cmd=./"$out_cmd"
+# Generate Go-inlined sample scripts.
+task_hello_sh__gen() {
+  gen_go_inlined \
+    --main-file=./misc/hello.go \
+    --output=./misc/hello.sh
 }
 
 # Generate files.
