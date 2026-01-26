@@ -57,15 +57,11 @@ ActivateOrRun(cmdPath, launchArgs := "") {
   } else {
     Run ((launchArgs = "")? cmdPath: launchArgs)
   }
+  WinWait winTitle
 }
 
 ActivateChromeTab(domainPrefix) {
-  IME_SET(0)
-  if !WinExist("ahk_exe chrome.exe") {
-    Run "chrome.exe"
-    WinWait "ahk_exe chrome.exe"
-  }
-  WinActivate "ahk_exe chrome.exe"
+  ActivateOrRun("chrome.exe")
   Sleep 100
   Send "^+a"
   Sleep 200
