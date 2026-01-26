@@ -13,6 +13,7 @@ tap 'jmespath/jmespath' # for 'jp'
 
 brew 'coreutils'
 brew 'cpulimit' # https://github.com/opsengine/cpulimit
+brew 'gawk'
 brew 'gh' # GitHub CLI について - GitHub Docs https://docs.github.com/ja/github-cli/github-cli/about-github-cli
 brew 'go' # ~/go/ は $GOPATH であり、$GOROOT とは別であることが望ましいらしい？
 brew 'jp' # AWS CLI の query 言語である、JMESPath のツール —jmespath/jp: Command line interface to JMESPath - http://jmespath.org https://github.com/jmespath/jp

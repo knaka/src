@@ -120,3 +120,26 @@ task_hello_cmd__gen() {
     --sh-file=./misc/hello.sh \
     --output=./misc/hello-sh.cmd
 }
+
+gen_sourced() {
+  local sh_file=""
+  local output=""
+  OPTIND=1; while getopts _-: OPT
+  do
+    test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
+    case "$OPT" in
+      (sh-file) sh_file="$OPTARG";;
+      (output) output="$OPTARG" ;;
+      (*) echo "Unexpected option: $OPT" >&2; exit 1;;
+    esac
+  done
+  shift $((OPTIND-1))
+
+  ./expand-sh.awk "$sh_file" >"$output"
+}
+
+task_hello_sourced_sh__gen() {
+  gen_sourced \
+    --sh-file=./_sh-hello.sh \
+    --output=./misc/expanded-hello.sh
+}
