@@ -8,7 +8,7 @@ set -- "$PWD" "${0%/*}" "$@"; if test "$2" != "$0"; then cd "$2" 2>/dev/null || 
 . ./conf.sh
 cd "$1"; shift 2
 
-should_block=false
+should_block_b69939e=false
 
 edit_it() {
   # Path for VSCode has disappeared from $PATH ... ???
@@ -18,7 +18,7 @@ edit_it() {
   fi
   if command -v code >/dev/null 2>&1
   then
-    if $should_block
+    if $should_block_b69939e
     then
       set -- --wait "$@"
     fi
@@ -29,18 +29,11 @@ edit_it() {
 }
 
 ed() {
-  OPTIND=1; while getopts b-: OPT
+  OPTIND=1; while getopts _-: OPT
   do
-    if test "$OPT" = "-"
-    then
-      OPT="${OPTARG%%=*}"
-      # shellcheck disable=SC2030
-      OPTARG="${OPTARG#"$OPT"}"
-      OPTARG="${OPTARG#=}"
-    fi
+    test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
     case "$OPT" in
-      (b|block|w|wait) should_block=true;;
-      (\?) exit 1;;
+      (b|block|w|wait) should_block_b69939e=true;;
       (*) echo "Unexpected option: $OPT" >&2; exit 1;;
     esac
   done
@@ -65,10 +58,10 @@ ed() {
       # File exists
       elif test -f "$arg"
       then
-        # Resolve only directory.
-        local dir="$(dirname "$arg")"
-        local base="$(basename "$arg")"
-        arg="$(realpath "$dir")"/"$base"
+        # Resolve only directory, so that editors open the file symlink as it appears in the directory
+        local arg_dir="$(dirname "$arg")"
+        local arg_base="$(basename "$arg")"
+        arg="$(realpath "$arg_dir")"/"$arg_base"
         case "$arg" in
           (${HOME}/.*)
             printf "%s seems to be a dot file. " "$arg" >&2
@@ -85,10 +78,10 @@ ed() {
       fi
     # Not exists
     else
-      # Resolve only directory symlinks, as the file does not exist
-      local arg_dir="$(realpath "$(dirname "$arg")")"
+      # Resolve only directory symlinks, as the file is to be created
+      local arg_dir="$(dirname "$arg")"
       local arg_base="$(basename "$arg")"
-      arg="$arg_dir/$arg_base"
+      arg="$(realpath "$arg_dir")"/"$arg_base"
       if ! test -e "$arg"
       then
         printf "File %s does not exist. " "$arg" >&2
@@ -100,7 +93,6 @@ ed() {
         touch "$arg"
       fi
     fi
-    shift
     edit_it "$arg"
   done
 }
