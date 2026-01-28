@@ -18,7 +18,6 @@ conf() {
     then
       case "${arg}" in
         (-*)
-          set -- "$@" "$arg"
           ;;
         (*)
           found_subcmd=true
@@ -29,16 +28,15 @@ conf() {
           case "$arg" in
             (ed|edit)
               set -- "$@" edit --watch
+              continue
               ;;
             (*)
-              set -- "$@" "$arg"
               ;;
           esac
           ;;
       esac
-    else
-      set -- "$@" "$arg"
     fi
+    set -- "$@" "$arg"
   done
   chezmoi "$@"
 }
