@@ -2,6 +2,7 @@ package main
 
 import (
 	"iter"
+	"log"
 	"slices"
 
 	//lint:ignore ST1001
@@ -33,6 +34,25 @@ func iterate[T constraints.Integer](
 
 // naturals is an infinite sequence of natural numbers: 0, 1, 2, 3, ...
 var naturals = iterate(func(n int) int { return n + 1 }, 0)
+var naturals0 = naturals
+
+func factorialRec(n int) int {
+	if n == 0 {
+		return 1
+	}
+	return n * factorialRec(n-1)
+}
+
+// naturals1 is an infinite sequence of natural numbers excluding 0: 1, 2, 3, ...
+var naturals1 = iterate(func(n int) int { return n + 1 }, 1)
+
+func factorialIter(n int) int {
+	return Reduce(
+		func(acc, v int) int { return acc * v },
+		1,
+		Limit(naturals1, n),
+	)
+}
 
 func main() {
 	pp.Println("fd7b955", slices.Collect(
@@ -64,4 +84,6 @@ func main() {
 			pp.Println("01c838a", pair.V1, pair.V2)
 		}
 	}
+	log.Println("0bdab24", factorialRec(5))
+	log.Println("e41f382", factorialIter(5))
 }

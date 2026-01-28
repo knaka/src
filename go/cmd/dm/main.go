@@ -30,22 +30,13 @@ const (
 	escSeqEnd = "\033[0m"
 )
 
-const stdinFilename = "-"
-
-// dumpFile dumps a file in hex format. If the filename is "-", it reads from stdin. If the writer is a terminal, it uses colors.
-func dumpFile(filePath string, params *dmParams) (err error) {
-	reader := params.stdin
-	if filePath != stdinFilename {
-		file, errTemp := os.Open(filePath)
-		if errTemp != nil {
-			return errTemp
-		}
-		defer file.Close()
-		reader = bufio.NewReader(file)
-	}
+func dumpStream(reader io.Reader, writer io.Writer, colored bool) (err error) {
+	bufReader := bufio.NewReader(reader)
+	bufWriter := bufio.NewWriter(writer)
+	defer (func() { bufWriter.Flush() })()
 	buf := make([]byte, numPerLine)
 	for addr := 0; ; addr += numPerLine {
-		pn := PtrResult(reader.Read(buf)).NilIf(io.EOF)
+		pn := PtrResult(bufReader.Read(buf)).NilIf(io.EOF)
 		if pn == nil {
 			break
 		}
@@ -57,7 +48,7 @@ func dumpFile(filePath string, params *dmParams) (err error) {
 				if printable(buf[i]) {
 					readable += string(buf[i])
 				} else {
-					if params.isTerm {
+					if colored {
 						readable += escSeqRed + chNotPrintable + escSeqEnd
 					} else {
 						readable += chNotPrintable
@@ -68,13 +59,22 @@ func dumpFile(filePath string, params *dmParams) (err error) {
 				readable += " "
 			}
 		}
-		Must(fmt.Fprintf(params.stdout, "%08X | %s | %s\n",
+		Must(fmt.Fprintf(bufWriter, "%08X | %s | %s\n",
 			addr,
 			strings.Join(hexes, " "),
 			readable,
 		))
 	}
 	return
+}
+
+func dumpFile(path string, writer io.Writer, colored bool) (err error) {
+	file, err := os.Open(path)
+	if err != nil {
+		return
+	}
+	defer (func() { Must(file.Close()) })()
+	return dumpStream(file, writer, colored)
 }
 
 var appID = "dm"
@@ -90,14 +90,20 @@ type dmParams struct {
 	verbose bool
 }
 
+const stdinFilename = "-"
+
 // dmEntry is the entry point.
 func dmEntry(params *dmParams) (err error) {
-	files := params.args
-	if len(files) == 0 {
-		files = append(files, stdinFilename)
+	paths := params.args
+	if len(paths) == 0 {
+		paths = append(paths, stdinFilename)
 	}
-	for _, file := range files {
-		err = dumpFile(file, params)
+	for _, path := range paths {
+		if path == stdinFilename {
+			err = dumpStream(params.stdin, params.stdout, params.isTerm)
+		} else {
+			err = dumpFile(path, params.stdout, params.isTerm)
+		}
 		if err != nil {
 			return
 		}

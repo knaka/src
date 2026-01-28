@@ -199,12 +199,13 @@ precmd() {
   local right_str=
   local delim=
 
-  local git_branch
-  git_branch="$(command -v git >/dev/null 2>&1 && git branch 2>/dev/null)" || :
-  if test -n "$git_branch"
+  local git_branches
+  git_branches="$(command -v git >/dev/null 2>&1 && git branch 2>/dev/null)" || :
+  if test -n "$git_branches"
   then
     gtop="$(git rev-parse --show-toplevel 2>/dev/null)" || :
-    git_branch="${git_branch##* }"
+    local git_branch
+    git_branch="$(echo "$git_branches" | sed -n -e 's/^* *//p')"
     right_str="${delim}${right_str} $git_branch"
     delim=" "
   fi
