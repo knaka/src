@@ -25,9 +25,10 @@ require (
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jeandeaual/go-locale v0.0.0-20250612000132-0ef82f21eade // indirect
 	github.com/jezek/xgb v1.1.1 // indirect
+	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	golang.org/x/image v0.31.0 // indirect
-	golang.org/x/sync v0.17.0 // indirect
+	golang.org/x/sync v0.19.0 // indirect
 	golang.org/x/text v0.29.0 // indirect
 	howett.net/plist v1.0.1 // indirect
 )
@@ -35,8 +36,11 @@ require (
 require (
 	github.com/friendsofgo/errors v0.9.2 // indirect
 	github.com/guigui-gui/guigui v0.0.0-20251016161606-e998ebf57e0f
+	github.com/k0kubun/pp v3.0.1+incompatible
 	github.com/mattn/go-isatty v0.0.20
 	github.com/pkg/errors v0.9.1 // indirect
+	github.com/samber/lo v1.52.0
+	golang.org/x/exp v0.0.0-20260112195511-716be5621a96
 	golang.org/x/sys v0.36.0 // indirect
 	golang.org/x/xerrors v0.0.0-20190717185122-a985d3407aa7 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect

@@ -8,7 +8,7 @@ set -- "$PWD" "${0%/*}" "$@"; if test "$2" != "$0"; then cd "$2" 2>/dev/null || 
 cd "$1"; shift 2
 
 # Releases · knaka/tblcalc https://github.com/knaka/tblcalc/releases
-tblcalc_version_e276172="v0.9.3"
+tblcalc_version_e276172="v0.9.4"
 
 tblcalc() {
   # shellcheck disable=SC2016

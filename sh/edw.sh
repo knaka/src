@@ -10,11 +10,12 @@ set -- "$PWD" "${0%/*}" "$@"; test "$2" != "$0" && cd "$2"
 cd "$1"; shift 2
 
 edw() {
-  ed --block "$@"
+  ed --wait "$@"
 }
 
-if test "${0##*/}" = edw.sh
-then
-  set -o nounset -o errexit
-  edw "$@"
-fi
+case "${0##*/}" in
+  (edw.sh|edw)
+    set -o nounset -o errexit
+    edw "$@"
+    ;;
+esac

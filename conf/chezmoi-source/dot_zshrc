@@ -14,8 +14,15 @@ append_path() {
 # ==========================================================================
 #region グローバル変数
 
-export EDITOR="edw"
-export GIT_EDITOR="edw"
+# Visual editor (= full-screen editor)
+export VISUAL="edw"
+# Line editor
+export EDITOR="$VISUAL"
+export GIT_EDITOR="$VISUAL"
+export SVN_EDITOR="$VISUAL"
+export FCEDIT="$VISUAL"
+export SUDO_EDITOR="$VISUAL"
+
 export VOLTA_HOME="$HOME/.volta"
 
 #endregion
