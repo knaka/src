@@ -16,9 +16,11 @@ func TestDumpFile(t *testing.T) {
 	Must(tempFile.Write(data))
 	Must(tempFile.Close())
 	var buf bytes.Buffer
-	err := dumpStream(tempFile.Name(), &dmParams{
-		stdout: &buf,
-	})
+	err := dumpStream(
+		Value(os.Open(tempFile.Name())),
+		&buf,
+		false,
+	)
 	if err != nil {
 		t.Errorf("Failed to open")
 	}

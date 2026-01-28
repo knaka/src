@@ -124,7 +124,7 @@ func main() {
 	}
 	if !params.isTerm {
 		bufStdout := bufio.NewWriter(os.Stdout)
-		defer bufStdout.Flush()
+		defer (func() { bufStdout.Flush() })()
 		params.stdout = bufStdout
 	}
 	flags := pflag.NewFlagSet(appID, pflag.PanicOnError)
