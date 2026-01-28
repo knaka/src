@@ -53,15 +53,15 @@ func main() {
 			5,
 		),
 	))
-	for z := range Limit(
+	for pair := range Limit(
 		Zip(
 			naturals,
 			Map(func(n int) int { return n * 2 }, naturals),
 		),
 		5,
 	) {
-		if z.Ok1 {
-			pp.Println("01c838a", z.V1)
+		if pair.Ok1 && pair.Ok2 {
+			pp.Println("01c838a", pair.V1, pair.V2)
 		}
 	}
 }
