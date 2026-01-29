@@ -143,6 +143,7 @@ zstyle ':completion:*' matcher-list 'm:{[a-z]}={[A-Z]}'
 
 # The top directory of the git repository
 gtop=
+w=
 
 executed_something_f881915=false
 
@@ -204,6 +205,7 @@ precmd() {
   if test -n "$git_branches"
   then
     gtop="$(git rev-parse --show-toplevel 2>/dev/null)" || :
+    w="$gtop"
     local git_branch
     git_branch="$(echo "$git_branches" | sed -n -e 's/^* *//p')"
     right_str="${delim}${right_str} $git_branch"
