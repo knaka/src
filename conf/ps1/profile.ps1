@@ -13,6 +13,7 @@ $aliases_to_remove = @(
   "gc",
   "ll",
   "ls",
+  "pwd",
   "rm",
   "sc",
   "mv",
@@ -147,6 +148,55 @@ Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
 
 $y = "$HOME\doc\$(Get-Date -Format "yyyy")"
 $dl = "$HOME\Downloads"
+
+# ; $global:PrecmdHooks = @()
+
+# ; function Add-PrecmdHook {
+# ;   param([scriptblock]$Hook)
+# ;   $global:PrecmdHooks += $Hook
+# ; }
+
+# ; function prompt {
+# ;   foreach ($hook in $global:PrecmdHooks) {
+# ;     & $hook
+# ;   }
+  
+# ;   ; return "PPS $($executionContext.SessionState.Path.CurrentLocation)$('>' * ($nestedPromptLevel + 1)) ";
+# ;   return "PPSS> "
+# ; }
+
+# ; Add-PrecmdHook { foo = "FOO" }
+
+function prompt {
+  $lastSuccess = $?
+  # $lastExitCode = $LASTEXITCODE
+
+  # $global:my_pwd = $PWD.Path
+
+  # Git ワークのトップディレクトリ
+  $global:gtop = git rev-parse --show-toplevel 2>$null
+    
+  # 現在のブランチ名
+  $gbranch = git branch --show-current 2>$null
+
+  $width = $Host.UI.RawUI.WindowSize.Width
+  $line = "$($executionContext.SessionState.Path.CurrentLocation)"
+  $rstr = ${gbranch}
+  $padding_num = $width - $line.Length - $rstr.Length
+  $rmargin = " " * $padding_num
+
+  # $host.UI.RawUI.WindowTitle = "$(Get-Location)"
+  # return "PS $($executionContext.SessionState.Path.CurrentLocation)$('>' * ($nestedPromptLevel + 1)) ";
+  if ($lastSuccess) {
+    $bg = "`e[42m" # green
+  } else {
+    $bg = "`e[41m" # red
+  }
+  $fg = "`e[97m"
+  $reset = "`e[0m"
+  
+  "${bg}${fg}${line}${rmargin}${rstr}${reset}`n> "
+}
 
 # How can I modify PowerShell tab-completion to proritise certain file types over others? - Stack Overflow https://stackoverflow.com/questions/75509668/how-can-i-modify-powershell-tab-completion-to-proritise-certain-file-types-over
 if ($PSVersionTable.PSVersion.Major -ge 7) {
