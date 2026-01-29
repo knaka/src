@@ -120,7 +120,7 @@ function prompt {
   $rmargin = " " * $padding_num
 
   if ($gbranch.Length -gt 0) {
-    $base = basename $gtop
+    $base = basename $w
     $host.UI.RawUI.WindowTitle = "git: $base"
   } else {
     $host.UI.RawUI.WindowTitle = "$(Get-Location)"

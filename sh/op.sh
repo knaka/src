@@ -6,7 +6,7 @@
 op() {
   if command -v Powershell >/dev/null 2>&1
   then
-    exec Powershell -Command "Start-process" "$@"
+    exec pwsh.exe -Command "Start-process" "$@"
   elif command -v open >/dev/null 2>&1
   then
     exec open "$@"
