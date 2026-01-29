@@ -7,6 +7,7 @@ import (
 	"iter"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/spf13/pflag"
 	"golang.org/x/term"
@@ -37,8 +38,8 @@ type scanParams struct {
 }
 
 func linesSeq(reader io.Reader) iter.Seq[string] {
-	scanner := bufio.NewScanner(reader)
 	return func(yield func(string) bool) {
+		scanner := bufio.NewScanner(reader)
 		for scanner.Scan() {
 			if !yield(scanner.Text()) {
 				return
@@ -58,6 +59,13 @@ func scanEntry(params *scanParams) (err error) {
 		for line := range modLines {
 			log.Println("e2332db", line)
 		}
+	}
+	for item := range strings.SplitSeq("foo###bar###baz", "###") {
+		log.Println("7705877", item)
+	}
+	for line := range strings.Lines("hoge\nfuga\nfoo\n") {
+		// newlines remain.
+		log.Printf("1dcbe67: %s", line)
 	}
 	return
 }
@@ -90,4 +98,5 @@ func main() {
 	if err != nil {
 		log.Fatalf("%s: %v\n", appID, err)
 	}
+	Range
 }
