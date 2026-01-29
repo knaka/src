@@ -8,6 +8,8 @@ set -- "$PWD" "${0%/*}" "$@"; if test "$2" != "$0"; then cd "$2" 2>/dev/null || 
 . ./chezmoi.lib.sh
 cd "$1"; shift 2
 
+export CHEZMOISOURCEDIR="$HOME/repos/github.com/knaka/src/conf/chezmoi-source"
+
 conf() {
   local found_subcmd=false
   local arg
