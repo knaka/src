@@ -13,12 +13,12 @@ $aliases_to_remove = @(
   "gc",
   "ll",
   "ls",
+  "mv",
   "pwd",
   "rm",
   "sc",
-  "mv",
   "type",
-  "_CENTINEL_"
+  "__7f179f1__"
 )
 
 foreach ($alias in $aliases_to_remove) {
@@ -174,7 +174,8 @@ function prompt {
   # $global:my_pwd = $PWD.Path
 
   # Git ワークのトップディレクトリ
-  $global:gtop = git rev-parse --show-toplevel 2>$null
+  $gtop = git rev-parse --show-toplevel 2>$null
+  $global:gtop = $gtop
     
   # 現在のブランチ名
   $gbranch = git branch --show-current 2>$null
@@ -185,7 +186,12 @@ function prompt {
   $padding_num = $width - $line.Length - $rstr.Length
   $rmargin = " " * $padding_num
 
-  # $host.UI.RawUI.WindowTitle = "$(Get-Location)"
+  if ($gbranch.Length -gt 0) {
+    $base = basename $gtop
+    $host.UI.RawUI.WindowTitle = "git: $base"
+  } else {
+    $host.UI.RawUI.WindowTitle = "$(Get-Location)"
+  }
   # return "PS $($executionContext.SessionState.Path.CurrentLocation)$('>' * ($nestedPromptLevel + 1)) ";
   if ($lastSuccess) {
     $bg = "`e[42m" # green
