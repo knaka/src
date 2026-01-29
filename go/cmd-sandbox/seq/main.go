@@ -129,16 +129,16 @@ func factorialIter(n int) int {
 	)
 }
 
-func sumRec(n int) int {
+func sumRec[T constraints.Integer](n T) T {
 	if n == 0 {
 		return 0
 	}
 	return n + sumRec(n-1)
 }
 
-func sumIter(n int) int {
+func sumIter[T constraints.Integer](n T) T {
 	return Reduce(
-		func(acc, v int) int { return acc + v },
+		func(acc, v T) T { return acc + v },
 		0,
 		Range(1, n),
 	)
@@ -185,7 +185,7 @@ func main() {
 	Must(pp.Println("e18a710", slices.Collect(
 		Take(Count(3, -2), 10),
 	)))
-	log.Println("d3eee75", sumRec(10) == sumIter(10))
+	log.Println("d3eee75", sumRec(int64(10)) == sumIter(int64(10)))
 	// log.Println("a710a99", sumRec(100000000)) // fatal error: stack overflow
 	log.Println("a710a99", sumIter(100000000)) // works
 }
