@@ -4,11 +4,6 @@ import (
 	"log"
 	"slices"
 
-	//lint:ignore ST1001
-	//nolint:staticcheck
-	//revive:disable-next-line:dot-imports
-	. "app/cmd-sandbox/seq/xiter"
-
 	"github.com/k0kubun/pp"
 	"golang.org/x/exp/constraints"
 
@@ -16,6 +11,11 @@ import (
 	//nolint:staticcheck
 	//revive:disable-next-line:dot-imports
 	. "github.com/knaka/go-utils"
+
+	//lint:ignore ST1001
+	//nolint:staticcheck
+	//revive:disable-next-line:dot-imports
+	. "github.com/knaka/go-utils/xiter"
 )
 
 func factorialRec(n int) int {

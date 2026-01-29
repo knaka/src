@@ -1,7 +1,6 @@
 package main
 
 import (
-	"app/cmd-sandbox/seq/xiter"
 	"bufio"
 	"fmt"
 	"io"
@@ -16,6 +15,11 @@ import (
 	//nolint:staticcheck
 	//revive:disable-next-line:dot-imports
 	. "github.com/knaka/go-utils"
+
+	//lint:ignore ST1001
+	//nolint:staticcheck
+	//revive:disable-next-line:dot-imports
+	. "github.com/knaka/go-utils/xiter"
 )
 
 var appID = "scan"
@@ -47,7 +51,7 @@ func linesSeq(reader io.Reader) iter.Seq[string] {
 func scanEntry(params *scanParams) (err error) {
 	for _, arg := range params.args {
 		lines := linesSeq(Value(os.Open(arg)))
-		modLines := xiter.Map(
+		modLines := Map(
 			func(line string) string { return "37b4c67: " + line },
 			lines,
 		)
