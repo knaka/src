@@ -5,8 +5,15 @@ test "${guard_b6c071a+set}" = set && return 0; guard_b6c071a=-
 . ./_edit.lib.sh
 
 # Install shell scripts.
-subcmd_install() (
-  excluded_scripts=":task.sh:"
+subcmd_install() {
+  local sh_bin_dir_path="$HOME"/sh-bin
+  if test "${executed_thru_t_bb789ec+set}" = set
+  then
+    echo "In a Windows environment, $sh_bin_dir_path/t.sh is not replaced because it is locked. Run ./task.cmd instead." >&2
+    return 1
+  fi
+  local excluded_scripts=":task.sh:"
+  local file
   for file in task-*.sh *.lib.sh _*.sh
   do
     if ! test -r "$file"
@@ -15,16 +22,16 @@ subcmd_install() (
     fi
     excluded_scripts="$excluded_scripts:$file:"
   done
-  sh_bin_dir_path="$HOME"/sh-bin
   mkdir -p "$sh_bin_dir_path"
   rm -f "$sh_bin_dir_path"/*
+  local sh_file
   for sh_file in *.sh
   do
     if echo "$excluded_scripts" | grep -q ":$sh_file:"
     then
       continue
     fi
-    sh_name="${sh_file%.sh}"
+    local sh_name="${sh_file%.sh}"
     if is_windows
     then
       cat task.cmd >"$sh_bin_dir_path"/"$sh_name".cmd
@@ -47,7 +54,7 @@ EOF
 sh_dir_path="$PWD"
 EOF
   fi
-)
+}
 
 # Generate a Sh-inlined batch script that embeds shell code for Windows
 #
@@ -114,7 +121,7 @@ EOF
   ) >"$output"
 }
 
-# Generate Sh-inlined sample cmd.
+# Generate a Sh-inlined sample .cmd file.
 task_hello_cmd__gen() {
   gen_sh_inlined \
     --sh-file=./misc/hello.sh \

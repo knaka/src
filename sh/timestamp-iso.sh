@@ -16,6 +16,12 @@ timestamp_iso() {
     # S: String
     # a, m, c, B: Last accessed or modified, or when the inode was last changed, or the birth time of the inode
     stat -f "%Sm" -t "$iso_date_format" "$1"
+  elif is_windows
+  then
+    local epoch
+    epoch="$(stat -c "%Y" "$1")"
+    date -d @"$epoch" -Iseconds
+    return
   else
     date --date "$(stat --format "%y" "$1")" +"$iso_date_format"
   fi

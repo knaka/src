@@ -10,18 +10,24 @@ cd "$1"; shift 2
 iso_time_format='%Y-%m-%dT%H:%M:%S%z'
 iso_time_format_utc='%Y-%m-%dT%H:%M:%SZ'
 
-# Touch files with specified ISO time.
+# Touch files with specified ISO-8601 time.
 # Usage: touch_time_iso <ISO_time> <file>...
-# Example: touch_time_iso "2023-12-25T15:30:00Z" file1.txt file2.txt
+# Example: touch_time_iso 2024-01-01T12:00:00Z file1.txt file2.txt
 touch_time_iso() {
   local time="$1"
   shift
-  # BSD touch cannot accept ISO format directly with -d
+  if is_windows
+  then
+    # BusyBox date(1) does not seem to handle "%z". Use PowerShell to do this.
+    pwsh.exe -NoProfile -Command "Set-ItemProperty \"$1\" -Name LastWriteTime -Value \"$time\""
+    return
+  fi
   if is_bsd
   then
+    # BSD touch(1) does not accept ISO time with timezone. Convert to UTC.
     time="$(TZ=UTC date -j -f "$iso_time_format" "$time" +"$iso_time_format_utc")"
   fi
-  touch -d "$time" "$@" 
+  touch -d "$time" "$@"
 }
 
 case "${0##*/}" in
