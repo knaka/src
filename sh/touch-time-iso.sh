@@ -24,7 +24,9 @@ touch_time_iso() {
   then
     # BusyBox date(1) does not seem to handle "%z". Accept only UTC ("Z").
     local epoch
+    # touch-time-iso "2023-12-25T00:00:00+00:00" C:\Users\knaka\tmp\hello.txt && timestamp-iso.cmd C:\Users\knaka\tmp\hello.txt
     # epoch="$(TZ=UTC0 date -d "$time" -D "$iso_time_format" +"%s")"
+    # touch-time-iso "2023-12-25T00:00:00Z" C:\Users\knaka\tmp\hello.txt && timestamp-iso.cmd C:\Users\knaka\tmp\hello.txt
     epoch="$(TZ=UTC0 date -d "$time" -D "$iso_time_format_utc" +"%s")"
     time="@$epoch"
     TZ=UTC0 touch -d "$time" "$@"
