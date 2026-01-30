@@ -7,7 +7,17 @@ set -- "$PWD" "${0%/*}" "$@"; if test "$2" != "$0"; then cd "$2" 2>/dev/null || 
 . ./task.sh
 cd "$1"; shift 2
 
-# `git config --list` format to JSON.
+# Converts `git config --list` output into a JSON object.
+# Reads key=value lines from stdin, splits keys by dots, and builds a nested JSON object.
+#
+# Usage:
+#   git config ... --list | git-config-list-to-json
+#
+# Limitations:
+#   - Values containing newlines are not handled correctly.
+#   - Duplicate keys are overwritten by the last occurrence.
+#   - Section names containing dots are not parsed correctly.
+
 git_config_list_to_json() {
   # reduce: The reduce syntax allows you to combine all of the results of an expression by accumulating them into a single answer. The form is reduce EXP as $var (INIT; UPDATE).  —  https://jqlang.org/manual/#reduce
   # inputs: Outputs all remaining inputs, one by one. — https://jqlang.org/manual/#inputs
