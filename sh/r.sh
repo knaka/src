@@ -45,7 +45,7 @@ ghq_list() {
     done
 }
 
-repo() {
+r() {
   local prefix=
   if test "${1+set}" = "set"
   then
@@ -84,8 +84,8 @@ repo() {
 }
 
 case "${0##*/}" in
-  (repo.sh|repo)
+  (r.sh|r)
     set -o nounset -o errexit
-    repo "$@"
+    r "$@"
     ;;
 esac

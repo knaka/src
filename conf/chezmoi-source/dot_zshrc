@@ -468,19 +468,22 @@ zreload() {
   autoload -Uz +X "$func_name"
 }
 
-alias attach='test "$TERM" != "screen" && screen -r'
-alias cls=clear
-alias ll='ls -l'
-! which tac >/dev/null && alias tac="tail -r" || :
-alias 1psignin='eval $(1p signin)'
-alias 1plogin=1psignin
 export HOMEBREW_NO_AUTO_UPDATE=1
+
+alias 1plogin=1psignin
+alias 1psignin='eval $(1p signin)'
+alias any-apply='command brew-apply && command gobin-apply && command npm-apply && PATH=$PATH'
+alias attach='test "$TERM" != "screen" && screen -r'
 alias brew-apply='command brew-apply && PATH=$PATH'
 alias brew-upgrade='command brew update && command brew upgrade && PATH=$PATH'
-alias any-apply='command brew-apply && command gobin-apply && command npm-apply && PATH=$PATH'
-# alias task="launch-task"
-# alias t="launch-task"
+alias cls=clear
+alias ll='ls -l'
 alias ppd='echo $PPD' # Print Project Directory
+alias r='command r'
+# alias t="launch-task"
+# alias task="launch-task"
+
+# ! which tac >/dev/null && alias tac="tail -r" || :
 
 # 何かおかしいので、一旦外す
 # alias go="command go-wrap"
