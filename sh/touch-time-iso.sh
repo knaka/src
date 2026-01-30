@@ -12,16 +12,25 @@ iso_time_format_utc='%Y-%m-%dT%H:%M:%SZ'
 
 # Touch files with specified ISO time.
 # Usage: touch_time_iso <ISO_time> <file>...
-# Example: touch_time_iso "2023-12-25T15:30:00Z" file1.txt file2.txt
+# Example: touch_time_iso 2024-01-01T12:00:00Z file1.txt file2.txt
 touch_time_iso() {
   local time="$1"
   shift
-  # BSD touch cannot accept ISO format directly with -d
   if is_bsd
   then
+    # BSD touch(1) does not accept ISO time with timezone. Convert to UTC.
     time="$(TZ=UTC date -j -f "$iso_time_format" "$time" +"$iso_time_format_utc")"
+  elif is_windows
+  then
+    # BusyBox date(1) does not seem to handle "%z". Accept only UTC ("Z").
+    local epoch
+    # epoch="$(TZ=UTC0 date -d "$time" -D "$iso_time_format" +"%s")"
+    epoch="$(TZ=UTC0 date -d "$time" -D "$iso_time_format_utc" +"%s")"
+    time="@$epoch"
+    TZ=UTC0 touch -d "$time" "$@"
+    return
   fi
-  touch -d "$time" "$@" 
+  touch -d "$time" "$@"
 }
 
 case "${0##*/}" in
