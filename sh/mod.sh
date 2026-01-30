@@ -14,11 +14,10 @@ mod() {
   prj_dir="$(git rev-parse --show-toplevel 2>/dev/null)"
   local submodules
   submodules="$(git config --file "$prj_dir"/.gitmodules --list | git_config_list_to_json | jq -r '.submodule | keys[]')"
-  # shellcheck disable=SC2086
-  set -- $submodules
   # todo: show list to choose one?
   local arg
-  for arg in "$@"
+  # shellcheck disable=SC2086
+  for arg in $submodules
   do
     echo "$prj_dir"/"$arg"
   done
