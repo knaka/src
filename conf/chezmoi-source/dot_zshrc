@@ -141,9 +141,8 @@ zstyle ':completion:*' matcher-list 'm:{[a-z]}={[A-Z]}'
 # ==========================================================================
 #region プロンプト
 
-# The top directory of the git repository
-gtop=
-w=
+# Print Project Directory. The top directory of the git, etc.
+PPD=
 
 executed_something_f881915=false
 
@@ -187,15 +186,15 @@ precmd() {
   local main_str="-"
   test "${WINDOW+set}" = set && main_str="$WINDOW"
 
-  local p="${PWD/$HOME/~}"
+  local pwd_str="${PWD/$HOME/~}"
 
   # If remote, prepend hostname
   if test "${SSH_CONNECTION+set}" = set
   then
-    p="$(hostname):$p"
+    pwd_str="$(hostname):$pwd_str"
   fi
 
-  main_str="$main_str $p"
+  main_str="$main_str $pwd_str"
 
   local right_str=
   local delim=
@@ -204,8 +203,8 @@ precmd() {
   git_branches="$(command -v git >/dev/null 2>&1 && git branch 2>/dev/null)" || :
   if test -n "$git_branches"
   then
-    gtop="$(git rev-parse --show-toplevel 2>/dev/null)" || :
-    w="$gtop"
+    # Project Directory
+    PPD="$(git rev-parse --show-toplevel 2>/dev/null)" || :
     local git_branch
     git_branch="$(echo "$git_branches" | sed -n -e 's/^* *//p')"
     right_str="${delim}${right_str} $git_branch"
@@ -481,6 +480,7 @@ alias brew-upgrade='command brew update && command brew upgrade && PATH=$PATH'
 alias any-apply='command brew-apply && command gobin-apply && command npm-apply && PATH=$PATH'
 # alias task="launch-task"
 # alias t="launch-task"
+alias ppd='echo $PPD' # Print Project Directory
 
 # 何かおかしいので、一旦外す
 # alias go="command go-wrap"

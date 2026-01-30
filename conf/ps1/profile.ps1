@@ -107,8 +107,8 @@ function prompt {
   # $global:my_pwd = $PWD.Path
 
   # Git ワークのトップディレクトリ
-  $w = git rev-parse --show-toplevel 2>$null
-  $global:w = $w
+  $PPD = git rev-parse --show-toplevel 2>$null
+  $global:PPD = $PPD
     
   # 現在のブランチ名
   $gbranch = git branch --show-current 2>$null
@@ -120,7 +120,7 @@ function prompt {
   $rmargin = " " * $padding_num
 
   if ($gbranch.Length -gt 0) {
-    $base = basename $w
+    $base = Split-Path $PPD -Leaf
     $host.UI.RawUI.WindowTitle = "git: $base"
   } else {
     $host.UI.RawUI.WindowTitle = "$(Get-Location)"
