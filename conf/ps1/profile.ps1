@@ -78,6 +78,10 @@ function set_env {
 
 New-Alias -Name set-env -Value set_env -Force
 
+function ppd() {
+  Write-Output "$global:PPD"
+}
+
 function aws_switch_profile (
   [string]$prf_to_set
 ) {
@@ -90,7 +94,6 @@ function aws_switch_profile (
 
 New-Alias -Name aws-switch-profile -Value aws_switch_profile -Force
 
-New-Alias -Name sc -Value sc.cmd -Force
 New-Alias -Name gc -Value gc.cmd -Force
 New-Alias -Name find -Value $ENV:USERPROFILE\busybox-bin\find.exe -Force
 

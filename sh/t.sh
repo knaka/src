@@ -3,8 +3,12 @@
 # shellcheck shell=sh
 "${sourced_4e43a4f-false}" && return 0; sourced_4e43a4f=true
 
+# Marker
+export executed_thru_t_bb789ec=true
+
 root_dir=/
 cmd_base=task
+# If Windows
 if test -d "c:/"
 then
   root_dir="c:/"
