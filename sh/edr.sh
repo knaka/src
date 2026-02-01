@@ -8,6 +8,7 @@
 set -- "$PWD" "${0%/*}" "$@"; if test "$2" != "$0"; then cd "$2" 2>/dev/null || :; fi
 . ./task.sh
   init_temp_dir
+  defer_child_cleanup
 . ./edw.sh
 cd "$1"; shift 2
 
@@ -33,7 +34,6 @@ edr() {
   done &
   edw "$file"
   check "$origin" "$file"
-  kill_child_processes
 }
 
 case "${0##*/}" in
