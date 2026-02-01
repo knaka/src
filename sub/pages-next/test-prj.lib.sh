@@ -8,7 +8,7 @@ set -o nounset -o errexit
 rewrite_args() (
   usv_args="$(echo "$1" | sed -E -e "s/, */${us}/g")"
   delim=
-  push_ifs
+  _push_ifs
   IFS="${us}"
   for arg in $usv_args
   do

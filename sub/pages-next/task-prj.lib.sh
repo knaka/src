@@ -48,7 +48,7 @@ worker_out_dir="functions"
 # shellcheck disable=SC2120
 task_worker__build() { # Build the worker files into a JS file.
   rm -fr "$worker_out_dir"
-  push_ifs
+  _push_ifs
   ifs_newline
   # shellcheck disable=SC2046
   subcmd_esbuild --bundle --format=esm --outdir="$worker_out_dir" $(find "$worker_in_dir" -type f -name "*.ts" -o -name "*.tsx") "$@"

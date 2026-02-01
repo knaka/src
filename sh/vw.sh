@@ -1,37 +1,29 @@
-#!/bin/sh
-set -o nounset -o errexit
+#!/usr/bin/env sh
+# vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
+# shellcheck shell=sh
+"${sourced_3ae0529-false}" && return 0; sourced_3ae0529=true
 
-finalize() {
-  if test "${tmp_dir_path+SET}" = SET
+set -- "$PWD" "${0%/*}" "$@"; if test "$2" != "$0"; then cd "$2" 2>/dev/null || :; fi
+. ./task.sh
+  init_temp_dir
+. ./ed.sh
+cd "$1"; shift 2
+
+vw() {
+  local title="(stdin)"
+  if test $# -ge 1
   then
-    rm -fr "$tmp_dir_path"
+    title="$(basename "$1") (RO)"
   fi
+  local file_path="$TEMP_DIR"/"$title"
+  cat "$@" >"$file_path"
+  chmod 444 "$file_path"
+  ed --block "$file_path"
 }
 
-trap finalize EXIT
-
-file_path=
-if test "${1+SET}" = SET
-then
-  file_path="$1"
-fi
-# -q: quiet
-# -d: directory
-tmp_dir_path=$(mktemp -qd /tmp/vwtmp.XXXXXX)
-if test "$file_path" = ""
-then
-  title="(stdin)"
-  tmp_file_path="$tmp_dir_path"/"$title"
-  cat > "$tmp_file_path"
-else
-  if ! test -r "$file_path"
-  then
-    echo "$file_path: No such file" 1>&2
-    exit 1
-  fi
-  title="$(basename "$file_path") (RO)"
-  tmp_file_path="$tmp_dir_path"/"$title"
-  cat "$file_path" > "$tmp_file_path"
-fi
-chmod 444 "$tmp_file_path"
-sh "$(dirname "$0")"/ed.sh -b "$tmp_file_path"
+case "${0##*/}" in
+  (vw.sh|vw)
+    set -o nounset -o errexit
+    vw "$@"
+    ;;
+esac
