@@ -19,8 +19,8 @@ task_gen() {
 }
 
 # Build Go source packages (*.go, ./cmd/*/) incrementally.
-subcmd_build() {
-  cd "${PROJECT_DIR}"
+subcmd_depbuild() {
+  push_dir "$PROJECT_DIR"
   local go_bin_dir_path=./build
   mkdir -p "$go_bin_dir_path"
   if test "${1+set}" != "set"
@@ -34,25 +34,31 @@ subcmd_build() {
     arg="${arg%.go}"
     if test -r "$arg.go"
     then
-      local target_bin_path="$go_bin_dir_path"/"$arg""$exe_ext"
-      if ! test -x "$target_bin_path" || newer "$arg.go" --than "$target_bin_path"
+      local target_cmd_path="$go_bin_dir_path/$arg$exe_ext"
+      if ! test -x "$target_cmd_path" || newer "$arg.go" --than "$target_cmd_path"
       then
         "$VERBOSE" && echo "Building $arg.go" >&2
-        subcmd_go build -o "$target_bin_path" "$arg.go"
+        go build -o "$target_cmd_path" "$arg.go"
       fi
     elif test -d ./cmd/"$arg"
     then
-      local target_bin_path="$go_bin_dir_path"/"$arg""$exe_ext"
-      if ! test -x "$target_bin_path" || newer ./cmd/"$arg" --than "$target_bin_path"
+      local target_cmd_path="$go_bin_dir_path/$arg$exe_ext"
+      if ! test -x "$target_cmd_path" || newer ./cmd/"$arg" --than "$target_cmd_path"
       then
         "$VERBOSE" && echo "Building ./cmd/$arg" >&2
-        subcmd_go build -o "$target_bin_path" ./cmd/"$arg"
+        go build -o "$target_cmd_path" ./cmd/"$arg"
       fi
     else
       echo "No $arg.go or ./cmd/$arg found" >&2
       exit 1
     fi
   done
+  pop_dir
+}
+
+# DEPREATED
+subcmd_build() {
+  subcmd_depbuild "$@"
 }
 
 # Install Go tools.
@@ -60,31 +66,33 @@ task_install() {
   local go_sim_dir_path="$HOME"/go-bin
   mkdir -p "$go_sim_dir_path"
   rm -f "$go_sim_dir_path"/*
-  local go_app_path
-  for go_app_path in *.go cmd/*
+  local go_main_path
+  local name
+  local target_sim_path
+  for go_main_path in *.go cmd/*
   do
-    if ! test -r "$go_app_path" && ! test -d "$go_app_path"
+    if ! test -r "$go_main_path" && ! test -d "$go_main_path"
     then
       continue
     fi
-    case "$go_app_path" in
+    case "$go_main_path" in
       task.go|task-*.go) continue ;;
     esac
-    name=$(basename "$go_app_path" .go)
-    target_sim_path="$go_sim_dir_path"/"$name"
+    name=$(basename "$go_main_path" .go)
+    target_sim_path="$go_sim_dir_path/$name"
     if is_windows
     then
-      pwd_backslash=$(echo "$PWD" | sed 's|/|\\|g')
-      go_sim_dir_path_backslash=$(echo "$(realpath .)"/build | sed 's|/|\\|g')
+      local pwd_backslash="$(echo "$PWD" | sed 's|/|\\|g')"
+      go_build_dir_path_backslash=$(echo "$(realpath .)"/build | sed 's|/|\\|g')
       cat <<EOF > "$target_sim_path".cmd
 @echo off
-call $pwd_backslash\task build $name.go
-$go_sim_dir_path_backslash\\$name.exe %*
+call $pwd_backslash\\task depbuild $name
+$go_build_dir_path_backslash\\$name.exe %*
 EOF
     else
       cat <<EOF > "$target_sim_path"
 #!/bin/sh
-$PWD/task build "$name".go
+$PWD/task depbuild "$name"
 exec $PWD/build/$name "\$@"
 EOF
       chmod +x "$target_sim_path"

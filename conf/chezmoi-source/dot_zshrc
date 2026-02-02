@@ -58,11 +58,17 @@ append_path /usr/local/sbin
 # ==========================================================================
 #region よく使う変数
 
+# TMPDIR: This variable shall represent a pathname of a directory made available for programs that need a place to create temporary files. — Environment Variables https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap08.html
+t="$TMPDIR"
+T="$t"
+
 d="$HOME"/doc
 doc="$d"
 D="$d"
+
 y="$doc"/$(date +%Y)
 Y="$y"
+
 # Anonymous function — zsh: 9 Functions https://zsh.sourceforge.io/Doc/Release/Functions.html
 () {
   local year
@@ -77,6 +83,7 @@ Y="$y"
     eval y${year: -2}="$doc"/$year
   done
 }
+
 dl="$HOME"/Downloads
 
 test -x /usr/local/bin/less && export PAGER=/usr/local/bin/less
@@ -143,6 +150,7 @@ zstyle ':completion:*' matcher-list 'm:{[a-z]}={[A-Z]}'
 
 # Print Project Directory. The top directory of the git, etc.
 PPD=
+ppd=
 
 executed_something_f881915=false
 
@@ -205,6 +213,7 @@ precmd() {
   then
     # Project Directory
     PPD="$(git rev-parse --show-toplevel 2>/dev/null)" || :
+    ppd="$PPD"
     local git_branch
     git_branch="$(echo "$git_branches" | sed -n -e 's/^* *//p')"
     right_str="${delim}${right_str} $git_branch"

@@ -14,11 +14,12 @@
 # The generated script will automatically recompile when the source changes.
 #
 # Options:
-#   --main-file FILE  Go source file containing main package (required)
-#   --output FILE     Output path for generated shell script (required)
+#   --main-file=FILE  Go source file containing main package (required)
+#   --output=FILE     Output path for generated shell script (required)
 #
 # Example:
-#   gen_go_inlined --main-file cmd.go --template wrapper.sh --output mycmd
+#   gen_go_inlined --main-file=cmd.go --output=cmd.sh
+#
 gen_go_inlined() {
   local main_file=
   local output=
@@ -47,13 +48,14 @@ gen_go_inlined() {
 
   (
     cat task.sh
+    # Remove "source"s from go.lib.sh.
     sed -e 's/^\. .*//' go.lib.sh
     cat <<'EOF'
 init_temp_dir
 gopath="${GOPATH:-$HOME/go}"
 mkdir -p "$gopath"/bin
-unique_name=$(realpath "$0" | tr / _)
-cmd_path="$gopath"/bin/embedded-"$unique_name$exe_ext"
+unique_name="$(sha256sum "$0" | sed -E -e 's/^(.......).*/\1/')"
+cmd_path="$gopath"/bin/inlined-"$unique_name$exe_ext"
 if newer "$0" --than "$cmd_path"
 then
   (
@@ -63,11 +65,7 @@ EOF
     cat "$main_file"
     cat <<'EOF'
 EMBED_FAA58B3
-    GOROOT="$(goroot_path)"
-    echo Compiling "$0" to "$cmd_path" with Go in "$GOROOT" >&2
-    export GOROOT
-    PATH="$GOROOT"/bin:$PATH
-    export PATH
+    echo Compiling "$0". >&2
     go build -o "$cmd_path" "$main_file_path"
   )
 fi

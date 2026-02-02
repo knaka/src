@@ -47,8 +47,7 @@ end)
 
 -- &Variable Expansion (parameter expansion)
 hs.hotkey.bind({"option"}, "v", function()
-  hs.eventtap.keyStrokes("\"${}\"")
-  hs.eventtap.keyStroke({}, "left", 0)
+  hs.eventtap.keyStrokes("\"$\"")
   hs.eventtap.keyStroke({}, "left", 0)
 end)
 
