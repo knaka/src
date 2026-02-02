@@ -8,7 +8,6 @@
 set -- "$PWD" "${0%/*}" "$@"; if test "$2" != "$0"; then cd "$2" 2>/dev/null || :; fi
 . ./task.sh
   init_temp_dir
-  defer_child_cleanup
 . ./edw.sh
 cd "$1"; shift 2
 
@@ -32,6 +31,7 @@ edr() {
     check "$origin" "$file"
     sleep 5
   done &
+  defer_child_cleanup
   edw "$file"
   check "$origin" "$file"
 }
