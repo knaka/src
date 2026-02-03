@@ -51,22 +51,24 @@ function prepend_path {
     return
   }
 
-  # 正規化したパスが現在の PATH に含まれている場合は終了
-  if ($env:PATH -split ';' | Where-Object { $_.Trim() -ne '' } | ForEach-Object { Resolve-Path -Path $_ -ErrorAction SilentlyContinue } | Where-Object { $_ -eq $normalizedPath }) {
-    return
-  }
+  $path_prev = $env:PATH
 
-  # 含まれていない場合のみ追加。`;;` に挟まれた空文字列はカレントディレクトを表してしまうようなので、削除
-  $env:PATH = "$normalizedPath;$env:PATH" -replace ';{2,}', ';'
+  # 正規化したパスが現在の PATH に含まれている場合は削除。空文字列はカレントディレクトリを表してしまうようなので削除
+  $path_prev = ($path_prev -split ';' | Where-Object {
+    $_.Trim() -ne '' -and $_ -ne $normalizedPath
+  }) -join ';'
+
+  # 先頭に追加
+  $env:PATH = "$normalizedPath;$path_prev" -replace ';{2,}', ';'
 }
 
 # ワイルドカードに一致するディレクトリを取得し、ループ
 Get-ChildItem -Path "$env:USERPROFILE\*-bin" -Directory | ForEach-Object {
   # それぞれのディレクトリに対して prepend_path を呼ぶ
   prepend_path $_.FullName
-  # Write-Host $_.FullName
 }
 
+# これを優先したい
 prepend_path $env:USERPROFILE\sh-bin
 
 # prepend_path "C:\msys64\usr\bin"
@@ -98,7 +100,10 @@ function aws_switch_profile (
 New-Alias -Name aws-switch-profile -Value aws_switch_profile -Force
 
 # New-Alias -Name gc -Value gc.cmd -Force
-# New-Alias -Name find -Value $ENV:USERPROFILE\busybox-bin\find.exe -Force
+
+New-Alias -Name ls -Value $ENV:USERPROFILE\sh-bin\glob-ls.cmd -Force
+New-Alias -Name ll -Value $ENV:USERPROFILE\sh-bin\glob-ll.cmd -Force
+New-Alias -Name find -Value $ENV:USERPROFILE\sh-bin\noglob-find.cmd -Force
 
 # cmd - How to make PowerShell tab completion work like Bash - Stack Overflow https://stackoverflow.com/questions/8264655/how-to-make-powershell-tab-completion-work-like-bash
 Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete

@@ -3,22 +3,8 @@
 # shellcheck shell=sh
 "${sourced_2ed0c9f-false}" && return 0; sourced_2ed0c9f=true
 
-cmd='ls -l'
-
-test "${BB_GLOBBING+set}" != set && exec $cmd "$@"
-
 set -- "$PWD" "${0%/*}" "$@"; if test "$2" != "$0"; then cd "$2" 2>/dev/null || :; fi
 . ./task.sh
 cd "$1"; shift 2
 
-ll() {
-  # shellcheck disable=SC2086
-  glob_and_run $cmd "$@"
-}
-
-case "${0##*/}" in
-  (ll.sh|ll)
-    set -o nounset -o errexit
-    ll "$@"
-    ;;
-esac
+glob_and_run ls -l "$@"
