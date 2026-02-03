@@ -321,7 +321,7 @@ F13:: {
 ![:: Send "“”{Left}"
 
 ; &Variable Expansion (parameter expansion)
-!v:: Send '"${{}}{}}"{Left}{Left}'
+!v:: Send '"$"{Left}'
 
 ; &Command Substitution \"$(...)\"
 !c:: Send '"$()"{Left}{Left}'

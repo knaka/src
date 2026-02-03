@@ -10,6 +10,7 @@ $aliases_to_remove = @(
   "cp",
   "curl",
   "diff",
+  "find",
   "gc",
   "ll",
   "ls",
@@ -66,6 +67,8 @@ Get-ChildItem -Path "$env:USERPROFILE\*-bin" -Directory | ForEach-Object {
   # Write-Host $_.FullName
 }
 
+prepend_path $env:USERPROFILE\sh-bin
+
 # prepend_path "C:\msys64\usr\bin"
 
 function set_env {
@@ -94,8 +97,8 @@ function aws_switch_profile (
 
 New-Alias -Name aws-switch-profile -Value aws_switch_profile -Force
 
-New-Alias -Name gc -Value gc.cmd -Force
-New-Alias -Name find -Value $ENV:USERPROFILE\busybox-bin\find.exe -Force
+# New-Alias -Name gc -Value gc.cmd -Force
+# New-Alias -Name find -Value $ENV:USERPROFILE\busybox-bin\find.exe -Force
 
 # cmd - How to make PowerShell tab completion work like Bash - Stack Overflow https://stackoverflow.com/questions/8264655/how-to-make-powershell-tab-completion-work-like-bash
 Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
@@ -103,11 +106,12 @@ Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
 $global:y = "$HOME\doc\$(Get-Date -Format "yyyy")"
 $global:dl = "$HOME\Downloads"
 
+$global:t = $env:TEMP
+$global:T = $env:TEMP
+
 function prompt {
   $lastSuccess = $?
   # $lastExitCode = $LASTEXITCODE
-
-  # $global:my_pwd = $PWD.Path
 
   # Git ワークのトップディレクトリ
   $PPD = git rev-parse --show-toplevel 2>$null

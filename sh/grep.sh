@@ -1,9 +1,9 @@
 #!/usr/bin/env sh
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-"${sourced_2ed0c9f-false}" && return 0; sourced_2ed0c9f=true
+"${sourced_f94640e-false}" && return 0; sourced_f94640e=true
 
-cmd='ls -l'
+cmd='grep'
 
 test "${BB_GLOBBING+set}" != set && exec $cmd "$@"
 
@@ -11,14 +11,14 @@ set -- "$PWD" "${0%/*}" "$@"; if test "$2" != "$0"; then cd "$2" 2>/dev/null || 
 . ./task.sh
 cd "$1"; shift 2
 
-ll() {
+grep() {
   # shellcheck disable=SC2086
   glob_and_run $cmd "$@"
 }
 
 case "${0##*/}" in
-  (ll.sh|ll)
+  (grep.sh|grep)
     set -o nounset -o errexit
-    ll "$@"
+    grep "$@"
     ;;
 esac
