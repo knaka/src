@@ -26,7 +26,7 @@ export SVN_EDITOR="$VISUAL"
 export FCEDIT="$VISUAL"
 export SUDO_EDITOR="$VISUAL"
 
-export VOLTA_HOME="$HOME/.volta"
+# export VOLTA_HOME="$HOME/.volta"
 
 #endregion
 
@@ -42,7 +42,7 @@ append_path /usr/local/opt/sqlite/bin
 append_path /usr/local/opt/mysql-client/bin
 # append_path /usr/local/opt/postgresql@16/bin
 
-append_path "$VOLTA_HOME"/bin
+# append_path "$VOLTA_HOME"/bin
 
 repos="$HOME/repos"
 export CHEZMOISOURCEDIR="$repos"/github.com/knaka/src/conf/chezmoi-source

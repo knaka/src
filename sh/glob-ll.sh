@@ -7,4 +7,5 @@ set -- "$PWD" "${0%/*}" "$@"; if test "$2" != "$0"; then cd "$2" 2>/dev/null || 
 . ./task.sh
 cd "$1"; shift 2
 
+set -o nounset -o errexit
 glob_and_run ls -l "$@"

@@ -16,13 +16,14 @@ brew 'cpulimit' # https://github.com/opsengine/cpulimit
 brew 'gawk'
 brew 'gh' # GitHub CLI について - GitHub Docs https://docs.github.com/ja/github-cli/github-cli/about-github-cli
 brew 'git'
-brew 'go' # ~/go/ は $GOPATH であり、$GOROOT とは別であることが望ましいらしい？
+# brew 'go' # ~/go/ は $GOPATH であり、$GOROOT とは別であることが望ましいらしい？
 brew 'jj'
 brew 'jp' # AWS CLI の query 言語である、JMESPath のツール —jmespath/jp: Command line interface to JMESPath - http://jmespath.org https://github.com/jmespath/jp
-brew 'jq'
+# brew 'jq'
 brew 'less' # Mac の less は正規表現が不足
-brew 'lua'
+# brew 'lua'
 brew 'mas' # Mac App Store command-line interface
+# brew 'mise'
 brew 'mysql' # brew services list で一覧 | brew services start/stop mysql は、即時の開始終了と同時に永続的な register/unregister を行う
 # brew 'mysql' # brew services list で一覧 | brew services start/stop mysql は、即時の開始終了と同時に永続的な register/unregister を行う
 # brew 'plantuml'
@@ -30,7 +31,7 @@ brew 'postgresql@14' # brew services list で一覧 | brew services start/stop p
 brew 'postgresql@15'
 brew 'pstree'
 # brew 'python-yq' # https://formulae.brew.sh/formula/python-yq | yq コマンドはこれ — yq: Command-line YAML/XML/TOML processor - jq wrapper for YAML, XML, TOML documents — yq documentation https://kislyuk.github.io/yq/
-brew 'volta' # nvm は、nvm use するまで切り替えてくれない。avn を入れろと言われたが、npm パッケージのルート導入はしたくない。volta はどうか。…周辺のサポートや IDE のサポートを考え、NVM に戻すか。…と思ったが、やはり Volta は出来が良いな
+# brew 'volta' # nvm は、nvm use するまで切り替えてくれない。avn を入れろと言われたが、npm パッケージのルート導入はしたくない。volta はどうか。…周辺のサポートや IDE のサポートを考え、NVM に戻すか。…と思ったが、やはり Volta は出来が良いな
 brew 'yj'
 brew 'yq' # mikefarah の方の yq(1) — mikefarah/yq: yq is a portable command-line YAML, JSON, XML, CSV, TOML and properties processor https://github.com/mikefarah/yq
 
@@ -56,6 +57,6 @@ cask 'visual-studio-code'
 # ==========================================================================
 #region Mac App Store
 
-mas "Slack", id: 803453959
+# mas "Slack", id: 803453959
 
 #endregion

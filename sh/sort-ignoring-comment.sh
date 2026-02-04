@@ -4,7 +4,7 @@
 "${sourced_904b441-false}" && return 0; sourced_904b441=true
 
 sort_ignoring_comment() {
-  sed -Ee 's/^(#[[:blank:]]*)(.*)$/\2 aa3700a \1/' | sort | sed -Ee 's/(.*) aa3700a (.*)/\2\1/'
+  sed -Ee 's/(^[[:blank:]]*)(#[[:blank:]])(.*)$/\1\3 aa3700a \2/' | sort | sed -Ee 's/(^[[:blank:]]*)(.*) aa3700a (.*)/\1\3\2/'
 }
 
 case "${0##*/}" in
