@@ -20,7 +20,10 @@ patch_bash_ide() {
     echo 4a443e5 >&2
     exit 1
   fi
-  patch --backup --directory "$bash_ide_ext_dir"/node_modules/bash-language-server/out/util "$@" <<'EOF'
+  # patch --backup --directory "$bash_ide_ext_dir"/node_modules/bash-language-server/out/util "$@" <<'EOF'
+  push_dir "$bash_ide_ext_dir"/node_modules/bash-language-server/out/util
+  cp -f sourcing.js sourcing.js.orig
+  patch "$@" <<'EOF'
 --- sourcing.js.orig
 +++ sourcing.js
 @@ -2,6 +2,7 @@
@@ -45,6 +48,7 @@ patch_bash_ide() {
      }
      return null;
 EOF
+  pop_dir
 }
 
 case "${0##*/}" in
