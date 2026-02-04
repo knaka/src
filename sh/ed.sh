@@ -64,11 +64,19 @@ ed() {
         arg="$(realpath "$arg_dir")"/"$arg_base"
         case "$arg" in
           (${HOME}/.*)
-            printf "%s seems to be a dot file. " "$arg" >&2
-            if prompt_confirm "Edit as a configuration file?" "y" >&2
+            if \
+              echo "$arg" \
+              | grep -q \
+                -e "node_modules"
             then
-              conf edit "$arg"
-              continue
+              :
+            else
+              printf "%s seems to be a dot file. " "$arg" >&2
+              if prompt_confirm "Edit as a configuration file?" "y" >&2
+              then
+                conf edit "$arg"
+                continue
+              fi
             fi
             ;;
         esac
