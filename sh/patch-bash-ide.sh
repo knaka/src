@@ -20,6 +20,7 @@ patch_bash_ide() {
     echo 4a443e5 >&2
     exit 1
   fi
+  # BusyBox patch(1) lacks the featuress
   # patch --backup --directory "$bash_ide_ext_dir"/node_modules/bash-language-server/out/util "$@" <<'EOF'
   push_dir "$bash_ide_ext_dir"/node_modules/bash-language-server/out/util
   cp -f sourcing.js sourcing.js.orig
