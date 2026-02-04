@@ -1,0 +1,7 @@
+[tools]
+node = "24"
+jmespath = "0.2.1"
+
+[tasks.foo]
+description = "Foo"
+run = "jp --help"

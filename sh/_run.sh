@@ -20,7 +20,7 @@ node_ver="24"
 case "$base" in
   (go) mise exec go@"$go_ver" -- go "$@";;
   (gofmt) mise exec go@"$go_ver" -- gofmt "$@";;
-  # (jmespath) mise jmespath -- jmespath "$@";;
+  # (jmespath) mise jmespath -- jp "$@";;
   (jq) jq "$@";;
   (lua) mise exec lua -- lua "$@";;
   (mise) mise "$@";;

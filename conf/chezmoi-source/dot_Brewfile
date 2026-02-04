@@ -18,7 +18,7 @@ brew 'gh' # GitHub CLI について - GitHub Docs https://docs.github.com/ja/git
 brew 'git'
 # brew 'go' # ~/go/ は $GOPATH であり、$GOROOT とは別であることが望ましいらしい？
 brew 'jj'
-brew 'jp' # AWS CLI の query 言語である、JMESPath のツール —jmespath/jp: Command line interface to JMESPath - http://jmespath.org https://github.com/jmespath/jp
+# brew 'jp' # AWS CLI の query 言語である、JMESPath のツール —jmespath/jp: Command line interface to JMESPath - http://jmespath.org https://github.com/jmespath/jp
 # brew 'jq'
 brew 'less' # Mac の less は正規表現が不足
 # brew 'lua'
