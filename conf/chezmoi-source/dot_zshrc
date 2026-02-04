@@ -1,5 +1,8 @@
 # vim: set filetype=zsh tabstop=2 shiftwidth=2 expandtab :
 
+set -o nounset
+# set -o errexit
+
 append_path() {
   local arg
   local delim=
