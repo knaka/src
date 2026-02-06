@@ -76,8 +76,12 @@ cat >&3 <<EOF
 # shellcheck shell=sh
 "\${sourced_${unique_id}-false}" && return 0; sourced_${unique_id}=true
 
-set -- "\$PWD" "\${0%/*}" "\$@"; if test "\$2" != "\$0"; then cd "\$2" 2>/dev/null || :; fi
-cd "\$1"; shift 2
+set -- "\$PWD" "\${0%/*}" "\$@"; if test "\$2" != "\$0"; then cd "\$2" || exit 1; fi
+. .lib/boot.lib.sh
+before_source .lib
+. .lib/main.lib.sh
+after_source
+cd "\$1" || exit 1 :; shift 2
 EOF
 
 if ! "$is_lib_sh"

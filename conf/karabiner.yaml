@@ -217,6 +217,7 @@ profiles:
                 key_code: l
                 modifiers:
                   mandatory:
+                    - option
                     - command
               to:
                 - shell_command: pmset sleepnow

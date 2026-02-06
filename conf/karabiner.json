@@ -812,6 +812,7 @@
                   "key_code": "l",
                   "modifiers": {
                     "mandatory": [
+                      "option",
                       "command"
                     ]
                   }
