@@ -1,21 +1,21 @@
-# Add this file and shell script directory with wildcard to `includes` directive array.
-# 
-#   [task_config]
-#   includes = [
-#     "mise-tasks",
-#     "mise-sh.toml",
-#     "mise-sh/*.toml",
-#   ]
+[tools]
+node = "24"
+jmespath = "0.2.1"
 
-["task-sh:install"]
+# [settings]
+# lockfile = true
+
+[tasks."task-sh:install"]
 description = '[<name>...] Install task-sh files. If no name is specified, lists available files.'
 tools = { "jq" = "1.8", "gh" = "2" }
 run = '''
 #!/usr/bin/env sh -o nounset -o errexit
 
-cd "$MISE_TASK_DIR" || exit 1
+project_dir="$MISE_PROJECT_ROOT"
+scripts_dir="$MISE_PROJECT_ROOT"/"${MISE_SH_TASKS_DIR-./mise-sh/}"
+files_in_project_dir=" mise mise.cmd "
 
-tasks_dir="$MISE_TASK_DIR"/"${MISE_SH_TASKS_DIR-./task-sh/}"
+cd "$project_dir" || exit 1
 
 temp_dir="$(mktemp -d)"
 # shellcheck disable=SC2064
@@ -117,7 +117,7 @@ github_raw_fetch() {
   curl --fail --silent "$url"
 }
 
-state_path="$MISE_TASK_DIR/.task-sh-state.json"
+state_path="$MISE_PROJECT_ROOT/.task-sh-state.json"
 
 # [<name>...] Install task-sh files. If no name is specified, lists available files.
 install() {
@@ -163,7 +163,7 @@ install() {
       local_sha="$(git hash-object "$file")"
     fi
     "$verbose" && echo "${indent}Local SHA:" "$local_sha"
-    if test -n "$last_sha" -a -n "$local_sha" -a "$last_sha" != "$local_sha"
+    if ! "$force" && test -n "$last_sha" -a -n "$local_sha" -a "$last_sha" != "$local_sha"
     then
       echo "\"$name\" is modified locally." >&2
       rc=1
@@ -173,7 +173,14 @@ install() {
     then
       case "$file" in
         (*/*) ;;
-        (*) file="$tasks_dir"/"$name"
+        (*)
+          file="$scripts_dir"/"$name"
+          case "$files_in_project_dir" in
+            (*" $name "*)
+              file="$project_dir"/"$name"
+              ;;
+          esac
+          ;;
       esac
     fi
     node="$(echo "$resp" | jq -c --arg name "$name" '.tree[] | select(.path == $name)')"
@@ -193,12 +200,6 @@ install() {
     fi
     # shellcheck disable=SC2059
     printf "Downloading \"$name\" ... " >&2
-    if test "$name" = "task.sh"
-    then
-      "$verbose" && echo "Lazily replacing \"$file.new\" with \"$file\"." >&2
-      chaintrap "mv \"$file.new\" \"$file\"" EXIT
-      local file="$file.new"
-    fi
     github_raw_fetch --owner="knaka" --repos="task-sh" --tree-sha="$latest_commit" --path=/"$name" >"$file"
     echo "done." >&2
     local temp_json="$temp_dir"/1caef61.json
@@ -214,43 +215,44 @@ install() {
 install "$@"
 '''
 
-["task-sh:update"]
+[tasks."task-sh:update"]
 description = "Update task-sh files."
 run = '''
 #!/usr/bin/env sh -o nounset -o errexit
 
-cd "$MISE_TASK_DIR" || exit 1
-
-tasks_dir="$MISE_TASK_DIR"/mise-sh
+project_dir="$MISE_PROJECT_ROOT"
+scripts_dir="$MISE_PROJECT_ROOT"/"${MISE_SH_TASKS_DIR-./mise-sh/}"
+files_in_project_dir=" mise mise.cmd "
 
 update() {
   local file
   local excludes=":"
-  for file in "$tasks_dir"/project*.lib.sh "$tasks_dir"/prj*.lib.sh
-  do
-    test -e "$file" || continue
-    excludes="$excludes:$file:"
-  done
   set --
-  for file in "$tasks_dir"/*.lib.sh "$tasks_dir"/task.sh
+  for file in "$scripts_dir"/*.lib.sh
   do
     test -r "$file" || continue
-    case "$excludes" in
-      (*:$file:*) continue;;
+    case "$file" in
+      (*/prj*.lib.sh|*/project*.lib.sh)
+        continue
+        ;;
     esac
     set -- "$@" "$file"
   done
-  mise run "task-sh:install" -- \
-    "$MISE_TASK_DIR"/mise \
-    "$MISE_TASK_DIR"/mise.cmd \
-    "$MISE_TASK_DIR"/mise-sh.toml \
-    "$@"
+  local arg
+  for arg in $files_in_project_dir
+  do
+    if test -r "$project_dir"/"$arg"
+    then
+      set -- "$@" "$arg"
+    fi
+  done  
+  mise run "task-sh:install" -- "$@"
 }
 
 update "$@"
 '''
 
-["task-sh:gen"]
+[tasks."task-sh:gen"]
 description = "Generate task-sh interface tasks."
 usage = '''
 flag "--sh-tasks-dir <dir>" {
@@ -263,9 +265,18 @@ tools = { "jq" = "1.8", "yj" = "5" }
 run = '''
 #!/usr/bin/env sh -o nounset -o errexit
 
-cd "$MISE_TASK_DIR" || exit 1
-
 mise_sh_tasks_dir="$usage_sh_tasks_dir"
+
+main() {
+  if ! test -d "$MISE_PROJECT_ROOT"/"$mise_sh_tasks_dir"
+  then
+    echo "Mise shell tasks directory \"$MISE_PROJECT_ROOT/$mise_sh_tasks_dir\" does not exist." >&2
+    exit 1
+  fi
+  cd "$MISE_PROJECT_ROOT"/"$mise_sh_tasks_dir"
+  rm -f gen-*.toml
+  extract_task_info *.lib.sh | generate_task_tomls
+}
 
 # Parse shell task files and extract task/subcmd information with their metadata.
 # Outputs lines in format: "<type> <name> <func_name> <basename> <body>"
@@ -391,12 +402,5 @@ generate_task_tomls() {
   done
 }
 
-if ! test -d "$MISE_PROJECT_ROOT"/"$mise_sh_tasks_dir"
-then
-  echo "Mise shell tasks directory \"$MISE_PROJECT_ROOT/$mise_sh_tasks_dir\" does not exist." >&2
-  exit 1
-fi
-cd "$MISE_PROJECT_ROOT"/"$mise_sh_tasks_dir"
-rm -f gen-*.toml
-extract_task_info *.lib.sh | generate_task_tomls
+main "$@"
 '''
