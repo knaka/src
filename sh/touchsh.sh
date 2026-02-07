@@ -66,27 +66,41 @@ then
   is_lib_sh=true
 fi
 
+(
 if ! "$is_lib_sh"
 then
-  echo '#!/usr/bin/env sh' >&3
+  echo '#!/usr/bin/env sh'
 fi
 
-cat >&3 <<EOF
+cat <<EOF
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
 "\${sourced_${unique_id}-false}" && return 0; sourced_${unique_id}=true
+EOF
 
+echo
+
+if "$is_lib_sh"
+then
+  cat <<'EOF'
+type before_source >/dev/null 2>&1 || . ./min.lib.sh
+before_source .
+after_source
+EOF
+else
+cat <<EOF
 set -- "\$PWD" "\${0%/*}" "\$@"; if test "\$2" != "\$0"; then cd "\$2" || exit 1; fi
-. .lib/boot.lib.sh
+. .lib/min.lib.sh
 before_source .lib
 . .lib/main.lib.sh
 after_source
-cd "\$1" || exit 1 :; shift 2
+cd "\$1" || exit 1; shift 2
 EOF
+fi
 
 if ! "$is_lib_sh"
 then
-  cat >&3 <<EOF
+  cat <<EOF
 
 ${func_name}() {
   :
@@ -100,6 +114,7 @@ case "\${0##*/}" in
 esac
 EOF
 fi
+) >&3
 
 # Other options:
 #   set -o monitor # For job control

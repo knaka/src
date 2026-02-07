@@ -4,7 +4,6 @@
 "${sourced_997bcd2-false}" && return 0; sourced_997bcd2=true
 
 type before_source >/dev/null 2>&1 || . ./boot.lib.sh
-
 before_source ./sub
 . ./sub/sub.lib.sh
 after_source

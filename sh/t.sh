@@ -1,25 +1,54 @@
 #!/usr/bin/env sh
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-"${sourced_4e43a4f-false}" && return 0; sourced_4e43a4f=true
+"${sourced_9913f0e-false}" && return 0; sourced_9913f0e=true
 
-# Marker
-export executed_thru_t_bb789ec=true
+set -- "$PWD" "${0%/*}" "$@"; if test "$2" != "$0"; then cd "$2" || exit 1; fi
+. ./utils.lib.sh
+cd "$1" || exit 1; shift 2
 
-root_dir=/
-cmd_base=task
-# If Windows
-if test -d "c:/"
-then
-  root_dir="c:/"
-  cmd_base=task.cmd
-fi
+run_mise() {
+  if test $# = 0
+  then
+    mise tasks
+  else
+    local subcmd="$1"
+    shift
+    mise run "$subcmd" -- "$@"
+  fi
+}
 
-dir=.
-while :
-do
-  p="$(realpath "$dir")"
-  test "$p" = "$root_dir" && exit 1
-  test -x "$p"/"$cmd_base" && exec "$p"/"$cmd_base" "$@"
-  dir=../"$dir"
-done
+t() {
+  # Marker
+  export executed_thru_t_bb789ec=true
+  local dir="$PWD"
+  while :
+  do
+    if is_root_dir "$dir"
+    then
+      echo "Reached to root directory." >&2
+      return 1
+    fi
+    if test -r "$dir"/mise.toml
+    then
+      run_mise "$@"
+      return
+    elif ! is_windows && test -x "$dir"/task
+    then
+      "$dir"/task "$@"
+      return
+    elif is_windows && test -r "$dir"/task.cmd
+    then
+      "$dir"/task.cmd "$@"
+      return
+    fi
+    dir="$dir"/..
+  done
+}
+
+case "${0##*/}" in
+  (t.sh|t)
+    set -o nounset -o errexit
+    t "$@"
+    ;;
+esac

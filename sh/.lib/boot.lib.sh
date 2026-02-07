@@ -2,8 +2,6 @@
 # shellcheck shell=sh
 "${sourced_679bf07-false}" && return 0; sourced_679bf07=true
 
-# Do not source any file in this file.
-
 : "${psv_dirs_6b8d832="$PWD"|}"
 
 before_source() {

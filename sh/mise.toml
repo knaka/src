@@ -1,0 +1,11 @@
+[tasks."bar"]
+description = "Bar"
+run = """
+#!/usr/bin/env sh
+
+set -o nounset -o errexit
+
+env
+
+echo Bar
+"""
