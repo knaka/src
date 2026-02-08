@@ -1,10 +1,10 @@
 [settings]
-use_file_shell_for_executable_tasks = true
-windows_executable_extensions = [ "sh", "ps1", "py" ]
-unix_default_file_shell_args = "env"
-unix_default_inline_shell_args = "sh -c -o errexit"
-windows_default_file_shell_args = "env.exe"
-windows_default_inline_shell_args = "sh.exe -c -o errexit"
+# use_file_shell_for_executable_tasks = true
+# windows_executable_extensions = [ "sh", "ps1", "py" ]
+# unix_default_file_shell_args = "env"
+# unix_default_inline_shell_args = "sh -c -o errexit"
+# windows_default_file_shell_args = "env.exe"
+# windows_default_inline_shell_args = "sh.exe -c -o errexit"
 
 [task_config]
 includes = [
@@ -111,7 +111,7 @@ gen_script() {
 
 set -- "\$PWD" "\$@"
 cd "\$MISE_TASK_DIR"
-. "$base"
+. ./"$base"
 cd "\$1"
 shift
 "$1" "\$@"

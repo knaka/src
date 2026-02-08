@@ -8,7 +8,7 @@ set bb_ver=FRP-5857-g3681e397f
 
 @REM Home | mise-en-place https://mise.jdx.dev/
 @REM Releases · jdx/mise https://github.com/jdx/mise/releases
-set mise_ver=2026.2.6
+set mise_ver=2026.2.7
 
 if "%PROCESSOR_ARCHITECTURE%" == "x86" (
   echo WARNING: Your environment is 32-bit. Not all features are supported. >&2

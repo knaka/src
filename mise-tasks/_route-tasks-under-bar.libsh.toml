@@ -2,8 +2,8 @@
 
 ["bar:baz"]
 description = "[files...] Cat files with line num."
-run = "#!/usr/bin/env sh\n\nset -- \"$PWD\" \"$@\"\ncd \"$MISE_TASK_DIR\"\n. \"tasks-under-bar.libsh\"\ncd \"$1\"\nshift\n\"task_bar__baz\" \"$@\""
+run = "#!/usr/bin/env sh\n\nset -- \"$PWD\" \"$@\"\ncd \"$MISE_TASK_DIR\"\n. ./\"tasks-under-bar.libsh\"\ncd \"$1\"\nshift\n\"task_bar__baz\" \"$@\""
 
 ["bar:qux"]
 description = "[files...] Cat files with line num num."
-run = "#!/usr/bin/env sh\n\nset -- \"$PWD\" \"$@\"\ncd \"$MISE_TASK_DIR\"\n. \"tasks-under-bar.libsh\"\ncd \"$1\"\nshift\n\"task_bar__qux\" \"$@\""
+run = "#!/usr/bin/env sh\n\nset -- \"$PWD\" \"$@\"\ncd \"$MISE_TASK_DIR\"\n. ./\"tasks-under-bar.libsh\"\ncd \"$1\"\nshift\n\"task_bar__qux\" \"$@\""

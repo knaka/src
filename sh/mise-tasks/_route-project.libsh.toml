@@ -2,12 +2,12 @@
 
 [install]
 description = "Install shell scripts."
-run = "#!/usr/bin/env sh\n\nset -- \"$PWD\" \"$@\"\ncd \"$MISE_TASK_DIR\"\n. \"project.libsh\"\ncd \"$1\"\nshift\n\"subcmd_install\" \"$@\""
+run = "#!/usr/bin/env sh\n\nset -- \"$PWD\" \"$@\"\ncd \"$MISE_TASK_DIR\"\n. ./\"project.libsh\"\ncd \"$1\"\nshift\n\"subcmd_install\" \"$@\""
 
 ["hello_cmd:gen"]
 description = "Generate a Sh-inlined sample .cmd file."
-run = "#!/usr/bin/env sh\n\nset -- \"$PWD\" \"$@\"\ncd \"$MISE_TASK_DIR\"\n. \"project.libsh\"\ncd \"$1\"\nshift\n\"task_hello_cmd__gen\" \"$@\""
+run = "#!/usr/bin/env sh\n\nset -- \"$PWD\" \"$@\"\ncd \"$MISE_TASK_DIR\"\n. ./\"project.libsh\"\ncd \"$1\"\nshift\n\"task_hello_cmd__gen\" \"$@\""
 
 ["hello_sourced_sh:gen"]
 description = "Generate sourced sh sample."
-run = "#!/usr/bin/env sh\n\nset -- \"$PWD\" \"$@\"\ncd \"$MISE_TASK_DIR\"\n. \"project.libsh\"\ncd \"$1\"\nshift\n\"task_hello_sourced_sh__gen\" \"$@\""
+run = "#!/usr/bin/env sh\n\nset -- \"$PWD\" \"$@\"\ncd \"$MISE_TASK_DIR\"\n. ./\"project.libsh\"\ncd \"$1\"\nshift\n\"task_hello_sourced_sh__gen\" \"$@\""

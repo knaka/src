@@ -7,7 +7,7 @@
 
 mise() {
   # Releases · jdx/mise https://github.com/jdx/mise/releases
-  local ver="2026.2.6"
+  local ver="2026.2.7"
 
   local dir="$HOME/.cache/task-sh/mise@$ver"
   mkdir -p "$dir"
@@ -17,6 +17,7 @@ mise() {
     case "$(uname -s)" in
       (Linux) os=linux;;
       (Darwin) os=macos;;
+      (Windows_NT) os=windows;;
       (*) echo e4454ba >&2; exit;;
     esac
     case "$(uname -m)" in
