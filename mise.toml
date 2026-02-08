@@ -12,6 +12,10 @@ includes = [
   "mise-tasks/*.toml",
 ]
 
+# [env]
+# BB_VER = "FRP-5857-g3681e397f"
+# _.path = "{{env.HOME}}/.cache/task-sh/busybox@{{env.BB_VER}}"
+
 # ==========================================================================
 
 [tasks."test"]
