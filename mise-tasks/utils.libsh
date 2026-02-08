@@ -3,10 +3,10 @@
 # shellcheck shell=sh
 "${sourced_f5f648c-false}" && return 0; sourced_f5f648c=true
 
-set -- "$PWD" "$@"; if test "${2:+$2}" = _LIBDIR; then cd "$3" || exit 1; fi
-set -- _LIBDIR . "$@"
-shift 2
-cd "$1" || exit 1; shift
+# set -- "$PWD" "$@"; if test "${2:+$2}" = _LIBDIR; then cd "$3" || exit 1; fi
+# set -- _LIBDIR . "$@"
+# shift 2
+# cd "$1" || exit 1; shift
 
 # ==========================================================================
 #region Environment variables. If not set by the caller, they are set later in `tasksh_main`
