@@ -16,7 +16,7 @@ task() {
   else
     local subcmd="$1"
     shift
-    set -- "$subcmd" -- "$@"
+    set -- run "$subcmd" -- "$@"
   fi
   mise "$@"
 }
