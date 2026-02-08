@@ -3,9 +3,17 @@
 # shellcheck shell=sh
 "${sourced_997bcd2-false}" && return 0; sourced_997bcd2=true
 
-set -- "$PWD" "$@"; if test "${2:+$2}" = _LIBDIR; then cd "$3" || exit 1; fi; set -- _LIBDIR ./sub/ "$@"
-. ./sub/sub.lib.sh
-shift 2; cd "$1" || exit 1; shift
+echo hoge >&2
+pwd >&2
+
+set -- "$PWD" "${0%/*}" "$@"; if test "$2" != "$0"; then cd "$2" || exit 1; fi
+set -- _LIBDIR .
+pwd
+shift 2
+cd "$1" || exit 1; shift 2
+
+pwd  >&2
+echo fuga >&2
 
 x868cb14() {
   echo f209986 main lib

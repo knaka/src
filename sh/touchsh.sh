@@ -26,9 +26,9 @@ do
 done
 shift $((OPTIND-1))
 
-if test -r "$1" && ! $force
+if test -s "$1"
 then
-  echo "File $1 already exists. Only touching it." >&2
+  echo "File $1 already exists and has size greater than 0. Only touching it." >&2
   touch "$1"
   exit 0
 fi
@@ -61,16 +61,23 @@ else
 fi
 
 is_lib_sh=false
-if test "${base_name%.lib.sh}" != "${base_name}"
+if \
+  test "${base_name%.shlib}" != "${base_name}" || \
+  test "${base_name%.libsh}" != "${base_name}" || \
+  test "${base_name%.lib.sh}" != "${base_name}"
 then
+  echo Creating library shell script. >&2
   is_lib_sh=true
+else
+  echo Creating executable shell script. >&2
 fi
 
 (
-if ! "$is_lib_sh"
-then
+# Add shebang also for library to tell the editor this is a shell script file.
+# if ! "$is_lib_sh"
+# then
   echo '#!/usr/bin/env sh'
-fi
+# fi
 
 cat <<EOF
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
@@ -83,13 +90,17 @@ echo
 if "$is_lib_sh"
 then
   cat <<'EOF'
-set -- "$PWD" "$@"; if test "${2:+$2}" = _LIBDIR; then cd "$3" || exit 1; fi; set -- _LIBDIR . "$@"
-shift 2; cd "$1" || exit 1; shift
+# set -- "$PWD" "$@"; if test "${2:+$2}" = _LIBDIR; then cd "$3" || exit 1; fi
+# set -- _LIBDIR . "$@"
+# shift 2
+# cd "$1" || exit 1; shift
 EOF
 else
 cat <<'EOF'
-set -- "$PWD" "${0%/*}" "$@"; if test "$2" != "$0"; then cd "$2" || exit 1; fi; set -- _LIBDIR .
-shift 2; shift
+# set -- "$PWD" "${0%/*}" "$@"; if test "$2" != "$0"; then cd "$2" || exit 1; fi
+# set -- _LIBDIR . "$@"
+# shift 2
+# cd "$1" || exit 1; shift 2
 EOF
 fi
 
@@ -110,6 +121,11 @@ esac
 EOF
 fi
 ) >&3
+
+if test "$1" != "-" && ! "$is_lib_sh"
+then
+  chmod +x "$1"
+fi
 
 # Other options:
 #   set -o monitor # For job control

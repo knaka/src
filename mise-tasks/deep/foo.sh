@@ -1,0 +1,28 @@
+#!/usr/bin/env sh
+# vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
+# shellcheck shell=sh
+"${sourced_5eec4b3-false}" && return 0; sourced_5eec4b3=true
+
+#MISE description="Task in subdirectory."
+
+set -- "$PWD" "${0%/*}" "$@"; if test "$2" != "$0"; then cd "$2" || exit 1; fi
+set -- _LIBDIR .. "$@"
+. ../utils.libsh
+shift 2
+cd "$1" || exit 1; shift 2
+
+foo() {
+  if is_macos
+  then
+    echo It is MacOS. >&2
+  else
+    echo Not Mac. >&2 
+  fi
+}
+
+case "${0##*/}" in
+  (foo.sh|foo)
+    set -o nounset -o errexit
+    foo "$@"
+    ;;
+esac
