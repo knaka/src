@@ -3,12 +3,9 @@
 # shellcheck shell=sh
 "${sourced_363fa5f-false}" && return 0; sourced_363fa5f=true
 
-set -- "$PWD" "${0%/*}" "$@"; if test "$2" != "$0"; then cd "$2" 2>/dev/null || :; fi
-. .lib/boot.lib.sh
-before_source .lib
-. .lib/main.lib.sh
-after_source
-cd "$1" 2>/dev/null || exit 1 2>/dev/null || :; shift 2
+set -- "$PWD" "${0%/*}" "$@"; if test "$2" != "$0"; then cd "$2" || exit 1; fi; set -- _LIBDIR ./.lib
+. ./.lib/main.lib.sh
+shift 2; shift
 
 _sh_relative() {
   x868cb14

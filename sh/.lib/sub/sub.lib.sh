@@ -2,7 +2,6 @@
 # shellcheck shell=sh
 "${sourced_3513b12-false}" && return 0; sourced_3513b12=true
 
-type before_source >/dev/null 2>&1 || . ../boot.lib.sh
 
 echo sub sourced
 

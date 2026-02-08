@@ -83,18 +83,13 @@ echo
 if "$is_lib_sh"
 then
   cat <<'EOF'
-type before_source >/dev/null 2>&1 || . ./min.lib.sh
-before_source .
-after_source
+set -- "$PWD" "$@"; if test "${2:+$2}" = _LIBDIR; then cd "$3" || exit 1; fi; set -- _LIBDIR . "$@"
+shift 2; cd "$1" || exit 1; shift
 EOF
 else
-cat <<EOF
-set -- "\$PWD" "\${0%/*}" "\$@"; if test "\$2" != "\$0"; then cd "\$2" || exit 1; fi
-. .lib/min.lib.sh
-before_source .lib
-. .lib/main.lib.sh
-after_source
-cd "\$1" || exit 1; shift 2
+cat <<'EOF'
+set -- "$PWD" "${0%/*}" "$@"; if test "$2" != "$0"; then cd "$2" || exit 1; fi; set -- _LIBDIR .
+shift 2; shift
 EOF
 fi
 
