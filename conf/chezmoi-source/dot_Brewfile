@@ -23,7 +23,7 @@ brew 'jj'
 brew 'less' # Mac の less は正規表現が不足
 # brew 'lua'
 brew 'mas' # Mac App Store command-line interface
-# brew 'mise'
+brew 'mise'
 brew 'mysql' # brew services list で一覧 | brew services start/stop mysql は、即時の開始終了と同時に永続的な register/unregister を行う
 # brew 'mysql' # brew services list で一覧 | brew services start/stop mysql は、即時の開始終了と同時に永続的な register/unregister を行う
 # brew 'plantuml'

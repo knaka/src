@@ -4,7 +4,8 @@
 "${sourced_9913f0e-false}" && return 0; sourced_9913f0e=true
 
 set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test "$2" != "$0"; then _APPDIR="$2"; fi; cd "$_APPDIR" || exit 1; fi
-. ./utils.lib.sh
+. ./utils.libsh
+. ./cmds.libsh
 cd "$1" || exit 1; shift 2
 
 run_mise() {
