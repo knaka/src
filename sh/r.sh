@@ -3,29 +3,12 @@
 # shellcheck shell=sh
 "${sourced_b7ccc35-false}" && return 0; sourced_b7ccc35=true
 
-# Releases · x-motemen/ghq https://github.com/x-motemen/ghq/releases
-ghq_version="1.8.0"
-
-set -- "$PWD" "${0%/*}" "$@"; if test "$2" != "$0"; then cd "$2" 2>/dev/null || :; fi
-. ./task.sh
-. ./peco.sh
-cd "$1"; shift 2
+set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test "$2" != "$0"; then _APPDIR="$2"; fi; cd "$_APPDIR" || exit 1; fi
+. ./utils.libsh
+. ./cmds.libsh
+cd "$1" || exit 1; shift 2
 
 export GHQ_ROOT="$HOME"/repos
-
-ghq() {
-  # shellcheck disable=SC2016
-  run_fetched_cmd \
-    --name="ghq" \
-    --ver="$ghq_version" \
-    --os-map="$goos_map" \
-    --arch-map="$goarch_map" \
-    --ext=".zip" \
-    --url-template='https://github.com/x-motemen/ghq/releases/download/v${ver}/ghq_${os}_${arch}${ext}' \
-    --rel-dir-template='ghq_${os}_${arch}' \
-    -- \
-    "$@"
-}
 
 # `ghq list` takes too long to walk recursively. Instead, return paths of Git repositories found within a few levels of depth from $GHQ_ROOT.
 ghq_list() {

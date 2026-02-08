@@ -6,7 +6,7 @@
 echo hoge >&2
 pwd >&2
 
-set -- "$PWD" "${0%/*}" "$@"; if test "$2" != "$0"; then cd "$2" || exit 1; fi
+set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test "$2" != "$0"; then _APPDIR="$2"; fi; cd "$_APPDIR" || exit 1; fi
 set -- _LIBDIR .
 pwd
 shift 2

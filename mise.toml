@@ -40,7 +40,7 @@ run = '''
 #!/usr/bin/env sh
 
 main() {
-  cd "$MISE_TASK_DIR"/mise-tasks || exit 1
+  cd "$MISE_PROJECT_ROOT"/mise-tasks || exit 1
   extract_task_info *.libsh | generate_task_tomls
 }
 

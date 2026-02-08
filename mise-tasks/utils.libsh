@@ -19,10 +19,16 @@
 : "${ORIGINAL_PWD:=${ORIGINAL_CWD}}"
 : "${INITIAL_PWD:=${ORIGINAL_CWD}}"
 
+: "${PROJECT_DIR=}"
+: "${PROJECT_DIR:=${MISE_PROJECT_ROOT:-}}"
+
 # For platforms other than Windows
 : "${LOCALAPPDATA:=/}"
 
 : "${VERBOSE:=false}"
+
+: "${SH=}"
+: "${SH:=sh}"
 
 #endregion
 

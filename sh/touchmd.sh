@@ -6,7 +6,7 @@ set -o nounset -o errexit
 
 # Create Markdown file with front-matter attributes.
 
-set -- "$PWD" "${0%/*}" "$@"; if test "$2" != "$0"; then cd "$2" 2>/dev/null || :; fi
+set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test "$2" != "$0"; then _APPDIR="$2"; fi; cd "$_APPDIR" || exit 1; fi
 . ./rand7.sh
 . ./date-iso.sh
 cd "$1"; shift 2

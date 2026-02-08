@@ -3,14 +3,14 @@
 # shellcheck shell=sh
 "${sourced_569237b-false}" && return 0; sourced_569237b=true
 
-set -- "$PWD" "${0%/*}" "$@"; if test "$2" != "$0"; then cd "$2" 2>/dev/null || :; fi
-. ./task.sh
+set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test "$2" != "$0"; then _APPDIR="$2"; fi; cd "$_APPDIR" || exit 1; fi
+. ./utils.libsh
 . ./conf.sh
-cd "$1"; shift 2
+cd "$1" || exit 1; shift 2
 
 should_block_b69939e=false
 
-edit_it() {
+edit_file() {
   # Path for VSCode has disappeared from $PATH ... ???
   if first_call 07bedbc && is_windows
   then
@@ -101,7 +101,7 @@ ed() {
         touch "$arg"
       fi
     fi
-    edit_it "$arg"
+    edit_file "$arg"
   done
 }
 

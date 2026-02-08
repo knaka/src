@@ -1,1 +1,1 @@
-task-sh/task.cmd
+ptd/task.cmd

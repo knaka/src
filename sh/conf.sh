@@ -3,26 +3,26 @@
 # shellcheck shell=sh
 "${sourced_88f1f74-false}" && return 0; sourced_88f1f74=true
 
-set -- "$PWD" "${0%/*}" "$@"; if test "$2" != "$0"; then cd "$2" 2>/dev/null || :; fi
-. ./task.sh
-. ./chezmoi.lib.sh
-cd "$1"; shift 2
+set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test "$2" != "$0"; then _APPDIR="$2"; fi; cd "$_APPDIR" || exit 1; fi
+. ./utils.libsh
+. ./cmds.libsh
+cd "$1" || exit 1; shift 2
 
 export CHEZMOISOURCEDIR="$HOME/repos/github.com/knaka/src/conf/chezmoi-source"
 
 conf() {
-  local found_subcmd=false
+  local found_chezmoi_subcmd=false
   local arg
   for arg in "$@"
   do
     shift
-    if ! "$found_subcmd"
+    if ! "$found_chezmoi_subcmd"
     then
       case "${arg}" in
         (-*)
           ;;
         (*)
-          found_subcmd=true
+          found_chezmoi_subcmd=true
           if test "${CHEZMOISOURCEDIR+set}" = set
           then
             set -- "$@" --source="$CHEZMOISOURCEDIR"

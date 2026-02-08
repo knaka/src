@@ -6,7 +6,7 @@
 # file(1) of MacOS does not show whether the executable contains Go debuginfo or not.
 # dwarfdump(1) shows nothing. I do not know why.
 
-set -- "$PWD" "${0%/*}" "$@"; if test "$2" != "$0"; then cd "$2" 2>/dev/null || :; fi
+set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test "$2" != "$0"; then _APPDIR="$2"; fi; cd "$_APPDIR" || exit 1; fi
 . ./task.sh
   init_temp_dir
 . ./go.lib.sh
