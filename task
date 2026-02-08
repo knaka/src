@@ -1,1 +1,32 @@
-tasks/task-sh/task
+#!/usr/bin/env sh
+# vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
+# shellcheck shell=sh
+"${sourced_49d75c2-false}" && return 0; sourced_49d75c2=true
+
+mise() {
+  local script_dir="${0##*/}"
+  if test "$script_dir" != "$0"
+  then
+    script_dir=.
+  fi
+  exec sh "$script_dir"/mise "$@"
+}
+
+task() {
+  if test $# -eq 0
+  then
+    set -- tasks
+  else
+    local subcmd="$1"
+    shift
+    set -- "$subcmd" -- "$@"
+  fi
+  mise "$@"
+}
+
+case "${0##*/}" in
+  (task)
+    set -o nounset -o errexit
+    task "$@"
+    ;;
+esac

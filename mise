@@ -6,7 +6,7 @@
 # jdx/mise: dev tools, env vars, task runner https://github.com/jdx/mise
 
 # Releases · jdx/mise https://github.com/jdx/mise/releases
-ver="2026.1.12"
+ver="2026.2.6"
 
 dir="$HOME/.cache/task-sh/mise@$ver"
 mkdir -p "$dir"
