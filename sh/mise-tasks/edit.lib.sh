@@ -1,1 +1,1 @@
-../lib/edit.libsh
+../lib/edit.lib.sh

@@ -4,7 +4,7 @@
 "${sourced_4b40a17-false}" && return 0; sourced_4b40a17=true
 
 set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test "$2" != "$0"; then _APPDIR="$2"; fi; cd "$_APPDIR" || exit 1; fi
-. ./cmds.libsh
+. ./cmds.lib.sh
 cd "$1" || exit 1; shift 2
 
 set -o nounset -o errexit

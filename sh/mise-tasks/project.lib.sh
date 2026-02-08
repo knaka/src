@@ -1,8 +1,8 @@
 #!/bin/sh
 test "${guard_b6c071a+set}" = set && return 0; guard_b6c071a=-
 
-. ./utils.libsh
-. ./edit.libsh
+. ./utils.lib.sh
+. ./edit.lib.sh
 
 # Install shell scripts.
 subcmd_install() {

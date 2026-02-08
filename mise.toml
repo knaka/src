@@ -25,7 +25,7 @@ run = """
 
 set -- "$PWD" "$@"; cd "${MISE_TASK_DIR}" || exit 1
 set -- _LIBDIR ./mise-tasks "$@"
-. ./mise-tasks/test.libsh
+. ./mise-tasks/test.lib.sh
 shift 2
 cd "$1" || exit 1; shift
 
@@ -45,7 +45,7 @@ run = '''
 
 main() {
   cd "$MISE_PROJECT_ROOT"/mise-tasks || exit 1
-  extract_task_info *.libsh | generate_task_tomls
+  extract_task_info *.lib.sh | generate_task_tomls
 }
 
 # Parse shell task files and extract task/subcmd information with their metadata.

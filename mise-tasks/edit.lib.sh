@@ -2,7 +2,7 @@
 # shellcheck shell=sh
 "${sourced_06877c8-false}" && return 0; sourced_06877c8=true
 
-. ./utils.libsh
+. ./utils.lib.sh
 
 extract_block() {
   local begin_marker="$1"

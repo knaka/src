@@ -63,7 +63,7 @@ fi
 is_lib_sh=false
 if \
   test "${base_name%.shlib}" != "${base_name}" || \
-  test "${base_name%.libsh}" != "${base_name}" || \
+  test "${base_name%.lib.sh}" != "${base_name}" || \
   test "${base_name%.lib.sh}" != "${base_name}"
 then
   echo Creating library shell script. >&2
@@ -122,10 +122,10 @@ EOF
 fi
 ) >&3
 
-if test "$1" != "-" && ! "$is_lib_sh"
-then
-  chmod +x "$1"
-fi
+# if test "$1" != "-" && ! "$is_lib_sh"
+# then
+#   chmod +x "$1"
+# fi
 
 # Other options:
 #   set -o monitor # For job control

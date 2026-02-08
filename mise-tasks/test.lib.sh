@@ -4,7 +4,7 @@
 
 set -- "$PWD" "$@"; if test "${2:+$2}" = _LIBDIR; then cd "$3" || exit 1; fi
 set -- _LIBDIR . "$@"
-. ./utils.libsh
+. ./utils.lib.sh
 shift 2
 cd "$1" || exit 1; shift
 
@@ -71,10 +71,10 @@ run_tests() {
   local psv_test_file_paths=
   for test_file_path in \
     *-test.sh \
-    *-test.libsh \
+    *-test.lib.sh \
     *-test.shlib \
     test-*.sh \
-    test-*.libsh \
+    test-*.lib.sh \
     test-*.shlib \
     _CENTINEL
   do
