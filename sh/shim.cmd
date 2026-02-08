@@ -1,1 +1,1 @@
-../shim.cmd
+ptd/shim.cmd

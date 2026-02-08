@@ -5,7 +5,7 @@ test "${guard_b6c071a+set}" = set && return 0; guard_b6c071a=-
 . ./edit.lib.sh
 
 # Install shell scripts.
-subcmd_install() {
+task_install() {
   local sh_bin_dir_path="$HOME"/sh-bin
   if test "${executed_thru_t_bb789ec+set}" = set
   then

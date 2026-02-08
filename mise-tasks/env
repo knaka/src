@@ -16,7 +16,7 @@ env() {
   then
     echo "On Windows." >&2
   fi
-  command env
+  command set
 }
 
 case "${0##*/}" in

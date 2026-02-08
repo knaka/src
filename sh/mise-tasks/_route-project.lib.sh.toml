@@ -2,7 +2,7 @@
 
 [install]
 description = "Install shell scripts."
-run = "#!/usr/bin/env sh\n\nset -- \"$PWD\" \"$@\"\ncd \"$MISE_TASK_DIR\"\n. ./\"project.lib.sh\"\ncd \"$1\"\nshift\n\"subcmd_install\" \"$@\""
+run = "#!/usr/bin/env sh\n\nset -- \"$PWD\" \"$@\"\ncd \"$MISE_TASK_DIR\"\n. ./\"project.lib.sh\"\ncd \"$1\"\nshift\n\"task_install\" \"$@\""
 
 ["hello_cmd:gen"]
 description = "Generate a Sh-inlined sample .cmd file."
