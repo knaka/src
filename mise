@@ -5,11 +5,11 @@
 
 # jdx/mise: dev tools, env vars, task runner https://github.com/jdx/mise
 
-# Releases · jdx/mise https://github.com/jdx/mise/releases
-mise_ver="2026.2.6"
-
 mise() {
-  local dir="$HOME/.cache/task-sh/mise@$mise_ver"
+  # Releases · jdx/mise https://github.com/jdx/mise/releases
+  local ver="2026.2.6"
+
+  local dir="$HOME/.cache/task-sh/mise@$ver"
   mkdir -p "$dir"
   local cmd_path="$dir"/mise
   if ! test -x "$cmd_path"
@@ -24,7 +24,7 @@ mise() {
       (arm64) arch=arm64;;
       (*) echo 65aa9c9 >&2; exit;;
     esac
-    local url="https://github.com/jdx/mise/releases/download/v${mise_ver}/mise-v${mise_ver}-${os}-${arch}"
+    local url="https://github.com/jdx/mise/releases/download/v${ver}/mise-v${ver}-${os}-${arch}"
     curl --fail --location "$url" --output "$cmd_path"
     chmod 755 "$cmd_path"
   fi

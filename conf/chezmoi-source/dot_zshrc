@@ -152,8 +152,8 @@ zstyle ':completion:*' matcher-list 'm:{[a-z]}={[A-Z]}'
 #region プロンプト
 
 # Print Project Directory. The top directory of the git, etc.
-PPD=
-ppd=
+PTD=
+ptd=
 
 executed_something_f881915=false
 
@@ -215,8 +215,8 @@ precmd() {
   if test -n "$git_branches"
   then
     # Project Directory
-    PPD="$(git rev-parse --show-toplevel 2>/dev/null)" || :
-    ppd="$PPD"
+    PTD="$(git rev-parse --show-toplevel 2>/dev/null)" || :
+    ptd="$PTD"
     local git_branch
     git_branch="$(echo "$git_branches" | sed -n -e 's/^* *//p')"
     right_str="${delim}${right_str} $git_branch"
@@ -490,7 +490,7 @@ alias brew-apply='command brew-apply && PATH=$PATH'
 alias brew-upgrade='command brew update && command brew upgrade && PATH=$PATH'
 alias cls=clear
 alias ll='ls -l'
-alias ppd='echo $PPD' # Print Project Directory
+alias ptd='echo $PTD' # Print Project-Top Directory
 alias r='command r'
 # alias t="launch-task"
 # alias task="launch-task"

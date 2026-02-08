@@ -3,10 +3,10 @@
 # shellcheck shell=sh
 "${sourced_a3264fe-false}" && return 0; sourced_a3264fe=true
 
+# Task runner
+
 set -- "$PWD" "${0%/*}" "$@"; if test "$2" != "$0"; then cd "$2" || exit 1; fi
-set -- _LIBDIR . "$@"
 . ./mise
-shift 2
 cd "$1" || exit 1; shift 2
 
 task() {

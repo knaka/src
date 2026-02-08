@@ -4,9 +4,11 @@
 test "${sourced_723152a:+}" = true && return 0; sourced_723152a=true
 set -o nounset -o errexit
 
-set -- "$PWD" "$@"; test "${0%/*}" != "$0" && cd "${0%/*}"
+set -- "$PWD" "${0%/*}" "$@"; if test "$2" != "$0"; then cd "$2" || exit 1; fi
+set -- _LIBDIR . "$@"
 . ./rand7.sh 
-cd "$1"; shift
+shift 2
+cd "$1" || exit 1; shift 2
 
 force=false
 OPTIND=1; while getopts f-: OPT
