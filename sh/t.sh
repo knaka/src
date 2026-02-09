@@ -23,7 +23,10 @@ run_mise() {
 
 t() {
   # Marker
-  export executed_thru_t_bb789ec=true
+  if is_windows
+  then
+    export executed_thru_t_bb789ec=true
+  fi
   local dir="$PWD"
   while :
   do
