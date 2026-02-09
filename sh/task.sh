@@ -1,1 +1,1 @@
-ptd/task.sh
+../task.sh
