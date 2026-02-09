@@ -1,8 +1,13 @@
 #!/bin/sh
 test "${guard_b6c071a+set}" = set && return 0; guard_b6c071a=-
 
-. ./task.sh
-. ./edit.lib.sh
+set -- "$PWD" "$@"; if test "${2:+$2}" = _LIBDIR; then cd "$3" || exit 1; fi
+set -- _LIBDIR .lib "$@"
+. ./.lib/task.sh
+. ./.lib/edit.lib.sh
+shift 2
+cd "$1" || exit 1; shift
+
 
 # Generate a Sh-inlined batch script that embeds shell code for Windows
 #

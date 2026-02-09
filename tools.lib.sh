@@ -18,8 +18,8 @@ gemini() { mise exec "npm:@google/gemini-cli" -- gemini "$@"; }
 ghq() { mise exec "github:x-motemen/ghq" -- ghq "$@"; }
 go() { mise exec go@"$go_ver_648fd87" -- go "$@"; }
 gofmt() { mise exec go@"$go_ver_648fd87" -- gofmt "$@"; }
-jmespath() { mise jmespath -- jp "$@"; }
-jq() { mise exec jq "$@"; }
+jmespath() { mise exec jmespath -- jp "$@"; }
+jq() { mise exec jq -- jq "$@"; }
 lua() { mise exec lua -- lua "$@"; }
 mdpp() { mise exec "github:knaka/mdpp" -- mdpp "$@"; }
 mlr() { mise exec "github:johnkerl/miller" -- mlr "$@"; }
