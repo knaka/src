@@ -10,7 +10,7 @@ includes = [
 os = ["windows"]
 bin = "sh.exe"
 url = 'https://frippery.org/files/busybox/busybox-w64{{arch(x64="u",arm64="a")}}-{{version}}.exe'
-# Release Notes: busybox-w32 FRP-5857-g3681e397f (2025-10-11) https://frippery.org/busybox/release-notes/current.html
+# Release Notes: busybox-w32 https://frippery.org/busybox/release-notes/current.html
 version = "FRP-5857-g3681e397f"
 # https://frippery.org/files/busybox/SHA256SUM
 [tools."http:busybox".platforms]
