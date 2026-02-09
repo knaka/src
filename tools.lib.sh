@@ -11,8 +11,10 @@ cd "$1" || exit 1; shift
 go_ver_648fd87="1.25"
 node_ver_5b79749="24"
 
+caddy() { mise exec caddy -- caddy "$@"; } 
 chezmoi() { mise exec chezmoi -- chezmoi "$@"; }
 claude() { mise exec "npm:@anthropic-ai/claude-code" -- claude "$@"; }
+gemini() { mise exec "npm:@google/gemini-cli" -- gemini "$@"; }
 ghq() { mise exec "github:x-motemen/ghq" -- ghq "$@"; }
 go() { mise exec go@"$go_ver_648fd87" -- go "$@"; }
 gofmt() { mise exec go@"$go_ver_648fd87" -- gofmt "$@"; }
@@ -26,5 +28,4 @@ npm() { mise exec node@"$node_ver_5b79749" -- npm "$@"; }
 npx() { mise exec node@"$node_ver_5b79749" -- npx "$@"; }
 peco() { mise exec "go:github.com/knaka/peco/cmd/peco@latest" -- peco "$@"; }
 tblcalc() { mise exec "github:knaka/tblcalc" -- tblcalc "$@"; }
-gemini() { mise exec "npm:@google/gemini-cli" -- gemini "$@"; }
 yq() { mise exec yq -- yq "$@"; }
