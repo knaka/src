@@ -1,0 +1,21 @@
+# Code generated from "project.lib.sh" by task:gen task. DO NOT EDIT.
+
+["hello_sh:gen"]
+description = "Generate Go-inlined sample scripts."
+run = "#!/usr/bin/env sh\n\nset -- \"$PWD\" \"$@\"\ncd \"$MISE_TASK_DIR\"\n. ./\"project.lib.sh\"\ncd \"$1\"\nshift\n\"task_hello_sh__gen\" \"$@\""
+
+[gen]
+description = "Generate files."
+run = "#!/usr/bin/env sh\n\nset -- \"$PWD\" \"$@\"\ncd \"$MISE_TASK_DIR\"\n. ./\"project.lib.sh\"\ncd \"$1\"\nshift\n\"task_gen\" \"$@\""
+
+[depbuild]
+description = "Build Go source packages (*.go, ./cmd/*/) incrementally."
+run = "#!/usr/bin/env sh\n\nset -- \"$PWD\" \"$@\"\ncd \"$MISE_TASK_DIR\"\n. ./\"project.lib.sh\"\ncd \"$1\"\nshift\n\"task_depbuild\" \"$@\""
+
+[build]
+description = "DEPREATED"
+run = "#!/usr/bin/env sh\n\nset -- \"$PWD\" \"$@\"\ncd \"$MISE_TASK_DIR\"\n. ./\"project.lib.sh\"\ncd \"$1\"\nshift\n\"task_build\" \"$@\""
+
+[install]
+description = "Install Go tools."
+run = "#!/usr/bin/env sh\n\nset -- \"$PWD\" \"$@\"\ncd \"$MISE_TASK_DIR\"\n. ./\"project.lib.sh\"\ncd \"$1\"\nshift\n\"task_install\" \"$@\""

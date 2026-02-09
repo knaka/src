@@ -3,8 +3,8 @@
 "${sourced_c572edd-false}" && return 0; sourced_c572edd=true
 
 . ./task.sh
-. ./go.lib.sh
-. ./go-inlined.lib.sh
+. ./cmds.lib.sh
+# . ./go-inlined.lib.sh
 
 # Generate Go-inlined sample scripts.
 task_hello_sh__gen() {
@@ -19,7 +19,7 @@ task_gen() {
 }
 
 # Build Go source packages (*.go, ./cmd/*/) incrementally.
-subcmd_depbuild() {
+task_depbuild() {
   push_dir "$PROJECT_DIR"
   local go_bin_dir_path=./build
   mkdir -p "$go_bin_dir_path"
@@ -57,18 +57,18 @@ subcmd_depbuild() {
 }
 
 # DEPREATED
-subcmd_build() {
-  subcmd_depbuild "$@"
+task_build() {
+  task_depbuild "$@"
 }
 
 # Install Go tools.
 task_install() {
-  local go_sim_dir_path="$HOME"/go-bin
-  mkdir -p "$go_sim_dir_path"
-  rm -f "$go_sim_dir_path"/*
+  local go_shim_dir_path="$HOME"/go-bin
+  mkdir -p "$go_shim_dir_path"
+  rm -f "$go_shim_dir_path"/*
   local go_main_path
   local name
-  local target_sim_path
+  local target_shim_path
   for go_main_path in *.go cmd/*
   do
     if ! test -r "$go_main_path" && ! test -d "$go_main_path"
@@ -79,23 +79,28 @@ task_install() {
       task.go|task-*.go) continue ;;
     esac
     name=$(basename "$go_main_path" .go)
-    target_sim_path="$go_sim_dir_path/$name"
+    target_shim_path="$go_shim_dir_path/$name"
     if is_windows
     then
       local pwd_backslash="$(echo "$PWD" | sed 's|/|\\|g')"
       go_build_dir_path_backslash=$(echo "$(realpath .)"/build | sed 's|/|\\|g')
-      cat <<EOF > "$target_sim_path".cmd
+      cat <<EOF > "$target_shim_path".cmd
 @echo off
-call $pwd_backslash\\task depbuild $name
+pushd $pwd_backslash
+call task depbuild $name
+popd
 $go_build_dir_path_backslash\\$name.exe %*
 EOF
     else
-      cat <<EOF > "$target_sim_path"
+      cat <<EOF > "$target_shim_path"
 #!/bin/sh
-$PWD/task depbuild "$name"
+(
+  cd "$PWD"
+  ./task depbuild "$name"
+)
 exec $PWD/build/$name "\$@"
 EOF
-      chmod +x "$target_sim_path"
+      chmod +x "$target_shim_path"
     fi
   done
 }
