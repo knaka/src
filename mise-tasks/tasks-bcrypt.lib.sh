@@ -10,7 +10,7 @@ cd "$1" || exit 1; shift
 
 # [password] Create hash from password with bcrypt
 task_bcrypt__hash() {
-  mise exec uv -- uv tool run --from "bcrypt" python3 -c 'import sys, bcrypt; print(bcrypt.hashpw(sys.argv[1].encode(), bcrypt.gensalt()).decode())' "$1"
+  mise exec uv -- uv tool run --from "bcrypt" python3 -c 'import sys, bcrypt; print(bcrypt.hashpw(sys.argv[1].encode(), bcrypt.gensalt()).decode())' "$1" >/dev/null 2>&1
 }
 
 # [--password <password> --hash <hash>] Verify password against bcrypt hash
@@ -35,5 +35,5 @@ task_bcrypt__verify() {
   done
   shift $((OPTIND-1))
 
-  mise exec uv -- uv tool run --from "bcrypt" python3 -c 'import sys, bcrypt; sys.exit(0 if bcrypt.checkpw(sys.argv[1].encode(), sys.argv[2].encode()) else 1)' "$password" "$hash"
+  mise exec uv -- uv tool run --from "bcrypt" python3 -c 'import sys, bcrypt; sys.exit(0 if bcrypt.checkpw(sys.argv[1].encode(), sys.argv[2].encode()) else 1)' "$password" "$hash" "$1" >/dev/null 2>&1
 }
