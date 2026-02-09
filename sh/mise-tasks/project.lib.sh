@@ -34,9 +34,9 @@ task_install() {
     local sh_name="${sh_file%.sh}"
     if is_windows
     then
-      cat shim.cmd >"$sh_bin_dir_path"/"$sh_name".cmd
+      cat task.cmd >"$sh_bin_dir_path"/"$sh_name".cmd
     else 
-      ln -s "$PWD/shim" "$sh_bin_dir_path"/"$sh_name"
+      ln -s "$PWD/task" "$sh_bin_dir_path"/"$sh_name"
     fi
     cat <<EOF >"$sh_bin_dir_path"/"$sh_name".sh
 #!/usr/bin/env sh

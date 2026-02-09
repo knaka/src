@@ -1,1 +1,1 @@
-ptd/shim.cmd
+../mise.cmd
