@@ -1,13 +1,13 @@
 # Convert JSON to shell variable declarations
 #
-# Usage: jq -r -f json2sh.jq [--arg prefix "my_prefix"] [--arg delim "__"] [--arg local_decl "local "]
+# Usage: jq -r --from-file json2sh.jq [--arg prefix "my_prefix"] [--arg delim "__"] [--arg local_decl "local "]
 #
 # Parameters:
 #   prefix:     Variable name prefix (default: "json__")
 #   delim:      Delimiter for nested keys (default: "__")
 #   local_decl: Declaration prefix, e.g. "local " or "export " (default: "")
 #
-# Example:
+# Exampl--from-file
 #   echo '{"user":{"name":"Alice","age":30},"items":["apple","banana"]}' | jq -r -f json2sh.jq
 #   # Output:
 #   # json__user__name="Alice"

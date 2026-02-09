@@ -49,36 +49,31 @@ json2sh() {
     --arg delim "$delim" \
     #nop
 
-  if test -r "json2sh.jq"
-  then
-    set -- "$@" --from-file "json2sh.jq"
-  else
-    # grep -v -e '^ *#' -e '^$' json2sh.jq
-    # shellcheck disable=SC2016
-    set -- '
-      def to_sh(prefix):
-        to_entries[]
-        | $ARGS.named.delim // "__" as $delim
-        | $ARGS.named.local_decl // "" as $local_decl
-        | (
-            if .key | type == "number" then 
-              .key | tostring
-            else
-              .key | gsub("[-\\.]"; "_")
-            end
-          ) as $shell_key
-        | if .value | type == "object" or type == "array" then
-            .value | to_sh("\(prefix)\($shell_key)\($delim)")
-          else
-            "\($local_decl)\(prefix)\($shell_key)=\"\(.value)\""
-          end
-      ;
-      .
-      | $ARGS.named.prefix // "json__" as $prefix
-      | to_sh($prefix)
-    '
-  fi
-  jq "$@"
+  # grep -v -e '^ *#' -e '^$' json2sh.jq
+  # shellcheck disable=SC2016
+  set -- '
+def to_sh(prefix):
+  to_entries[]
+  | $ARGS.named.delim // "__" as $delim
+  | $ARGS.named.local_decl // "" as $local_decl
+  | (
+      if .key | type == "number" then 
+        .key | tostring
+      else
+        .key | gsub("[-\\.]"; "_")
+      end
+    ) as $shell_key
+  | if .value | type == "object" or type == "array" then
+      .value | to_sh("\(prefix)\($shell_key)\($delim)")
+    else
+      "\($local_decl)\(prefix)\($shell_key)=\"\(.value)\""
+    end
+;
+.
+| $ARGS.named.prefix // "json__" as $prefix
+| to_sh($prefix)
+  '
+  jq -r "$@"
 }
 
 # Convert JSON object to shell variable assignment expressions.
