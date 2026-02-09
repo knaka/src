@@ -1,8 +1,10 @@
-# To permit running scripts. 
+# To permit running scripts.
 #   Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
 
 # Source this to reflect the changes.
 #  . $PROFILE
+
+Set-StrictMode -Version Latest
 
 $aliases_to_remove = @(
   "cat",
@@ -83,8 +85,8 @@ function set_env {
 
 New-Alias -Name set-env -Value set_env -Force
 
-function ppd() {
-  Write-Output "$global:PPD"
+function ptd() {
+  Write-Output "$global:PTD"
 }
 
 function aws_switch_profile (
@@ -118,9 +120,9 @@ function prompt {
   $lastSuccess = $?
   # $lastExitCode = $LASTEXITCODE
 
-  # Git ワークのトップディレクトリ
-  $PPD = git rev-parse --show-toplevel 2>$null
-  $global:PPD = $PPD
+  # Git ワークのトップディレクトリ (Project Top Directory)
+  $PTD = git rev-parse --show-toplevel 2>$null
+  $global:PTD = $PTD
     
   # 現在のブランチ名
   $gbranch = git branch --show-current 2>$null
@@ -132,7 +134,7 @@ function prompt {
   $rmargin = " " * $padding_num
 
   if ($gbranch.Length -gt 0) {
-    $base = Split-Path $PPD -Leaf
+    $base = Split-Path $PTD -Leaf
     $host.UI.RawUI.WindowTitle = "git: $base"
   } else {
     $host.UI.RawUI.WindowTitle = "$(Get-Location)"
