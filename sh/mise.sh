@@ -1,1 +1,1 @@
-../mise.sh
+.lib/mise.sh

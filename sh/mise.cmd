@@ -1,1 +1,1 @@
-../mise.cmd
+.lib/mise.cmd

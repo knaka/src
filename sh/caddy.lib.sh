@@ -1,1 +1,1 @@
-../mise-tasks/caddy.lib.sh
+.lib/caddy.lib.sh

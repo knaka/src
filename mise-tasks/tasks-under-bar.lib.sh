@@ -3,8 +3,8 @@
 "${sourced_1e5cbd0-false}" && return 0; sourced_1e5cbd0=true
 
 set -- "$PWD" "$@"; if test "${2:+$2}" = _LIBDIR; then cd "$3" || exit 1; fi
-set -- _LIBDIR . "$@"
-. ./utils.lib.sh
+set -- _LIBDIR .lib "$@"
+. .lib/task.sh
 shift 2
 cd "$1" || exit 1; shift
 

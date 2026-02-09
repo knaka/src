@@ -1,7 +1,7 @@
 #!/bin/sh
 test "${guard_b6c071a+set}" = set && return 0; guard_b6c071a=-
 
-. ./utils.lib.sh
+. ./task.sh
 . ./edit.lib.sh
 
 # Generate a Sh-inlined batch script that embeds shell code for Windows

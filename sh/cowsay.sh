@@ -11,7 +11,7 @@ set_cowsay_version() {
 }
 
 set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test "$2" != "$0"; then _APPDIR="$2"; fi; cd "$_APPDIR" || exit 1; fi
-. ./cmds.lib.sh
+. ./tools.lib.sh
 cd "$1"; shift 2
 
 cowsay() {

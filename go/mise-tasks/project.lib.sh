@@ -3,7 +3,7 @@
 "${sourced_c572edd-false}" && return 0; sourced_c572edd=true
 
 . ./task.sh
-. ./cmds.lib.sh
+. ./tools.lib.sh
 # . ./go-inlined.lib.sh
 
 # Generate Go-inlined sample scripts.

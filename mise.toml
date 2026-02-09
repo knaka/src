@@ -18,22 +18,22 @@ includes = [
 
 # ==========================================================================
 
-[tasks."test"]
-description = "[test_names...] Run tests. If no test names are provided, all tests are run."
-run = """
-#!/usr/bin/env sh
+# [tasks."test"]
+# description = "[test_names...] Run tests. If no test names are provided, all tests are run."
+# run = """
+# #!/usr/bin/env sh
 
-set -- "$PWD" "$@"; cd "${MISE_TASK_DIR}" || exit 1
-set -- _LIBDIR ./mise-tasks "$@"
-. ./mise-tasks/test.lib.sh
-shift 2
-cd "$1" || exit 1; shift
+# set -- "$PWD" "$@"; cd "${MISE_TASK_DIR}" || exit 1
+# set -- _LIBDIR ./mise-tasks "$@"
+# . ./mise-tasks/test.lib.sh
+# shift 2
+# cd "$1" || exit 1; shift
 
-set -o nounset -o errexit
+# set -o nounset -o errexit
 
-cd "$MISE_TASK_DIR/mise-tasks" || exit 1
-run_tests "$@"
-"""
+# cd "$MISE_TASK_DIR/mise-tasks" || exit 1
+# run_tests "$@"
+# """
 
 # ==========================================================================
 

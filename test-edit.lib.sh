@@ -2,12 +2,12 @@
 # shellcheck shell=sh
 "${sourced_c28ce41-false}" && return 0; sourced_c28ce41=true
 
-. ./utils.lib.sh
+. ./task.sh
 . ./edit.lib.sh
 . ./assert.lib.sh
 
-hello_sh_7dad95b=./.testdata/hello.sh
-hello_txt_e48f9dc=./.testdata/hello.txt
+hello_sh_7dad95b=./testdata/hello.sh
+hello_txt_e48f9dc=./testdata/hello.txt
 
 test_edit() {
   local function_text
