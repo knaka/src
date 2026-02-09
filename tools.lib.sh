@@ -19,7 +19,6 @@ ghq() { mise exec "github:x-motemen/ghq" -- ghq "$@"; }
 go() { mise exec go@"$go_ver_648fd87" -- go "$@"; }
 gofmt() { mise exec go@"$go_ver_648fd87" -- gofmt "$@"; }
 jmespath() { mise exec jmespath -- jp "$@"; }
-jq() { mise exec jq -- jq "$@"; }
 lua() { mise exec lua -- lua "$@"; }
 mdpp() { mise exec "github:knaka/mdpp" -- mdpp "$@"; }
 mlr() { mise exec "github:johnkerl/miller" -- mlr "$@"; }
@@ -29,3 +28,11 @@ npx() { mise exec node@"$node_ver_5b79749" -- npx "$@"; }
 peco() { mise exec "go:github.com/knaka/peco/cmd/peco@latest" -- peco "$@"; }
 tblcalc() { mise exec "github:knaka/tblcalc" -- tblcalc "$@"; }
 yq() { mise exec yq -- yq "$@"; }
+
+jq() { 
+  if is_windows
+  then
+    set -- --binary "$@"
+  fi
+  mise exec jq -- jq --binary "$@"
+}

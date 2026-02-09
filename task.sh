@@ -1116,7 +1116,7 @@ archive_ext_map=\
 #region Mise - Home | mise-en-place https://mise.jdx.dev/
 
 # Releases · jdx/mise https://github.com/jdx/mise/releases
-mise_version_adcf449="2026.1.12"
+mise_version_adcf449="2026.2.8"
 
 mise() {
   # shellcheck disable=SC2016

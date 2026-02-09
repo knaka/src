@@ -5,5 +5,5 @@ description = "[password] Create hash from password with bcrypt"
 run = "#!/usr/bin/env sh\n\nset -- \"$PWD\" \"$@\"\ncd \"$MISE_TASK_DIR\"\n. ./\"tasks-bcrypt.lib.sh\"\ncd \"$1\"\nshift\n\"task_bcrypt__hash\" \"$@\""
 
 ["bcrypt:verify"]
-description = "[--password <password> --hash <hash>] Verify password against bcrypt hash"
+description = "[--password=<password> --hash=<hash>] Verify password against bcrypt hash"
 run = "#!/usr/bin/env sh\n\nset -- \"$PWD\" \"$@\"\ncd \"$MISE_TASK_DIR\"\n. ./\"tasks-bcrypt.lib.sh\"\ncd \"$1\"\nshift\n\"task_bcrypt__verify\" \"$@\""

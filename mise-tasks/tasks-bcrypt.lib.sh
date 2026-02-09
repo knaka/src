@@ -13,7 +13,7 @@ task_bcrypt__hash() {
   mise exec uv -- uv tool run --from "bcrypt" python3 -c 'import sys, bcrypt; print(bcrypt.hashpw(sys.argv[1].encode(), bcrypt.gensalt()).decode())' "$1" >/dev/null 2>&1
 }
 
-# [--password <password> --hash <hash>] Verify password against bcrypt hash
+# [--password=<password> --hash=<hash>] Verify password against bcrypt hash
 task_bcrypt__verify() {
   local password=
   local hash=

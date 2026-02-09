@@ -3,7 +3,7 @@
 # shellcheck shell=sh
 "${sourced_cc46c5c-false}" && return 0; sourced_cc46c5c=true
 
-#MISE description="[test_names...] Run tests. If no test names are provided, all tests are run."
+#MISE description="[names...] Run tests. If no test names are provided, all tests are run."
 
 set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test "$2" != "$0"; then _APPDIR="$2"; fi; cd "$_APPDIR" || exit 1; fi
 set -- _LIBDIR .lib "$@"

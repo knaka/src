@@ -79,7 +79,7 @@ run_tests() {
     test -r "$test_file_path" || continue
     "$VERBOSE" && echo "Reading test file \"$test_file_path\" in $PWD." >&2
     # shellcheck disable=SC1090
-    . "$test_file_path"
+    . ./"$test_file_path"
     psv_test_file_paths="$psv_test_file_paths$test_file_path|"
   done
   

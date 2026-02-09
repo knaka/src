@@ -8,7 +8,7 @@ set bb_ver=FRP-5857-g3681e397f
 
 if "%PROCESSOR_ARCHITECTURE%" == "x86" (
   echo WARNING: Your environment is 32-bit. Not all features are supported. >&2
-  set arch=32
+  set bb_arch=32
 ) else if "%PROCESSOR_ARCHITECTURE%" == "AMD64" (
   set bb_arch=64u
 ) else if "%PROCESSOR_ARCHITECTURE%" == "ARM64" (
@@ -49,8 +49,5 @@ if exist "!script_dir_path!\!ARG0BASE!.sh" (
   exit /b 1
 )
 endlocal ^
-& set "ARG0=%ARG0%" ^
-& set "ARG0BASE=%ARG0BASE%" ^
-& set "BB_GLOBBING=0" ^
-& "%cmd_path%" sh "%script_file_path%" %* ^
-|| exit /b %ERRORLEVEL%
+& set "ARG0=%ARG0%" & set "ARG0BASE=%ARG0BASE%" ^
+& set "BB_GLOBBING=0" & "%cmd_path%" sh "%script_file_path%" %* || exit /b %ERRORLEVEL%
