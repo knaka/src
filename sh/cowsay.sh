@@ -10,19 +10,12 @@ set_cowsay_version() {
   cowsay_version_14ac6ce="$1"
 }
 
-# Releases · nodejs/node https://github.com/nodejs/node/releases
-cowsay_node_version_07c311e=
-
-set_cowsay_node_version() {
-  cowsay_node_version_07c311e="$1"
-}
-
 set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test "$2" != "$0"; then _APPDIR="$2"; fi; cd "$_APPDIR" || exit 1; fi
-. ./node.lib.sh
+. ./cmds.lib.sh
 cd "$1"; shift 2
 
 cowsay() {
-  run_npm_pkg --node-version="$cowsay_node_version_07c311e" "cowsay@$cowsay_version_14ac6ce" -- "$@" "$@"
+  mise exec npm:"cowsay@$cowsay_version_14ac6ce" -- cowsay "$@"
 }
 
 case "${0##*/}" in

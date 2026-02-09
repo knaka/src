@@ -8,8 +8,7 @@
 
 set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test "$2" != "$0"; then _APPDIR="$2"; fi; cd "$_APPDIR" || exit 1; fi
 . ./task.sh
-  init_temp_dir
-. ./go.lib.sh
+. ./cmds.lib.sh
 cd "$1"; shift 2
 
 show_help_2269cee() {
@@ -22,6 +21,7 @@ EOF
 
 go_has_debuginfo() {
   test "$#" -lt 1 && show_help_2269cee && return 1
+  register_temp_cleanup
   file="$TEMP_DIR/06454c6"
   go tool objdump -s main.main "$1" | tee "$file" >&2
   if test -s "$file"

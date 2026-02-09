@@ -4,58 +4,6 @@ test "${guard_b6c071a+set}" = set && return 0; guard_b6c071a=-
 . ./utils.lib.sh
 . ./edit.lib.sh
 
-# Install shell scripts.
-task_install() {
-  local sh_bin_dir_path="$HOME"/sh-bin
-  if test "${executed_thru_t_bb789ec+set}" = set
-  then
-    echo "In a Windows environment, $sh_bin_dir_path/t.sh is not replaced because it is locked. Run ./task.cmd instead." >&2
-    return 1
-  fi
-  local excluded_scripts=":task.sh:"
-  local file
-  for file in task-*.sh *.lib.sh _*.sh
-  do
-    if ! test -r "$file"
-    then
-      continue
-    fi
-    excluded_scripts="$excluded_scripts:$file:"
-  done
-  mkdir -p "$sh_bin_dir_path"
-  rm -f "$sh_bin_dir_path"/*
-  local sh_file
-  for sh_file in *.sh
-  do
-    if echo "$excluded_scripts" | grep -q ":$sh_file:"
-    then
-      continue
-    fi
-    local sh_name="${sh_file%.sh}"
-    if is_windows
-    then
-      cat task.cmd >"$sh_bin_dir_path"/"$sh_name".cmd
-    else 
-      ln -s "$PWD/task" "$sh_bin_dir_path"/"$sh_name"
-    fi
-    cat <<EOF >"$sh_bin_dir_path"/"$sh_name".sh
-#!/usr/bin/env sh
-unset PROJECT_DIR
-exec "$SH" "$PROJECT_DIR"/"$sh_file" "\$@"
-EOF
-  done
-  if is_windows
-  then
-    cat <<EOF > "$sh_bin_dir_path"/.env.sh.cmd
-set sh_dir_path=$PWD
-EOF
-  else
-    cat <<-EOF > "$sh_bin_dir_path"/.env.sh
-sh_dir_path="$PWD"
-EOF
-  fi
-}
-
 # Generate a Sh-inlined batch script that embeds shell code for Windows
 #
 # This function creates a Windows batch (.cmd) wrapper script that:

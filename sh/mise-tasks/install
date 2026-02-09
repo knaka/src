@@ -1,0 +1,70 @@
+#!/usr/bin/env sh
+# vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
+# shellcheck shell=sh
+"${sourced_4a3c429-false}" && return 0; sourced_4a3c429=true
+
+set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test "$2" != "$0"; then _APPDIR="$2"; fi; cd "$_APPDIR" || exit 1; fi
+set -- _LIBDIR . "$@"
+. ./task.sh
+shift 2
+cd "$1" || exit 1; shift 2
+
+# Install shell scripts.
+#MISE description="Install shell scripts."
+install() {
+  local sh_bin_dir_path="$HOME"/sh-bin
+  if test "${executed_thru_t_bb789ec+set}" = set
+  then
+    echo "In a Windows environment, $sh_bin_dir_path/t.sh is not replaced because it is locked. Run ./task.cmd instead." >&2
+    return 1
+  fi
+  local excluded_scripts=":task.sh:"
+  local file
+  for file in task-*.sh *.lib.sh _*.sh
+  do
+    if ! test -r "$file"
+    then
+      continue
+    fi
+    excluded_scripts="$excluded_scripts:$file:"
+  done
+  mkdir -p "$sh_bin_dir_path"
+  rm -f "$sh_bin_dir_path"/*
+  local sh_file
+  for sh_file in *.sh
+  do
+    if echo "$excluded_scripts" | grep -q ":$sh_file:"
+    then
+      continue
+    fi
+    local sh_name="${sh_file%.sh}"
+    if is_windows
+    then
+      cat task.cmd >"$sh_bin_dir_path"/"$sh_name".cmd
+    else 
+      ln -s "$PWD/task" "$sh_bin_dir_path"/"$sh_name"
+    fi
+    cat <<EOF >"$sh_bin_dir_path"/"$sh_name".sh
+#!/usr/bin/env sh
+unset PROJECT_DIR
+exec "$SH" "$PROJECT_DIR"/"$sh_file" "\$@"
+EOF
+  done
+  if is_windows
+  then
+    cat <<EOF > "$sh_bin_dir_path"/.env.sh.cmd
+set sh_dir_path=$PWD
+EOF
+  else
+    cat <<-EOF > "$sh_bin_dir_path"/.env.sh
+sh_dir_path="$PWD"
+EOF
+  fi
+}
+
+case "${0##*/}" in
+  (install)
+    set -o nounset -o errexit
+    install "$@"
+    ;;
+esac

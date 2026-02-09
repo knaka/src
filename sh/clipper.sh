@@ -12,19 +12,12 @@ set_clipper_version() {
   clipper_version_2b8a94e="$1"
 }
 
-# Releases · nodejs/node https://github.com/nodejs/node/releases
-clipper_node_version_c4da3a4=
-
-set_clipper_node_version() {
-  clipper_node_version_c4da3a4="$1"
-}
-
 set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test "$2" != "$0"; then _APPDIR="$2"; fi; cd "$_APPDIR" || exit 1; fi
-. ./node.lib.sh
+. ./cmds.lib.sh
 cd "$1"; shift 2
 
 clipper() {
-  run_npm_pkg --node-version="$clipper_node_version_c4da3a4" "@philschmid/clipper@$clipper_version_2b8a94e" -- "$@"
+  mise exec npm:"@philschmid/clipper@$clipper_version_2b8a94e" -- clipper "$@"
 }
 
 case "${0##*/}" in

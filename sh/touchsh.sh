@@ -44,10 +44,12 @@ else
 fi
 base_name_wo_sh="${base_name%.sh}"
 func_name="$(echo "$base_name_wo_sh" | tr '-' '_')"
-pattern="$base_name"
+cmd_matching_pattern="$base_name"
+has_ext=false
 if test "$base_name" != "$base_name_wo_sh"
 then
-  pattern="$pattern|$base_name_wo_sh"
+  has_ext=true
+  cmd_matching_pattern="$cmd_matching_pattern|$base_name_wo_sh"
 fi
 
 # echo 75ca5dc: "${base_name%.lib.sh}" >&2
@@ -113,7 +115,7 @@ ${func_name}() {
 }
 
 case "\${0##*/}" in
-  (${pattern})
+  (${cmd_matching_pattern})
     set -o nounset -o errexit
     ${func_name} "\$@"
     ;;
@@ -122,10 +124,10 @@ EOF
 fi
 ) >&3
 
-# if test "$1" != "-" && ! "$is_lib_sh"
-# then
-#   chmod +x "$1"
-# fi
+if test "$1" != "-" && ! "$is_lib_sh" && ! "$has_ext"
+then
+  chmod +x "$1"
+fi
 
 # Other options:
 #   set -o monitor # For job control

@@ -26,3 +26,4 @@ npm() { mise exec node@"$node_ver_5b79749" -- npm "$@"; }
 npx() { mise exec node@"$node_ver_5b79749" -- npx "$@"; }
 peco() { mise exec "go:github.com/knaka/peco/cmd/peco@latest" -- peco "$@"; }
 tblcalc() { mise exec "github:knaka/tblcalc" -- tblcalc "$@"; }
+gemini() { mise exec "npm:@google/gemini-cli" -- gemini "$@"; }
