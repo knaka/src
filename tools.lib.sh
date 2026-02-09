@@ -3,7 +3,7 @@
 "${sourced_be37450-false}" && return 0; sourced_be37450=true
 
 set -- "$PWD" "$@"; if test "${2:+$2}" = _LIBDIR; then cd "$3" || exit 1; fi
-set -- _LIBDIR ./ptd/ "$@"
+set -- _LIBDIR . "$@"
 . ./task.sh
 shift 2
 cd "$1" || exit 1; shift

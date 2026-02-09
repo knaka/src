@@ -4,9 +4,11 @@
 "${sourced_6049c10-false}" && return 0; sourced_6049c10=true
 set -o nounset -o errexit
 
-set -- "$PWD" "${0%/*}" "$@"; test "$2" != "$0" && cd "$2"
-. ./platform.lib.sh
-cd "$1"; shift 2
+set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test "$2" != "$0"; then _APPDIR="$2"; fi; cd "$_APPDIR" || exit 1; fi
+set -- _LIBDIR .lib "$@"
+. ./.lib/task.sh
+shift 2
+cd "$1" || exit 1; shift 2
 
 # `idea.bat` launches the IDE with java.exe, not idea64.exe. Which confuses AHK.
 ide_cmd_path() {
