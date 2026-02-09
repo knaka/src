@@ -106,6 +106,7 @@ New-Alias -Name aws-switch-profile -Value aws_switch_profile -Force
 New-Alias -Name ls -Value $ENV:USERPROFILE\sh-bin\glob-ls.cmd -Force
 New-Alias -Name ll -Value $ENV:USERPROFILE\sh-bin\glob-ll.cmd -Force
 New-Alias -Name find -Value $ENV:USERPROFILE\sh-bin\noglob-find.cmd -Force
+# New-Alias -Name grep -Value $ENV:USERPROFILE\sh-bin\noglob-grep.cmd -Force
 
 # cmd - How to make PowerShell tab completion work like Bash - Stack Overflow https://stackoverflow.com/questions/8264655/how-to-make-powershell-tab-completion-work-like-bash
 Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
@@ -124,8 +125,8 @@ function prompt {
   $PTD = git rev-parse --show-toplevel 2>$null
   $global:PTD = $PTD
     
-  # 現在のブランチ名
-  $gbranch = git branch --show-current 2>$null
+  # 現在のブランチ名（strict mode対応で空文字列にフォールバック）
+  $gbranch = "$(git branch --show-current 2>$null)"
 
   $width = $Host.UI.RawUI.WindowSize.Width
   $line = "$($executionContext.SessionState.Path.CurrentLocation)"

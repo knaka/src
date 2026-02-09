@@ -6,6 +6,7 @@
 	excludesfile = /Users/knaka/.gitignore_global
 	autoCRLF = false
 	pager = LESSCHARSET=utf-8 less
+	symlinks = true
 [difftool "sourcetree"]
 	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
 	path = 
