@@ -37,12 +37,20 @@ if not exist !cache_dir_path!\sh.exe (
 set "ARG0=%~f0"
 set "ARG0BASE=%~n0"
 set script_dir_path=%~dp0
-set script_name=%~n0
-set sh_dir_path=!script_dir_path!
-set env_file_path=!script_dir_path!\.env.sh.cmd
-if exist !env_file_path! (
-  call !env_file_path!
+set script_file_path=
+if exist "!script_dir_path!\!ARG0BASE!.sh" (
+  set script_file_path=!script_dir_path!\!ARG0BASE!.sh
+) else if exist "!script_dir_path!\mise-tasks\!ARG0BASE!.sh" (
+  set script_file_path=!script_dir_path!\mise-tasks\!ARG0BASE!.sh
+) else if exist "!script_dir_path!\tasks\!ARG0BASE!.sh" (
+  set script_file_path=!script_dir_path!\tasks\!ARG0BASE!.sh
+) else (
+  echo ERROR: Script file not found: !ARG0BASE!.sh >&2
+  exit /b 1
 )
-set BB_GLOBBING=0
-!cmd_path! sh !sh_dir_path!\!script_name!.sh %* || exit /b !ERRORLEVEL!
-endlocal
+endlocal ^
+& set "ARG0=%ARG0%" ^
+& set "ARG0BASE=%ARG0BASE%" ^
+& set "BB_GLOBBING=0" ^
+& "%cmd_path%" sh "%script_file_path%" %* ^
+|| exit /b %ERRORLEVEL%

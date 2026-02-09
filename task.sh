@@ -1146,7 +1146,6 @@ task() {
     shift
     set -- run "$subcmd" -- "$@"
   fi
-  
   mise "$@"
 }
 
