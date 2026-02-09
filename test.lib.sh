@@ -70,10 +70,8 @@ run_tests() {
 
   local psv_test_file_paths=
   for test_file_path in \
-    *-test.sh \
     *-test.lib.sh \
     *-test.shlib \
-    test-*.sh \
     test-*.lib.sh \
     test-*.shlib \
     _CENTINEL

@@ -4,9 +4,11 @@
 "${sourced_d63b0f1-false}" && return 0; sourced_d63b0f1=true
 
 set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test "$2" != "$0"; then _APPDIR="$2"; fi; cd "$_APPDIR" || exit 1; fi
-. ./task.sh
-. ./subtree.lib.sh
-cd "$1"; shift 2
+set -- _LIBDIR .lib "$@"
+. ./.lib/task.sh
+. ./.lib/subtree.lib.sh
+shift 2
+cd "$1" || exit 1; shift 2
 
 show_help() {
   echo "Usage: subtree <add|remove|push|pull> [args...]" >&2
@@ -25,7 +27,7 @@ subtree() {
   fi
   local cmd="$1"
   shift
-  local task_fn=subcmd_subtree__"$cmd"
+  local task_fn=subtree__"$cmd"
   "$task_fn" "$@"
 }
 

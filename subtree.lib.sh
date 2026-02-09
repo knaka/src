@@ -2,6 +2,8 @@
 # shellcheck shell=sh
 "${sourced_5aae4b0-false}" && return 0; sourced_5aae4b0=true
 
+# TODO: Not adjusted to current style. Fix me.
+
 set -- "$PWD" "$@"; if test "${2:+$2}" = _LIBDIR; then cd "$3" || exit 1; fi
 set -- _LIBDIR . "$@"
 . ./task.sh
@@ -22,7 +24,7 @@ before_subtree() {
 }
 
 # Add git-subtree to this project.
-subcmd_subtree__add() {
+subtree__add() {
   if test "$#" -eq 1
   then
     local name="$1"
@@ -75,7 +77,7 @@ EOF
 }
 
 # Remove git-subtree from this project.
-subcmd_subtree__remove() {
+subtree__remove() {
   local target_dir="$1"
   git rm -rf "$target_dir"
   touch .subtree.yaml
@@ -94,12 +96,12 @@ subtree_push_or_pull() {
 }
 
 # Push subtree changes to remote repository.
-subcmd_subtree__push() {
+subtree__push() {
   subtree_push_or_pull push "$@"
 }
 
 # Pull subtree changes from remote repository.
-subcmd_subtree__pull() {
+subtree__pull() {
   subtree_push_or_pull pull "$@"
 }
 
@@ -115,7 +117,7 @@ subtree_info() {
 }
 
 # Show information about a subtree.
-subcmd_subtree__info() {
+subtree__info() {
   local name="$1"
   local info=
   info="$(subtree_info "$name")"
@@ -124,6 +126,6 @@ subcmd_subtree__info() {
 }
 
 # List subtree-s.
-subcmd_subtree__list() {
+subtree__list() {
   cat .subtree.yaml
 }
