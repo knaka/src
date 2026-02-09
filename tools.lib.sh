@@ -34,5 +34,5 @@ jq() {
   then
     set -- --binary "$@"
   fi
-  mise exec jq -- jq --binary "$@"
+  mise exec jq -- jq "$@"
 }
