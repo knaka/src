@@ -15,7 +15,30 @@
 
 import re
 import sys
+from collections.abc import Iterator
 from pathlib import Path
+
+
+def _minify_awk(lines: Iterator[str]) -> Iterator[str]:
+    """Apply AWK-specific minification rules."""
+    for line in lines:
+        # 1. Remove comment lines
+        line = re.sub(r'^\s*#.*', '', line)
+        # 2. Remove all leading whitespace
+        line = re.sub(r'^\s*', '', line)
+        # 3. Append semicolon to lines not ending with {, }, or ;
+        line = re.sub(r'([^{};])$', r'\1;', line)
+        yield line
+
+
+def _minify_jq(lines: Iterator[str]) -> Iterator[str]:
+    """Apply jq-specific minification rules."""
+    for line in lines:
+        # 1. Remove comment lines
+        line = re.sub(r'^\s*#.*', '', line)
+        # 2. Collapse leading whitespace to single space
+        line = re.sub(r'^\s+', ' ', line)
+        yield line
 
 
 def minify(path: Path) -> str:
@@ -31,28 +54,18 @@ def minify(path: Path) -> str:
     """
 
     with open(path, 'r') as f:
-        lines = [line.rstrip('\n') for line in f]
+        lines = (line.rstrip('\n') for line in f)
 
-    ext = path.suffix
-    match ext:
-        case '.awk':
-            lines = [
-                re.sub(r'([^{};])$', r'\1;',
-                    re.sub(r'^\s*', '',
-                        re.sub(r'^\s*#.*', '', line)))
-                for line in lines
-            ]
-        case '.jq':
-            lines = [
-                re.sub(r'^\s+', ' ',
-                    re.sub(r'^\s*#.*', '', line))
-                for line in lines
-            ]
-        case _:
-            raise ValueError(f"Unsupported file extension: {ext}")
+        match path.suffix:
+            case '.awk':
+                lines = _minify_awk(lines)
+            case '.jq':
+                lines = _minify_jq(lines)
+            case _:
+                raise ValueError(f"Unsupported file extension: {path.suffix}")
 
-    # Join all lines without separator
-    return ''.join(lines)
+        # Join all lines without separator
+        return ''.join(lines)
 
 
 # Matches lines with pattern: 'content' #EMBED: path
