@@ -6,26 +6,13 @@
 set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test "$2" != "$0"; then _APPDIR="$2"; fi; cd "$_APPDIR" || exit 1; fi
 set -- _LIBDIR . "$@"
 . ./task.sh
+. ./embed-script.lib.sh
 shift 2
 cd "$1" || exit 1; shift 2
-
-embed() {
-  register_temp_cleanup
-  local path
-  local temp_path="$TEMP_DIR/2163b17"
-  for path in "$@"
-  do
-    mise exec perl -- perl -n "$_APPDIR"/embed.pl "$path" >"$temp_path"
-    if test -s "$temp_path" && ! cmp -s "$path" "$temp_path"
-    then
-      cat "$temp_path" >"$path"
-    fi
-  done
-}
 
 case "${0##*/}" in
   (embed)
     set -o nounset -o errexit
-    embed "$@"
+    embed_minified "$@"
     ;;
 esac

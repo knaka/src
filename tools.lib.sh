@@ -26,6 +26,7 @@ node() { mise exec node@"$node_ver_5b79749" -- node "$@"; }
 npm() { mise exec node@"$node_ver_5b79749" -- npm "$@"; }
 npx() { mise exec node@"$node_ver_5b79749" -- npx "$@"; }
 peco() { mise exec "go:github.com/knaka/peco/cmd/peco@latest" -- peco "$@"; }
+perl() { mise exec perl -- perl "$@"; }
 tblcalc() { mise exec "github:knaka/tblcalc" -- tblcalc "$@"; }
 yq() { mise exec yq -- yq "$@"; }
 

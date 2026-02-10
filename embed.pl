@@ -31,8 +31,8 @@ if (/^(?<pre>[^']*')[^']*(?<post>'.*#EMBED:\s*)(?<path>.+)$/) {
   if (!File::Spec->file_name_is_absolute($path)) {
     $path = File::Spec->catfile(dirname($ARGV), $path);
   }
-  $string = minify($path);
-  print "$+{pre}$string$+{post}$+{path}\n";
+  $minified = minify($path);
+  print "$+{pre}$minified$+{post}$+{path}\n";
 } else {
   print;
 }
