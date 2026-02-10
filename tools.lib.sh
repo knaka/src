@@ -37,3 +37,12 @@ jq() {
   fi
   mise exec jq -- jq "$@"
 }
+
+python() {
+  if is_windows
+  then
+    mise exec python -- python "$@"
+  else
+    python3 "$@"
+  fi
+}

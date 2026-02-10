@@ -6,9 +6,15 @@ set -- "$PWD" "$@"; if test "${2:+$2}" = _LIBDIR; then cd "$3" || exit 1; fi
 set -- _LIBDIR . "$@"
 . ./task.sh
 . ./tools.lib.sh
-script_902b082="$(canon_path ./embed.pl)"
+# script_902b082="$(canon_path ./embed.pl)"
+script_902b082="$(canon_path ./embed.py)"
 shift 2
 cd "$1" || exit 1; shift
+
+embed_minified_sub() {
+  # perl "$script_902b082" "$path"
+  python3 "$script_902b082" "$1"
+}
 
 # Embeds minified file contents into shell script files in-place.
 # Processes files containing #EMBED directives and replaces the content
@@ -26,7 +32,7 @@ embed_minified() {
   local temp_path="$TEMP_DIR/2163b17"
   for path in "$@"
   do
-    perl -n "$script_902b082" "$path" >"$temp_path"
+    embed_minified_sub "$path" >"$temp_path" 
     if test -s "$temp_path" && ! cmp -s "$path" "$temp_path"
     then
       cat "$temp_path" >"$path"

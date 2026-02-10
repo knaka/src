@@ -7,7 +7,7 @@
 # referenced file, preserving the #EMBED comment for future updates.
 #
 # Usage:
-#   perl -n embed.pl input_file >output_file
+#   perl embed.pl input_file >output_file
 #
 # Supported file types for minification:
 #   .awk - Removes comments, leading whitespace, and appends semicolons
@@ -51,22 +51,25 @@ sub minify {
   return $string;
 }
 
-# Main processing loop (implicit via perl -n)
+# Main processing loop
+# Reads input files line by line and processes #EMBED directives.
 # Matches lines with pattern: 'content' #EMBED: path
 # Captures:
 #   pre  - Everything up to and including the first single quote
 #   post - The closing quote through #EMBED: (content between quotes is replaced)
 #   path - The file path to embed
-if (/^(?<pre>[^']*')[^']*(?<post>'.*#EMBED:\s*)(?<path>.+)$/) {
-  $path = "$+{path}";
-  # Resolve relative paths based on the directory of the input file
-  if (!File::Spec->file_name_is_absolute($path)) {
-    $path = File::Spec->catfile(dirname($ARGV), $path);
+while (<>) {
+  if (/^(?<pre>[^']*')[^']*(?<post>'.*#EMBED:\s*)(?<path>.+)$/) {
+    $path = "$+{path}";
+    # Resolve relative paths based on the directory of the input file
+    if (!File::Spec->file_name_is_absolute($path)) {
+      $path = File::Spec->catfile(dirname($ARGV), $path);
+    }
+    $minified = minify($path);
+    # Output: prefix + minified content + suffix (including original path)
+    print "$+{pre}$minified$+{post}$+{path}\n";
+  } else {
+    # Pass through lines without #EMBED directive unchanged
+    print;
   }
-  $minified = minify($path);
-  # Output: prefix + minified content + suffix (including original path)
-  print "$+{pre}$minified$+{post}$+{path}\n";
-} else {
-  # Pass through lines without #EMBED directive unchanged
-  print;
 }

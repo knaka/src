@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-script='BEGIN { print "hello" }' #EMBED: ./foobar.awk
+script='' #EMBED: ./foobar.awk
 
 awk \
   "$script" \
