@@ -16,6 +16,7 @@ embed() {
   for path in "$@"
   do
     mise exec perl -- perl -n "$_APPDIR"/embed.pl "$path" >"$temp_path"
+    cat -n "$temp_path" >&2
     if test -s "$temp_path" && ! cmp -s "$path" "$temp_path"
     then
       cat "$temp_path" >"$path"

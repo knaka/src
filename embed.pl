@@ -15,6 +15,11 @@ sub minify {
     @lines = map { s/^\s*//; $_ } @lines;
     # Append `;`
     @lines = map { s/([^{};])$/$1;/; $_ } @lines;
+  } elsif ($path =~ /\.jq$/) {
+    # Remove comments.
+    @lines = map { s/^\s*#.*//; $_ } @lines;
+    # Remove preceding spaces.
+    @lines = map { s/^\s+/ /; $_ } @lines;
   }
   $string = join('', @lines);
   # $string = join('', @lines);
