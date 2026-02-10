@@ -75,11 +75,10 @@ else
 fi
 
 (
-# Add shebang also for library to tell the editor this is a shell script file.
-# if ! "$is_lib_sh"
-# then
+if ! "$is_lib_sh"
+then
   echo '#!/usr/bin/env sh'
-# fi
+fi
 
 cat <<EOF
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
