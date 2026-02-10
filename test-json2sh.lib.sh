@@ -28,10 +28,10 @@ test_json2sh() {
   echo '{"user":{"name":"Alice","age":30},"items":["apple","banana"]}' | json2sh >"$actual"
 
 cat -n "$expected"
-cat "$expected" | dm
+cat "$expected" | od
 
 cat -n "$actual"
-cat "$actual" | dm
+cat "$actual" | od
 
   assert_eq -m "4a3762e" \
     "$(sha256sum "$expected" | field 1)" \

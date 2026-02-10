@@ -313,6 +313,9 @@ readonly is1="$us"
 readonly newline_char="
 "
 
+# shellcheck disable=SC2034
+readonly tab_char="	"
+
 # Canonicalize path
 canon_path() {
   local target="$1"
