@@ -11,7 +11,17 @@ script_902b082="$(canon_path ./embed.pl)"
 shift 2
 cd "$1" || exit 1; shift
 
+# Embeds minified file contents into shell script files in-place.
+# Processes files containing #EMBED directives and replaces the content
+# between single quotes with the minified contents of the referenced file.
+# Files are only updated if the content actually changes.
 embed_minified() {
+  if test $# = 0
+  then
+    echo "Usage: embed_minified <file>..." >&2
+    return 1
+  fi
+
   register_temp_cleanup
   local path
   local temp_path="$TEMP_DIR/2163b17"
