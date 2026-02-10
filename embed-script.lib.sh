@@ -13,7 +13,7 @@ cd "$1" || exit 1; shift
 
 embed_minified_sub() {
   # perl "$script_902b082" "$path"
-  python3 "$script_902b082" "$1"
+  python "$script_902b082" "$1"
 }
 
 # Embeds minified file contents into shell script files in-place.
