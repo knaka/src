@@ -6,13 +6,12 @@ set -- "$PWD" "$@"; if test "${2:+$2}" = _LIBDIR; then cd "$3" || exit 1; fi
 set -- _LIBDIR . "$@"
 . ./task.sh
 . ./tools.lib.sh
-# script_902b082="$(canon_path ./embed.pl)"
 script_902b082="$(canon_path ./embed.py)"
 shift 2
 cd "$1" || exit 1; shift
 
+# This function is tested, do not inlined.
 embed_minified_sub() {
-  # perl "$script_902b082" "$path"
   python "$script_902b082" "$1"
 }
 
@@ -33,9 +32,12 @@ embed_minified() {
   for path in "$@"
   do
     embed_minified_sub "$path" >"$temp_path" 
-    if test -s "$temp_path" && ! cmp -s "$path" "$temp_path"
+    if test -s "$temp_path" && cmp -s "$path" "$temp_path"
     then
+      echo "\"$path\" is up to date." >&2
+    else
       cat "$temp_path" >"$path"
+      echo "Wrote \"$path\"." >&2
     fi
   done
 }
