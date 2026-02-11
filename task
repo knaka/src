@@ -7,15 +7,21 @@ cd "$1" || exit 1; shift 2
 
 task() {
   local sh
-  for sh in /bin/dash /bin/ash /bin/bash /bin/sh
-  do
-  continue
-    if test -x "$sh"
-    then
-      export SH="$sh"
-      break
-    fi
-  done
+  if test "${SH:+set}" = set
+  then
+    sh="$SH"
+  else
+    for sh in /bin/dash /bin/ash /bin/bash /bin/sh
+    do
+    continue
+      if test -x "$sh"
+      then
+        SH="$sh"
+        export SH
+        break
+      fi
+    done
+  fi
 
   if test $# = 0
   then
