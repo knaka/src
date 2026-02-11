@@ -2,7 +2,7 @@
 # shellcheck shell=sh
 "${sourced_fcf3fb2-false}" && return 0; sourced_fcf3fb2=true
 
-. ./task.sh
+. ./utils.lib.sh
 . ./yq.lib.sh
 . ./yj.lib.sh
 . ./chezmoi.lib.sh

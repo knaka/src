@@ -5,7 +5,7 @@ set -o nounset -o errexit
 . ./task-node.lib.sh
 
 test_my_ip_addr() {
-  "$SH" task.sh my_ip_addr
+  "$SH" utils.lib.sh my_ip_addr
 }
 
 subcmd_js_yaml() {

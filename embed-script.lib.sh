@@ -4,7 +4,7 @@
 
 set -- "$PWD" "$@"; if test "${2:+$2}" = _LIBDIR; then cd "$3" || exit 1; fi
 set -- _LIBDIR . "$@"
-. ./task.sh
+. ./utils.lib.sh
 . ./tools.lib.sh
 script_902b082="$(canon_path ./embed.py)"
 shift 2

@@ -22,8 +22,3 @@ windows-arm64 = { checksum = 'sha256:4e39dc577782fd0af75222738e609ba43d8d2a98131
 [tools."powershell"]
 # os = ["linux", "macos"]
 version = "7"
-
-# nushell/nushell: A new type of shell https://github.com/nushell/nushell
-[tools."github:nushell/nushell"]
-# Releases · nushell/nushell https://github.com/nushell/nushell/releases
-version = "0.110"

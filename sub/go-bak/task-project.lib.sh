@@ -2,7 +2,7 @@
 test "${guard_ea129a3+set}" = set && return 0; guard_ea129a3=x
 set -o nounset -o errexit
 
-. ./task.sh
+. ./utils.lib.sh
 . ./task-go.lib.sh
 . ./task-embedded-go.lib.sh
 

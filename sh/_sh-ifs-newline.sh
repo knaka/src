@@ -2,7 +2,7 @@
 test "${guard_57847e6+set}" = set && return 0; guard_57847e6=x
 set -o nounset -o errexit
 
-. ./task.sh
+. ./utils.lib.sh
 
 # Fixed length (= tuple).
 printf "foo bar\n\nhoge fuga\n" | (

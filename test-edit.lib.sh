@@ -2,7 +2,7 @@
 # shellcheck shell=sh
 "${sourced_c28ce41-false}" && return 0; sourced_c28ce41=true
 
-. ./task.sh
+. ./utils.lib.sh
 . ./edit.lib.sh
 . ./assert.lib.sh
 

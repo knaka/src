@@ -5,6 +5,9 @@ test "${sourced_723152a:+}" = true && return 0; sourced_723152a=true
 set -o nounset -o errexit
 
 set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test "$2" != "$0"; then _APPDIR="$2"; fi; cd "$_APPDIR" || exit 1; fi
+set -- _LIBDIR .lib "$@"
+. ./.lib/utils.lib.sh
+shift 2
 . ./rand7.sh 
 cd "$1" || exit 1; shift 2
 
@@ -40,7 +43,9 @@ if test "$1" = "-"
 then
   base_name="x${unique_id}.sh"
 else
-  base_name="${1##*/}"
+  base_name="$1"
+  base_name="${base_name##*/}"
+  base_name="${1##*\\}"
 fi
 base_name_wo_sh="${base_name%.sh}"
 func_name="$(echo "$base_name_wo_sh" | tr '-' '_')"

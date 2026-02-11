@@ -3,7 +3,7 @@
 "${sourced_06877c8-false}" && return 0; sourced_06877c8=true
 
 set -- "$PWD" "$@"; if test "${2:+$2}" = _LIBDIR; then cd "$3" || exit 1; fi
-. ./task.sh
+. ./utils.lib.sh
 cd "$1" || exit 1; shift
 
 extract_block() {

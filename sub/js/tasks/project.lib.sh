@@ -2,7 +2,7 @@
 # shellcheck shell=sh
 test "${sourced_9076e97-}" = true && return 0; sourced_9076e97=true
 
-. ./task.sh
+. ./utils.lib.sh
 . ./node.lib.sh
 
 # Install JS scripts.

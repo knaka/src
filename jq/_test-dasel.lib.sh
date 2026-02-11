@@ -2,7 +2,7 @@
 # shellcheck shell=sh
 "${sourced_08e719e-false}" && return 0; sourced_08e719e=true
 
-. ./task.sh
+. ./utils.lib.sh
 . ./dasel.lib.sh
 . ./_assert.lib.sh
 

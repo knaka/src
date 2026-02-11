@@ -2,7 +2,7 @@
 # shellcheck shell=sh
 "${sourced_08b072b-false}" && return 0; sourced_08b072b=true
 
-. ./task.sh
+. ./utils.lib.sh
 . ./dasel.lib.sh
 
 subcmd_test() {

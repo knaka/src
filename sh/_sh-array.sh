@@ -3,7 +3,7 @@ set -o nounset -o errexit
 
 test "${guard_c5aa5fa+set}" = set && return 0; guard_c5aa5fa=x
 
-. ./task.sh
+. ./utils.lib.sh
 . ./array.lib.sh
 . ./assert.lib.sh
 

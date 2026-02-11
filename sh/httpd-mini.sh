@@ -5,7 +5,7 @@
 
 set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test "$2" != "$0"; then _APPDIR="$2"; fi; cd "$_APPDIR" || exit 1; fi
 set -- _LIBDIR .lib "$@"
-. ./.lib/task.sh
+. ./.lib/utils.lib.sh
 . ./.lib/ip-utils.lib.sh
   init_ports_used_in_session_path
 . ./.lib/tools.lib.sh

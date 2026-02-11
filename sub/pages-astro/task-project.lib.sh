@@ -1,7 +1,7 @@
 #!/bin/sh
 test "${guard_fb8b13a+set}" = set && return 0; guard_fb8b13a=-
 
-. ./task.sh
+. ./utils.lib.sh
 . ./task-bun.lib.sh
 . ./task-sqlc.lib.sh
   set_sqlc_version "v1.27.0"

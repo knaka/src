@@ -12,6 +12,7 @@ $aliases_to_remove = @(
   "cp",
   "curl",
   "diff",
+  "echo",
   "find",
   "gc",
   "ll",
@@ -72,6 +73,7 @@ Get-ChildItem -Path "$env:USERPROFILE\*-bin" -Directory | ForEach-Object {
 
 # これを優先したい
 prepend_path $env:USERPROFILE\sh-bin
+prepend_path $env:LOCALAPPDATA\mise\shims
 
 # prepend_path "C:\msys64\usr\bin"
 

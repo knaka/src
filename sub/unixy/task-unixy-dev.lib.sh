@@ -3,7 +3,7 @@ set -o nounset -o errexit
 
 test "${guard_83e6bff+set}" = set && return 0; guard_83e6bff=x
 
-. ./task.sh
+. ./utils.lib.sh
 . ./task-unixy.lib.sh
 
 set_unixy_dev_env() {

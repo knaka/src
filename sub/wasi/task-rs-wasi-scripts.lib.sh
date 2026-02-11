@@ -3,7 +3,7 @@ set -o nounset -o errexit
 
 test "${guard_5544dc4+set}" = set && return 0; guard_5544dc4=x
 
-. ./task.sh
+. ./utils.lib.sh
 . ./task-rs-wasi.lib.sh
 
 subcmd_run() {

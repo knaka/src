@@ -4,7 +4,7 @@
 "${sourced_20bf1eb-false}" && return 0; sourced_20bf1eb=true
 
 set -- "$PWD" "${0%/*}" "$@"; test "$2" != "$0" && cd "$2"
-. ./task.sh
+. ./utils.lib.sh
 cd "$1"; shift 2
 
 alice() {

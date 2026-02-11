@@ -2,7 +2,7 @@
 # shellcheck shell=sh
 "${sourced_0a5b825-false}" && return 0; sourced_0a5b825=true
 
-. ./task.sh
+. ./utils.lib.sh
 . ./_assert.lib.sh
 
 test_examples() {

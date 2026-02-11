@@ -4,7 +4,7 @@ test "${sourced_a642529-}" = true && return 0; sourced_a642529=true
 
 set -- "$PWD" "$@"; if test "${2:+$2}" = _LIBDIR; then cd "$3" || exit 1; fi
 set -- _LIBDIR . "$@"
-. ./task.sh
+. ./utils.lib.sh
   register_temp_cleanup
 shift 2
 cd "$1" || exit 1; shift

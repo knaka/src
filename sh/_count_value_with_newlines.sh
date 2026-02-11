@@ -14,7 +14,7 @@
 set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test "$2" != "$0"; then _APPDIR="$2"; fi; cd "$_APPDIR" || exit 1; fi
 set -- "$PWD" "$@"; if test "${2:+$2}" = _LIBDIR; then cd "$3" || exit 1; fi
 set -- _LIBDIR .lib "$@"
-. ./.lib/task.sh
+. ./.lib/utils.lib.sh
   register_temp_cleanup
 shift 2
 cd "$1" || exit 1; shift

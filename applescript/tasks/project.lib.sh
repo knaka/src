@@ -2,7 +2,7 @@
 # shellcheck shell=sh
 "${sourced_beea234-false}" && return 0; sourced_beea234=true
 
-. ./task.sh
+. ./utils.lib.sh
 
 # Compiles all .applescript files to .scpt (compiled binary) format. This function iterates through all .applescript source files in the current directory and compiles them using osacompile(1).
 task_build() {

@@ -3,7 +3,7 @@ set -o nounset -o errexit
 
 test "${guard_429c89f+set}" = set && return 0; guard_429c89f=x
 
-. ./task.sh
+. ./utils.lib.sh
 . ./assert.lib.sh
 
 # First, check that errexit is on.

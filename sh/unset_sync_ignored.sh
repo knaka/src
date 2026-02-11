@@ -3,7 +3,7 @@ set -o nounset -o errexit
 
 test "${guard_bb5832d+set}" = set && return 0; guard_bb5832d=x
 
-. "$(dirname "$0")"/task.sh
+. "$(dirname "$0")"/utils.lib.sh
 
 unset_path_attr() (
   path="$1"

@@ -3,7 +3,7 @@ set -o nounset -o errexit
 
 test "${guard_8ca43ec+set}" = set && return 0; guard_8ca43ec=x
 
-. "$(dirname "$0")"/task.sh
+. "$(dirname "$0")"/utils.lib.sh
 
 sub() (
   echo beec059 "$@" >&2

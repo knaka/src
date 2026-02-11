@@ -3,7 +3,7 @@ set -o nounset -o errexit
 
 test "${guard_7d86474+set}" = set && return 0; guard_7d86474=x
 
-. ./task.sh
+. ./utils.lib.sh
 
 # Underlined text with escape sequences.
 echo "The $(underline "word") is underlined!"

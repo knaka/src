@@ -3,7 +3,7 @@ set -o nounset -o errexit
 
 test "${guard_0047173+set}" = set && return 0; guard_0047173=x
 
-. ./task.sh
+. ./utils.lib.sh
 . ./task-volta.lib.sh
 . ./task-next.lib.sh
 
@@ -45,7 +45,7 @@ task_dev() { # Development server for Next.js
   then
     export PORT
   fi
-  sh task.sh next dev 2>&1 | tee "$(get_temp_dir_path)"/next-dev.log &
+  sh utils.lib.sh next dev 2>&1 | tee "$(get_temp_dir_path)"/next-dev.log &
   while true
   do
     sleep 1
@@ -64,7 +64,7 @@ task_start() ( # Start the Next.js server with the production build.
     export PORT
   fi
   # task_build
-  sh task.sh next start 2>&1 | tee "$(get_temp_dir_path)"/next-prd.log &
+  sh utils.lib.sh next start 2>&1 | tee "$(get_temp_dir_path)"/next-prd.log &
   while true
   do
     sleep 1

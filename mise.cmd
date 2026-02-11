@@ -1,9 +1,9 @@
-@echo off
-setlocal enabledelayedexpansion
-
 @REM Home | mise-en-place https://mise.jdx.dev/
 @REM Releases · jdx/mise https://github.com/jdx/mise/releases
-set mise_ver=2026.2.7
+@set mise_ver=2026.2.9
+
+@echo off
+setlocal enabledelayedexpansion
 
 if "%PROCESSOR_ARCHITECTURE%" == "AMD64" (
   set mise_arch=x64
@@ -25,10 +25,11 @@ if not exist !cmd_path! (
   set zip_path=!cache_dir_path!\mise.zip
   curl.exe --fail --location --output "!zip_path!" https://github.com/jdx/mise/releases/download/v!mise_ver!/mise-v!mise_ver!-windows-!mise_arch!.zip || exit /b !ERRORLEVEL!
   unzip.exe "!zip_path!" -d !cache_dir_path!\work || exit /b !ERRORLEVEL!
-  del !cache_dir_path!\work\mise\bin\mise.exe "!cache_dir_path!"
-  del "!zip_path!"
-  del !cache_dir_path!\work
+  move !cache_dir_path!\work\mise\bin\mise.exe "!cache_dir_path!"
+  del /q "!zip_path!"
+  del /q /s !cache_dir_path!\work
 )
 !cmd_path! %* || exit /b !ERRORLEVEL!
 
-endlocal
+endlocal ^
+& "%cmd_path%" %* || exit /b %ERRORLEVEL%

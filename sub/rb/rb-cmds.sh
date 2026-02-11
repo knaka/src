@@ -32,7 +32,7 @@ esac
 # bin_dir_path="$HOME/.bin"
 
 # shellcheck disable=SC1091
-. "$(dirname "$0")"/task.sh
+. "$(dirname "$0")"/utils.lib.sh
 
 if is_windows
 then

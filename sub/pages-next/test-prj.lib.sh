@@ -3,7 +3,7 @@ test "${guard_11b0346+set}" = set && return 0; guard_11b0346=x
 set -o nounset -o errexit
 
 . ../assert.lib.sh
-. ./task.sh
+. ./utils.lib.sh
 
 rewrite_args() (
   usv_args="$(echo "$1" | sed -E -e "s/, */${us}/g")"

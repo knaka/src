@@ -7,7 +7,7 @@
 
 set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test "$2" != "$0"; then _APPDIR="$2"; fi; cd "$_APPDIR" || exit 1; fi
 set -- _LIBDIR .lib "$@"
-. ./.lib/task.sh
+. ./.lib/utils.lib.sh
 shift 2
 cd "$1" || exit 1; shift 2
 
@@ -19,7 +19,7 @@ install() {
     echo "In a Windows environment, $sh_bin_dir_path/t.sh is not replaced because it is locked. Run ./task.cmd instead." >&2
     return 1
   fi
-  local excluded_scripts=":task.sh:"
+  local excluded_scripts=":utils.lib.sh:"
   local file
   for file in task-*.sh *.lib.sh _*.sh
   do
@@ -41,7 +41,7 @@ install() {
     local sh_name="${sh_file%.sh}"
     if is_windows
     then
-      cat shim.cmd >"$sh_bin_dir_path"/"$sh_name".cmd
+      cat task.cmd >"$sh_bin_dir_path"/"$sh_name".cmd
     fi
     cat <<EOF >"$sh_bin_dir_path"/"$sh_name"
 #!/usr/bin/env sh

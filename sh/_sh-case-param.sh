@@ -2,7 +2,7 @@
 test "${guard_9e9beb6+set}" = set && return 0; guard_9e9beb6=x
 set -o nounset -o errexit
 
-. ./task.sh
+. ./utils.lib.sh
 
 var="foo${is2}bar${is1}hoge${is2}fuga"
 

@@ -2,7 +2,7 @@
 test "${guard_104ac71+set}" = set && return 0; guard_104ac71=x
 set -o nounset -o errexit
 
-. ./task.sh
+. ./utils.lib.sh
 . ./assert.lib.sh
 
 # Evaluate strings from stdin with sed(1) substitution(s).

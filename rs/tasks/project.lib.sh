@@ -2,7 +2,7 @@
 # shellcheck shell=sh
 "${sourced_42ddef4-false}" && return 0; sourced_42ddef4=true
 
-. ./task.sh
+. ./utils.lib.sh
 . ./rust.lib.sh
 
 # Build

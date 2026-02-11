@@ -3,7 +3,7 @@ set -o nounset -o errexit
 
 test "${guard_c877466+set}" = set && return 0; guard_c877466=x
 
-. "$(dirname "$0")"/task.sh
+. "$(dirname "$0")"/utils.lib.sh
 
 if is_windows
 then

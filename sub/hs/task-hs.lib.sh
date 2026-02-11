@@ -3,7 +3,7 @@ set -o nounset -o errexit
 
 test "${guard_bd3d431+set}" = set && return 0; guard_bd3d431=x
 
-. ./task.sh
+. ./utils.lib.sh
 
 mkdir_sync_ignored build
 mkdir_sync_ignored .stack-work

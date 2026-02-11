@@ -3,7 +3,7 @@
 test "${guard_e249abe+set}" = set && return 0; guard_e249abe=x
 set -o nounset -o errexit
 
-. ./task.sh
+. ./utils.lib.sh
 . ./task-volta.lib.sh
 . ./task-next.lib.sh
 . ./task-sqlite3.lib.sh
@@ -235,7 +235,7 @@ task_start() { # Launch the Pages preview server.
   export NODE_ENV
   APP_ENV=production
   export APP_ENV
-  sh task.sh task_worker__build
+  sh utils.lib.sh task_worker__build
   # "EBUSY" error occurs on Windows frequently.
   if is_windows
   then
@@ -246,9 +246,9 @@ task_start() { # Launch the Pages preview server.
     done
     rm -fr .next/*
   fi
-  sh task.sh task_next__build
+  sh utils.lib.sh task_next__build
   # Wrangler provides interactive CUI.
-  sh task.sh task_pages__start
+  sh utils.lib.sh task_pages__start
 }
 
 # --------------------------------------------------------------------------
@@ -265,7 +265,7 @@ task_db__watchgen() { # Watch the SQL files and generate the database access lay
   do
     if newer query.sql schema.sql --than sqlcgen/
     then
-      sh task.sh task_db__gen
+      sh utils.lib.sh task_db__gen
     fi
     sleep 10    
   done
@@ -290,7 +290,7 @@ task_next__dev() { # Launch the Next.js development server.
   then
     set -- "$@" --port="$NEXT_DEV_PORT"
   fi
-  sh task.sh subcmd_next dev "$@" </dev/null 2>&1 | tee "$(get_temp_dir_path)"/next-dev.log &
+  sh utils.lib.sh subcmd_next dev "$@" </dev/null 2>&1 | tee "$(get_temp_dir_path)"/next-dev.log &
   while true
   do
     sleep 1
@@ -324,7 +324,7 @@ task_pages__dev() { # Launch the Wrangler Pages development server.
   APP_ENV=development
   export APP_ENV
   load_env
-  sh task.sh task_worker__watchbuild &
+  sh utils.lib.sh task_worker__watchbuild &
   if test "${NEXT_PUBLIC_PAGES_DEV_PORT+set}" = set
   then
     set -- "$@" --port "$NEXT_PUBLIC_PAGES_DEV_PORT"

@@ -2,7 +2,7 @@
 # shellcheck shell=sh
 "${sourced_517f312-false}" && return 0; sourced_517f312=true
 
-. ./task.sh
+. ./utils.lib.sh
 . ./python.lib.sh
 
 # Install scripts.

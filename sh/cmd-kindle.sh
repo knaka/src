@@ -3,7 +3,7 @@ set -o nounset -o errexit
 
 test "${guard_f34235f+set}" = set && return 0; guard_f34235f=x
 
-. "$(dirname "$0")"/task.sh
+. "$(dirname "$0")"/utils.lib.sh
 
 cmd_path=kindle
 if is_windows
