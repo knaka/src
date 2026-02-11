@@ -9,7 +9,7 @@ if test $# = 0
 then
   set -- tasks
 else
-  local subcmd="$1"
+  subcmd="$1"
   set -- run "$subcmd" -- "$@"
 fi
 exec "$_APPDIR"/mise "$@"
