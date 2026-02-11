@@ -67,6 +67,7 @@ task_build() {
 
 # Install Go tools.
 task_install() {
+  local task="./mise-tasks/project.lib.sh:task_depbuild"
   local go_shim_dir_path="$HOME"/go-bin
   mkdir -p "$go_shim_dir_path"
   rm -f "$go_shim_dir_path"/*
@@ -88,19 +89,19 @@ task_install() {
     then
       local pwd_backslash="$(echo "$PWD" | sed 's|/|\\|g')"
       go_build_dir_path_backslash=$(echo "$(realpath .)"/build | sed 's|/|\\|g')
-      cat <<EOF > "$target_shim_path".cmd
+      cat <<EOF >"$target_shim_path".cmd
 @echo off
 pushd $pwd_backslash
-call task.cmd ./mise-tasks/project.lib.sh:task_depbuild "$name"
+call task.cmd "$task" "$name"
 popd
 $go_build_dir_path_backslash\\$name.exe %*
 EOF
     else
-      cat <<EOF > "$target_shim_path"
+      cat <<EOF >"$target_shim_path"
 #!/bin/sh
 saved_pwd="\$PWD"
 cd "$PWD"
-./task ./mise-tasks/project.lib.sh:task_depbuild "$name"
+./task "$task" "$name"
 cd "\$saved_pwd"
 exec $PWD/build/$name "\$@"
 EOF
