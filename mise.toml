@@ -6,6 +6,7 @@ includes = [
   "mise-tasks/*.toml",
 ]
 
+# BusyBox for Windows https://frippery.org/busybox/
 [tools."http:busybox"]
 os = ["windows"]
 bin = "sh.exe"
@@ -16,3 +17,13 @@ version = "FRP-5857-g3681e397f"
 [tools."http:busybox".platforms]
 windows-x64 = { checksum = 'sha256:d5d624ddb5f3cc235179d2912be36e5218dd59ecc851bbc040d3a1d0707ec45a' }
 windows-arm64 = { checksum = 'sha256:4e39dc577782fd0af75222738e609ba43d8d2a98131e88928f1b0dad45048b99' }
+
+# powershell | mise versions https://mise-versions.jdx.dev/tools/powershell
+[tools."powershell"]
+# os = ["linux", "macos"]
+version = "7"
+
+# nushell/nushell: A new type of shell https://github.com/nushell/nushell
+[tools."github:nushell/nushell"]
+# Releases · nushell/nushell https://github.com/nushell/nushell/releases
+version = "0.110"

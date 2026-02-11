@@ -1,0 +1,5 @@
+#!/usr/bin/env nu
+# shellcheck disable=SC1008
+
+echo $"Project in ($env.MISE_PROJECT_ROOT)."
+ls --long $env.MISE_PROJECT_ROOT
