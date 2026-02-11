@@ -34,6 +34,7 @@ do
   test "$sh" = "/bin/bash" && test -e /System/Library/CoreServices/SystemVersion.plist && continue
   if test -x "$sh"
   then
+    export SH="$sh"
     exec "$sh" "$script_file_path" "$@"
   fi
 done

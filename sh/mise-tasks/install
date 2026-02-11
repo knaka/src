@@ -41,15 +41,13 @@ install() {
     local sh_name="${sh_file%.sh}"
     if is_windows
     then
-      cat ../shim.cmd >"$sh_bin_dir_path"/"$sh_name".cmd
-    else 
-      ln -s "$PWD/../shim" "$sh_bin_dir_path"/"$sh_name"
+      cat shim.cmd >"$sh_bin_dir_path"/"$sh_name".cmd
     fi
-    cat <<EOF >"$sh_bin_dir_path"/"$sh_name".sh
+    cat <<EOF >"$sh_bin_dir_path"/"$sh_name"
 #!/usr/bin/env sh
-unset PROJECT_DIR
-exec "$SH" "$PROJECT_DIR"/"$sh_file" "\$@"
+exec "\${SH:-$SH}" "$PROJECT_DIR"/"$sh_file" "\$@"
 EOF
+    chmod 755 "$sh_bin_dir_path"/"$sh_name"
   done
   if is_windows
   then
