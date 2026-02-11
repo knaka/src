@@ -5,8 +5,8 @@
 
 # Mise - Home | mise-en-place https://mise.jdx.dev/
 
-# Releases · jdx/mise https://github.com/jdx/mise/releases
-mise_ver_e8ccfbb='2026.2.8'
+# Copied from .\mise.cmd .
+mise_ver_e8ccfbb='2026.2.9'
 
 mise() {
   local ver="$mise_ver_e8ccfbb"

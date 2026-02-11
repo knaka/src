@@ -12,7 +12,7 @@ cd "$1" || exit 1; shift
 
 # This function is tested, do not inlined.
 embed_minified_sub() {
-  python "$script_902b082" "$1"
+  python -u "$script_902b082" "$1"
 }
 
 # Embeds minified file contents into shell script files in-place.

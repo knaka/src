@@ -17,4 +17,9 @@ test_script_embed() {
   local temp_sh="$TEMP_DIR"/dc691d0.sh
   embed_minified_sub ./testdata/original.sh >"$temp_sh"
   sh "$temp_sh" | grep -q "BEGINNING"
+
+  local temp_sh2="$TEMP_DIR"/6d0f004.sh
+  embed_minified_sub ./testdata/original2.sh >"$temp_sh2"
+  cat -n "$temp_sh2"
+  sh "$temp_sh2" | grep -q "Version: 123.45.6"
 }

@@ -1,0 +1,48 @@
+#!/usr/bin/env sh
+# vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
+# shellcheck shell=sh
+"${sourced_b9c5e77-false}" && return 0; sourced_b9c5e77=true
+
+set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test "$2" != "$0"; then _APPDIR="$2"; fi; cd "$_APPDIR" || exit 1; fi
+set -- _LIBDIR .lib "$@"
+. ./.lib/utils.lib.sh
+. ./.lib/tools.lib.sh
+shift 2
+cd "$1" || exit 1; shift 2
+
+verstr_update() {
+  register_temp_cleanup
+  local bb_ver="$(yj -tj <"$TASK_PROJECT_DIR"/mise.toml | jq -r '.tools."http:busybox".version')"
+  local file="$TEMP_DIR"/temp-$$.cmd
+  sed -E -e "s/(@set bb_ver=).*/\1${bb_ver}/" <"$TASK_PROJECT_DIR"/task.cmd >"$file"
+  if cmp -s "$TASK_PROJECT_DIR"/task.cmd "$file"
+  then
+    echo task.cmd is up to date. >&2
+  else
+    test -s "$file" || exit 1
+    cat "$file" >"$TASK_PROJECT_DIR"/task.cmd
+    echo Wrote task.cmd >&2
+  fi
+
+  local ver
+  ver="$(sed -E -n -e 's/.* mise_ver=(.*)/\1/p' "$TASK_PROJECT_DIR"/mise.cmd)"
+  local in out
+  in="$TASK_PROJECT_DIR"/mise
+  out="$TEMP_DIR"/temp-$$.sh
+  sed -E -e "s/(mise_ver_e8ccfbb=).*/\1'$ver'/" <"$in" >"$out"
+  if cmp -s "$in" "$out"
+  then
+    echo "\"mise\" is up to date." >&2
+  else
+    test -s "$out" || exit 1
+    cat "$out" >"$in"
+    echo "Wrote \"mise\"." >&2
+  fi
+}
+
+case "${0##*/}" in
+  (verstr_update)
+    set -o nounset -o errexit
+    verstr_update "$@"
+    ;;
+esac

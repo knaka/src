@@ -28,6 +28,7 @@ perl() { mise exec perl -- perl "$@"; }
 python() { mise exec python -- python "$@"; }
 tblcalc() { mise exec "github:knaka/tblcalc" -- tblcalc "$@"; }
 yq() { mise exec yq -- yq "$@"; }
+yj() { mise exec yj -- yj "$@"; }
 
 jq() { 
   if is_windows

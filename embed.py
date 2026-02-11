@@ -10,8 +10,9 @@
 #   python embed.py input_file >output_file
 #
 # Supported file types for minification:
-#   .awk - Removes comments, leading whitespace, and appends semicolons
-#   .jq  - Removes comments and collapses leading whitespace to single space
+#   .awk  - Removes comments, leading whitespace, and appends semicolons
+#   .jq   - Removes comments and collapses leading whitespace to single space
+#   other - Just joins lines without any preprocessing
 
 import re
 import sys
@@ -61,25 +62,24 @@ def minify(path: Path) -> str:
                 lines = _minify_awk(lines)
             case '.jq':
                 lines = _minify_jq(lines)
-            case _:
-                raise ValueError(f"Unsupported file extension: {path.suffix}")
 
         # Join all lines without separator
         return ''.join(lines)
 
 
-# Matches lines with pattern: 'content' #EMBED: path
+# Matches lines with pattern: 'content' #EMBED: path or "content" #EMBED: path
 # Captures:
-#   pre  - Everything up to and including the first single quote
+#   pre  - Everything up to and including the opening quote
 #   post - The closing quote through #EMBED: (content between quotes is replaced)
 #   path - The file path to embed
-EMBED_PATTERN = re.compile(r"^(?P<pre>[^']*')[^']*(?P<post>'.*#EMBED:\s*)(?P<path>.+)$")
+EMBED_PATTERN_SINGLE = re.compile(r"^(?P<pre>[^']*')[^']*(?P<post>'.*#EMBED:\s*)(?P<path>.+)$")
+EMBED_PATTERN_DOUBLE = re.compile(r'^(?P<pre>[^"]*")[^"]*(?P<post>".*#EMBED:\s*)(?P<path>.+)$')
 
 
 def process_line(line: str, input_path: Path) -> None:
     """Process a single line, printing the result."""
 
-    match = EMBED_PATTERN.match(line)
+    match = EMBED_PATTERN_SINGLE.match(line) or EMBED_PATTERN_DOUBLE.match(line)
     if not match:
         print(line, end='')
         return
@@ -104,5 +104,6 @@ def process_file(filepath: str) -> None:
 
 
 if __name__ == '__main__':
+    sys.stdout.reconfigure(newline='\n')
     for filepath in sys.argv[1:]:
         process_file(filepath)
