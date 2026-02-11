@@ -64,6 +64,5 @@ case "${0##*/}" in
     temp_dir="$(mktemp -d)"
     trap 'rm -fr "$temp_dir"' EXIT
     mise "$@"
-    pwd
     ;;
 esac
