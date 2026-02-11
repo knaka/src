@@ -10,7 +10,6 @@ mise_ver_e8ccfbb='2026.2.8'
 
 mise() {
   local ver="$mise_ver_e8ccfbb"
-  local cache_dir="$HOME"/.cache/task-sh
   local os
   local exe_ext=
   local ext=.tar.gz
@@ -26,7 +25,7 @@ mise() {
   then
     os=linux
   fi
-  local app_dir_path="$cache_dir/mise@$ver"
+  local app_dir_path="$CACHE_DIR/mise@$ver"
   mkdir -p "$app_dir_path"
   local cmd_path="$app_dir_path/mise$exe_ext"
   if ! command -v "$cmd_path" >/dev/null 2>&1
@@ -37,13 +36,13 @@ mise() {
       (arm64) arch=arm64;;
     esac
     local url="https://github.com/jdx/mise/releases/download/v${ver}/mise-v${ver}-${os}-${arch}${ext}"
-    local out_file_path="$temp_dir/mise$ext"
+    local out_file_path="$TEMP_DIR/mise$ext"
     if ! curl --fail --location "$url" --output "$out_file_path"
     then
       echo "Failed to download: $url" >&2
       exit 1
     fi
-    local work_dir_path="$temp_dir"/work-$$
+    local work_dir_path="$TEMP_DIR"/work-$$
     mkdir -p "$work_dir_path"
     local saved_pwd="$PWD"
     cd "$work_dir_path" || exit 1
@@ -61,8 +60,9 @@ mise() {
 case "${0##*/}" in
   (mise)
     set -o nounset -o errexit
-    temp_dir="$(mktemp -d)"
-    trap 'rm -fr "$temp_dir"' EXIT
+    CACHE_DIR="$HOME"/.cache/task-sh
+    TEMP_DIR="$(mktemp -d)"
+    trap 'rm -fr "$TEMP_DIR"' EXIT
     mise "$@"
     ;;
 esac
