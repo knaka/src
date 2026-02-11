@@ -26,9 +26,12 @@ task_depbuild() {
   push_dir "$PROJECT_DIR"
   local go_bin_dir_path=./build
   mkdir -p "$go_bin_dir_path"
-  if test "${1+set}" != "set"
+  if test $# = 0
   then
-    set -- *.go
+  
+    # shellcheck disable=SC2038
+    # shellcheck disable=SC2046
+    set -- *.go $(find cmd -mindepth 1 -maxdepth 1 | xargs basename)
   fi
   local arg
   for arg in "$@"
@@ -52,8 +55,7 @@ task_depbuild() {
         go build -o "$target_cmd_path" ./cmd/"$arg"
       fi
     else
-      echo "No $arg.go or ./cmd/$arg found" >&2
-      exit 1
+      :
     fi
   done
   pop_dir
@@ -89,18 +91,18 @@ task_install() {
       go_build_dir_path_backslash=$(echo "$(realpath .)"/build | sed 's|/|\\|g')
       cat <<EOF > "$target_shim_path".cmd
 @echo off
-pushd $pwd_backslash
-call task depbuild $name
-popd
+# pushd $pwd_backslash
+# call task depbuild $name
+# popd
 $go_build_dir_path_backslash\\$name.exe %*
 EOF
     else
       cat <<EOF > "$target_shim_path"
 #!/bin/sh
-(
-  cd "$PWD"
-  ./task depbuild "$name"
-)
+# saved_pwd="\$PWD"
+# cd "$PWD"
+# ./mise run depbuild "$name"
+# cd "\$saved_pwd"
 exec $PWD/build/$name "\$@"
 EOF
       chmod +x "$target_shim_path"

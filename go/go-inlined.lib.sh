@@ -2,7 +2,11 @@
 # shellcheck shell=sh
 "${sourced_f82c335-false}" && return 0; sourced_f82c335=true
 
-. ./task.sh
+set -- "$PWD" "$@"; if test "${2:+$2}" = _LIBDIR; then cd "$3" || exit 1; fi
+set -- _LIBDIR .lib "$@"
+. ./.lib/task.sh
+shift 2
+cd "$1" || exit 1; shift
 
 # Generate a Go-inlined shell script that embeds and compiles Go code
 #

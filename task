@@ -21,6 +21,7 @@ then
   set -- tasks
 else
   task="$1"
+  shift
   set -- run "$task" -- "$@"
 fi
 exec "$_APPDIR"/mise "$@"
