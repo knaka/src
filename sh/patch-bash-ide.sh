@@ -4,8 +4,10 @@
 "${sourced_a92e981-false}" && return 0; sourced_a92e981=true
 
 set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test "$2" != "$0"; then _APPDIR="$2"; fi; cd "$_APPDIR" || exit 1; fi
-. ./task.sh
-cd "$1"; shift 2
+set -- _LIBDIR .lib "$@"
+. ./.lib/task.sh
+shift 2
+cd "$1" || exit 1; shift 2
 
 patch_bash_ide() {
   local user_exts_dir="$HOME/.vscode/extensions"

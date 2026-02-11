@@ -12,9 +12,13 @@
 # How to avoid bash command substitution to remove the newline character? - Stack Overflow https://stackoverflow.com/questions/15184358/how-to-avoid-bash-command-substitution-to-remove-the-newline-character
 
 set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test "$2" != "$0"; then _APPDIR="$2"; fi; cd "$_APPDIR" || exit 1; fi
-. ./task.sh
-  init_temp_dir
-cd "$1"; shift 2
+set -- "$PWD" "$@"; if test "${2:+$2}" = _LIBDIR; then cd "$3" || exit 1; fi
+set -- _LIBDIR .lib "$@"
+. ./.lib/task.sh
+  register_temp_cleanup
+shift 2
+cd "$1" || exit 1; shift
+cd "$1" || exit 1; shift 2
 
 file="$TEMP_DIR"/6127086.txt
 

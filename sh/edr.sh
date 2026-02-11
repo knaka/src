@@ -6,7 +6,9 @@
 # Edit in raw mode.
 
 set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test "$2" != "$0"; then _APPDIR="$2"; fi; cd "$_APPDIR" || exit 1; fi
-. ./task.sh
+set -- _LIBDIR .lib "$@"
+. ./.lib/task.sh
+shift 2
 . ./edw.sh
 cd "$1" || exit 1; shift 2
 
