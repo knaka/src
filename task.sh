@@ -49,7 +49,7 @@ register_temp_cleanup() {
   test "${TEMP_DIR+set}" = set && return 0
   TEMP_DIR="$(mktemp -d)"
   # shellcheck disable=SC2064
-  trap "rm -fr '$TEMP_DIR'" EXIT
+  trap 'rm -fr "$TEMP_DIR"' EXIT
 }
 
 # Create a temporary directory and assign $TEMP_DIR env var. Obsolete: use register_temp_cleanup instead.
