@@ -14,6 +14,17 @@ append_path() {
   done
 }
 
+prepend_path() {
+  local arg
+  local delim=
+  for arg in "$@"
+  do
+    test -d "$arg" || continue
+    test -n "$PATH" && delim=:
+    PATH="$arg$delim$PATH"
+  done
+}
+
 # ==========================================================================
 #region グローバル変数
 
@@ -33,28 +44,36 @@ export SUDO_EDITOR="$VISUAL"
 # ==========================================================================
 #region $PATH env var
 
-PATH=
+# if test "${VSCODE_INTEGRATION+set}" = set
+# then
+  PATH=
 
-append_path "$HOME"/*-bin
+  hoge=HOGE
+  export hoge
+  append_path "$HOME"/*-bin
 
-# Homebrew Keg-only
-append_path /usr/local/opt/sqlite/bin
-append_path /usr/local/opt/mysql-client/bin
-# append_path /usr/local/opt/postgresql@16/bin
+  # Homebrew Keg-only
+  append_path /usr/local/opt/sqlite/bin
+  append_path /usr/local/opt/mysql-client/bin
+  # append_path /usr/local/opt/postgresql@16/bin
 
-# append_path "$VOLTA_HOME"/bin
+  # append_path "$VOLTA_HOME"/bin
 
-repos="$HOME/repos"
-export CHEZMOISOURCEDIR="$repos"/github.com/knaka/src/conf/chezmoi-source
+  repos="$HOME/repos"
+  export CHEZMOISOURCEDIR="$repos"/github.com/knaka/src/conf/chezmoi-source
 
-# システムの実行ファイルパス
-append_path /bin
-append_path /sbin
-# /usr は bin よりも local を優先
-append_path /usr/local/bin
-append_path /usr/bin
-append_path /usr/sbin
-append_path /usr/local/sbin
+  # システムの実行ファイルパス
+  append_path /bin
+  append_path /sbin
+  # /usr は bin よりも local を優先
+  append_path /usr/local/bin
+  append_path /usr/bin
+  append_path /usr/sbin
+  append_path /usr/local/sbin
+
+  prepend_path "$HOME"/.local/share/mise/shims
+  prepend_path "$HOME"/.local/bin
+# fi
 
 #endregion
 
@@ -89,7 +108,11 @@ Y="$y"
 
 dl="$HOME"/Downloads
 
-test -x /usr/local/bin/less && export PAGER=/usr/local/bin/less
+if test -x /usr/local/bin/less
+then
+  export PAGER=/usr/local/bin/less
+  export MANPAGER=/usr/local/bin/less
+fi
 
 #endregion
 

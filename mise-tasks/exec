@@ -1,0 +1,38 @@
+#!/usr/bin/env sh
+# vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
+# shellcheck shell=sh
+"${sourced_2ffae1d-false}" && return 0; sourced_2ffae1d=true
+
+#MISE description="Execute a command in task context."
+
+set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test "$2" != "$0"; then _APPDIR="$2"; fi; cd "$_APPDIR" || exit 1; fi
+set -- _LIBDIR .lib "$@"
+. ./.lib/task.sh
+shift 2
+cd "$1" || exit 1; shift 2
+
+exec_7896ba9() {
+  local saved_flags
+  saved_flags="$(set +o)"
+  case $- in
+    (*e*) saved_flags="$saved_flags; set -e";;
+    (*) saved_flags="$saved_flags; set +e";;
+  esac
+  set +o errexit
+  if alias "$1" >/dev/null 2>&1
+  then
+    # shellcheck disable=SC2294
+    eval "$@"
+  else
+    "$@"
+  fi
+  echo "Exit status: $?" >&2
+  eval "$saved_flags"
+}
+
+case "${0##*/}" in
+  (exec)
+    set -o nounset -o errexit
+    exec_7896ba9 "$@"
+    ;;
+esac

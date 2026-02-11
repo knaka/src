@@ -1,6 +1,7 @@
 [tools]
 node = "24"
 jmespath = "0.2.1"
+python = "3.14"
 
 # [settings]
 # lockfile = true

@@ -5,16 +5,23 @@
 # ==========================================================================
 #region Environment variables. If not set by the caller, they are set later in `tasksh_main`
 
-# The original working directory when the script was started.
-: "${ORIGINAL_CWD=}"
-: "${ORIGINAL_CWD:=${MISE_ORIGINAL_CWD:-}}"
-: "${ORIGINAL_CWD:=$PWD}"
+# The initial working directory when the command was started.
+: "${INITIAL_DIR=}"
+: "${INITIAL_DIR:=${MISE_ORIGINAL_CWD:-}}" # https://mise.jdx.dev/tasks/toml-tasks.html
+: "${INITIAL_DIR:=${INIT_CWD:-}}" # https://docs.npmjs.com/cli/v8/using-npm/scripts
+: "${INITIAL_DIR:=$PWD}"
 # Aliases
-: "${ORIGINAL_PWD:=${ORIGINAL_CWD}}"
-: "${INITIAL_PWD:=${ORIGINAL_CWD}}"
+: "${ORIGINAL_CWD:=${INITIAL_DIR}}"
+: "${ORIGINAL_PWD:=${INITIAL_DIR}}"
+: "${INITIAL_PWD:=${INITIAL_DIR}}"
 
+# Current project directory.
 : "${PROJECT_DIR=}"
 : "${PROJECT_DIR:=${MISE_PROJECT_ROOT:-}}"
+
+# The project directory where the task is defined.
+: "${TASK_PROJECT_DIR=}"
+: "${TASK_PROJECT_DIR:=${MISE_CONFIG_ROOT:-}}"
 
 # Cache directory path for the task runner
 : "${CACHE_DIR:=$HOME/.cache/task-sh}"
@@ -23,8 +30,10 @@ mkdir -p "$CACHE_DIR"
 # For platforms other than Windows
 : "${LOCALAPPDATA:=/}"
 
+# Verbosity.
 : "${VERBOSE:=false}"
 
+# Current shell.
 : "${SH=}"
 : "${SH:=sh}"
 
@@ -685,7 +694,7 @@ get_key() {
   echo "$key"
 }
 
-# Show a message and get input from the user.
+# [<message> [default]] Show a message and get input from the user.
 prompt() {
   local message="${1:-Text}"
   local default="${2:-}"
@@ -699,7 +708,7 @@ prompt() {
   printf "%s" "$response"
 }
 
-# Print a message and get confirmation.
+# [<message> [default]] Print a message and get confirmation.
 prompt_confirm() {
   local message="${1:-Text}"
   local default="${2:-n}"
@@ -724,12 +733,13 @@ prompt_confirm() {
   then
     response="$default"
   fi
+  # Echoing.
   echo "$response" >&2
   case "$response" in
     (y|Y)
       return 0
       ;;
-    (n|N)
+    (*)
       return 1
       ;;
   esac
