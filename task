@@ -5,23 +5,47 @@
 set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test "$2" != "$0"; then _APPDIR="$2"; fi; cd "$_APPDIR" || exit 1; fi
 cd "$1" || exit 1; shift 2
 
-for sh in /bin/dash /bin/ash /bin/bash
-do
-  test "$sh" = /bin/dash && test -e /etc/debian_version && continue
-  test "$sh" = "/bin/bash" && test -e /System/Library/CoreServices/SystemVersion.plist && continue
-  if test -x "$sh"
-  then
-    export SH="$sh"
-    break
-  fi
-done
+task() {
+  local sh
+  for sh in /bin/dash /bin/ash /bin/bash
+  do
+  continue
+    if test -x "$sh"
+    then
+      export SH="$sh"
+      break
+    fi
+  done
 
-if test $# = 0
-then
-  set -- tasks
-else
-  task="$1"
-  shift
-  set -- run "$task" -- "$@"
-fi
-exec "$_APPDIR"/mise "$@"
+  if test $# = 0
+  then
+    exec "$_APPDIR"/mise tasks
+  else
+    local task="$1"
+    shift
+    case "$task" in
+      (*:*)
+        local file
+        file="${task%:*}"
+        local dir
+        dir="$(dirname "$file")"
+        local func
+        func="${task##*:}"
+        set -- _LIBDIR "$dir" "$@"
+        # shellcheck disable=SC1090
+        . ./"$file"
+        shift 2
+        "$func" "$@"
+        ;;
+      (*/*)
+        "${sh}" "$task" "$@"
+        ;;
+      (*)
+        exec "$_APPDIR"/mise run "$task" -- "$@"
+        ;;
+    esac
+  fi
+  
+}
+
+task "$@"

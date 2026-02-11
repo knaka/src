@@ -10,8 +10,8 @@ cd "$1" || exit 1; shift
 
 # [files...] Cat files with line num.
 task_bar__baz() {
-  # cat -n "$@"
-  env
+  cat -n "$@"
+  # env
 }
 
 # [files...] Cat files with line num num.

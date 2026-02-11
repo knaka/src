@@ -28,7 +28,6 @@ task_depbuild() {
   mkdir -p "$go_bin_dir_path"
   if test $# = 0
   then
-  
     # shellcheck disable=SC2038
     # shellcheck disable=SC2046
     set -- *.go $(find cmd -mindepth 1 -maxdepth 1 | xargs basename)
@@ -91,18 +90,18 @@ task_install() {
       go_build_dir_path_backslash=$(echo "$(realpath .)"/build | sed 's|/|\\|g')
       cat <<EOF > "$target_shim_path".cmd
 @echo off
-# pushd $pwd_backslash
-# call task depbuild $name
-# popd
+pushd $pwd_backslash
+call task.cmd ./mise-tasks/project.lib.sh:task_depbuild "$name"
+popd
 $go_build_dir_path_backslash\\$name.exe %*
 EOF
     else
       cat <<EOF > "$target_shim_path"
 #!/bin/sh
-# saved_pwd="\$PWD"
-# cd "$PWD"
-# ./mise run depbuild "$name"
-# cd "\$saved_pwd"
+saved_pwd="\$PWD"
+cd "$PWD"
+./task ./mise-tasks/project.lib.sh:task_depbuild "$name"
+cd "\$saved_pwd"
 exec $PWD/build/$name "\$@"
 EOF
       chmod +x "$target_shim_path"
