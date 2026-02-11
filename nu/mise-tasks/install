@@ -32,7 +32,7 @@ install() {
     gen_caller_script "$nu_file" >"$nu_bin_dir_path"/"$nu_name"
     if is_windows
     then
-      cat ../shim.cmd >"$nu_bin_dir_path"/"$nu_name".cmd
+      cat ../task.cmd >"$nu_bin_dir_path"/"$nu_name".cmd
     fi
     chmod 755 "$nu_bin_dir_path"/"$nu_name"
   done
