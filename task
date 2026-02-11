@@ -7,7 +7,7 @@ cd "$1" || exit 1; shift 2
 
 task() {
   local sh
-  for sh in /bin/dash /bin/ash /bin/bash
+  for sh in /bin/dash /bin/ash /bin/bash /bin/sh
   do
   continue
     if test -x "$sh"
@@ -25,6 +25,7 @@ task() {
     shift
     case "$task" in
       (*:*)
+        # "file_name:function_name"
         local file
         file="${task%:*}"
         local dir
@@ -38,14 +39,15 @@ task() {
         "$func" "$@"
         ;;
       (*/*)
+        # "file_name"
         "${sh}" "$task" "$@"
         ;;
       (*)
+        # Mise task
         exec "$_APPDIR"/mise run "$task" -- "$@"
         ;;
     esac
   fi
-  
 }
 
 task "$@"
