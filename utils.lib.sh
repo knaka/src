@@ -522,10 +522,17 @@ abs2rel() {
 # shuf(1) for macOS environment.
 if ! command -v shuf >/dev/null 2>&1
 then
-  alias shuf='sort -R'
+  shuf() {
+    sort -R "$@"
+  }
 fi
 
-is_macos && alias sha1sum='shasum -a 1'
+if is_macos
+then
+  sha1sum() {
+    shasum -a 1 "$@"
+  }
+fi
 
 # Memoize the (mainly external) command output.
 memoize() {
