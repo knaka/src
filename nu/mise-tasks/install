@@ -11,8 +11,7 @@ set -- _LIBDIR . "$@"
 shift 2
 cd "$1" || exit 1; shift 2
 
-gen_cmd_script() {
-  cat <<EOF
+gen_cmd_script() { cat <<EOF
 @ECHO OFF
 set original_dir=%CD%
 cd ${PROJECT_DIR}
@@ -20,12 +19,11 @@ call mise.cmd exec --cd %original_dir% github:nushell/nushell -- nu ${PROJECT_DI
 EOF
 }
 
-gen_sh_script() {
-  cat <<EOF
+gen_sh_script() { cat <<EOF
 #!/usr/bin/env sh
 original_dir="\$PWD"
 cd "$PROJECT_DIR"
-./mise exec --cd "\$original_dir" github:nushell/nushell -- nu "${PROJECT_DIR}/$1" "\$@"
+exec ./mise exec --cd "\$original_dir" github:nushell/nushell -- nu "${PROJECT_DIR}/$1" "\$@"
 EOF
 }
 
