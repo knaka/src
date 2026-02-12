@@ -2,12 +2,12 @@
 # shellcheck shell=sh
 "${sourced_c572edd-false}" && return 0; sourced_c572edd=true
 
-set -- "$PWD" "$@"; if test "${2:+$2}" = _LIBDIR; then cd "$3" || exit 1; fi
+set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test "$2" != "$0"; then _APPDIR="$2"; fi; cd "$_APPDIR" || exit 1; fi
 set -- _LIBDIR .lib "$@"
 . ./.lib/utils.lib.sh
 . ./.lib/tools.lib.sh
 shift 2
-cd "$1" || exit 1; shift
+cd "$1" || exit 1; shift 2
 
 # Generate Go-inlined sample scripts.
 task_hello_sh__gen() {
@@ -67,7 +67,7 @@ task_build() {
 
 # Install Go tools.
 task_install() {
-  local task="./mise-tasks/project.lib.sh:task_depbuild"
+  local task="./mise-tasks/tasks-project.sh task_depbuild"
   local go_shim_dir_path="$HOME"/go-bin
   mkdir -p "$go_shim_dir_path"
   rm -f "$go_shim_dir_path"/*
@@ -92,7 +92,7 @@ task_install() {
       cat <<EOF >"$target_shim_path".cmd
 @echo off
 pushd $pwd_backslash
-call task.cmd "$task" "$name"
+call task.cmd $task "$name"
 popd
 $go_build_dir_path_backslash\\$name.exe %*
 EOF
@@ -101,7 +101,7 @@ EOF
 #!/bin/sh
 saved_pwd="\$PWD"
 cd "$PWD"
-./task "$task" "$name"
+./task $task "$name"
 cd "\$saved_pwd"
 exec $PWD/build/$name "\$@"
 EOF
@@ -109,3 +109,10 @@ EOF
     fi
   done
 }
+
+case "${0##*/}" in
+  (tasks-*)
+    set -o nounset -o errexit
+    "$@"
+    ;;
+esac

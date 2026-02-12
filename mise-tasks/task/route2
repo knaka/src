@@ -9,8 +9,15 @@ set -- _LIBDIR .lib "$@"
 shift 2
 cd "$1" || exit 1; shift
 
-#MISE description="Generate rounting tasks for monolithic task definition files."
-#MISE tools={"jq"="1.8"}
+#MISE description="Generate rounting task tomls for monolithic task definition files."
+#MISE tools={"jq"="1.8", "yj"="5"}
+
+main() {
+  echo "Updating routing configuration files in project \"$PROJECT_DIR\"." >&2
+  cd "$PROJECT_DIR"/mise-tasks || exit 1
+  rm -f ./_route-*.toml
+  extract_task_info ./*.sh | generate_task_tomls
+}
 
 # Parse shell task files and extract task/subcmd information with their metadata.
 # Outputs lines in format: "<type> <name> <func_name> <basename> <body>"
@@ -23,22 +30,16 @@ extract_task_info() {
 # Generate the shell script that will be executed when a Mise task is invoked.
 # The script changes to the mise-sh directory, sources the library file,
 # then returns to the original directory and calls the task function.
-gen_ba88d3d() {
-  local xa13e1bc=""
-  local mise_header="#MISE"
+gen_script() {
   cat <<EOF
 #!/usr/bin/env sh
 
-# Code generated from "$base" by task:route task. DO ${xa13e1bc}NOT EDIT.
-
-${mise_header} description="$body"
-saved_pwd_474b89b="\$PWD"
-_APPDIR="\$MISE_PROJECT_ROOT"/mise-tasks
-cd "\$_APPDIR"
+set -- "\$PWD" "\$@"
+cd "\$MISE_TASK_DIR"
 . ./"$base"
-cd "\$saved_pwd_474b89b"
-set -o nounset -o errexit
-${func_name} "\$@"
+cd "\$1"
+shift
+"$1" "\$@"
 EOF
 }
 
@@ -46,28 +47,52 @@ EOF
 # Groups tasks by their source basename and outputs _route-<basename>.toml files.
 # Handles "task"/"subcmd" types by setting description and run script,
 # and "mise" type by merging additional mise configuration headers.
-generate_tasks() {
+generate_task_tomls() {
+  local task="{}"
   local base_prev=
   local type name func_name base body
   while read -r type name func_name base body
   do
     if test "$base" != "$base_prev"
     then
-      :
+      if jq -n --argjson input "$task" --exit-status \
+        '$input | length > 0' >/dev/null
+      then
+        if test -r "_route-$base_prev.toml"
+        then
+          rm -f "_route-$base_prev.toml"
+        fi
+        {
+          echo "# Code generated from \"$base_prev\" by task:route2 task. DO NOT EDIT."
+          echo
+          printf "%s" "$task" | yj -jt
+        } >"_route-$base_prev.toml"
+      fi
+      task="{}"
     fi
-    local file_path
-    # shellcheck disable=SC2086
-    file_path="$PWD$(IFS=:; printf "/%s" $name)"
-    local dir_path
-    dir_path="$(dirname "$file_path")"
     case "$type" in
       (task|subcmd)
-        mkdir -p "$dir_path"
-        gen_ba88d3d >"$file_path"
-        chmod +x "$file_path"
+        # Description
+        task="$(
+          jq -n --argjson input "$task" \
+            --arg name "$name" \
+            --arg desc "$body" \
+            '$input | .[$name]["description"] = $desc'
+        )"
+        # Function
+        task="$(
+          jq -n --argjson input "$task" \
+            --arg name "$name" \
+            --arg script "$(gen_script "$func_name")" \
+            '$input | .[$name]["run"] = $script')"
         ;;
       (mise)
-        echo "#MISE $body" >>"$file_path"
+        local mise_header="$(printf "%s" "$body" | yj -tj)"
+        task="$(
+          jq -n --argjson input "$task" \
+            --arg name "$name" \
+            --argjson mise_header "$mise_header" \
+            '$input | .[$name] += $mise_header')"
         ;;
       (nop)
         ;;
@@ -76,16 +101,6 @@ generate_tasks() {
     esac
     base_prev="$base"
   done
-}
-
-main() {
-  echo "Updating routing configuration files in project \"$PROJECT_DIR\"." >&2
-  cd "$PROJECT_DIR"/mise-tasks || exit 1
-  local x2ba7206=""
-  find . -type f -print0 \
-  | xargs -0 grep -l "by task:route task. DO NOT ${x2ba7206}EDIT" \
-  | xargs rm -f
-  extract_task_info ./*.sh | generate_tasks
 }
 
 set -o nounset -o errexit
