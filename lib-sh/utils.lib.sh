@@ -3,7 +3,7 @@
 "${sourced_f5f648c-false}" && return 0; sourced_f5f648c=true
 
 # ==========================================================================
-#region Environment variables. If not set by the caller, they are set later in `tasksh_main`
+#region Environment variables.
 
 # The initial working directory when the command was started.
 : "${INITIAL_DIR=}"
