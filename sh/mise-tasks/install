@@ -13,12 +13,13 @@ cd "$1" || exit 1; shift 2
 
 gen_sh_script() { cat <<EOF
 #!/usr/bin/env sh
-exec "\${SH:-$SH}" "$PROJECT_DIR"/"$1" "\$@"
+exec "\${SH:-$SH}" "$PROJECT_DIR"/"$file" "\$@"
 EOF
 }
 
 # Install shell scripts.
 install() {
+  push_dir "$PROJECT_DIR" || exit 1
   local bin_dir_path="$HOME"/sh-bin
   mkdir -p "$bin_dir_path"
   if test "${executed_thru_t_bb789ec+set}" = set
@@ -35,14 +36,15 @@ install() {
       (_*) continue;;
     esac
     local name="${file%.sh}"
+    gen_sh_script >"$bin_dir_path"/"$name"
+    chmod +x "$bin_dir_path"/"$name"
     if is_windows
     then
       # Create Busybox ash shim.
       cat task.cmd >"$bin_dir_path"/"$name".cmd
     fi
-    gen_sh_script "$file" >"$bin_dir_path"/"$name"
-    chmod +x "$bin_dir_path"/"$name"
   done
+  pop_dir
 }
 
 case "${0##*/}" in
