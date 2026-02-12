@@ -47,7 +47,7 @@ esac
 EOF
 }
 
-gen_tasks_f774151() { cat <<'EOF'
+gen_tasks_body_f774151() { cat <<'EOF'
 case "${0##*/}" in
   (tasks-*)
     set -o nounset -o errexit
@@ -129,7 +129,7 @@ touchsh() {
     then
       gen_source_block_8d319a6
       echo
-      gen_tasks_f774151
+      gen_tasks_body_f774151
     else
       gen_source_block_8d319a6
       echo
