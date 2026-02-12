@@ -32,5 +32,23 @@ test_abs2rel() {
     assert_eq -m "6724104" "C:../.." "$relpath"
     relpath="$(abs2rel C:/Windows/System32 D:/Somewhere/Foo/Bar)"
     assert_eq -m "349094b" "C:/Windows/System32" "$relpath"
+  else
+    relpath="$(abs2rel "$PWD/sh" "$PWD/go")"
+    assert_eq "$relpath" "../sh"
+    relpath="$(abs2rel /usr/bin)"
+    assert_match -m "bf12b50" '\.\.' "$relpath"
+    assert test -d "$relpath"
+    relpath="$(abs2rel /usr/bin /usr)"
+    assert_eq "bin" "$relpath"
+    relpath="$(abs2rel /usr /usr/bin)"
+    assert_eq ".." "$relpath"
+    relpath="$(abs2rel /usr /usr/lib)"
+    assert_eq ".." "$relpath"
+    relpath="$(abs2rel /usr/bin /usr/lib)"
+    assert_eq "../bin" "$relpath"
+    relpath="$(abs2rel /usr/bin /usr/bin)"
+    assert_eq -m "e057121" "." "$relpath"
+    relpath="$(abs2rel / /usr/bin)"
+    assert_eq -m "6724104" "../.." "$relpath"
   fi
 }
