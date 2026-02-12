@@ -1,7 +1,8 @@
-#!/usr/bin/env sh
 # vim: set filetype=sh :
 # shellcheck shell=sh
 "${sourced_10bd1b4-false}" && return 0; sourced_10bd1b4=true
+
+# Generate shell scriipt scaffold.
 
 set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test "$2" != "$0"; then _APPDIR="$2"; fi; cd "$_APPDIR" || exit 1; fi
 set -- _LIBDIR .lib "$@"
@@ -144,7 +145,7 @@ touchsh() {
     fi
   if ! "$is_stdout" && ! "$is_lib" && ! "$has_ext"
   then
-    chmod +x "$1"
+    chmod +x "$path"
   fi
 }
 
