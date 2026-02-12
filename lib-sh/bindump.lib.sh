@@ -2,6 +2,9 @@
 # shellcheck shell=sh
 "${sourced_737f6db-false}" && return 0; sourced_737f6db=true
 
+# -A n: input address base - no address
+# -t o1: output format type - octal, 1 byte size
+# -v: write all instead of replacing lines of duplicate values with a ‘*’
 oct_dump() {
   if test $# -eq 0
   then
@@ -24,6 +27,9 @@ oct_restore() {
   | xargs printf '%b'
 }
 
+# -A n: input address base - no address
+# -t o1: output format type - hexadecimal, 1 byte size
+# -v: write all instead of replacing lines of duplicate values with a ‘*’
 hex_dump() {
   if test $# -eq 0
   then
