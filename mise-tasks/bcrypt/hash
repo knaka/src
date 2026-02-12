@@ -2,6 +2,7 @@
 
 # Code generated from "tasks-bcrypt.sh" by task:route task. DO NOT EDIT.
 
+#ed9038b1-9de5-40fd-bede-eabed9b60306
 #MISE description="[password] Create hash from password with bcrypt"
 saved_pwd_474b89b="$PWD"
 _APPDIR="$MISE_PROJECT_ROOT"/mise-tasks

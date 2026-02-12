@@ -12,6 +12,8 @@ cd "$1" || exit 1; shift
 #MISE description="Generate rounting tasks for monolithic task definition files."
 #MISE tools={"jq"="1.8"}
 
+marker_93949c9="ed9038b1-9de5-40fd-bede-eabed9b60306"
+
 # Parse shell task files and extract task/subcmd information with their metadata.
 # Outputs lines in format: "<type> <name> <func_name> <basename> <body>"
 extract_task_info() {
@@ -24,13 +26,14 @@ extract_task_info() {
 # The script changes to the mise-sh directory, sources the library file,
 # then returns to the original directory and calls the task function.
 gen_ba88d3d() {
-  local xa13e1bc=""
+  # Not to be recognized as a MISE header of this file.
   local mise_header="#MISE"
   cat <<EOF
 #!/usr/bin/env sh
 
-# Code generated from "$base" by task:route task. DO ${xa13e1bc}NOT EDIT.
+# Code generated from "$base" by task:route task. DO NOT EDIT.
 
+#${marker_93949c9}
 ${mise_header} description="$body"
 saved_pwd_474b89b="\$PWD"
 _APPDIR="\$MISE_PROJECT_ROOT"/mise-tasks
@@ -81,9 +84,8 @@ generate_tasks() {
 main() {
   echo "Updating routing configuration files in project \"$PROJECT_DIR\"." >&2
   cd "$PROJECT_DIR"/mise-tasks || exit 1
-  local x2ba7206=""
   find . -type f -print0 \
-  | xargs -0 grep -l "by task:route task. DO NOT ${x2ba7206}EDIT" \
+  | xargs -0 grep -l "#${marker_93949c9}" \
   | xargs rm -f
   extract_task_info ./*.sh | generate_tasks
 }
