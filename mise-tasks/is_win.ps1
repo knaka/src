@@ -1,5 +1,7 @@
 #!/usr/bin/env pwsh -NoProfile
 
+#MISE description="Detect wether this is Windows."
+
 if ($IsWindows) {
   Write-Output "This is Windows."
 } elseif ($IsMacOS) {

@@ -3,6 +3,8 @@
 # shellcheck shell=sh
 "${sourced_b9c5e77-false}" && return 0; sourced_b9c5e77=true
 
+#MISE description="Synchronize versions."
+
 set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test "$2" != "$0"; then _APPDIR="$2"; fi; cd "$_APPDIR" || exit 1; fi
 set -- _LIBDIR .lib "$@"
 . ./.lib/utils.lib.sh
@@ -40,9 +42,5 @@ verstr_update() {
   fi
 }
 
-case "${0##*/}" in
-  (verstr_update)
-    set -o nounset -o errexit
-    verstr_update "$@"
-    ;;
-esac
+set -o nounset -o errexit
+verstr_update "$@"

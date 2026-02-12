@@ -39,7 +39,7 @@ t() {
     then
       run_mise "$@"
       return
-    elif ! is_windows && test -x "$dir"/task
+    elif ! is_windows && test -f "$dir"/task && test -x "$dir"/task
     then
       "$dir"/task "$@"
       return
