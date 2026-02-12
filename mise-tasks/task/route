@@ -16,7 +16,7 @@ main() {
   echo "Updating routing configuration files in project \"$PROJECT_DIR\"." >&2
   cd "$PROJECT_DIR"/mise-tasks || exit 1
   rm -f ./_route-*.toml
-  extract_task_info ./*.lib.sh | generate_task_tomls
+  extract_task_info ./*.sh | generate_task_tomls
 }
 
 # Parse shell task files and extract task/subcmd information with their metadata.

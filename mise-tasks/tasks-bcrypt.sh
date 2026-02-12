@@ -1,12 +1,12 @@
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-test "${sourced_4c4cee6-}" = true && return 0; sourced_4c4cee6=true
+"${sourced_84cae10-false}" && return 0; sourced_84cae10=true
 
-set -- "$PWD" "$@"; if test "${2:+$2}" = _LIBDIR; then cd "$3" || exit 1; fi
+set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test "$2" != "$0"; then _APPDIR="$2"; fi; cd "$_APPDIR" || exit 1; fi
 set -- _LIBDIR .lib "$@"
 . ./.lib/utils.lib.sh
 shift 2
-cd "$1" || exit 1; shift
+cd "$1" || exit 1; shift 2
 
 # [password] Create hash from password with bcrypt
 task_bcrypt__hash() {
@@ -39,5 +39,8 @@ task_bcrypt__verify() {
 }
 
 case "${0##*/}" in
-  (tasks-*) "$@";;
+  (tasks-*)
+    set -o nounset -o errexit
+    "$@"
+    ;;
 esac
