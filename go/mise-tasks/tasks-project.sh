@@ -65,9 +65,28 @@ task_build() {
   task_depbuild "$@"
 }
 
+gen_win_shim_0d8d45c() { cat <<EOF
+@echo off
+pushd $pwd_backslash
+call task.cmd "$task" "$name"
+popd
+$go_build_dir_path_backslash\\$name.exe %*
+EOF
+}
+
+gen_unixy_shim_3b0072c() { cat <<EOF
+#!/usr/bin/env sh
+saved_pwd="\$PWD"
+cd "$PWD"
+./task "$task" "$name"
+cd "\$saved_pwd"
+exec $PWD/build/$name "\$@"
+EOF
+}
+
 # Install Go tools.
 task_install() {
-  local task="./mise-tasks/tasks-project.sh task_depbuild"
+  local task="./mise-tasks/tasks-project.sh:task_depbuild"
   local go_shim_dir_path="$HOME"/go-bin
   mkdir -p "$go_shim_dir_path"
   rm -f "$go_shim_dir_path"/*
@@ -89,22 +108,9 @@ task_install() {
     then
       local pwd_backslash="$(echo "$PWD" | sed 's|/|\\|g')"
       go_build_dir_path_backslash=$(echo "$(realpath .)"/build | sed 's|/|\\|g')
-      cat <<EOF >"$target_shim_path".cmd
-@echo off
-pushd $pwd_backslash
-call task.cmd $task "$name"
-popd
-$go_build_dir_path_backslash\\$name.exe %*
-EOF
+      gen_win_shim_0d8d45c >"$target_shim_path".cmd
     else
-      cat <<EOF >"$target_shim_path"
-#!/bin/sh
-saved_pwd="\$PWD"
-cd "$PWD"
-./task $task "$name"
-cd "\$saved_pwd"
-exec $PWD/build/$name "\$@"
-EOF
+      gen_unixy_shim_3b0072c >"$target_shim_path"
       chmod +x "$target_shim_path"
     fi
   done
