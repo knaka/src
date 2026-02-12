@@ -11,54 +11,38 @@ set -- _LIBDIR .lib "$@"
 shift 2
 cd "$1" || exit 1; shift 2
 
+gen_sh_script() { cat <<EOF
+#!/usr/bin/env sh
+exec "\${SH:-$SH}" "$PROJECT_DIR"/"$1" "\$@"
+EOF
+}
+
 # Install shell scripts.
 install() {
-  local sh_bin_dir_path="$HOME"/sh-bin
+  local bin_dir_path="$HOME"/sh-bin
+  mkdir -p "$bin_dir_path"
   if test "${executed_thru_t_bb789ec+set}" = set
   then
-    echo "In a Windows environment, $sh_bin_dir_path/t.sh is not replaced because it is locked. Run ./task.cmd instead." >&2
+    echo "In a Windows environment, $bin_dir_path/t.sh is not replaced because it is locked. Run ./task.cmd instead." >&2
     return 1
   fi
-  local excluded_scripts=":utils.lib.sh:"
+  rm -fr "${bin_dir_path:?}"/*
   local file
-  for file in task-*.sh *.lib.sh _*.sh
+  for file in *.sh
   do
-    if ! test -r "$file"
-    then
-      continue
-    fi
-    excluded_scripts="$excluded_scripts:$file:"
-  done
-  mkdir -p "$sh_bin_dir_path"
-  rm -f "$sh_bin_dir_path"/*
-  local sh_file
-  for sh_file in *.sh
-  do
-    if echo "$excluded_scripts" | grep -q ":$sh_file:"
-    then
-      continue
-    fi
-    local sh_name="${sh_file%.sh}"
+    test -e "$file" || continue
+    case "$file" in
+      (_*) continue;;
+    esac
+    local name="${file%.sh}"
     if is_windows
     then
-      cat task.cmd >"$sh_bin_dir_path"/"$sh_name".cmd
+      # Create Busybox ash shim.
+      cat task.cmd >"$bin_dir_path"/"$name".cmd
     fi
-    cat <<EOF >"$sh_bin_dir_path"/"$sh_name"
-#!/usr/bin/env sh
-exec "\${SH:-$SH}" "$PROJECT_DIR"/"$sh_file" "\$@"
-EOF
-    chmod 755 "$sh_bin_dir_path"/"$sh_name"
+    gen_sh_script "$file" >"$bin_dir_path"/"$name"
+    chmod +x "$bin_dir_path"/"$name"
   done
-  if is_windows
-  then
-    cat <<EOF > "$sh_bin_dir_path"/.env.sh.cmd
-set sh_dir_path=$PWD
-EOF
-  else
-    cat <<-EOF > "$sh_bin_dir_path"/.env.sh
-sh_dir_path="$PWD"
-EOF
-  fi
 }
 
 case "${0##*/}" in
