@@ -5,8 +5,8 @@
 set -- "$PWD" "$@"; if test "${2:+$2}" = _LIBDIR; then cd "$3" || exit 1; fi
 set -- _LIBDIR . "$@"
 . ./utils.lib.sh
-. ./mise
 shift 2
+. ./../mise
 cd "$1" || exit 1; shift
 
 # It is preferred that versions of tools are defined not here but by mise and the versions are defined in each mise.toml.
