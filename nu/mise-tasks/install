@@ -9,7 +9,7 @@ set -- _LIBDIR . "$@"
 shift 2
 cd "$1" || exit 1; shift 2
 
-gen_caller_script() {
+gen_sh_script() {
   cat <<EOF
 #!/usr/bin/env sh
 original_dir="\$PWD"
@@ -19,22 +19,23 @@ EOF
 }
 
 install() {
-  local nu_bin_dir_path="$HOME"/nu-bin
-  mkdir -p "$nu_bin_dir_path"
-  local nu_file
-  for nu_file in *.nu
+  cd "$PROJECT_DIR"
+  local bin_dir_path="$HOME"/nu-bin
+  mkdir -p "$bin_dir_path"
+  local file
+  for file in *.nu
   do
-    test -e "$nu_file" || continue
-    case "$nu_file" in
+    test -e "$file" || continue
+    case "$file" in
       (_*) continue;;
     esac
-    local nu_name="${nu_file%.nu}"
-    gen_caller_script "$nu_file" >"$nu_bin_dir_path"/"$nu_name"
+    local name="${file%.nu}"
+    gen_sh_script "$file" >"$bin_dir_path"/"$name"
+    chmod 755 "$bin_dir_path"/"$name"
     if is_windows
     then
-      cat ../task.cmd >"$nu_bin_dir_path"/"$nu_name".cmd
+      cat ../task.cmd >"$bin_dir_path"/"$name".cmd
     fi
-    chmod 755 "$nu_bin_dir_path"/"$nu_name"
   done
 }
 
