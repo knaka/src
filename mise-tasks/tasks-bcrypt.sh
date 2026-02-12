@@ -37,8 +37,6 @@ task_bcrypt__verify() {
   done
   shift $((OPTIND-1))
 
-  echo b19e31b-"$password"-"$hash"
-
   mise exec uv -- uv tool run --from "bcrypt" python3 -c 'import sys, bcrypt; sys.exit(0 if bcrypt.checkpw(sys.argv[1].encode(), sys.argv[2].encode()) else 1)' "$password" "$hash" >/dev/null 2>&1
 }
 
