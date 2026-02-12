@@ -1,3 +1,5 @@
 #!/usr/bin/env nu
 
-print $"Hello, Nu in ($env.PWD)!"
+def main [name = "John"] {
+  print $"Hello, ($name) in ($env.PWD)!"
+}
