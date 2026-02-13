@@ -13,7 +13,7 @@ shift 2
 cd "$1" || exit 1; shift 2
 
 test_() {
-  cd "$PROJECT_DIR" || exit 1
+  cd "$PROJECT_DIR/lib-sh" || exit 1
   run_tests "$@"
 }
 
