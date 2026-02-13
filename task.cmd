@@ -1,7 +1,7 @@
 @REM BusyBox for Windows https://frippery.org/busybox/index.html
 @REM Release Notes https://frippery.org/busybox/release-notes/index.html
 @REM Index of /files/busybox https://frippery.org/files/busybox/?C=M;O=D
-@REM The version is copied from mise.toml by the task verstr_update.
+@REM The version is copied from ./mise.toml by the "versions:sync" task.
 @set bb_ver=FRP-5857-g3681e397f
 
 @echo off
