@@ -30,7 +30,7 @@ cargo_bin_path() {
 }
 
 set_rs_bin_env() {
-  test "${guard_1e7b58b+set}" = set && return 0; guard_1e7b58b=x
+  test "${guard_0bc1d25+set}" = set && return 0; guard_0bc1d25=x
   PATH="$(rs_bin_dir):$PATH"
   export PATH
 }
@@ -42,7 +42,7 @@ cargo_local_bin_path() (
 )
 
 set_cargo_path() {
-  test "${guard_7f2c09a+set}" = set && return 0; guard_7f2c09a=x
+  test "${guard_7f2c09a+set}" = set && return 0; guard_07b2e24=x
   PATH="$(cargo_local_bin_path):$(cargo_bin_path):$PATH"
   if is_windows
   then

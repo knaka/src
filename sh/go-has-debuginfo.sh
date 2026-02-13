@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-"${sourced_b8dd816-false}" && return 0; sourced_b8dd816=true
+"${sourced_b0b996c-false}" && return 0; sourced_b0b996c=true
 
 # file(1) of MacOS does not show whether the executable contains Go debuginfo or not.
 # dwarfdump(1) shows nothing. I do not know why.

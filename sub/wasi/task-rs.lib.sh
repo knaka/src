@@ -42,7 +42,7 @@ cargo_local_bin_path() (
 )
 
 set_cargo_path() {
-  test "${guard_7f2c09a+set}" = set && return 0; guard_7f2c09a=x
+  test "${guard_271702b+set}" = set && return 0; guard_271702b=x
   PATH="$(cargo_local_bin_path):$(cargo_bin_path):$PATH"
   if is_windows
   then

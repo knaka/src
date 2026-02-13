@@ -9,6 +9,8 @@ shift 2
 . ./conf.sh
 cd "$1" || exit 1; shift 2
 
+# bar 1c0ffee
+
 should_block_b69939e=false
 
 edit_file() {

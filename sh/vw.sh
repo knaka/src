@@ -9,6 +9,8 @@ shift 2
 . ./ed.sh
 cd "$1" || exit 1; shift 2
 
+# foo 1c0ffee
+
 vw() {
   register_temp_cleanup
   local title="(stdin)"

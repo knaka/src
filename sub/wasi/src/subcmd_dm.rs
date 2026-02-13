@@ -110,7 +110,7 @@ pub fn handler(matches: &ArgMatches) -> Result<(), Box<dyn std::error::Error>> {
             // let file3 = canonicalize(&file2).context("c3ee24f")?;
             // let file3 = realpath::realpath(&file2).context("c3ee24f")?;
             let file3 = file2;
-            Box::new(std::fs::File::open(file3).context("8493036")?) as InputStream
+            Box::new(std::fs::File::open(file3).context("25b0dc8")?) as InputStream
         };
         dump_file(input_stream)?;
     }

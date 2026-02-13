@@ -28,7 +28,7 @@ toupper_4c7e44e() {
   printf "%s" "$1" | tr '[:lower:]' '[:upper:]'
 }
 
-tolower_542075d() {
+tolower_6ee15ca() {
   printf "%s" "$1" | tr '[:upper:]' '[:lower:]'
 }
 
@@ -55,7 +55,7 @@ EOF
 
   assert_eq 'foo BAR BAZ qux' "$(eval_with_subst 'foo toupper(bar) BAZ tolower(QUX)' \
     's/'"$lwb"'toupper'"$rwb"'\(([[:alpha:]]+)\)/"$(toupper_4c7e44e "\1")"/g' \
-    's/'"$lwb"'tolower'"$rwb"'\(([[:alpha:]]+)\)/"$(tolower_542075d "\1")"/g')"
+    's/'"$lwb"'tolower'"$rwb"'\(([[:alpha:]]+)\)/"$(tolower_6ee15ca "\1")"/g')"
 )
 
 do_eval_with_subst
