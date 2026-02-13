@@ -2,19 +2,19 @@
 # shellcheck shell=sh
 "${sourced_84cae10-false}" && return 0; sourced_84cae10=true
 
-set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test "$2" != "$0"; then _APPDIR="$2"; fi; cd "$_APPDIR" || exit 1; fi
+set -- "$PWD" "${0%/*}" "$@"; test -z "${_APPDIR-}" && { test "$2" = "$0" && _APPDIR=. || _APPDIR="$2"; cd "$_APPDIR" || exit 1; }
 set -- _LIBDIR .lib "$@"
 . ./.lib/utils.lib.sh
 shift 2
 cd "$1" || exit 1; shift 2
 
-# [password] Create hash from password with bcrypt
+# [password] Create hash from password with bcrypt.
 #MISE tools={"uv"="0.10"}
 task_bcrypt__hash() {
   mise exec uv -- uv tool run --from "bcrypt" python3 -c 'import sys, bcrypt; print(bcrypt.hashpw(sys.argv[1].encode(), bcrypt.gensalt()).decode())' "$1"
 }
 
-# [--password=<password> --hash=<hash>] Verify password against bcrypt hash
+# [--password=<password> --hash=<hash>] Verify password against bcrypt hash.
 #MISE tools={"uv"="0.10"}
 task_bcrypt__verify() {
   local password=
