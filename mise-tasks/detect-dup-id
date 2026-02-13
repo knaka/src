@@ -3,7 +3,7 @@
 # shellcheck shell=sh
 "${sourced_4375684-false}" && return 0; sourced_4375684=true
 
-#MISE description="Detect ID duplication."
+#MISE description="Detect ID duplication among files."
 
 set -- "$PWD" "${0%/*}" "$@"; test -z "${_APPDIR-}" && { test "$2" = "$0" && _APPDIR=. || _APPDIR="$2"; cd "$_APPDIR" || exit 1; }
 set -- _LIBDIR .lib "$@"
