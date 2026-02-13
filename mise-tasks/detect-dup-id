@@ -28,7 +28,7 @@ detect_dup_id() {
       test -f "$file" || continue
       test -L "$file" && continue
       case "$file" in
-        (45a2fb8 \
+        (begin_45a2fb8 \
         |*.json \
         |*.lock \
         |*.yaml \
@@ -39,7 +39,7 @@ detect_dup_id() {
         |*/go.mod \
         |*/go.sum \
         |sub/* \
-        |85190e4)
+        |end_85190e4)
           continue
           ;;
       esac
