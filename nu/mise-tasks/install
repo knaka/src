@@ -21,9 +21,8 @@ EOF
 
 gen_sh_script() { cat <<EOF
 #!/usr/bin/env sh
-original_dir="\$PWD"
 cd "$PROJECT_DIR"
-exec ./mise exec --cd "\$original_dir" github:nushell/nushell -- nu "${PROJECT_DIR}/$1" "\$@"
+exec ./mise exec --cd "\$OLDPWD" github:nushell/nushell -- nu "${PROJECT_DIR}/$1" "\$@"
 EOF
 }
 
