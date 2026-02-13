@@ -9,7 +9,7 @@ shift 2
 . ./ed.sh
 cd "$1" || exit 1; shift 2
 
-# foo 1c0ffeexyz
+# foo cafead0def
 
 vw() {
   register_temp_cleanup

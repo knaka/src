@@ -9,7 +9,7 @@ shift 2
 . ./conf.sh
 cd "$1" || exit 1; shift 2
 
-# bar 1c0ffeeabc
+# bar cafead0abc
 
 should_block_b69939e=false
 
