@@ -15,6 +15,7 @@
 #   libsync diff <name>                     Show local changes vs fetched version
 #   libsync add-path <name> <path>...       Add paths to a library (config only)
 #   libsync remove-path <name> <path>...    Remove paths from a library (config only)
+#   libsync list                            List all registered libraries
 
 set -- "$PWD" "${0%/*}" "$@"; test -z "${_APPDIR-}" && { test "$2" = "$0" && _APPDIR=. || _APPDIR="$2"; cd "$_APPDIR" || exit 1; }
 set -- _LIBDIR .lib "$@"
@@ -253,20 +254,25 @@ cmd_remove_path() {
   echo "Removed paths from $name: $*"
 }
 
+cmd_list() {
+  jq -r '.libraries[]? | "\(.name) (\(.commit[0:7])) -> \(.dest)"' "$CONFIG_FILE"
+}
+
 libsync() {
   register_temp_cleanup
   if ! test -f "$CONFIG_FILE"
   then
     jq -n '{}' >"$CONFIG_FILE"
   fi
-  test $# = 0 && set --
+  test $# = 0 && set -- -
   case "$1" in
     (add|clone) shift; cmd_clone "$@";;
     (update|pull) shift; cmd_clone --pull "$@";;
     (diff) shift; cmd_diff "$@";;
     (add-path) shift; cmd_add_path "$@";;
     (remove-path) shift; cmd_remove_path "$@";;
-    (*) echo "Usage: libsync {add|pull|diff|add-path|remove-path}" ;;
+    (list) cmd_list;;
+    (*) echo "Usage: libsync {add|pull|diff|add-path|remove-path|list}" ;;
   esac
 }
 
