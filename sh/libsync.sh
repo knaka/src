@@ -259,6 +259,7 @@ libsync() {
   then
     jq -n '{}' >"$CONFIG_FILE"
   fi
+  test $# = 0 && set --
   case "$1" in
     (add|clone) shift; cmd_clone "$@";;
     (update|pull) shift; cmd_clone --pull "$@";;
