@@ -16,8 +16,7 @@ base="${0##*/}"
 base="${base##*\\}"
 base="${base%.sh}"
 
-type "$base"
-if ! type "$base" | grep -qE -e "a (shell )?function"
+if ! type "$base" 2>/dev/null | grep -q -E -e "a (shell )?function"
 then
   echo "No matching function for \"$base\"." >&2
   exit 1

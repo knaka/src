@@ -51,3 +51,27 @@ test_local_ifs() (
   set -- $(printf "foo bar\nbar baz\nhoge fuga\n")
   assert_eq $# 6
 )
+
+test_pos_params() {
+  set -- "aaa  bbb" "ccc"
+  assert_eq 2 $#
+
+  local IFS
+  IFS="$newline_char"
+
+  # shellcheck disable=SC2046
+  set -- $(printf "x%s\n" "$@")
+  assert_eq 2 $#
+  assert_eq "xaaa  bbb" "$1"
+  assert_eq "xccc" "$2"
+
+  # shellcheck disable=SC2046
+  set -- $(printf '%s' '["foo   bar", "baz"]' | jq -r '.[]')
+  assert_eq -m "b0dafd8" 2 $#
+  assert_eq "foo   bar" "$1"
+  assert_eq "baz" "$2"
+
+  # shellcheck disable=SC2046
+  local count="$(printf "%s\n" $(printf "x%s\n" "$@") | wc -l)"
+  assert_eq -m "f52c6b3" 2 "$count"
+}

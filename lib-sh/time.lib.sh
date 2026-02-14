@@ -2,7 +2,11 @@
 # shellcheck shell=sh
 "${sourced_68dabbe-false}" && return 0; sourced_68dabbe=true
 
+set -- "$PWD" "$@"; if test "${2:+$2}" = _LIBDIR; then cd "$3" || exit 1; fi
+set -- _LIBDIR .lib "$@"
 . ./utils.lib.sh
+shift 2
+cd "$1" || exit 1; shift
 
 iso_date_format_590c473='%Y-%m-%dT%H:%M:%S%z'
 iso_date_format_utc_590c473='%Y-%m-%dT%H:%M:%SZ'
