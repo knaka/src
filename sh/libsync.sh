@@ -97,6 +97,7 @@ cmd_clone() {
   push_dir "$work_dir"
 
   # Set sparse-checkout patterns
+  local IFS="$ch_lf"
   # shellcheck disable=SC2046
   git sparse-checkout set --no-cone $(printf "/%s\n" "$@")
 
