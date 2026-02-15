@@ -33,7 +33,7 @@ gen_ba88d3d() {
 
 # Code generated from "$base" by tasks:expand task. DO NOT EDIT.
 
-#maker ${marker_93949c9}
+#marker ${marker_93949c9}
 ${mise_header} description="$body"
 saved_pwd_474b89b="\$PWD"
 _APPDIR="\$MISE_PROJECT_ROOT"/mise-tasks
