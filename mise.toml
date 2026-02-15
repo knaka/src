@@ -1,5 +1,8 @@
 min_version = '2026.2.7'
 
+[tasks."foo*"]
+run = "echo Foo"
+
 # BusyBox for Windows https://frippery.org/busybox/
 [tools."http:busybox"]
 os = ["windows"]

@@ -2,9 +2,13 @@
 # shellcheck shell=sh
 "${sourced_c28ce41-false}" && return 0; sourced_c28ce41=true
 
-. ./utils.lib.sh
-. ./edit.lib.sh
-. ./assert.lib.sh
+set -- "$PWD" "$@"; if test "${2:+$2}" = _LIBDIR; then cd "$3" || exit 1; fi
+set -- _LIBDIR .lib "$@"
+. ./.lib/utils.lib.sh
+. ./.lib/edit.lib.sh
+. ./.lib/assert.lib.sh
+shift 2
+cd "$1" || exit 1; shift
 
 hello_sh_7dad95b=./testdata/hello.sh
 hello_txt_e48f9dc=./testdata/hello.txt

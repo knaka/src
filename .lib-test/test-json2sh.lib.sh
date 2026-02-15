@@ -3,9 +3,9 @@
 "${sourced_23969e5-false}" && return 0; sourced_23969e5=true
 
 set -- "$PWD" "$@"; if test "${2:+$2}" = _LIBDIR; then cd "$3" || exit 1; fi
-set -- _LIBDIR . "$@"
-. ./assert.lib.sh
-. ./json2sh.lib.sh
+set -- _LIBDIR .lib "$@"
+. ./.lib/assert.lib.sh
+. ./.lib/json2sh.lib.sh
 shift 2
 cd "$1" || exit 1; shift
 

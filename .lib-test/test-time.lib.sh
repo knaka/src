@@ -3,10 +3,10 @@
 "${sourced_6cc6268-false}" && return 0; sourced_6cc6268=true
 
 set -- "$PWD" "$@"; if test "${2:+$2}" = _LIBDIR; then cd "$3" || exit 1; fi
-set -- _LIBDIR . "$@"
-. ./utils.lib.sh
-. ./time.lib.sh
-. ./assert.lib.sh
+set -- _LIBDIR .lib "$@"
+. ./.lib/utils.lib.sh
+. ./.lib/time.lib.sh
+. ./.lib/assert.lib.sh
 shift 2
 cd "$1" || exit 1; shift
 

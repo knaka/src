@@ -3,9 +3,9 @@
 "${sourced_cba2d9f-false}" && return 0; sourced_cba2d9f=true
 
 set -- "$PWD" "$@"; if test "${2:+$2}" = _LIBDIR; then cd "$3" || exit 1; fi
-set -- _LIBDIR . "$@"
-. ./utils.lib.sh
-. ./assert.lib.sh
+set -- _LIBDIR .lib "$@"
+. ./.lib/utils.lib.sh
+. ./.lib/assert.lib.sh
 shift 2
 cd "$1" || exit 1; shift
 
