@@ -60,7 +60,7 @@ generate_tasks() {
     fi
     local file_path
     # shellcheck disable=SC2086
-    file_path="$PWD$(IFS=:; printf "/%s" $name)"
+    file_path="$PWD$(IFS=:; printf "/%s" $name).sh"
     local dir_path
     dir_path="$(dirname "$file_path")"
     case "$type" in
