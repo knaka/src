@@ -32,3 +32,4 @@ python() { mise exec python -- python "$@"; }
 tblcalc() { mise exec "github:knaka/tblcalc" -- tblcalc "$@"; }
 yj() { mise exec yj -- yj "$@"; } # sclevine/yj: CLI - Convert between YAML, TOML, JSON, and HCL. Preserves map order. https://github.com/sclevine/yj
 yq() { mise exec yq -- yq "$@"; }
+gum() { mise exec gum -- gum "$@"; }
