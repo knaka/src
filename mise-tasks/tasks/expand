@@ -33,7 +33,7 @@ gen_ba88d3d() {
 
 # Code generated from "$base" by tasks:expand task. DO NOT EDIT.
 
-#${marker_93949c9}
+#maker ${marker_93949c9}
 ${mise_header} description="$body"
 saved_pwd_474b89b="\$PWD"
 _APPDIR="\$MISE_PROJECT_ROOT"/mise-tasks
@@ -85,7 +85,7 @@ main() {
   echo "Expanding task definitions in project \"$PROJECT_DIR\"." >&2
   cd "$PROJECT_DIR"/mise-tasks || exit 1
   find . -type f -print0 \
-  | xargs -0 grep -l "#${marker_93949c9}" \
+  | xargs -0 grep -l "#marker ${marker_93949c9}" \
   | xargs rm -f
   extract_task_info ./*.sh | generate_tasks
 }
