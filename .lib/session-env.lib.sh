@@ -5,7 +5,7 @@
 clear_session_env() {
   if test "${MISE_CONFIG_ROOT+set}" = set
   then
-    test "${RUNNER_PID+set}" = set || MISE_PID=x
+    test "${MISE_PID+set}" = set || MISE_PID=x
     rm -f "$TMPDIR"/session-envs-"$MISE_PID".sh
   else
     echo "Unknown task runner." >&2
