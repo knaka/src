@@ -3,28 +3,25 @@
 # shellcheck shell=sh
 "${sourced_163e1a5-false}" && return 0; sourced_163e1a5=true
 
-set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test "$2" != "$0"; then _APPDIR="$2"; fi; cd "$_APPDIR" || exit 1; fi
-. ./utils.lib.sh
-cd "$1"; shift 2
+set -- "$PWD" "${0%/*}" "$@"; test -z "${_APPDIR-}" && { test "$2" = "$0" && _APPDIR=. || _APPDIR="$2"; cd "$_APPDIR" || exit 1; }
+set -- _LIBDIR .lib "$@"
+. ./.lib/utils.lib.sh
+shift 2
+cd "$1" || exit 1; shift 2
 
 sh_ifsv_loop() {
   local usv=
-  usv="${usv}foo$us"
-  usv="${usv}bar$us"
-  usv="${usv}baz$us"
+  usv="${usv}foo bar$ch_us"
+  usv="${usv}  bar  baz$ch_us"
+  usv="${usv}   qux   qux$ch_us"
 
   local item
-  local saved_ifs="$IFS"; IFS="$us"
+  local IFS="$ch_us"
   for item in $usv
   do
     echo "item: $item"
   done
-  IFS="$saved_ifs"
 }
 
-case "${0##*/}" in
-  (sh-ifsv-loop.sh|sh-ifsv-loop)
-    set -o nounset -o errexit
-    sh_ifsv_loop "$@"
-    ;;
-esac
+set -o nounset -o errexit
+sh_ifsv_loop "$@"

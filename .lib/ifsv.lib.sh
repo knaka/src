@@ -26,14 +26,13 @@ ifsv_tail() {
   # shellcheck disable=SC2086
   set -- $1
   shift
-  local delim="${IFS%"${IFS#?}"}"
-  printf "%s$delim" "$@"
+  printf "%s${IFS%"${IFS#?}"}" "$@"
 }
 
 ifsv_length() {
   # shellcheck disable=SC2086
   set -- $1
-  echo "$#"
+  printf "%s" $#
 }
 
 ifsv_empty() {

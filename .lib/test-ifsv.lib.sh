@@ -38,6 +38,9 @@ test_ifsv_basic() (
 
   assert_eq "bar" "$(IFS=, ifsv_at "foo,bar,baz," 1)"
   assert_eq "foo,qux,baz," "$(IFS=, ifsv_at "foo,bar,baz," 1 "qux")"
+
+  # repeating chars other than white spaces are as the are.
+  assert_eq 3 "$(IFS=, ifsv_length ",,,")"
 )
 
 test_ifsv_join() (
@@ -139,10 +142,10 @@ test_plist() (
   assert_eq "key1,val1,key2,val2,,empty," "$(ifsm_put "$csvpl" "" "empty")"
   assert_eq "empty" "$(ifsm_get "key1,val1,key2,val2,,empty" "")"
 
-  IFS="$us"
+  IFS="$ch_us"
   usvpl=
   usvpl=$(ifsm_put "$usvpl" "foo bar" "FOO BAR")
   usvpl=$(ifsm_put "$usvpl" "baz qux" "BAZ QUX")
-  assert_eq "foo bar${us}FOO BAR${us}baz qux${us}BAZ QUX${us}" "$usvpl"
+  assert_eq "foo bar${ch_us}FOO BAR${ch_us}baz qux${ch_us}BAZ QUX${ch_us}" "$usvpl"
   assert_eq "BAZ QUX" "$(ifsm_get "$usvpl" "baz qux")"
 )

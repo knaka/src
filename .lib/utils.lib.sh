@@ -312,15 +312,18 @@ invoke() {
 
 # Unit separator (US), Information Separator One (0x1F)
 # shellcheck disable=SC2034
-readonly us=""
+readonly ch_us=""
+readonly us="$ch_us"
 # shellcheck disable=SC2034
-readonly is="$us"
+readonly ch_is="$ch_us"
 # shellcheck disable=SC2034
-readonly is1="$us"
+readonly ch_is1="$ch_us"
 
 # shellcheck disable=SC2034
-readonly newline_char="
+readonly ch_lf="
 "
+# shellcheck disable=SC2034
+readonly newline_char="$ch_lf"
 
 # shellcheck disable=SC2034
 readonly tab_char="	"
@@ -972,7 +975,7 @@ resubst() {
   local i=0 n=$(($# / step))
   while test "$i" -lt "$n"
   do
-    set -- "$@" -e "s${us}$1${us}$2${us}g"
+    set -- "$@" -e "s${ch_us}$1${ch_us}$2${ch_us}g"
     shift $step
     i=$((i + 1))
   done
