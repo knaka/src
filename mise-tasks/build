@@ -4,7 +4,7 @@
 "${sourced_ed7ed88-false}" && return 0; sourced_ed7ed88=true
 
 #MISE description="Build stuff."
-#MISE depends=["versions:sync", "task:route"]
+#MISE depends=["versions:sync", "tasks:expand"]
 
 set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test "$2" != "$0"; then _APPDIR="$2"; fi; cd "$_APPDIR" || exit 1; fi
 set -- _LIBDIR .lib "$@"
@@ -15,8 +15,8 @@ cd "$1" || exit 1; shift 2
 
 build() {
   embed_minified \
-    "$TASK_PROJECT_DIR"/lib-sh/json2sh.lib.sh \
-    "$TASK_PROJECT_DIR"/mise-tasks/task/route \
+    "$TASK_PROJECT_DIR"/.lib/json2sh.lib.sh \
+    "$TASK_PROJECT_DIR"/mise-tasks/tasks/expand \
     #nop
 }
 
