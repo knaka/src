@@ -22,12 +22,16 @@ run_mise() {
 }
 
 t() {
-  # Marker
   if is_windows
   then
+    # Marker
     export executed_thru_t_bb789ec=true
   fi
   local dir="$PWD"
+  if test -x task
+  then
+    exec sh ./task "$@"
+  fi
   while :
   do
     if is_root_dir "$dir"

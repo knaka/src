@@ -1,5 +1,15 @@
 min_version = '2026.2.7'
 
+[settings]
+# Print output as it comes in to utilize Gum. // Settings | mise-en-place https://mise.jdx.dev/configuration/settings.html
+task_output = "interleave"
+
+[env]
+MISE_PID = "{{mise_pid}}"
+
+[tools]
+gum = "0.17.0"
+
 # BusyBox for Windows https://frippery.org/busybox/
 [tools."http:busybox"]
 os = ["windows"]

@@ -21,6 +21,7 @@ gemini() { mise exec "npm:@google/gemini-cli" -- gemini "$@"; }
 ghq() { mise exec ghq -- ghq "$@"; }
 go() { mise exec go -- go "$@"; }
 gofmt() { mise exec go -- gofmt "$@"; }
+gum() { mise exec gum -- gum "$@"; }
 jmespath() { mise exec jmespath -- jp "$@"; }
 jq() { is_windows && set -- --binary "$@"; mise exec jq -- jq "$@"; }
 lua() { mise exec lua -- lua "$@"; }
@@ -35,4 +36,3 @@ python() { mise exec python -- python "$@"; }
 tblcalc() { mise exec "github:knaka/tblcalc" -- tblcalc "$@"; }
 yj() { mise exec yj -- yj "$@"; } # sclevine/yj: CLI - Convert between YAML, TOML, JSON, and HCL. Preserves map order. https://github.com/sclevine/yj
 yq() { mise exec yq -- yq "$@"; }
-gum() { mise exec gum -- gum "$@"; }
