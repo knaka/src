@@ -21,8 +21,8 @@ assert_eq() {
   done
   shift $((OPTIND-1))
 
-  test "$1" = "$2" && return 0
-  test "$1" -eq "$2" && return 0
+  test "$1" = "$2" 2>/dev/null && return 0
+  test "$1" -eq "$2" 2>/dev/null && return 0
   printf "Equality assertion failed%s\n" "${message:+ ($message)}"
   printf "  LHS: %s\n" "$1"
   printf "  RHS: %s\n" "$2"

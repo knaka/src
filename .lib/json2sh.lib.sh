@@ -51,8 +51,3 @@ json2sh() {
     --arg delim "$delim" \
     #nop
 }
-
-# Convert JSON object to shell variable assignment expressions.
-subcmd_json2sh() {
-  json2sh "$@"
-}

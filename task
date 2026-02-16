@@ -50,7 +50,14 @@ task() {
         ;;
       (*)
         # Mise task
-        exec "$_APPDIR"/mise run --output interleave "$task" "$@"
+        local multiple_tasks=false
+        local arg
+        for arg in "$@"
+        do
+          test "$arg" = ::: && multiple_tasks=true
+        done
+        "$multiple_tasks" || set -- -- "$@"
+        exec "$_APPDIR"/mise run "$task" "$@"
         ;;
     esac
   fi
