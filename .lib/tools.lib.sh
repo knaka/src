@@ -10,6 +10,8 @@ shift 2
 . ./../mise
 cd "$1" || exit 1; shift
 
+export MISE_ACTIVATE_AGGRESSIVE=true
+
 # It is preferred that versions of tools are defined not here but by mise and the versions are defined in each mise.toml.
 
 caddy() { mise exec caddy -- caddy "$@"; } 
