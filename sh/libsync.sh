@@ -109,9 +109,9 @@ cmd_clone() {
   mkdir -p "$dest_path"
   for pattern in "$@"
   do
-    find . -path "./$pattern" -print0 \
-    | tar --null -T - -cf - \
-    | tar --cd "$dest_path" -xf -
+    find . -path "./$pattern" \
+    | tar -T - -cf - \
+    | tar -C "$dest_path" -xf -
   done
 
   pop_dir

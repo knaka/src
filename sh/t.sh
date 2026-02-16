@@ -17,7 +17,7 @@ run_mise() {
   else
     local subcmd="$1"
     shift
-    mise run "$subcmd" -- "$@"
+    mise run "$subcmd" "$@"
   fi
 }
 
