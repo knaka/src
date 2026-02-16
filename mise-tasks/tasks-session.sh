@@ -8,7 +8,7 @@ set -- _LIBDIR .lib "$@"
 shift 2
 cd "$1" || exit 1; shift 2
 
-# Clear session environment.
+# Clears the session environment.
 #MISE hide=true
 task_sessionenv__clear() {
   clear_session_env
@@ -22,7 +22,7 @@ choose_env() {
   gum choose "$@"
 }
 
-# Ensure application environment $APP_ENV is set.
+# Ensures the application environment variable $APP_ENV is set.
 #MISE hide=true
 #MISE depends=["sessionenv:clear"]
 task_appenv__ensure() {
@@ -32,7 +32,7 @@ task_appenv__ensure() {
       (*,"$APP_ENV",*) ;;
       (*)
         {
-          echo "\"$APP_ENV\" is not acceptable for \"\$APP_ENV\" variable. Available values are:"
+          echo "\"$APP_ENV\" is not a valid value for the \"\$APP_ENV\" variable. Available values are:"
           local IFS=,
           local env
           for env in $APP_ENVS
@@ -49,7 +49,7 @@ task_appenv__ensure() {
   add_session_env "APP_ENV" "$APP_ENV"
 }
 
-# Confirm critical operation.
+# Confirms a critical operation.
 #MISE hide=true
 #MISE depends=["appenv:ensure"]
 task_critenv__confirm() {
@@ -63,7 +63,7 @@ task_critenv__confirm() {
     if test "$APP_ENV" = "$env"
     then
       gum confirm --default=no \
-        "You are doing critical something for $APP_ENV environment. OK?"
+        "You are performing a critical operation on the \"$APP_ENV\" environment. Proceed?"
       break
     fi
   done
