@@ -15,3 +15,5 @@ node_modules
 /.devcontainer/devcontainer.json
 /.devcontainer/docker-compose.override.yml
 revive.log
+
+mise.local.toml

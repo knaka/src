@@ -6,10 +6,10 @@ set -o nounset -o errexit
 . ./utils.lib.sh
 
 rewrite_args() (
-  usv_args="$(echo "$1" | sed -E -e "s/, */${us}/g")"
+  usv_args="$(echo "$1" | sed -E -e "s/, */${ch_us}/g")"
   delim=
   _push_ifs
-  IFS="${us}"
+  IFS="${ch_us}"
   for arg in $usv_args
   do
     printf '%stypeof %s === "undefined"? null: %s' "$delim" "$arg" "$arg"

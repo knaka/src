@@ -1,14 +1,15 @@
-#!/usr/bin/env sh
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
 "${sourced_569237b-false}" && return 0; sourced_569237b=true
 
-set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test "$2" != "$0"; then _APPDIR="$2"; fi; cd "$_APPDIR" || exit 1; fi
+set -- "$PWD" "${0%/*}" "$@"; test -z "${_APPDIR-}" && { test "$2" = "$0" && _APPDIR=. || _APPDIR="$2"; cd "$_APPDIR" || exit 1; }
 set -- _LIBDIR .lib "$@"
 . ./.lib/utils.lib.sh
 shift 2
 . ./conf.sh
 cd "$1" || exit 1; shift 2
+
+# bar cafead0abc
 
 should_block_b69939e=false
 

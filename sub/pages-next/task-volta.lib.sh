@@ -69,11 +69,11 @@ set_volta_env() {
 }
 
 set_node_env() {
-  if test "${guard_54448e7+set}" = set
+  if test "${guard_ca5c77+set}" = set
   then
     return 0
   fi
-  guard_54448e7=x
+  guard_ca5c77e=x
   set_volta_env
   PATH="$(dirname "$(subcmd_volta which node)"):$PATH"
   export PATH

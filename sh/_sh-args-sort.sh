@@ -7,11 +7,11 @@ args_sort() {
   local ifs_saved="$IFS"
   # Unit Separator
   local us=""
-  IFS="$us"
+  IFS="$ch_us"
   # shellcheck disable=SC2046
-  set -- $(printf "%s${us}" "$@" | sort --field-separator "$us")
+  set -- $(printf "%s${ch_us}" "$@" | sort --field-separator "$ch_us")
   IFS="$ifs_saved"
   printf "%s\n" "$@"
 }
 
-args_sort 789 123 "cdef${us}gabc" xyz "_ _" abc
+args_sort 789 123 "cdef${ch_us}gabc" xyz "_ _" abc

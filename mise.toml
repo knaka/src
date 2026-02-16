@@ -1,11 +1,5 @@
 min_version = '2026.2.7'
 
-[task_config]
-includes = [
-  "mise-tasks",
-  "mise-tasks/*.toml",
-]
-
 # BusyBox for Windows https://frippery.org/busybox/
 [tools."http:busybox"]
 os = ["windows"]

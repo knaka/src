@@ -30,7 +30,7 @@ task() {
     local task="$1"
     shift
     case "$task" in
-      (*:*)
+      (*/*:*)
         # "file_name:function_name"
         local file
         file="${task%:*}"
@@ -50,7 +50,7 @@ task() {
         ;;
       (*)
         # Mise task
-        exec "$_APPDIR"/mise run "$task" -- "$@"
+        exec "$_APPDIR"/mise run --output interleave "$task" "$@"
         ;;
     esac
   fi

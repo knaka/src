@@ -1,0 +1,78 @@
+#!/usr/bin/env sh
+# vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
+# shellcheck shell=sh
+"${sourced_4375684-false}" && return 0; sourced_4375684=true
+
+#MISE description="Detect ID duplication among files."
+
+set -- "$PWD" "${0%/*}" "$@"; test -z "${_APPDIR-}" && { test "$2" = "$0" && _APPDIR=. || _APPDIR="$2"; cd "$_APPDIR" || exit 1; }
+set -- _LIBDIR .lib "$@"
+. ./.lib/utils.lib.sh
+shift 2
+cd "$1" || exit 1; shift 2
+
+detect_dup_id() {
+  cd "$PROJECT_DIR"
+  git ls-files \
+  | while read -r file
+    do
+      # echo "$file" >&2
+      test -f "$file" || continue
+      test -L "$file" && continue
+      case "$file" in
+        (begin_45a2fb8 \
+        |*.json \
+        |*.lock \
+        |*.yaml \
+        |*/*.bak \
+        |*/bak.* \
+        |*/cmd-gobin \
+        |*/go-hello \
+        |*/go.mod \
+        |*/go.sum \
+        |sub/* \
+        |end_85190e4)
+          continue
+          ;;
+      esac
+      grep -E -o -e '[^0-9a-fA-F][0-9a-fA-F]{7}' \
+      <"$file" \
+      | sed -e 's/^.//' \
+      | tr '[:upper:]' '[:lower:]' \
+      | sort \
+      | uniq \
+      | while read -r line
+        do
+          # echo "$line" "$file"
+          echo "$line"
+        done
+    done \
+  | grep -v \
+    -e 474b89b \
+    -e 53c8fd5 \
+    -e 0000000 \
+    -e 1000000 \
+    -e 2024013 \
+    -e 2654435 \
+    -e 2684354 \
+    -e 3681e39 \
+    -e 9376eeb \
+    -e a5f342b \
+    -e cafebab \
+    -e cceeded \
+    -e dfd4bfe \
+    -e eabed9b \
+    -e ed9038b \
+    -e fffffff \
+    -e bb789ec \
+    -e e8ccfbb \
+  | sort \
+  | uniq -d
+}
+
+case "${0##*/}" in
+  (detect-dup-id)
+    set -o nounset -o errexit
+    detect_dup_id "$@"
+    ;;
+esac

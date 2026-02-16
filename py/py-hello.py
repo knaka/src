@@ -1,6 +1,6 @@
 # Print working directory.
 import os
-print(os.getcwd())
+print("b67be88", os.getcwd())
 
 # Print the passed arguments.
 import sys

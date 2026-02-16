@@ -6,7 +6,7 @@
 . ./test.lib.sh
 . ./_assert.lib.sh
 
-yaml_5bd7f91() {
+yaml_021812a() {
   cat <<EOF
 foo: FOO
 # comment
@@ -15,7 +15,7 @@ baz: BAZ
 EOF
 }
 
-yaml_expected_6d39916() {
+yaml_expected_015a1fa() {
   cat <<EOF
 foo: FOO
 # comment
@@ -25,11 +25,11 @@ EOF
 }
 
 test_yq_comment() {
-  local yaml="$(yaml_5bd7f91 | yq '.bar = .bar + " HOGE"')"
-  assert_eq "$(yaml_expected_6d39916)" "$yaml"
+  local yaml="$(yaml_021812a | yq '.bar = .bar + " HOGE"')"
+  assert_eq "$(yaml_expected_015a1fa)" "$yaml"
 }
 
-toml_5bd7f91() {
+toml_9d4a9bb() {
   cat <<EOF
 foo = "FOO"
 # comment
@@ -41,7 +41,7 @@ EOF
 test_yq_toml() {
   skip_if true
   # Comment lines disappear.
-  toml_5bd7f91 | yq --input-format=toml --output-format=yaml
+  toml_9d4a9bb | yq --input-format=toml --output-format=yaml
   # Cannot output TOML.
-  # toml_5bd7f91 | yq --input-format=toml --output-format=toml
+  # toml_9d4a9bb | yq --input-format=toml --output-format=toml
 }

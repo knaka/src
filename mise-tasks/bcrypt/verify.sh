@@ -1,0 +1,14 @@
+#!/usr/bin/env sh
+
+# Code generated from "tasks-bcrypt.sh" by tasks:expand task. DO NOT EDIT.
+
+#marker ed9038b1-9de5-40fd-bede-eabed9b60306
+#MISE description="[--password=<password> --hash=<hash>] Verify password against bcrypt hash."
+saved_pwd_474b89b="$PWD"
+_APPDIR="$MISE_PROJECT_ROOT"/mise-tasks
+cd "$_APPDIR"
+. ./"tasks-bcrypt.sh"
+cd "$saved_pwd_474b89b"
+set -o nounset -o errexit
+task_bcrypt__verify "$@"
+#MISE tools={"uv"="0.10"}

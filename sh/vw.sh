@@ -1,4 +1,3 @@
-#!/usr/bin/env sh
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
 "${sourced_3ae0529-false}" && return 0; sourced_3ae0529=true
@@ -9,6 +8,8 @@ set -- _LIBDIR .lib "$@"
 shift 2
 . ./ed.sh
 cd "$1" || exit 1; shift 2
+
+# foo cafead0def
 
 vw() {
   register_temp_cleanup

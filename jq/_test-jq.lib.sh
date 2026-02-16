@@ -17,14 +17,14 @@ test_examples() {
     ]
   ' | jq -c >"$input_json"
 
-  printf "%s$us%s$us%s$us%s\n" \
+  printf "%s$ch_us%s$ch_us%s$ch_us%s\n" \
     'Alice, ALICE' true '{"name":"Alice, ALICE","email":"alice@example.com"}' 'Returns the first matching entry' \
     'Bob, BOB' true '{"name":"Bob, BOB","email":"bob@example.com"}' 'Returns the matching entry' \
     'Charlie, CHARLIE' false '' 'Does not exist' \
     'David, DAVID' false '' 'Does not exist' \
   | (
     count=0
-    while IFS="$us" read -r name must_succeed expected message
+    while IFS="$ch_us" read -r name must_succeed expected message
     do
       if actual="$(jq -c -e --arg name "$name" '[.[] | select(.name == $name)][0]' <"$input_json")"
       then

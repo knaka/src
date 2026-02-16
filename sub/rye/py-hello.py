@@ -6,9 +6,9 @@ print(os.getcwd())
 import sys
 print(sys.argv)
 
-print("9e66f77", sys.executable)
+print("f73556a", sys.executable)
 
-print("b5e8d76", sys.path);
+print("b4492de", sys.path);
 
 # .venv の Python で動いているので、その .venv 内の site-packages は読める。Python ではインタプリタがいずれかによって探索パスが決まる
 import invoke

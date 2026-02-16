@@ -15,7 +15,7 @@ readonly stmts_file_base="$TEMP_DIR"/b6a5748
 chaintrap() {
   local stmts="$1"
   shift 
-  local stmts_bak_file="$TEMP_DIR"/347803f
+  local stmts_bak_file="$TEMP_DIR"/a2548e4
   local sigspec
   for sigspec in "$@"
   do
