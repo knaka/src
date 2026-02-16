@@ -30,8 +30,11 @@ restore_session_env() {
   if test "${MISE_CONFIG_ROOT+set}" = set
   then
     test "${MISE_PID+set}" = set || MISE_PID=x
-    # shellcheck disable=SC1090
-    . "$TMPDIR"/session-envs-"$MISE_PID".sh
+    if test -r "$TMPDIR"/session-envs-"$MISE_PID".sh
+    then
+      # shellcheck disable=SC1090
+      . "$TMPDIR"/session-envs-"$MISE_PID".sh
+    fi
   else
     echo "Unknown task runner." >&2
     return 1
