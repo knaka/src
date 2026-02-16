@@ -65,6 +65,8 @@ function prepend_path {
   $env:PATH = "$normalizedPath;$path_prev" -replace ';{2,}', ';'
 }
 
+prepend_path $env:LOCALAPPDATA\mise\shims
+
 # ワイルドカードに一致するディレクトリを取得し、ループ
 Get-ChildItem -Path "$env:USERPROFILE\*-bin" -Directory | ForEach-Object {
   # それぞれのディレクトリに対して prepend_path を呼ぶ
@@ -73,7 +75,6 @@ Get-ChildItem -Path "$env:USERPROFILE\*-bin" -Directory | ForEach-Object {
 
 # これを優先したい
 prepend_path $env:USERPROFILE\sh-bin
-prepend_path $env:LOCALAPPDATA\mise\shims
 
 # prepend_path "C:\msys64\usr\bin"
 
