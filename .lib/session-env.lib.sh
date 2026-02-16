@@ -6,7 +6,7 @@ clear_session_env() {
   if test "${MISE_CONFIG_ROOT+set}" = set
   then
     test "${MISE_PID+set}" = set || MISE_PID=x
-    rm -f "$TMP"/session-envs-"$MISE_PID".sh
+    rm -f "${TMP-$TMPDIR}"/session-envs-"$MISE_PID".sh
   else
     echo "Unknown task runner." >&2
     return 1
@@ -19,7 +19,7 @@ add_session_env() {
     test "${MISE_PID+set}" = set || MISE_PID=x
     local key="$1"
     local value="$2"
-    echo "export $key=$value" >>"$TMP"/session-envs-"$MISE_PID".sh
+    echo "export $key=$value" >>"${TMP-$TMPDIR}"/session-envs-"$MISE_PID".sh
   else
     echo "Unknown task runner." >&2
     return 1
@@ -30,10 +30,10 @@ restore_session_env() {
   if test "${MISE_CONFIG_ROOT+set}" = set
   then
     test "${MISE_PID+set}" = set || MISE_PID=x
-    if test -r "$TMP"/session-envs-"$MISE_PID".sh
+    if test -r "${TMP-$TMPDIR}"/session-envs-"$MISE_PID".sh
     then
       # shellcheck disable=SC1090
-      . "$TMP"/session-envs-"$MISE_PID".sh
+      . "${TMP-$TMPDIR}"/session-envs-"$MISE_PID".sh
     fi
   else
     echo "Unknown task runner." >&2

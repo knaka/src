@@ -80,8 +80,8 @@ export SUDO_EDITOR="$VISUAL"
 # ==========================================================================
 #region よく使う変数
 
-# TMP: This variable shall represent a pathname of a directory made available for programs that need a place to create temporary files. — Environment Variables https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap08.html
-t="$TMP"
+# TMPDIR: This variable shall represent a pathname of a directory made available for programs that need a place to create temporary files. — Environment Variables https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap08.html
+t="$TMPDIR"
 T="$t"
 
 d="$HOME"/doc
@@ -443,7 +443,6 @@ bindkey '^[a' select-all
 bindkey '^z' x-copy-region-as-kill
 
 bindkey '^a' unmark-backward-word
-bindkey '^d' unmark-forward-char
 bindkey '^e' unmark-up-line-or-history
 bindkey '^f' unmark-forward-word
 bindkey '^g' delete-char-or-list-or-region
@@ -451,7 +450,13 @@ bindkey '^h' backward-delete-char-or-region
 bindkey '^n' down-line-or-history
 bindkey '^p' up-line-or-history
 bindkey '^r' history-incremental-search-backward
+
 bindkey '^s' unmark-backward-char
+bindkey '^d' unmark-forward-char
+
+bindkey "\e[D" unmark-backward-char # left
+bindkey "\e[C" unmark-forward-char # right
+
 # 効いている
 bindkey '^w' x-kill-region
 bindkey '^x' unmark-down-line-or-history
