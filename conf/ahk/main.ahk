@@ -262,7 +262,7 @@ F13:: {
 >^j:: Send "^{j}"
 >^k:: Send "^{k}"
 ;>^l:: Send "^{l}" ; Hibernate にマップ
->^l:: {
+!>^l:: {
   Run "shutdown /h"
 }
 >^m:: Send "^{m}"
