@@ -14,11 +14,11 @@ clear_session_env() {
 }
 
 add_session_env() {
+  local key="$1"
+  local value="$2"
   if test "${MISE_CONFIG_ROOT+set}" = set
   then
     test "${MISE_PID+set}" = set || MISE_PID=x
-    local key="$1"
-    local value="$2"
     echo "export $key=$value" >>"${TMP-$TMPDIR}"/session-envs-"$MISE_PID".sh
   else
     echo "Unknown task runner." >&2
