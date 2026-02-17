@@ -54,7 +54,7 @@ mise() {
     cd "$saved_pwd" || exit 1
     mv "$work_dir_path"/mise/bin/* "$app_dir_path"
   fi
-  MISE_ACTIVATE_AGGRESSIVE=true command "$cmd_path" "$@"
+  MISE_ACTIVATE_AGGRESSIVE=true exec "$cmd_path" "$@"
 }
 
 case "${0##*/}" in
