@@ -44,58 +44,42 @@ mkdir -p "$CACHE_DIR"
 
 TEMP_DIR=; unset TEMP_DIR
 
+cleanup_statements=""
+
+add_cleanup() {
+  cleanup_statements="${1};$cleanup_statements"
+  # shellcheck disable=SC2064
+  trap "$cleanup_statements" EXIT
+}
+
 # Create a temporary directory and assign $TEMP_DIR env var
 register_temp_cleanup() {
-  test "${TEMP_DIR+set}" = set && return 0
+  first_call 14b82c7 || return 0
   TEMP_DIR="$(mktemp -d)"
-  # shellcheck disable=SC2064
-  trap 'rm -fr "$TEMP_DIR"' EXIT
+  add_cleanup "rm -fr '${TEMP_DIR}'"
 }
 
-# Create a temporary directory and assign $TEMP_DIR env var. Obsolete: use register_temp_cleanup instead.
-init_temp_dir() {
-  test "${TEMP_DIR+set}" = set && return 0
-  TEMP_DIR="$(mktemp -d)"
-  # shellcheck disable=SC2064
-  trap "rm -fr '$TEMP_DIR'" EXIT
-}
-
-readonly stmts_file_id=523f163
-
-# Chain traps to avoid overwriting the previous trap.
-chaintrap() {
-  local stmts_new="$1"
-  shift 
-  init_temp_dir || return $?
-  # Base path of the file containing the statements to be called during finalization
-  local stmts_file_base="$TEMP_DIR"/"$stmts_file_id"
-  local stmts_old_file="$TEMP_DIR"/347803f
-  local sigspec
-  for sigspec in "$@"
-  do
-    local stmts_file="$stmts_file_base"-"$sigspec"
-    if test -f "$stmts_file"
-    then
-      cp "$stmts_file" "$stmts_old_file"
-    else
-      touch "$stmts_old_file"
-    fi
-    echo "{ $stmts_new; };" >"$stmts_file"
-    cat "$stmts_old_file" >>"$stmts_file"
-    # shellcheck disable=SC2064 # "Use single quotes, otherwise this expands now rather than when signalled."
-    # shellcheck disable=SC2154 # "var is referenced but not assigned."
-    trap "rc=\$?; test -r '$stmts_file' && . '$stmts_file'; rm -fr '$TEMP_DIR'; exit \$rc" "$sigspec"
-  done
+# Register child-proceses cleanup trap handler.
+register_child_cleanup() {
+  first_call 5f719a3 || return 0
+  # trap : TERM; sleep 0.2s; 
+  if is_windows
+  then
+    add_cleanup 'kill -TERM 0'
+  elif is_macos
+  then
+    add_cleanup 'trap "" TERM; kill -TERM 0'
+  elif is_linux
+  then
+    add_cleanup 'trap : TERM; kill -TERM 0'
+  else
+    echo Not implemented >&2
+  fi
 }
 
 # Call the finalization function before `exec` which does not call trap function.
 finalize() {
-  test "${TEMP_DIR+set}" = set || return 0
-  local stmts_file_base="$TEMP_DIR"/"$stmts_file_id"
-  local stmts_file="$stmts_file_base"-EXIT
-  # shellcheck disable=SC1090 # "Can't follow non-constant source. Use a directive to specify location"
-  test -f "$stmts_file" && . "$stmts_file"
-  rm -fr "$TEMP_DIR"
+  "$cleanup_statements"
 }
 
 #endregion
@@ -696,58 +680,6 @@ newer() {
 # Returns true if no source file is newer than the destination file.
 older() {
   ! newer "$@"
-}
-
-# Kill child processes for each shell/platform.
-kill_child_processes() {
-  if is_windows
-  then
-    # Windows BusyBox ash
-    # If the process is killed by PID, ash does not kill `exec`ed subprocesses.
-    local jids
-    jids="$TEMP_DIR"/jids
-    # ash provides a "jobs pipe".
-    jobs | sed -E -e 's/^[^0-9]*([0-9]+).*Running *(.*)/\1/' >"$jids"
-    while read -r jid
-    do
-      kill "%$jid" || :
-      wait "%$jid" || :
-      echo "Killed %$jid" >&2
-    done <"$jids"
-  elif is_macos
-  then
-    pkill -P $$ || :
-  elif is_linux
-  then
-    if is_bash
-    then
-      local jids
-      jids="$TEMP_DIR"/jids
-      # Bash provides a "jobs pipe".
-      jobs | sed -E -e 's/^[^0-9]*([0-9]+).*Running *(.*)/\1/' >"$jids"
-      while read -r jid
-      do
-        kill "%$jid" || :
-        wait "%$jid" || :
-        echo "Killed %$jid" >&2
-      done <"$jids"
-    else
-      pkill -P $$ || :
-    fi
-  else
-    echo "kill_child_processes: Unsupported platform or shell." >&2
-    exit 1
-  fi
-}
-
-# Register child-proceses cleanup trap handler.
-register_child_cleanup() {
-  chaintrap kill_child_processes EXIT TERM INT
-}
-
-# Obsolete: use `register_child_cleanup`.
-defer_child_cleanup() {
-  chaintrap kill_child_processes EXIT TERM INT
 }
 
 # Open the URL in the browser.

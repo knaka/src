@@ -9,6 +9,7 @@ MISE_PID = "{{mise_pid}}"
 
 [tools]
 gum = "0.17.0"
+"watchexec" = "2.3.3"
 
 # BusyBox for Windows https://frippery.org/busybox/
 [tools."http:busybox"]

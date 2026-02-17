@@ -19,7 +19,7 @@ choose_env() {
   # shellcheck disable=SC2086
   # shellcheck disable=SC2153
   set -- $APP_ENVS
-  gum choose "$@"
+  gum choose --header "Application Environment (\$APP_ENV):" "$@"
 }
 
 # Ensures the application environment variable $APP_ENV is set.

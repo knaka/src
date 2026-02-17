@@ -50,4 +50,4 @@ if exist "!script_dir_path!\!ARG0BASE!.sh" (
 
 endlocal ^
 & set "ARG0=%ARG0%" & set "ARG0BASE=%ARG0BASE%" ^
-& set "BB_GLOBBING=0" & "%cmd_path%" sh "%script_file_path%" %* || exit /b %ERRORLEVEL%
+& set "BB_GLOBBING=0" & GOTO # 2>NUL || "%cmd_path%" sh "%script_file_path%" %* || exit /b %ERRORLEVEL%
