@@ -5,7 +5,6 @@ test "${sourced_a642529-}" = true && return 0; sourced_a642529=true
 set -- "$PWD" "$@"; if test "${2:+$2}" = _LIBDIR; then cd "$3" || exit 1; fi
 set -- _LIBDIR . "$@"
 . ./utils.lib.sh
-  register_temp_cleanup
 shift 2
 cd "$1" || exit 1; shift
 
@@ -41,57 +40,37 @@ ip_ports_in_use() {
     # --numeric: Do not resolve service names.
     ss --tcp --all --numeric --no-header | awk '{ print $4 }' | sed -n -e 's/^.*://p'
   else
-    echo "Not implemented" >&2
+    echo "Not implemented (490a9b1)" >&2
     exit 1
-  fi
-}
-
-ports_used_in_session_path=
-
-init_ports_used_in_session_path() {
-  if test -z "$ports_used_in_session_path"
-  then
-    ports_used_in_session_path="$TEMP_DIR"/0545610
-    touch "$ports_used_in_session_path"
   fi
 }
 
 # List free IP ports.
 ip_free_ports() {
-  local priv_begin=49152
-  local priv_end=65535
-  readonly priv_begin priv_end
-  local port="${1:-$priv_begin}"
-  local end="${2:-$priv_end}"
+  register_temp_cleanup
+  local port="$1"
+  local end="$2"
   local priv_ports_path="$TEMP_DIR"/f5c41b5
   seq "$port" "$end" >"$priv_ports_path"
   local used_ports_path="$TEMP_DIR"/6157e29
-  (ip_ports_in_use | cat "$ports_used_in_session_path") | sort | uniq >"$used_ports_path"
+  ip_ports_in_use >"$used_ports_path"
   comm -23 "$priv_ports_path" "$used_ports_path"
 }
 
-ip_free_port() {
-  init_ports_used_in_session_path
-  local port
-  port="$(ip_free_ports "$@" | head -n 1)"
-  echo "$port" >>"$ports_used_in_session_path"
-  echo "$port"
-}
-
-# [begin end] Search for a free port in the range.
-subcmd_ip__free_port() {
-  ip_free_port "$@"
-}
-
 ip_random_free_port() {
-  init_ports_used_in_session_path
-  local port
-  port="$(ip_free_ports "$@" | shuf | head -n 1)"
-  echo "$port" >>"$ports_used_in_session_path"
-  echo "$port"
-}
-
-# [begin end] Search for a random free port in the range.
-subcmd_ip__random_free_port() {
-  ip_random_free_port "$@"
+  local start=49152
+  local end=65535
+  local number=1
+  OPTIND=1; while getopts _-: OPT
+  do
+    test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
+    case "$OPT" in
+      (start) start="$OPTARG";;
+      (end) end="$OPTARG";;
+      (number) number="$OPTARG";;
+      (*) echo "Unexpected option: $OPT" >&2; exit 1;;
+    esac
+  done
+  shift $((OPTIND-1))
+  ip_free_ports "$start" "$end" | shuf | head -n "$number"
 }
