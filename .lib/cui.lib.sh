@@ -2,6 +2,8 @@
 # shellcheck shell=sh
 "${sourced_3f9fe75-false}" && return 0; sourced_3f9fe75=true
 
+# Alternative `gum choose` which takes value not label for `--selected=...`.
+# - gum choose label:value options use value for --selected · Issue #958 · charmbracelet/gum https://github.com/charmbracelet/gum/issues/958
 choose() {
   local arg
   local scanning_items=false
