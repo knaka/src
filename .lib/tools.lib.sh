@@ -7,7 +7,10 @@ set -- _LIBDIR . "$@"
 . ./utils.lib.sh
   register_temp_cleanup
 shift 2
-. ./../mise
+if test "${MISE_CONFIG_ROOT+set}" != set
+then
+  . ./../mise
+fi
 cd "$1" || exit 1; shift
 
 export MISE_ACTIVATE_AGGRESSIVE=true
