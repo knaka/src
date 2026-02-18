@@ -544,7 +544,7 @@ aws-switch-profile() {
 }
 
 oci-switch-profile() {
-  OCI_PROFILE="$(command oci-switch-profile "$@")"
+  OCI_PROFILE="$(oci_switch_profile "$@")"
   if test -n "$OCI_PROFILE"
   then
     export OCI_PROFILE

@@ -119,6 +119,10 @@ has_external_command() {
 # ==========================================================================
 #region Platform detection. Detect platform without using subprocesses whenever possible.
 
+is_mise() {
+  test "${MISE_CONFIG_ROOT+set}" = set
+}
+
 is_linux() {
   test -d /proc -o -d /sys
 }
