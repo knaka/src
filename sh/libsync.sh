@@ -44,6 +44,25 @@ get_lib_info() {
   commit="$(printf '%s' "$entry" | jq -r '.commit')"
 }
 
+default_conf_name() {
+  local count
+  count="$(jq '.libraries | length' <"$CONFIG_FILE")"
+  if test "$count" -eq 0
+  then
+    echo "Error: no libraries configured." >&2
+    return 1
+  fi
+  if test "$count" -ne 1
+  then
+    echo "Error: multiple libraries configured. Please specify a library name." >&2
+    return 1
+  fi
+  local name
+  name="$(jq -r '.libraries[0].name' <"$CONFIG_FILE")"
+  echo "Using default library: $name" >&2
+  printf '%s' "$name"
+}
+
 cmd_clone() {
   local repo
   local branch="main"
@@ -64,11 +83,17 @@ cmd_clone() {
   done
   shift $((OPTIND-1))
 
-  local name="$1"
-  shift
+  local name
 
   if "$pull"
   then
+    if test $# -gt 0
+    then
+      name="$1"
+    else
+      name="$(default_conf_name)"
+    fi
+
     # Pull mode: read config from JSON
     get_lib_info "$name"
     # Convert JSON array to positional parameters
@@ -76,6 +101,9 @@ cmd_clone() {
     # shellcheck disable=SC2046
     set -- $(printf '%s' "$paths_json" | jq -r '.[]')
   else
+    name="$1"
+    shift
+
     # Clone mode: use command line arguments
     repo="$1"
     shift
@@ -156,7 +184,7 @@ cmd_clone() {
         }
       '
     )"
-    jq --argjson entry "$new_entry" '.libraries += [$entry]' "$CONFIG_FILE" > "$CONFIG_FILE.tmp"
+    jq --argjson entry "$new_entry" '.libraries += [$entry]' c > "$CONFIG_FILE.tmp"
     mv "$CONFIG_FILE.tmp" "$CONFIG_FILE"
     echo "Added $name (commit: $(echo "$commit" | sed -E -e 's/^(.......).*/\1/'))"
   fi
@@ -171,7 +199,14 @@ cmd_diff() {
   local paths_json
   local commit
 
-  local name="$1"
+  local name
+  if test $# -gt 0
+  then
+    name="$1"
+    shift
+  else
+    name="$(default_conf_name)"
+  fi
   get_lib_info "$name"
 
   # Convert JSON array to positional parameters
@@ -219,8 +254,14 @@ cmd_diff() {
 }
 
 cmd_add_path() {
-  local name="$1"
-  shift
+  local name
+  if test $# -gt 0
+  then
+    name="$1"
+    shift
+  else
+    name="$(default_conf_name)"
+  fi
 
   # Check if library exists
   if ! jq --exit-status --arg name "$name" '.libraries[] | select(.name == $name)' <"$CONFIG_FILE" >/dev/null 2>&1
@@ -240,8 +281,14 @@ cmd_add_path() {
 }
 
 cmd_remove_path() {
-  local name="$1"
-  shift
+  local name
+  if test $# -gt 0
+  then
+    name="$1"
+    shift
+  else
+    name="$(default_conf_name)"
+  fi
 
   # Check if library exists
   if ! jq --exit-status --arg name "$name" '.libraries[] | select(.name == $name)' <"$CONFIG_FILE" >/dev/null 2>&1

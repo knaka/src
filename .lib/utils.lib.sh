@@ -44,10 +44,16 @@ mkdir -p "$CACHE_DIR"
 
 TEMP_DIR=; unset TEMP_DIR
 
-cleanup_statements=""
+cleanup_statements=":"
 
-add_cleanup() {
-  cleanup_statements="${1};$cleanup_statements"
+append_cleanup() {
+  cleanup_statements="$cleanup_statements; ${1}"
+  # shellcheck disable=SC2064
+  trap "$cleanup_statements" EXIT
+}
+
+prepend_cleanup() {
+  cleanup_statements="${1}; $cleanup_statements"
   # shellcheck disable=SC2064
   trap "$cleanup_statements" EXIT
 }
@@ -56,7 +62,7 @@ add_cleanup() {
 register_temp_cleanup() {
   first_call 14b82c7 || return 0
   TEMP_DIR="$(mktemp -d)"
-  add_cleanup "rm -fr '${TEMP_DIR}'"
+  prepend_cleanup 'rm -fr "$TEMP_DIR"'
 }
 
 # Register child-proceses cleanup trap handler.
@@ -65,13 +71,14 @@ register_child_cleanup() {
   # trap : TERM; sleep 0.2s; 
   if is_windows
   then
-    add_cleanup 'kill -TERM 0'
+    # After catching TERM, doing something seems to fail.
+    append_cleanup 'trap : TERM; kill -TERM -$$'
   elif is_macos
   then
-    add_cleanup 'trap "" TERM; kill -TERM 0'
+    prepend_cleanup 'trap : TERM; kill -TERM 0'
   elif is_linux
   then
-    add_cleanup 'trap : TERM; kill -TERM 0'
+    prepend_cleanup 'trap : TERM; kill -TERM 0'
   else
     echo Not implemented >&2
   fi
