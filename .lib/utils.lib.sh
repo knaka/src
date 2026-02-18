@@ -62,6 +62,7 @@ prepend_cleanup() {
 register_temp_cleanup() {
   first_call 14b82c7 || return 0
   TEMP_DIR="$(mktemp -d)"
+  # shellcheck disable=SC2016
   prepend_cleanup 'rm -fr "$TEMP_DIR"'
 }
 
