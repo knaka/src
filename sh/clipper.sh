@@ -8,6 +8,12 @@
 # @philschmid/clipper - npm https://www.npmjs.com/package/@philschmid/clipper
 clipper_version_2b8a94e=0.2.0
 
+set -- "$PWD" "${0%/*}" "$@"; test -z "${_APPDIR-}" && { test "$2" = "$0" && _APPDIR=. || _APPDIR="$2"; cd "$_APPDIR" || exit 1; }
+set -- _LIBDIR .lib "$@"
+. ./.lib/commands.lib.sh
+shift 2
+cd "$1" || exit 1; shift 2
+
 set_clipper_version() {
   clipper_version_2b8a94e="$1"
 }

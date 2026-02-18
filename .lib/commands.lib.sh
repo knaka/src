@@ -4,15 +4,23 @@
 
 # Provides commands that are invoked outside of Mise project.
 
-# Under Mise environment context, this file is not required.
-test "${MISE_CONFIG_ROOT+set}" = set && return 0
-
 set -- "$PWD" "$@"; if test "${2:+$2}" = _LIBDIR; then cd "$3" || exit 1; fi
 set -- _LIBDIR . "$@"
 . ./utils.lib.sh
 shift 2
-. ./../mise
+if test "${MISE_CONFIG_ROOT+set}" != set
+then
+  . ./../mise
+fi
 cd "$1" || exit 1; shift
+
+jq() {
+  is_windows && set -- --binary "$@"
+  mise exec jq -- jq "$@"
+}
+
+# Under Mise environment context, this file is not required.
+test "${MISE_CONFIG_ROOT+set}" = set && return 0
 
 export MISE_ACTIVATE_AGGRESSIVE=true
 
@@ -25,7 +33,6 @@ go() { mise exec go -- go "$@"; }
 gofmt() { mise exec go -- gofmt "$@"; }
 gum() { mise exec gum -- gum "$@"; }
 jmespath() { mise exec jmespath -- jp "$@"; }
-jq() { is_windows && set -- --binary "$@"; mise exec jq -- jq "$@"; }
 lua() { mise exec lua -- lua "$@"; }
 mdpp() { mise exec "github:knaka/mdpp" -- mdpp "$@"; }
 mlr() { mise exec miller -- mlr "$@"; }

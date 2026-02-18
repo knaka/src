@@ -6,6 +6,12 @@
 # cowsay - npm https://www.npmjs.com/package/cowsay
 cowsay_version_14ac6ce=1.6.0
 
+set -- "$PWD" "${0%/*}" "$@"; test -z "${_APPDIR-}" && { test "$2" = "$0" && _APPDIR=. || _APPDIR="$2"; cd "$_APPDIR" || exit 1; }
+set -- _LIBDIR .lib "$@"
+. ./.lib/commands.lib.sh
+shift 2
+cd "$1" || exit 1; shift 2
+
 set_cowsay_version() {
   cowsay_version_14ac6ce="$1"
 }
