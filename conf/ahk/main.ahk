@@ -149,6 +149,8 @@ F13:: {
 ; Vertical Move
 <^p::Send "{Up}"
 <^n::Send "{Down}"
+<^e::Send "{Up}"
+<^x::Send "{Down}"
 
 ; Rotate Tab
 <^Tab::Send "^{Tab}"
