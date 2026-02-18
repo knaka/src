@@ -8,6 +8,8 @@
 # Copied from .\mise.cmd .
 mise_ver_e8ccfbb='2026.2.11'
 
+command_9934d8a=false
+
 mise() {
   local ver="$mise_ver_e8ccfbb"
   local os
@@ -54,7 +56,13 @@ mise() {
     cd "$saved_pwd" || exit 1
     mv "$work_dir_path"/mise/bin/* "$app_dir_path"
   fi
-  MISE_ACTIVATE_AGGRESSIVE=true exec "$cmd_path" "$@"
+  export MISE_ACTIVATE_AGGRESSIVE=true
+  if "$command_9934d8a"
+  then
+    rm -fr "$TEMP_DIR"
+    exec "$cmd_path" "$@"
+  fi
+  command "$cmd_path" "$@"
 }
 
 case "${0##*/}" in
@@ -62,6 +70,7 @@ case "${0##*/}" in
     set -o nounset -o errexit
     CACHE_DIR="$HOME"/.cache/task-sh
     TEMP_DIR="$(mktemp -d)"
+    command_9934d8a=true
     trap 'rm -fr "$TEMP_DIR"' EXIT
     mise "$@"
     ;;

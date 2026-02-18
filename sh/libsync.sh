@@ -107,9 +107,9 @@ cmd_clone() {
 
   # Copy files
   mkdir -p "$dest_path"
-  for pattern in "$@"
+  for path in "$@"
   do
-    find . -path "./$pattern" \
+    find "./$path" \
     | tar -T - -cf - \
     | tar -C "$dest_path" -xf -
   done
@@ -183,19 +183,20 @@ cmd_diff() {
   dest_path="$(canon_path "$dest")"
 
   # Copy local files to temp directory
-  local local_dir="$TEMP_DIR"/local-$$
-  mkdir -p "$local_dir"
+  local ours_dir="$TEMP_DIR"/local-$$
+  mkdir -p "$ours_dir"
   push_dir "$dest_path"
-  for pattern in "$@"
+  local path
+  for path in "$@"
   do
-    find . -path "./$pattern" -print0 \
-    | tar --null -T - -cf - \
-    | tar --cd "$local_dir" -xf -
+    find "./$path" \
+    | tar -T - -cf - \
+    | tar -C "$ours_dir" -xf -
   done
   pop_dir
-
   # Clone and checkout the recorded commit
-  local orig_dir="$TEMP_DIR"/orig-$$
+  local orig_dir
+  orig_dir="$TEMP_DIR"/orig-$$
   git clone --filter=blob:none --sparse "$repo" "$orig_dir"
   push_dir "$orig_dir"
   git checkout "$commit"
@@ -205,12 +206,16 @@ cmd_diff() {
   pop_dir
 
   # Generate diff (original -> local) for each path
-  for pattern in "$@"
+  push_dir "$TEMP_DIR"
+  for path in "$@"
   do
-    diff -uN "$orig_dir/$pattern" "$local_dir/$pattern" || true
+    test -e "$ours_dir/$path" || continue
+    test -L "$ours_dir/$path" && continue
+    diff -uN "$(basename "$orig_dir")/$path" "$(basename "$ours_dir")/$path" || true
   done
+  pop_dir
 
-  rm -rf "$local_dir" "$orig_dir"
+  rm -rf "$ours_dir" "$orig_dir"
 }
 
 cmd_add_path() {
