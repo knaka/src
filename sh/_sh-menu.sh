@@ -3,33 +3,33 @@
 # shellcheck shell=sh
 "${sourced_20bf1eb-false}" && return 0; sourced_20bf1eb=true
 
-set -- "$PWD" "${0%/*}" "$@"; test "$2" != "$0" && cd "$2"
-. ./utils.lib.sh
-cd "$1"; shift 2
+set -- "$PWD" "${0%/*}" "$@"; test -z "${_APPDIR-}" && { test "$2" = "$0" && _APPDIR=. || _APPDIR="$2"; cd "$_APPDIR" || exit 1; }
+set -- _LIBDIR .lib "$@"
+. ./.lib/utils.lib.sh
+. ./.lib/cui.lib.sh
+shift 2
+cd "$1" || exit 1; shift 2
 
-alice() {
-  echo "Alice is called."
-}
+set -o nounset -o errexit
 
-bob() {
-  echo "Bob is called."
-}
-
-my_menu() {
-  menu \
-    "&Alice" \
-    "&Bob" \
-    # nop
-  case "$(get_key)"
-  in
-    (a) alice;;
-    (b) bob;;
+register_child_cleanup
+while :
+do
+  date
+  sleep 3
+done &
+result=bar
+while :
+do
+  result="$(hchoose --header="Selection:" --selected="$result" \
+    "Browse the site" \
+    "Clear" \
+    "Build it" \
+    "Exit"
+  )"
+  case "$result" in
+    (Clear) clear;;
+    (Exit) break;;
+    (*) ;;
   esac
-}
-
-case "${0##*/}" in
-  (sh-menu|sh-menu.sh)
-    set -o nounset -o errexit
-    my_menu "$@"
-    ;;
-esac
+done
