@@ -48,11 +48,11 @@ esac
 EOF
 }
 
-gen_tasks_body_f774151() { cat <<'EOF'
-case "${0##*/}" in
-  (tasks-*)
+gen_tasks_body_f774151() { cat <<EOF
+case "\${0##*/}" in
+  (${pattern})
     set -o nounset -o errexit
-    "$@"
+    "\$@"
     ;;
 esac
 EOF
