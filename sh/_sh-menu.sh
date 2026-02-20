@@ -21,7 +21,7 @@ done &
 result=bar
 while :
 do
-  result="$(hchoose --header="Selection:" --selected="$result" \
+  result="$(choosex --header="Selection:" --selected="$result" \
     "Browse the site" \
     "Clear" \
     "Build it" \

@@ -78,8 +78,8 @@ func (m model) View() string {
 }
 
 // keypressEntry is the entry point.
-func keypressEntry(_ *keypressParams) (err error) {
-	if _, err := tea.NewProgram(model{}).Run(); err == nil {
+func keypressEntry(params *keypressParams) (err error) {
+	if _, err := tea.NewProgram(model{}, tea.WithOutput(params.stderr)).Run(); err == nil {
 		fmt.Printf("%s", keyRet)
 	} else {
 		fmt.Println("Error running program:", err)
