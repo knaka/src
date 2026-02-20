@@ -176,7 +176,12 @@ choosex() {
       printf "\r" >&2
     fi
     local s
-    s="$(keypress)"
+    stty -icanon -echo
+    s="$(
+      saved_stty="$(stty -g)"
+      keypress
+      stty "$saved_stty"
+    )"
     if test "$s" = "enter"
     then
       shift $((i - 1))

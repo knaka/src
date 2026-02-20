@@ -1,7 +1,6 @@
-#!/usr/bin/env sh
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-"${sourced_20bf1eb-false}" && return 0; sourced_20bf1eb=true
+"${sourced_8324cce-false}" && return 0; sourced_8324cce=true
 
 set -- "$PWD" "${0%/*}" "$@"; test -z "${_APPDIR-}" && { test "$2" = "$0" && _APPDIR=. || _APPDIR="$2"; cd "$_APPDIR" || exit 1; }
 set -- _LIBDIR .lib "$@"
@@ -12,31 +11,28 @@ cd "$1" || exit 1; shift 2
 
 set -o nounset -o errexit
 
+filter_log() {
+  awk '{printf "\r%s\n", $0}'
+}
+
 register_child_cleanup
 while :
 do
-  date \
-  | (
-    IFS=
-    while read -r line
-    do
-      printf "\n%s\r" "$line"
-    done
-  )
+  date
   sleep 3
-done &
-result=bar
+done | filter_log &
+result=clear
 while :
 do
-  result="$(choose --header="Selection:" --selected="$result" \
-    "Browse the site" \
-    "Clear" \
-    "Build it" \
-    "Exit"
+  result="$(gum choose --selected="$result" \
+    "build" \
+    "do something" \
+    "clear" \
+    "exit"
   )"
   case "$result" in
-    (Clear) clear;;
-    (Exit) break;;
+    (clear) clear;;
+    (exit) break;;
     (*) ;;
   esac
 done

@@ -9,7 +9,12 @@ import (
 	"slices"
 
 	tea "github.com/charmbracelet/bubbletea"
+	_ "github.com/knaka/go-utils/initwait"
 	"github.com/spf13/pflag"
+	//lint:ignore ST1001
+	//nolint:staticcheck
+	//revive:disable-next-line:dot-imports
+	// . "github.com/knaka/go-utils"
 )
 
 var appID = "keypress"
@@ -79,7 +84,10 @@ func (m model) View() string {
 
 // keypressEntry is the entry point.
 func keypressEntry(params *keypressParams) (err error) {
-	if _, err := tea.NewProgram(model{}, tea.WithOutput(params.stderr)).Run(); err == nil {
+	if _, err := tea.NewProgram(model{},
+		tea.WithOutput(params.stderr),
+		tea.WithoutRenderer(),
+	).Run(); err == nil {
 		fmt.Printf("%s", keyRet)
 	} else {
 		fmt.Println("Error running program:", err)
@@ -110,7 +118,9 @@ func main() {
 		pflag.Usage()
 		return
 	}
+	// previousTtyInputState := Value(term.MakeRaw(os.Stdin.Fd()))
 	err := keypressEntry(&params)
+	// Must(term.Restore(os.Stdin.Fd(), previousTtyInputState))
 	if err != nil {
 		log.Fatalf("%s: %v\n", appID, err)
 	}

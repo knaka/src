@@ -2,30 +2,63 @@
 # shellcheck shell=sh
 "${sourced_f8dde75-false}" && return 0; sourced_f8dde75=true
 
-set -- "$PWD" "${0%/*}" "$@"; test -z "${_APPDIR-}" && { test "$2" = "$0" && _APPDIR=. || _APPDIR="$2"; cd "$_APPDIR" || exit 1; }
-set -- _LIBDIR .lib "$@"
-. ./.lib/session-env.lib.sh
-shift 2
-cd "$1" || exit 1; shift 2
+# Initializes the session by clearing any previously saved session variables.
+# This should be called at the start of a task chain to ensure a clean state.
+init_session() {
+  if test "${MISE_CONFIG_ROOT+set}" = set
+  then
+    test "${MISE_PID+set}" = set || MISE_PID=x
+    rm -f "${TMP-$TMPDIR}"/session-vars-"$MISE_PID".sh
+  else
+    echo "Unknown task runner." >&2
+    return 1
+  fi
+}
+
+# Saves a variable to the session file for sharing between tasks.
+# Usage: save_session_var KEY VALUE
+save_session_var() {
+  local key="$1"
+  local value="$2"
+  if test "${MISE_CONFIG_ROOT+set}" = set
+  then
+    test "${MISE_PID+set}" = set || MISE_PID=x
+    echo "export $key=$value" >>"${TMP-$TMPDIR}"/session-vars-"$MISE_PID".sh
+  else
+    echo "Unknown task runner." >&2
+    return 1
+  fi
+}
+
+# Loads all saved session variables into the current shell environment.
+# This sources the session file, making all saved variables available.
+load_session_vars() {
+  if test "${MISE_CONFIG_ROOT+set}" = set
+  then
+    test "${MISE_PID+set}" = set || MISE_PID=x
+    if test -r "${TMP-$TMPDIR}"/session-vars-"$MISE_PID".sh
+    then
+      # shellcheck disable=SC1090
+      . "${TMP-$TMPDIR}"/session-vars-"$MISE_PID".sh
+    fi
+  else
+    echo "Unknown task runner." >&2
+    return 1
+  fi
+}
 
 # Clears the session environment.
 #MISE hide=true
-task_sessionenv__clear() {
-  clear_session_env
-}
-
-choose_env() {
-  local IFS=,
-  # shellcheck disable=SC2086
-  # shellcheck disable=SC2153
-  set -- $APP_ENVS
-  gum choose --header "Application Environment (\$APP_ENV):" "$@"
+task_session__init() {
+  init_session
 }
 
 # Ensures the application environment variable $APP_ENV is set.
 #MISE hide=true
-#MISE depends=["sessionenv:clear"]
+#MISE depends=["session:init"]
+#MISE tools={"gum"="0.17.0"}
 task_appenv__ensure() {
+  APP_ENVS="${APP_ENVS-development,staging,production}"
   if test "${APP_ENV+set}" = set
   then
     case ",$APP_ENVS," in
@@ -44,19 +77,30 @@ task_appenv__ensure() {
         ;;
     esac
   else
-    APP_ENV="$(choose_env)"
+    local IFS=,
+    # shellcheck disable=SC2086
+    # shellcheck disable=SC2153
+    set -- $APP_ENVS
+    if test $# -eq 1
+    then
+      APP_ENV="$1"
+    else
+      APP_ENV="$(
+        gum choose --header "Application Environment (\$APP_ENV):" "$@"
+      )"
+    fi
   fi
-  add_session_env "APP_ENV" "$APP_ENV"
+  save_session_var "APP_ENV" "$APP_ENV"
 }
 
 # Confirms a critical operation.
 #MISE hide=true
 #MISE depends=["appenv:ensure"]
-task_critenv__confirm() {
-  restore_session_env
+task_critical__confirm() {
+  load_session_vars
   local IFS=,
   # shellcheck disable=SC2086
-  set -- $CRITICAL_APP_ENVS
+  set -- ${CRITICAL_APP_ENVS-}
   local env
   for env in "$@"
   do
@@ -70,7 +114,7 @@ task_critenv__confirm() {
 }
 
 case "${0##*/}" in
-  (tasks-*)
+  (tasks-session.sh)
     set -o nounset -o errexit
     "$@"
     ;;

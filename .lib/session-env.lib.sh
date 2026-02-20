@@ -2,7 +2,7 @@
 # shellcheck shell=sh
 "${sourced_171f445-false}" && return 0; sourced_171f445=true
 
-clear_session_env() {
+init_session() {
   if test "${MISE_CONFIG_ROOT+set}" = set
   then
     test "${MISE_PID+set}" = set || MISE_PID=x
@@ -13,7 +13,7 @@ clear_session_env() {
   fi
 }
 
-add_session_env() {
+save_session_var() {
   local key="$1"
   local value="$2"
   if test "${MISE_CONFIG_ROOT+set}" = set
@@ -26,7 +26,7 @@ add_session_env() {
   fi
 }
 
-restore_session_env() {
+load_session_vars() {
   if test "${MISE_CONFIG_ROOT+set}" = set
   then
     test "${MISE_PID+set}" = set || MISE_PID=x
