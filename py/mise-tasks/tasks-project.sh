@@ -26,8 +26,8 @@ EOF
 }
 
 # Install scripts.
-task_install() (
-  cd "$PROJECT_DIR" || exit 1
+task_install() {
+  push_dir "$PROJECT_DIR"
   local bin_dir_path="$HOME"/py-bin
   mkdir -p "$bin_dir_path"
   rm -f "${bin_dir_path:?}"/*
@@ -47,7 +47,8 @@ task_install() (
       chmod +x "$bin_dir_path"/"$name"
     fi
   done
-)
+  pop_dir
+}
 
 py_scr_db89bdf='import sys;original_wokrking_dir_path = sys.argv[1];import os;import subprocess;scr_path = os.path.abspath(sys.argv[2]);os.chdir(original_wokrking_dir_path);process = subprocess.Popen([sys.executable, scr_path] + sys.argv[3:]);process.wait();sys.exit(process.returncode);' #EMBED: ./runner.py
 
