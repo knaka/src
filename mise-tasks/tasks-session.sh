@@ -2,6 +2,12 @@
 # shellcheck shell=sh
 "${sourced_f8dde75-false}" && return 0; sourced_f8dde75=true
 
+set -- "$PWD" "${0%/*}" "$@"; test -z "${_APPDIR-}" && { test "$2" = "$0" && _APPDIR=. || _APPDIR="$2"; cd "$_APPDIR" || exit 1; }
+set -- _LIBDIR .lib "$@"
+. ./.lib/utils.lib.sh
+shift 2
+cd "$1" || exit 1; shift 2
+
 # Initializes the session by clearing any previously saved session variables.
 # This should be called at the start of a task chain to ensure a clean state.
 init_session() {
@@ -32,7 +38,8 @@ save_session_var() {
 
 # Loads all saved session variables into the current shell environment.
 # This sources the session file, making all saved variables available.
-load_session_vars() {
+init_task() {
+  first_call 89c298d || return 0
   if test "${MISE_CONFIG_ROOT+set}" = set
   then
     test "${MISE_PID+set}" = set || MISE_PID=x
@@ -45,6 +52,7 @@ load_session_vars() {
     echo "Unknown task runner." >&2
     return 1
   fi
+  load_dotenv
 }
 
 # Clears the session environment.
@@ -97,7 +105,7 @@ task_appenv__ensure() {
 #MISE hide=true
 #MISE depends=["appenv:ensure"]
 task_critical__confirm() {
-  load_session_vars
+  init_task
   local IFS=,
   # shellcheck disable=SC2086
   set -- ${CRITICAL_APP_ENVS-}
