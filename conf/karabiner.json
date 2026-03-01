@@ -419,11 +419,14 @@
                 },
                 "to": [
                   {
-                    "key_code": "close_bracket",
+                    "key_code": "slash",
                     "modifiers": [
-                      "shift",
-                      "command"
+                      "control"
                     ]
+                  },
+                  {
+                    "key_code": "n",
+                    "modifiers": []
                   }
                 ]
               },
@@ -448,11 +451,14 @@
                 },
                 "to": [
                   {
-                    "key_code": "open_bracket",
+                    "key_code": "slash",
                     "modifiers": [
-                      "shift",
-                      "command"
+                      "control"
                     ]
+                  },
+                  {
+                    "key_code": "p",
+                    "modifiers": []
                   }
                 ]
               },
@@ -476,10 +482,15 @@
                 },
                 "to": [
                   {
-                    "key_code": "d",
+                    "key_code": "slash",
                     "modifiers": [
-                      "shift",
-                      "command"
+                      "control"
+                    ]
+                  },
+                  {
+                    "key_code": "quote",
+                    "modifiers": [
+                      "shift"
                     ]
                   }
                 ]
@@ -504,10 +515,14 @@
                 },
                 "to": [
                   {
-                    "key_code": "open_bracket",
+                    "key_code": "slash",
                     "modifiers": [
-                      "command"
+                      "control"
                     ]
+                  },
+                  {
+                    "key_code": "o",
+                    "modifiers": []
                   }
                 ]
               }
@@ -540,63 +555,6 @@
                     "key_code": "p",
                     "modifiers": [
                       "command"
-                    ]
-                  }
-                ]
-              },
-              {
-                "type": "basic",
-                "conditions": [
-                  {
-                    "type": "frontmost_application_if",
-                    "bundle_identifiers": [
-                      "^com\\.microsoft\\.VSCode$"
-                    ]
-                  }
-                ],
-                "from": {
-                  "key_code": "tab",
-                  "modifiers": {
-                    "mandatory": [
-                      "control"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "key_code": "close_bracket",
-                    "modifiers": [
-                      "command",
-                      "shift"
-                    ]
-                  }
-                ]
-              },
-              {
-                "type": "basic",
-                "conditions": [
-                  {
-                    "type": "frontmost_application_if",
-                    "bundle_identifiers": [
-                      "^com\\.microsoft\\.VSCode$"
-                    ]
-                  }
-                ],
-                "from": {
-                  "key_code": "tab",
-                  "modifiers": {
-                    "mandatory": [
-                      "control",
-                      "shift"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "key_code": "open_bracket",
-                    "modifiers": [
-                      "command",
-                      "shift"
                     ]
                   }
                 ]
@@ -659,6 +617,63 @@
                     "modifiers": [
                       "shift",
                       "command"
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "conditions": [
+                  {
+                    "type": "frontmost_application_if",
+                    "bundle_identifiers": [
+                      "^com\\.microsoft\\.VSCode$"
+                    ]
+                  }
+                ],
+                "from": {
+                  "key_code": "tab",
+                  "modifiers": {
+                    "mandatory": [
+                      "control"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "key_code": "close_bracket",
+                    "modifiers": [
+                      "command",
+                      "shift"
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "conditions": [
+                  {
+                    "type": "frontmost_application_if",
+                    "bundle_identifiers": [
+                      "^com\\.microsoft\\.VSCode$"
+                    ]
+                  }
+                ],
+                "from": {
+                  "key_code": "tab",
+                  "modifiers": {
+                    "mandatory": [
+                      "control",
+                      "shift"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "key_code": "open_bracket",
+                    "modifiers": [
+                      "command",
+                      "shift"
                     ]
                   }
                 ]

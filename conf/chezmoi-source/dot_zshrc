@@ -241,7 +241,8 @@ precmd() {
     pwd_str="$(hostname):$pwd_str"
   fi
 
-  main_str="$main_str $pwd_str"
+  # main_str="$main_str $pwd_str"
+  main_str="$pwd_str"
 
   local right_str=
   local delim=
@@ -530,7 +531,16 @@ export HOMEBREW_NO_AUTO_UPDATE=1
 alias 1plogin=1psignin
 alias 1psignin='eval $(1p signin)'
 alias any-apply='command brew-apply && command gobin-apply && command npm-apply && PATH=$PATH'
-alias attach='test "$TERM" != "screen" && screen -r'
+# alias attach='test "$TERM" != "screen" && screen -r'
+unalias attach >/dev/null 2>&1 || :
+attach() {
+  case "$TERM" in
+    (screen|tmux-*) return;;
+  esac
+  screen -r || :
+  tmux attach || :
+  return 1
+}
 alias brew-apply='command brew-apply && PATH=$PATH'
 alias brew-upgrade='command brew update && command brew upgrade && PATH=$PATH'
 alias cls=clear
@@ -638,3 +648,4 @@ fi
 export PATH
 
 unfunction append_path
+unfunction prepend_path

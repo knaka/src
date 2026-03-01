@@ -32,6 +32,7 @@ brew 'postgresql@15'
 brew 'pstree'
 # brew 'python-yq' # https://formulae.brew.sh/formula/python-yq | yq コマンドはこれ — yq: Command-line YAML/XML/TOML processor - jq wrapper for YAML, XML, TOML documents — yq documentation https://kislyuk.github.io/yq/
 # brew 'volta' # nvm は、nvm use するまで切り替えてくれない。avn を入れろと言われたが、npm パッケージのルート導入はしたくない。volta はどうか。…周辺のサポートや IDE のサポートを考え、NVM に戻すか。…と思ったが、やはり Volta は出来が良いな
+brew 'tmux'
 brew 'yj'
 brew 'yq' # mikefarah の方の yq(1) — mikefarah/yq: yq is a portable command-line YAML, JSON, XML, CSV, TOML and properties processor https://github.com/mikefarah/yq
 brew 'wget'
