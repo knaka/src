@@ -25,22 +25,22 @@ profiles:
         basic.to_if_held_down_threshold_milliseconds: 500
         mouse_motion_to_scroll.speed: 100
       rules:
-        # 最初に、個別のアプリケーションごとの設定を行う。Karabiner-Elements の各設定は「先勝ち」なので、個別のカスタマイズを先に、アプリごとの設定を後に書くこと
-        - description: "ターミナル（iTerm2 + zsh + GNU Screen）"
+        # 最初に、個別のアプリケーションごとの設定を行う。Karabiner-Elements の各設定は「先勝ち」なので、個別のカスタマイズを先に、全体の設定を後に書くこと
+        - description: "ターミナル（iTerm2 + zsh + GNU Screen (tmux?)）"
           manipulators:
-            # 左へ移動
+            # 左へ選択
             - type: basic
               conditions: &conditions_terminal
                 - type: frontmost_application_if
                   bundle_identifiers:
                     - ^com.googlecode.iterm2$
-              from: {key_code: s, modifiers: {mandatory: [control], optional: [shift]}}
-              to: [{key_code: left_arrow}]
-            # 右へ移動
+              from: {key_code: s, modifiers: {mandatory: [control, shift]}}
+              to: [{key_code: left_arrow, modifiers: [shift]}]
+            # 右へ選択
             - type: basic
               conditions: *conditions_terminal
-              from: {key_code: d, modifiers: {mandatory: [control], optional: [shift]}}
-              to: [{key_code: right_arrow}]
+              from: {key_code: d, modifiers: {mandatory: [control, shift]}}
+              to: [{key_code: right_arrow, modifiers: [shift]}]
             # 上へ移動
             - type: basic
               conditions: *conditions_terminal
@@ -71,12 +71,12 @@ profiles:
               conditions: *conditions_terminal
               from: {key_code: f, modifiers: {mandatory: [control, command, shift], optional: []}}
               to: [{key_code: end, modifiers: [shift]}]
-            # 行頭
+            # 行頭へ移動
             - type: basic
               conditions: *conditions_terminal
               from: {key_code: a, modifiers: {mandatory: [control, command], optional: []}}
               to: [{key_code: home, modifiers: []}]
-            # 行末
+            # 行末へ移動
             - type: basic
               conditions: *conditions_terminal
               from: {key_code: f, modifiers: {mandatory: [control, command], optional: []}}
@@ -96,16 +96,26 @@ profiles:
               conditions: *conditions_terminal
               from: {key_code: a, modifiers: {mandatory: [command], optional: []}}
               to: [{key_code: a, modifiers: [option]}]
-            # Ctrl + Tab でタブ移動
+            # Ctrl + Tab でタブを移動
             - type: basic
               conditions: *conditions_terminal
-              from: {key_code: "tab", modifiers: {mandatory: ["control"], optional: []}}
-              to: [{key_code: "open_bracket", modifiers: ["shift", "command"]}]
+              from: {key_code: "tab", modifiers: {mandatory: ["control"]}}
+              to: [{key_code: "close_bracket", modifiers: ["shift", "command"]}]
             # 同、逆移動
             - type: basic
               conditions: *conditions_terminal
-              from: {key_code: "tab", modifiers: {mandatory: ["control", "shift"], optional: []}}
-              to: [{key_code: "close_bracket", modifiers: ["shift", "command"]}]
+              from: {key_code: "tab", modifiers: {mandatory: ["control", "shift"]}}
+              to: [{key_code: "open_bracket", modifiers: ["shift", "command"]}]
+            # Split Horizontally with Current Profile
+            - type: basic
+              conditions: *conditions_terminal
+              from: {key_code: d, modifiers: {mandatory: ["command"]}}
+              to: [{key_code: d, modifiers: ["shift", "command"]}]
+            # Select Split Pane
+            - type: basic
+              conditions: *conditions_terminal
+              from: {key_code: t, modifiers: {mandatory: ["control"]}}
+              to: [{key_code: open_bracket, modifiers: ["command"]}]
         - description: "Visual Studio Code"
           manipulators:
             # Open (Search files by name)
@@ -131,6 +141,22 @@ profiles:
               conditions: *conditions_vscode
               from: {key_code: "backslash", modifiers: {mandatory: [control], optional: []}}
               to: [{key_code: "return_or_enter", modifiers: [shift]},]
+            # 画面縦割り (Split Editor in Group)。戻すのもこれでできている
+            - type: basic
+              conditions: *conditions_vscode
+              from: {key_code: d, modifiers: {mandatory: [command]}}
+              to: [
+                {key_code: k, modifiers: [command]},
+                {key_code: "backslash", modifiers: [shift, command]},
+              ]
+            # - type: basic
+            #   conditions: *conditions_vscode
+            #   from: {key_code: t, modifiers: {mandatory: [control]}}
+            #   to: {key_code: a}
+              # to: [
+              #   {key_code: k, modifiers: [command]},
+              #   {key_code: down, modifiers: []},
+              # ]
         # 以下、システム全体の設定
         - description: "international1（ろ） → Shift"
           # 英語設定にした日本語キーボードで、右下の「_ ろ」キーが余るので、遠すぎる `~ を単押しへ移動。modifier としては右 Shift。
@@ -446,3 +472,14 @@ profiles:
               to: [{shell_command: "osascript $HOME/src/applescript/activate-browser-tab.scpt https://claude.ai https://gemini.google.com"}]
             # Y
             # Z
+        - description: "Hammerspoon"
+          manipulators:
+            - type: basic
+              from: {key_code: "d", modifiers: {mandatory: [command, shift]}}
+              to: [{key_code: f20}]
+            - type: basic
+              from: {key_code: "h", modifiers: {mandatory: [command, shift]}}
+              to: [{key_code: f19}]
+            - type: basic
+              from: {key_code: "s", modifiers: {mandatory: [command, shift]}}
+              to: [{key_code: f18}]

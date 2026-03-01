@@ -189,6 +189,13 @@ is_linux() {
   test -d /proc -o -d /sys
 }
 
+if test "${TMUX_PANE+set}" = set
+then
+  # If -p is given, the output is printed to stdout, otherwise it is displayed in the target-client status line for up to delay milliseconds.
+  TMUX_WINDOW_INDEX="$(tmux display -p "#{window_index}")"
+  TMUX_WINDOW_NAME="$(tmux display -p "#{window_name}")"
+fi
+
 # `precmd` は、コマンドプロンプトを表示する直前に実行される。他の名前で、`add-zsh-hook precmd <function>` として登録することもできるようだ
 # スクリーン: 2
 # ステータス: 20
@@ -218,7 +225,13 @@ precmd() {
   fi
 
   local main_str="-"
-  test "${WINDOW+set}" = set && main_str="$WINDOW"
+  if test "${WINDOW+set}" = set
+  then
+    main_str="$WINDOW"
+  elif test "${TMUX_WINDOW_INDEX+set}" = set
+  then
+    main_str="${TMUX_WINDOW_INDEX}"
+  fi
 
   local pwd_str="${PWD/$HOME/~}"
 
@@ -232,6 +245,7 @@ precmd() {
 
   local right_str=
   local delim=
+  local title="$pwd_str"
 
   local git_branches
   git_branches="$(command -v git >/dev/null 2>&1 && git branch 2>/dev/null)" || :
@@ -244,6 +258,7 @@ precmd() {
     git_branch="$(echo "$git_branches" | sed -n -e 's/^* *//p')"
     right_str="${delim}${right_str} $git_branch"
     delim=" "
+    title="git:${PTD##*/}"
   fi
 
   # * main, stat を確立させます
@@ -267,6 +282,8 @@ precmd() {
   local padding_num=$((rmargin_num - ${#right_str}))
 
   __prompt_str="${main_str}$(printf "%0.s " {1..${padding_num}})${right_str}"
+
+  printf "\033]0;%s\007" "$title"
 
   # case "$TERM" in
   #   (xterm*)
