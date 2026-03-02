@@ -6,6 +6,8 @@
 
 ; ChgKey で Windows キーは右 Ctrl にマップしているので、Windows キー `#` は使われないはず
 
+; <! <^ Space >! >^
+
 #Requires AutoHotkey v2.0
 #SingleInstance force
 
@@ -153,8 +155,13 @@ F13:: {
 <^x::Send "{Down}"
 
 ; Rotate Tab
-<^Tab::Send "^{Tab}"
-+<^Tab::Send "+^{Tab}"
+; <^Tab::Send "^{Tab}"
+; +<^Tab::Send "+^{Tab}"
+<^Tab::Send "^{b}{n}"
++<^Tab::Send "^{b}{p}"
+
+<!d::Send "^{b}{`"}"
+<^t::Send "^{b}{o}"
 
 ; Find
 >^f::Send "+^{f}"
@@ -162,6 +169,8 @@ F13:: {
 ; New Tab
 <!T::Send "^+{T}"
 >^T::Send "^+{T}"
+
+^;:: Send "^{b}"
 #HotIf
 
 ; 左右

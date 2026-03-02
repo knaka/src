@@ -41,6 +41,7 @@ npm() { mise exec node -- npm "$@"; }
 npx() { mise exec node -- npx "$@"; }
 peco() { mise exec "go:github.com/knaka/peco/cmd/peco@latest" -- peco "$@"; }
 perl() { mise exec perl -- perl "$@"; }
+psmux() { mise exec "github:marlocarlo/psmux" -- psmux "$@"; }
 python() { mise exec python -- python "$@"; }
 tblcalc() { mise exec "github:knaka/tblcalc" -- tblcalc "$@"; }
 yj() { mise exec yj -- yj "$@"; } # sclevine/yj: CLI - Convert between YAML, TOML, JSON, and HCL. Preserves map order. https://github.com/sclevine/yj

@@ -120,6 +120,11 @@ $global:dl = "$HOME\Downloads"
 $global:t = $env:TEMP
 $global:T = $env:TEMP
 
+$env:VISUAL = "edw"
+$env:EDITOR = $env:VISUAL
+
+$global:lastPsmuxTitle = ""
+
 function prompt {
   $lastSuccess = $?
   # $lastExitCode = $LASTEXITCODE
@@ -139,17 +144,35 @@ function prompt {
 
   if ($gbranch.Length -gt 0) {
     $base = Split-Path $PTD -Leaf
-    $host.UI.RawUI.WindowTitle = "git: $base"
+    $title = "git:$base"
+    # $host.UI.RawUI.WindowTitle = "git: $base"
   } else {
-    $host.UI.RawUI.WindowTitle = "$(Get-Location)"
+    # Normalize path separators (psmux uses / instead of \)
+    $loc = "$(Get-Location)".Replace("\", "/")
+    $userHome = $env:USERPROFILE.Replace("\", "/")
+    $title = $loc -replace "^$([regex]::Escape($userHome))", "~"
+    # $host.UI.RawUI.WindowTitle = "$(Get-Location)"
   }
+
+  # OSC sequence: ESC]0;titleBEL
+  Write-Host "`e]0;$title`a" -NoNewline
+
+  # PSMUX で、window_name が pane_title を兼ねているようで、タイトル変更の esc seq を捉えていない。`set-titles`設定も効いていないようだ
+  if ($env:TMUX_PANE -and $global:lastPsmuxTitle -ne $title) {
+    # Inside tmux (psmux) - only call when title changed
+    psmux rename-window $title
+  }
+  $global:lastPsmuxTitle = $title
+  
   # return "PS $($executionContext.SessionState.Path.CurrentLocation)$('>' * ($nestedPromptLevel + 1)) ";
+  # コンソール仮想ターミナル シーケンス - Windows Console | Microsoft Learn https://learn.microsoft.com/ja-jp/windows/console/console-virtual-terminal-sequences
   if ($lastSuccess) {
-    $bg = "`e[42m" # green
+    $bg = "`e[102m" # bright green
   } else {
     $bg = "`e[41m" # red
   }
-  $fg = "`e[97m"
+  # $fg = "`e[97m"
+  $fg = "`e[30m"
   $reset = "`e[0m"
   
   "${bg}${fg}${line}${rmargin}${rstr}${reset}`n> "
