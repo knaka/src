@@ -123,7 +123,8 @@ $global:T = $env:TEMP
 $env:VISUAL = "edw"
 $env:EDITOR = $env:VISUAL
 
-$global:lastPsmuxTitle = ""
+$global:lastPsmuxTitle = "043b224"
+$global:count = 0
 
 function prompt {
   $lastSuccess = $?
@@ -158,21 +159,24 @@ function prompt {
   Write-Host "`e]0;$title`a" -NoNewline
 
   # PSMUX で、window_name が pane_title を兼ねているようで、タイトル変更の esc seq を捉えていない。`set-titles`設定も効いていないようだ
-  if ($env:TMUX_PANE -and $global:lastPsmuxTitle -ne $title) {
+  if ($env:TMUX_PANE -and ($global:lastPsmuxTitle -ne $title -or $global:count -lt 2)) {
+  # if ($env:TMUX_PANE) {
     # Inside tmux (psmux) - only call when title changed
     psmux rename-window $title
   }
   $global:lastPsmuxTitle = $title
+  $global:count ++
   
   # return "PS $($executionContext.SessionState.Path.CurrentLocation)$('>' * ($nestedPromptLevel + 1)) ";
   # コンソール仮想ターミナル シーケンス - Windows Console | Microsoft Learn https://learn.microsoft.com/ja-jp/windows/console/console-virtual-terminal-sequences
   if ($lastSuccess) {
-    $bg = "`e[102m" # bright green
+    # $bg = "`e[102m" # bright green
+    $bg = "`e[106m" # bright cyan
+    $fg = "`e[30m"
   } else {
     $bg = "`e[41m" # red
+    $fg = "`e[1;97m"
   }
-  # $fg = "`e[97m"
-  $fg = "`e[30m"
   $reset = "`e[0m"
   
   "${bg}${fg}${line}${rmargin}${rstr}${reset}`n> "
