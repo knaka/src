@@ -410,6 +410,33 @@
                   }
                 ],
                 "from": {
+                  "key_code": "semicolon",
+                  "modifiers": {
+                    "mandatory": [
+                      "control"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "key_code": "b",
+                    "modifiers": [
+                      "control"
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "conditions": [
+                  {
+                    "type": "frontmost_application_if",
+                    "bundle_identifiers": [
+                      "^com.googlecode.iterm2$"
+                    ]
+                  }
+                ],
+                "from": {
                   "key_code": "tab",
                   "modifiers": {
                     "mandatory": [
@@ -419,7 +446,7 @@
                 },
                 "to": [
                   {
-                    "key_code": "slash",
+                    "key_code": "b",
                     "modifiers": [
                       "control"
                     ]
@@ -451,7 +478,7 @@
                 },
                 "to": [
                   {
-                    "key_code": "slash",
+                    "key_code": "b",
                     "modifiers": [
                       "control"
                     ]
@@ -482,7 +509,7 @@
                 },
                 "to": [
                   {
-                    "key_code": "slash",
+                    "key_code": "b",
                     "modifiers": [
                       "control"
                     ]
@@ -515,7 +542,7 @@
                 },
                 "to": [
                   {
-                    "key_code": "slash",
+                    "key_code": "b",
                     "modifiers": [
                       "control"
                     ]
