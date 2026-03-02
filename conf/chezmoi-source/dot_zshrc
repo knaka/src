@@ -207,9 +207,9 @@ precmd() {
 
   # black, red, green, yellow, blue, magenta, cyan and white // zsh: 18 Zsh Line Editor https://zsh.sourceforge.io/Doc/Release/Zsh-Line-Editor.html
   __prompt_fgcolor=black
-  # __prompt_bgcolor=green
+  __prompt_bgcolor=green
   # __prompt_bgcolor='#00FF00'
-  __prompt_bgcolor='10'
+  # __prompt_bgcolor='10' # 明るい
   if is_linux
   then
     __prompt_bgcolor=cyan
