@@ -117,6 +117,8 @@ Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
 $global:y = "$HOME\doc\$(Get-Date -Format "yyyy")"
 $global:dl = "$HOME\Downloads"
 
+$global:d = "$HOME\MyDrive\doc"
+
 $global:t = $env:TEMP
 $global:T = $env:TEMP
 
