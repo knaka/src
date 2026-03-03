@@ -1,3 +1,5 @@
+# Description for this package.
+
 name:                hsprj
 version:             0.1.0.0
 github:              "knaka/hsprj"
@@ -22,6 +24,10 @@ description:         Please see the README on GitHub at <https://github.com/gith
 dependencies:
 - base >= 4.7 && < 5
 
+default-extensions:
+  - RecordWildCards
+
+# Only for this project.
 ghc-options:
 - -Wall
 - -Wcompat

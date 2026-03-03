@@ -1,3 +1,6 @@
+-- {-# LANGUAGE NamedFieldPuns #-}
+-- {-# LANGUAGE RecordWildCards #-}
+
 module Main (main) where
 
 -- pcapriotti/optparse-applicative: Applicative option parser https://github.com/pcapriotti/optparse-applicative/?tab=readme-ov-file#quick-start
@@ -28,8 +31,8 @@ opts :: Opts.Parser (IO ())
 opts = Opts.subparser $ mconcat $ map mkCommand commands
   where
     mkCommand :: CommandInfo -> Opts.Mod Opts.CommandFields (IO ())
-    mkCommand (CommandInfo { cmdName = name, cmdDesc = desc, cmdParser = parser }) =
-      Opts.command name (Opts.info parser (Opts.progDesc desc))
+    mkCommand (CommandInfo {..}) =
+      Opts.command cmdName (Opts.info cmdParser (Opts.progDesc cmdDesc))
 
 greet :: String -> IO ()
 greet arg = putStrLn $ "Hello, " ++ arg ++ "!"
