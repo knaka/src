@@ -1,3 +1,9 @@
 [tools]
 node = "24"
 python = "3.14"
+
+# marlocarlo/psmux: Tmux on Windows Powershell - tmux for PowerShell, Windows Terminal, cmd.exe. Includes psmux, pmux, and tmux commands. This is native Powershell Tmux designed for Windows in Rust 🦀 https://github.com/marlocarlo/psmux
+[tools."github:marlocarlo/psmux"]
+os = ["windows"]
+# Releases · marlocarlo/psmux https://github.com/marlocarlo/psmux/releases
+version = "0.4.7"
