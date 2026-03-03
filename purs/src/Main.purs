@@ -9,4 +9,4 @@ import Test.Assert (assert)
 main :: Effect Unit
 main = do
   log "Hello, PureScript!"
-  assert (100 == 50 * 2 + 1)
+  assert (100 == 50 * 2)
