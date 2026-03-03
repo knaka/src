@@ -71,7 +71,7 @@ export SUDO_EDITOR="$VISUAL"
   append_path /usr/sbin
   append_path /usr/local/sbin
 
-  prepend_path "$HOME"/.local/share/mise/shims
+  # prepend_path "$HOME"/.local/share/mise/shims
   prepend_path "$HOME"/.local/bin
 # fi
 

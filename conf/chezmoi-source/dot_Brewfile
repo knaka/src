@@ -15,6 +15,7 @@ brew 'coreutils'
 brew 'cpulimit' # https://github.com/opsengine/cpulimit
 brew 'gawk'
 brew 'gh' # GitHub CLI について - GitHub Docs https://docs.github.com/ja/github-cli/github-cli/about-github-cli
+# brew 'ghcup' # VSCode が language server を探すのに要るかも？ いや、なまじ Brew や Mise で入れていると、自動セットアップが働かなくて、もろもろのバージョン不一致やパスが通っていなかったりで動かないことがある
 brew 'git'
 # brew 'go' # ~/go/ は $GOPATH であり、$GOROOT とは別であることが望ましいらしい？
 brew 'jj'

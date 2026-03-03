@@ -39,6 +39,8 @@ task_build() {
   echo Copied the command to: ./build/"$(basename "$cmd_path")" >&2
 }
 
+# stack haddock --dependencies-only
+
 case "${0##*/}" in
   (tasks-project.sh|tasks-project)
     set -o nounset -o errexit

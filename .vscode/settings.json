@@ -1,5 +1,17 @@
 {
-  "go.toolsEnvVars": {
-    "GOFLAGS": "-tags=debug"
-  }
+  "terminal.integrated.env.osx": {
+    "PATH": "${env:HOME}/.local/share/mise/shims:${env:PATH}"
+  },
+  // "terminal.integrated.env.linux": {
+  //   "PATH": "${env:HOME}/.local/share/mise/shims:${env:PATH}"
+  // },
+  // "terminal.integrated.env.windows": {
+  //   "PATH": "${env:LOCALAPPDATA}/mise/shims",
+  // },
+  // "go.toolsEnvVars": {
+  //   "GOFLAGS": "-tags=debug"
+  // },
+  // "haskell.serverEnvironment": {
+  //   "PATH": "${env:HOME}/.local/share/mise/shims:/usr/local/bin:/usr/bin:/bin"
+  // }
 }

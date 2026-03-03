@@ -25,6 +25,10 @@
 # Stackage Server https://www.stackage.org/
 resolver: lts-22.33
 
+# YAML Configuration - The Haskell Tool Stack https://docs.haskellstack.org/en/v1.0.4/yaml_configuration/
+ghc-options:
+  '*': -haddock
+
 # User packages to be built.
 # Various formats can be used as shown in the example below.
 #
