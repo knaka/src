@@ -10,5 +10,5 @@ cd "$_APPDIR"
 . ./"tasks-session.sh"
 cd "$saved_pwd_474b89b"
 set -o nounset -o errexit
-task_sessionenv__clear "$@"
+task_session__init "$@"
 #MISE hide=true
