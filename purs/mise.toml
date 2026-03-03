@@ -1,0 +1,3 @@
+[tools]
+"purescript" = "0.15.15"
+"npm:spago" = "1.0.3"

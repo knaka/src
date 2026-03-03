@@ -30,6 +30,7 @@ brew 'mysql' # brew services list で一覧 | brew services start/stop mysql は
 # brew 'plantuml'
 brew 'postgresql@14' # brew services list で一覧 | brew services start/stop postgresql は、即時の開始終了と同時に永続的な register/unregister を行う | ログは /usr/local/var/log/postgresql@14.log
 brew 'postgresql@15'
+brew 'purescript'
 brew 'pstree'
 # brew 'python-yq' # https://formulae.brew.sh/formula/python-yq | yq コマンドはこれ — yq: Command-line YAML/XML/TOML processor - jq wrapper for YAML, XML, TOML documents — yq documentation https://kislyuk.github.io/yq/
 # brew 'volta' # nvm は、nvm use するまで切り替えてくれない。avn を入れろと言われたが、npm パッケージのルート導入はしたくない。volta はどうか。…周辺のサポートや IDE のサポートを考え、NVM に戻すか。…と思ったが、やはり Volta は出来が良いな
