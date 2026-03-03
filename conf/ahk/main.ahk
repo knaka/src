@@ -147,6 +147,7 @@ F13:: {
   Send "{Left}{Left}{Left}{Left}{Left}"
 }
 
+; Windows Terminal
 #HotIf WinActive("ahk_exe WindowsTerminal.exe")
 ; Vertical Move
 <^p::Send "{Up}"
@@ -155,36 +156,45 @@ F13:: {
 <^x::Send "{Down}"
 
 ; Rotate Tab
-; <^Tab::Send "^{Tab}"
-; +<^Tab::Send "+^{Tab}"
-<^Tab::Send "^{b}{n}"
-+<^Tab::Send "^{b}{p}"
+<^Tab:: Send "^{Tab}"
++<^Tab:: Send "+^{Tab}"
 
-<!d::Send "^{b}{`"}"
-<^t::Send "^{b}{o}"
+; Rotate in psmux
+; <^Tab::Send "^{b}{n}"
+; +<^Tab::Send "^{b}{p}"
+
+; Split in psmux
+; <!d::Send "^{b}{`"}"
+; <^t::Send "^{b}{o}"
+
+; Split
+<!d:: Send "!+{-}"
+<^t:: Send "!{Down}"
+<^+t:: Send "!{Up}"
 
 ; Find
->^f::Send "+^{f}"
+>^f:: Send "+^{f}"
 
 ; New Tab
-<!T::Send "^+{T}"
->^T::Send "^+{T}"
+<!T:: Send "^+{T}"
+>^T:: Send "^+{T}"
 
+; Prefix for psmux
 ^;:: Send "^{b}"
 #HotIf
 
 ; 左右
-<^s::Send "{Left}"
-<^d::Send "{Right}"
+<^s:: Send "{Left}"
+<^d:: Send "{Right}"
 ; 左右選択
-+<^s::Send "+{Left}"
-+<^d::Send "+{Right}"
++<^s:: Send "+{Left}"
++<^d:: Send "+{Right}"
 ; ワード
-<^a::Send "^{Left}"
-<^f::Send "^{Right}"
+<^a:: Send "^{Left}"
+<^f:: Send "^{Right}"
 ; ワード選択
-+<^a::Send "+^{Left}"
-+<^f::Send "+^{Right}"
++<^a:: Send "+^{Left}"
++<^f:: Send "+^{Right}"
 ; 行頭・行末
 <^>^a::Send "{Home}"
 <^>^f::Send "{End}"
@@ -222,6 +232,9 @@ F13:: {
 +>^n::Send "{f2}"
 ; Open は、Shift + 右 Ctrl で、Ctrl + P を send
 +>^o:: Send "^{p}"
+
+; “Split in Group”
+<! Send "^{k}^+{\}"
 #HotIf
 
 ;#endregion  
