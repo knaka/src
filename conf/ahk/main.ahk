@@ -234,7 +234,7 @@ F13:: {
 +>^o:: Send "^{p}"
 
 ; “Split in Group”
-<! Send "^{k}^+{\}"
+<!d:: Send "^{k}^+{\}"
 #HotIf
 
 ;#endregion  
