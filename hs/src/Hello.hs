@@ -1,15 +1,13 @@
-module Hello (register) where
+module Hello (commandInfo) where
 
-import qualified Options.Applicative as Opts;
-import Command (CommandInfo(..))
+import Command
 
-hello :: String -> IO ()
-hello arg = putStrLn $ "Hi, " ++ arg ++ "!"
+hello :: IO ()
+hello = putStrLn "Hello"
 
-register :: [CommandInfo] -> [CommandInfo]
-register cmds =
-  CommandInfo
-    "hello"
-    "Say hello"
-    (hello <$> Opts.argument Opts.str (Opts.metavar "NAME"))
-  : cmds
+commandInfo :: Command.Info
+commandInfo = Command.Info
+  { name = "hs-hello"
+  , desc = "Say hello"
+  , parser = pure hello
+  }

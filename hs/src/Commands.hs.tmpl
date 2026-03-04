@@ -1,12 +1,15 @@
-cat <<EOF \
-| mise exec gomplate -- gomplate -d data=stdin:?type=application/array%2Bjson -f=Commands.hs.tmpl
-[
-  { index: "10", name: "one" },
-  { index: "20", name: "two" },
-  { index: "30", name: "tree" },
-]
-EOF
+-- {{ (ds "data").message }}
 
-{{- range (ds "data") }}
-{{ .index }}: {{ .name }}
-{{- end }}
+module Commands (registerAll) where
+
+import Command
+
+import qualified Greet
+import qualified Hello
+
+registerAll :: [Command.Info] -> [Command.Info]
+registerAll cmds =
+  {{- range (ds "data").list }}
+  {{ .name }}.commandInfo:
+  {{- end }}
+  cmds
