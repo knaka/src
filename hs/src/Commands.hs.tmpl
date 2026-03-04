@@ -1,0 +1,12 @@
+cat <<EOF \
+| mise exec gomplate -- gomplate -d data=stdin:?type=application/array%2Bjson -f=Commands.hs.tmpl
+[
+  { index: "10", name: "one" },
+  { index: "20", name: "two" },
+  { index: "30", name: "tree" },
+]
+EOF
+
+{{- range (ds "data") }}
+{{ .index }}: {{ .name }}
+{{- end }}
