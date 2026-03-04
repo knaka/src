@@ -25,14 +25,16 @@ task_ghci() {
 
 # Build
 task_build() {
-  stack build hsprj:main-exe "$@"
+  local name
+  name="${1-"main-exe"}"
+  echo 00dc642 "$name" >&2
+  stack build hsprj:"$name"
   local cmd_path
+  cmd_path="$(stack exec which "$name")"
   if is_windows
   then
     # Fixme
     cmd_path="$(stack exec cygpath -- --windows "$cmd_path")"
-  else
-    cmd_path="$(stack exec which main-exe)"
   fi
   mkdir -p ./build/
   cp -a "$cmd_path" ./build/

@@ -1,0 +1,37 @@
+module Main (main) where
+
+import Control.Monad
+import qualified Options.Applicative as Opts;
+
+-- 引数を表すデータ型
+data Options = Options
+  { verbose :: Bool
+  , name :: String
+  , count :: Int
+  }
+
+-- 型コンストラクタを、Applicative Functor である個々のパーサーへ fmap, 続けて個々のパーサーへ applyして行って、全体のパーサーを作る
+optParser :: Opts.Parser Options
+optParser = Options
+  <$> Opts.switch (Opts.long "verbose" <> Opts.short 'v' <> Opts.help "Verbose output")
+  <*> Opts.strOption (Opts.long "name" <> Opts.metavar "NAME" <> Opts.help "Name to greet")
+  <*> Opts.option Opts.auto (Opts.long "count" <> Opts.value 1 <> Opts.help "Repeat count")
+
+-- _x :: Opts.Parser (String -> Int -> Options)
+-- _x = Options
+--   <$> Opts.switch (Opts.long "verbose" <> Opts.short 'v' <> Opts.help "Verbose output")
+
+-- _y :: Opts.Parser (Int -> Options)
+-- _y = Options
+--   <$> Opts.switch (Opts.long "verbose" <> Opts.short 'v' <> Opts.help "Verbose output")
+--   <*> Opts.strOption (Opts.long "name" <> Opts.metavar "NAME" <> Opts.help "Name to greet")
+
+sub :: Options -> IO ()
+sub opts = do
+  when (verbose opts) $ putStrLn "Verbose mode"
+  replicateM_ (count opts) $ putStrLn $ "Hello, " ++ name opts
+
+main :: IO ()
+main = do
+  opts <- Opts.execParser (Opts.info optParser Opts.fullDesc)
+  sub opts

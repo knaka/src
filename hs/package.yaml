@@ -41,6 +41,12 @@ ghc-options:
 
 library:
   source-dirs: src
+  dependencies:
+    - optparse-applicative
+  # exposed-modules:
+  #   - Greet
+  #   - Hello
+  #   - Lib
 
 # build-tool-depends:
 # build-tools:
@@ -50,14 +56,22 @@ library:
 executables:
   main-exe:
     main: Main.hs
-    source-dirs: app
+    source-dirs: ./app
     ghc-options:
-    - -threaded
-    - -rtsopts
-    - -with-rtsopts=-N
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N
     dependencies:
-    - hsprj
-    - optparse-applicative
+      - hsprj
+  # opts:
+  #   main: Opts.hs
+  #   source-dirs: ./app
+  #   dependencies:
+  #     - optparse-applicative
+  #   ghc-options:
+  #     - -threaded
+  #     - -rtsopts
+  #     - -with-rtsopts=-N
 
 tests:
   hs-test:

@@ -31,7 +31,7 @@ resolver: lts-22.33
 
 # For all (including dependencies).
 ghc-options:
-  '*': -haddock
+  '$everything': -haddock
 
 # User packages to be built.
 # Various formats can be used as shown in the example below.

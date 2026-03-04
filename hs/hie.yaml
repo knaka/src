@@ -1,3 +1,10 @@
 cradle:
   stack:
     stackYaml: "./stack.yaml"
+    components:
+      - path: "./src"
+        component: "hsprj:lib"
+      - path: "./app"
+        component: "hsprj:exe:main-exe"
+      - path: "./test"
+        component: "hsprj:test:hs-test"
