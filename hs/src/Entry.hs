@@ -32,12 +32,10 @@ subcmds = do
 
 main :: IO ()
 -- execParser :: ParserInfo (IO ()) -> IO (IO ()) なので、`IO (IO())` は、コマンドラインをパースして IO() な関数（すでに引数適用済みのアクション）を返す。それを連鎖で実行するのが join
-main =
-    Control.Monad.join
+main = Control.Monad.join
   $ Opts.execParser
-  $ Opts.info mainOptParser (
-       Opts.fullDesc
-    <> Opts.progDesc "A sample Haskell CLI application"
-    <> Opts.header "main-exe - a demo program"
-    <> Opts.footer "For more info, run: main-exe subcmds"
-  )
+  $ Opts.info mainOptParser (Opts.fullDesc
+      <> Opts.progDesc "A sample Haskell CLI application"
+      <> Opts.header "main-exe - a demo program"
+      <> Opts.footer "For more info, run: main-exe subcmds"
+    )

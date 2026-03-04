@@ -24,14 +24,11 @@ app maybeFile _request respond = do
   respond $ responseLBS status200 [("Content-Type", "text/plain")] body
 
 commandInfo :: Command.Info
-commandInfo = Command.Info {
-    name = "hs-httpd"
+commandInfo = Command.Info { name = "hs-httpd"
   , desc = "Start a simple HTTP server"
-  , parser = httpd
-      <$> Opts.optional (Opts.strOption
-            (  Opts.long "file"
-            <> Opts.short 'f'
-            <> Opts.metavar "FILE"
-            <> Opts.help "File to serve as response body"
-            ))
+  , parser = httpd <$> Opts.optional (Opts.strOption (Opts.long "file"
+      <> Opts.short 'f'
+      <> Opts.metavar "FILE"
+      <> Opts.help "File to serve as response body"
+    ))
 }

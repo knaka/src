@@ -87,7 +87,9 @@ task_install() {
   pop_dir
 }
 
-# stack haddock --dependencies-only
+task_doc() {
+  stack haddock --dependencies-only
+}
 
 case "${0##*/}" in
   (tasks-project.sh|tasks-project)
