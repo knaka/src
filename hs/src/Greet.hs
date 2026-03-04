@@ -15,6 +15,6 @@ commandInfo = Command.Info {
     name = "hs-greet"
   , desc = "Greeting"
   , parser = greet
-      <$> Opts.argument Opts.str (Opts.metavar "NAME")
-      <*> Opts.switch (Opts.long "verbose" <> Opts.short 'v' <> Opts.help "Verbose output")
+    <$> Opts.argument Opts.str (Opts.metavar "NAME")
+    <*> Opts.switch (Opts.long "verbose" <> Opts.short 'v' <> Opts.help "Verbose output")
 }
