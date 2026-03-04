@@ -4,8 +4,9 @@ module Commands (registerAll) where
 
 import Command
 
-import qualified Greet
-import qualified Hello
+{{- range (ds "data").list }}
+import {{ .name }}
+{{- end }}
 
 registerAll :: [Command.Info] -> [Command.Info]
 registerAll cmds =

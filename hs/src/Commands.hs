@@ -3,12 +3,13 @@
 module Commands (registerAll) where
 
 import Command
-
-import qualified Greet
-import qualified Hello
+import Greet
+import Hello
+import Httpd
 
 registerAll :: [Command.Info] -> [Command.Info]
 registerAll cmds =
   Greet.commandInfo:
   Hello.commandInfo:
+  Httpd.commandInfo:
   cmds

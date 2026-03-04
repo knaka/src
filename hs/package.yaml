@@ -43,6 +43,10 @@ library:
   source-dirs: src
   dependencies:
     - optparse-applicative
+    - warp
+    - wai
+    - http-types
+    - bytestring
   # exposed-modules:
   #   - Greet
   #   - Hello

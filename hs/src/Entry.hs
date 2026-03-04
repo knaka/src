@@ -17,7 +17,7 @@ mainOptParser :: Opts.Parser (IO ())
 mainOptParser = Opts.subparser $ mconcat $ map mkCmdParser commandInfoList
   where
     mkCmdParser (Command.Info {..}) =
-      Opts.command name (Opts.info parser (Opts.progDesc desc))
+      Opts.command name (Opts.info (parser Opts.<**> Opts.helper) (Opts.progDesc desc))
 
 commandInfoList :: [Command.Info]
 commandInfoList = Commands.registerAll
