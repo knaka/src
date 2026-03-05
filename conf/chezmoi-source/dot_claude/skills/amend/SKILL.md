@@ -1,5 +1,6 @@
 ---
-description: "Rewrite git commits in git history with an appropriate message"
+description: Rewrite git commits in git history with an appropriate message.
+user-invokable: true
 ---
 
 Rewrite a git commit with an appropriate message. The commit message should follow the "Conventional Commits" format and use the following template. Do NOT add any "Generated with Claude Code" or "Co-Authored-By: Claude" footers.

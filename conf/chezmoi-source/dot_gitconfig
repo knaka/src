@@ -19,6 +19,7 @@
 	df = diff --ignore-space-change
 	dflast = "!f() { git  diff --ignore-space-change $1~1 $1; };f"
 	st = status
+	wt = worktree
 	cm = commit
 	co = checkout
 	cotr = checkout --track

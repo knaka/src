@@ -181,6 +181,9 @@ ptd=
 executed_something_f881915=false
 
 # Enter を押下して、コマンドが実行される直前のフック関数
+# $1 - 入力されたコマンドライン（そのまま）
+# $2 - エイリアス展開前のコマンドライン
+# $3 - エイリアス展開後のコマンドライン
 preexec() {
   executed_something_f881915=true
 }
@@ -286,6 +289,7 @@ precmd() {
 
   __prompt_str="${main_str}$(printf "%0.s " {1..${padding_num}})${right_str}"
 
+  export TERMINAL_TITLE="$title"
   printf "\033]0;%s\007" "$title"
 
   # case "$TERM" in
@@ -551,6 +555,7 @@ alias ptd='echo $PTD' # Print Project-Top Directory
 alias r='command r'
 # alias t="launch-task"
 # alias task="launch-task"
+alias claude='launch-claude'
 
 # ! which tac >/dev/null && alias tac="tail -r" || :
 

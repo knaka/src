@@ -1,5 +1,6 @@
 ---
 description: Go coding style guidelines. Use when writing, editing, or reviewing Go code to ensure consistent coding patterns and avoid common pitfalls.
+user-invokable: false
 ---
 
 # Go Coding Style

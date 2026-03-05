@@ -1,5 +1,6 @@
 ---
-description: "Make a git commit for the staged changes with an appropriate message"
+description: Make a git commit for the staged changes with an appropriate message.
+user-invokable: true
 ---
 
 Make a git commit for the staged changes with an appropriate message. If nothing is staged, say that and do nothing. The commit message should follow the "Conventional Commits" format and use the following template. Do NOT add any "Generated with Claude Code" or "Co-Authored-By: Claude" footers.
