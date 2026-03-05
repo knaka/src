@@ -7,6 +7,10 @@ set -- _LIBDIR .lib "$@"
 shift 2
 cd "$1" || exit 1; shift 2
 
+# XTERM – Terminal emulator for the X Window System https://invisible-island.net/xterm/xterm.html
+# How to change the title of an xterm https://tldp.org/HOWTO/Xterm-Title.html
+# How to change the title of an xterm: Dynamic titles https://tldp.org/HOWTO/Xterm-Title-3.html
+
 set_terminal_title() {
   printf "\033]0;%s\007" "$1"
 }
