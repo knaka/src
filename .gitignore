@@ -3,8 +3,7 @@
 node_modules
 .idea
 /.syncignored
-/.claude
-
+.claude/settings.local.json
 /.vscode/*
 !/.vscode/settings.json
 !/.vscode/tasks.json

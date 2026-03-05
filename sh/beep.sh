@@ -7,6 +7,7 @@ set -- _LIBDIR .lib "$@"
 shift 2
 cd "$1" || exit 1; shift 2
 
+# Emit a terminal bell (BEL) character to trigger an audible or visual alert.
 beep() {
   printf '\a'
 }
