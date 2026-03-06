@@ -30,5 +30,5 @@ elif test -r /System/Library/CoreServices/SystemVersion.plist
 then
   osascript -e 'beep' &
 fi
-echo 58e2fcb >>>"$HOME"/tmp/test.log
+echo 58e2fcb >>"$HOME"/tmp/test.log
 """
