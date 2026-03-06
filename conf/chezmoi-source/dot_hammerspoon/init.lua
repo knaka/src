@@ -3,7 +3,7 @@
 -- ISO 8601 datetime (local time with timezone)
 hs.hotkey.bind(
   -- {"command", "shift"}, "d",
-  {}, "f20",
+  {"shift"}, "f13",
   function()
     local now = os.time()
     -- Get local time
@@ -27,7 +27,7 @@ hs.hotkey.bind(
 -- Hash value in 7 digits
 hs.hotkey.bind(
   -- {"command", "shift"}, "h",
-  {}, "f19",
+  {"shift"}, "f14",
   function()
     math.randomseed(os.time() * 1000 + math.random(1, 1000))
     local n = math.random(0, 268435455)  -- 0xFFFFFFF
@@ -39,7 +39,7 @@ hs.hotkey.bind(
 -- Date serial (YYYYMMDD + day progress percentage)
 hs.hotkey.bind(
   -- {"command", "shift",}, "s",
-  {}, "f18",
+  {"shift"}, "f15",
   function()
     local now = os.time()
     -- "!*t" returns UTC time as a table. "!" means UTC, "*t" means table format
