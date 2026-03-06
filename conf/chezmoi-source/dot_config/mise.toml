@@ -20,7 +20,7 @@ version = "FRP-5857-g3681e397f"
 windows-x64 = { checksum = 'sha256:d5d624ddb5f3cc235179d2912be36e5218dd59ecc851bbc040d3a1d0707ec45a' }
 windows-arm64 = { checksum = 'sha256:4e39dc577782fd0af75222738e609ba43d8d2a98131e88928f1b0dad45048b99' }
 
-[tasks.log]
+[tasks.beep]
 run = """
 #!/usr/bin/env sh
 if test -d "c:/" -a ! -d /proc
@@ -30,5 +30,4 @@ elif test -r /System/Library/CoreServices/SystemVersion.plist
 then
   osascript -e 'beep' &
 fi
-echo 58e2fcb >>"$HOME"/tmp/test.log
 """
