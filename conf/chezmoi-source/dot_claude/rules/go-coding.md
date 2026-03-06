@@ -1,9 +1,10 @@
 ---
-description: Go coding style guidelines. Use when writing, editing, or reviewing Go code to ensure consistent coding patterns and avoid common pitfalls.
-user-invokable: false
+paths:
+  - "**/*.go"
 ---
+# Go Language Coding Guideline
 
-# Go Coding Style
+To ensure consistent coding patterns and avoid common pitfalls.
 
 ## defer with IIFE
 

@@ -25,7 +25,7 @@ profiles:
         basic.to_if_held_down_threshold_milliseconds: 500
         mouse_motion_to_scroll.speed: 100
       rules:
-        # 最初に、個別のアプリケーションごとの設定を行う。Karabiner-Elements の各設定は「先勝ち」なので、個別のカスタマイズを先に、全体の設定を後に書くこと
+        # First, configure settings for each individual application. Since each Karabiner-Elements rule is evaluated on a first-match basis, write per-application customizations before global settings.
         - description: "ターミナル（iTerm2 + zsh + GNU Screen (tmux?)）"
           # assing しない方が良い Ctrl + ? は？
           # Ctrl + C (intr, SIGINT)
@@ -275,7 +275,7 @@ profiles:
             - type: basic
               from: {key_code: spacebar, modifiers: {mandatory: [left_command]}}
               to: [
-                # 日本語変換をオフにしてから
+                # Turn off Japanese input conversion, then enter a tilde.
                 {key_code: "japanese_eisuu", modifiers: []},
                 {key_code: "international3", modifiers: []},
               ]

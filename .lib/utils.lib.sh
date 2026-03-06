@@ -117,7 +117,7 @@ has_external_command() {
 #endregion
 
 # ==========================================================================
-#region Platform detection. Detect platform without using subprocesses whenever possible.
+#region Platform detection. Detect platform without using subprocesses whenever possible, since subprocess creation is expensive and these functions are called frequently.
 
 is_mise() {
   test "${MISE_CONFIG_ROOT+set}" = set

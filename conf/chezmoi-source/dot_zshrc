@@ -475,6 +475,8 @@ bindkey '\e[1;2S' x-kill-region
 # F17: コピー
 bindkey '\e[15;2~' x-copy-region-as-kill
 
+bindkey '^g' delete-char-or-list-or-region
+
 # bindkey '^[[F' unmark-end-of-line
 # bindkey '^[[H' unmark-beginning-of-line
 # bindkey  "^[[1~"   unmark-beginning-of-line
