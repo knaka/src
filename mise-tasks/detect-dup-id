@@ -48,24 +48,24 @@ detect_dup_id() {
         done
     done \
   | grep -v \
-    -e 474b89b \
-    -e 53c8fd5 \
-    -e 0000000 \
-    -e 1000000 \
-    -e 2024013 \
-    -e 2654435 \
-    -e 2684354 \
-    -e 3681e39 \
-    -e 9376eeb \
-    -e a5f342b \
-    -e cafebab \
-    -e cceeded \
-    -e dfd4bfe \
-    -e eabed9b \
-    -e ed9038b \
-    -e fffffff \
-    -e bb789ec \
-    -e e8ccfbb \
+    -e "474b89b" \
+    -e "53c8fd5" \
+    -e "0000000" \
+    -e "1000000" \
+    -e "2024013" \
+    -e "2654435" \
+    -e "2684354" \
+    -e "3681e39" \
+    -e "9376eeb" \
+    -e "a5f342b" \
+    -e "cafebab" \
+    -e "cceeded" \
+    -e "dfd4bfe" \
+    -e "eabed9b" \
+    -e "ed9038b" \
+    -e "fffffff" \
+    -e "bb789ec" \
+    -e "e8ccfbb" \
   | sort \
   | uniq -d
 }

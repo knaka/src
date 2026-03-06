@@ -71,3 +71,8 @@ hs.hotkey.bind({"option"}, "c", function()
   hs.eventtap.keyStroke({}, "left", 0)
   hs.eventtap.keyStroke({}, "left", 0)
 end)
+
+hs.hotkey.bind({"option"}, "z", function()
+  hs.eventtap.keyStrokes("hello")
+  hs.eventtap.keyStroke({"command"}, "escape", 0)
+end)
