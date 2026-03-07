@@ -21,7 +21,7 @@ urlrec() {
     curl --silent --fail "$url" \
     | htmlq --base="$url" 'a[href]' --attribute=href \
     | sed -e 's/#.*//' \
-    | grep "$url"
+    | grep --fixed-strings "$url"
   done \
   | sort \
   | uniq
