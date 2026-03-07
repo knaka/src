@@ -378,7 +378,7 @@ glob_and_run() {
     esac
   done
   pwd
-  echo command "$cmd".exe "$@"
+  # echo command "$cmd".exe "$@"
   command "$cmd".exe "$@"
 }
 
