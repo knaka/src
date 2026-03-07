@@ -3,4 +3,4 @@
 # shellcheck shell=sh
 "${sourced_5ce6fa3-false}" && return 0; sourced_5ce6fa3=true
 
-exec find "$@"
+exec grep "$@"
