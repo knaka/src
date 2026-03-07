@@ -14,17 +14,19 @@ shift 2
 cd "$1" || exit 1; shift 2
 
 urlrec() {
+  register_temp_cleanup
+  local html="$TEMP_DIR"/18a7cf8.html
+  local urls="$TEMP_DIR"/4606904.txt
   local url
   for url in "$@"
   do
     echo "$url"
-    curl --silent --fail "$url" \
-    | htmlq --base="$url" 'a[href]' --attribute=href \
+    curl --silent --fail "$url" >"$html"
+    htmlq --filename="$html" --base="$url" 'a[href]' --attribute=href \
     | sed -e 's/#.*//' \
-    | grep --fixed-strings "$url"
-  done \
-  | sort \
-  | uniq
+    | grep --fixed-strings "$url" || :
+  done >"$urls"
+  sort "$urls" | uniq
 }
 
 case "${0##*/}" in
