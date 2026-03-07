@@ -23,6 +23,7 @@ check() {
 
 edr() {
   register_temp_cleanup
+  register_child_cleanup
   test $# -ge 1 || return
   local origin="$1"
   local file
@@ -33,7 +34,6 @@ edr() {
     check "$origin" "$file"
     sleep 5
   done &
-  defer_child_cleanup
   edw "$file"
   check "$origin" "$file"
 }

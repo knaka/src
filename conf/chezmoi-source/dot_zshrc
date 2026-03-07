@@ -548,11 +548,6 @@ zreload() {
 
 export HOMEBREW_NO_AUTO_UPDATE=1
 
-alias 1plogin=1psignin
-alias 1psignin='eval $(1p signin)'
-alias any-apply='command brew-apply && command gobin-apply && command npm-apply && PATH=$PATH'
-# alias attach='test "$TERM" != "screen" && screen -r'
-unalias attach >/dev/null 2>&1 || :
 attach() {
   case "$TERM" in
     (screen|tmux-*) return;;
@@ -561,15 +556,20 @@ attach() {
   tmux attach || :
   return 1
 }
+
+alias 1plogin=1psignin
+alias 1psignin='eval $(1p signin)'
+alias any-apply='command brew-apply && command gobin-apply && command npm-apply && PATH=$PATH'
 alias brew-apply='command brew-apply && PATH=$PATH'
 alias brew-upgrade='command brew update && command brew upgrade && PATH=$PATH'
+alias claude='launch-claude'
 alias cls=clear
 alias ll='ls -l'
 alias ptd='echo $PTD' # Print Project-Top Directory
 alias r='command r'
+alias rl='readlink'
 # alias t="launch-task"
 # alias task="launch-task"
-alias claude='launch-claude'
 
 # ! which tac >/dev/null && alias tac="tail -r" || :
 
