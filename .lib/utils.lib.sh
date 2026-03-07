@@ -392,6 +392,10 @@ wait_for_server() {
     local attempts=0
     while :
     do
+      # -s: silent mode (suppress progress/error output)
+      # -o /dev/null: discard response body
+      # -w "%{http_code}": print HTTP status code after transfers
+      # 2>/dev/null: suppress stderr
       if curl -s -o /dev/null -w "%{http_code}" "$url" 2>/dev/null | grep -q "200"
       then
         echo "✓ Server is ready at $url" >&2

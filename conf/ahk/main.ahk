@@ -235,6 +235,9 @@ F13:: {
 
 ; “Split in Group”
 <!d:: Send "^{k}^+{\}"
+
+<!m:: Send "!{k}"
+>^m:: Send "!{k}"
 #HotIf
 
 ;#endregion  
