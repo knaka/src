@@ -6,7 +6,7 @@ set -- "$PWD" "${0%/*}" "$@"; test -z "${_APPDIR-}" && { test "$2" = "$0" && _AP
 set -- _LIBDIR .lib "$@"
 . ./.lib/utils.lib.sh
 shift 2
-. ./conf.sh
+# . ./conf.sh
 cd "$1" || exit 1; shift 2
 
 # bar cafead0abc
@@ -62,27 +62,29 @@ ed() {
       elif test -f "$arg"
       then
         # Resolve only directory, so that editors open the file symlink as it appears in the directory
-        local arg_dir="$(dirname "$arg")"
-        local arg_base="$(basename "$arg")"
+        local arg_dir
+        local arg_base
+        arg_dir="$(dirname "$arg")"
+        arg_base="$(basename "$arg")"
         arg="$(realpath "$arg_dir")"/"$arg_base"
-        case "$arg" in
-          (${HOME}/.*)
-            if \
-              echo "$arg" \
-              | grep -q \
-                -e "node_modules"
-            then
-              :
-            else
-              printf "%s seems to be a dot file. " "$arg" >&2
-              if prompt_confirm "Edit as a configuration file?" "y" >&2
-              then
-                conf edit "$arg"
-                continue
-              fi
-            fi
-            ;;
-        esac
+        # case "$arg" in
+        #   (${HOME}/.*)
+        #     if \
+        #       echo "$arg" \
+        #       | grep -q \
+        #         -e "node_modules"
+        #     then
+        #       :
+        #     else
+        #       printf "%s seems to be a dot file. " "$arg" >&2
+        #       if prompt_confirm "Edit as a configuration file?" "y" >&2
+        #       then
+        #         conf edit "$arg"
+        #         continue
+        #       fi
+        #     fi
+        #     ;;
+        # esac
       # Other type, then exit as error
       else
         exit 1
@@ -90,8 +92,10 @@ ed() {
     # Not exists
     else
       # Resolve only directory symlinks, as the file is to be created
-      local arg_dir="$(dirname "$arg")"
-      local arg_base="$(basename "$arg")"
+      local arg_dir
+      local arg_base
+      arg_dir="$(dirname "$arg")"
+      arg_base="$(basename "$arg")"
       arg="$(realpath "$arg_dir")"/"$arg_base"
       if ! test -e "$arg"
       then
