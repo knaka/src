@@ -25,7 +25,8 @@ run = """
 #!/usr/bin/env sh
 if test -d "c:/" -a ! -d /proc
 then
-  pwsh -c "[console]::beep(1000,300)" &
+  # pwsh -c "[console]::beep(1000,300)" &
+  rundll32 user32.dll,MessageBeep &
 elif test -r /System/Library/CoreServices/SystemVersion.plist
 then
   osascript -e 'beep' &
