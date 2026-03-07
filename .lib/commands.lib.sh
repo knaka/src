@@ -32,6 +32,7 @@ ghq() { mise exec ghq -- ghq "$@"; }
 go() { mise exec go -- go "$@"; }
 gofmt() { mise exec go -- gofmt "$@"; }
 gum() { mise exec gum -- gum "$@"; }
+htmlq() { mise exec htmlq -- htmlq "$@"; }
 jmespath() { mise exec jmespath -- jp "$@"; }
 lua() { mise exec lua -- lua "$@"; }
 mdpp() { mise exec "github:knaka/mdpp" -- mdpp "$@"; }
