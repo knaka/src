@@ -1,6 +1,11 @@
 [tools]
 node = "24"
 python = "3.14"
+"jq" = "1.8.1"
+
+"gcloud" = "559.0.0"
+# Releases · googleworkspace/cli https://github.com/googleworkspace/cli/releases
+"github:googleworkspace/cli" = "0.8.0"
 
 # marlocarlo/psmux: Tmux on Windows Powershell - tmux for PowerShell, Windows Terminal, cmd.exe. Includes psmux, pmux, and tmux commands. This is native Powershell Tmux designed for Windows in Rust 🦀 https://github.com/marlocarlo/psmux
 [tools."github:marlocarlo/psmux"]

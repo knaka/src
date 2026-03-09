@@ -16,3 +16,4 @@ node_modules
 revive.log
 
 mise.local.toml
+/.claude/worktrees

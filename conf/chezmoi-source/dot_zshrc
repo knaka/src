@@ -1,29 +1,4 @@
-# vim: set filetype=zsh tabstop=2 shiftwidth=2 expandtab :
-
 set -o nounset
-# set -o errexit
-
-append_path() {
-  local arg
-  local delim=
-  for arg in "$@"
-  do
-    test -d "$arg" || continue
-    test -n "$PATH" && delim=:
-    PATH="$PATH$delim$arg"
-  done
-}
-
-prepend_path() {
-  local arg
-  local delim=
-  for arg in "$@"
-  do
-    test -d "$arg" || continue
-    test -n "$PATH" && delim=:
-    PATH="$arg$delim$PATH"
-  done
-}
 
 # ==========================================================================
 #region グローバル変数
@@ -37,6 +12,9 @@ export SVN_EDITOR="$VISUAL"
 export FCEDIT="$VISUAL"
 export SUDO_EDITOR="$VISUAL"
 
+repos="$HOME/repos"
+export CHEZMOISOURCEDIR="$repos"/github.com/knaka/src/conf/chezmoi-source
+
 # export VOLTA_HOME="$HOME/.volta"
 
 #endregion
@@ -44,36 +22,44 @@ export SUDO_EDITOR="$VISUAL"
 # ==========================================================================
 #region $PATH env var
 
-# if test "${VSCODE_INTEGRATION+set}" = set
-# then
-  PATH=
-
-  hoge=HOGE
-  export hoge
-  append_path "$HOME"/*-bin
+# "In cases where there are two parameters with an upper- and lowercase form of the same name, such as path and PATH, the lowercase form is an array and the uppercase form is a scalar with the elements of the array joined together by colons. These are similar to tied parameters created via ‘typeset -T’."
+# — zsh: 15 Parameters https://zsh.sourceforge.io/Doc/Release/Parameters.html#Array-Parameters
+path=(
+  "$HOME"/.local/bin
+  "$HOME"/*-bin
 
   # Homebrew Keg-only
-  append_path /usr/local/opt/sqlite/bin
-  append_path /usr/local/opt/mysql-client/bin
-  # append_path /usr/local/opt/postgresql@16/bin
+  /usr/local/opt/sqlite/bin
+  /usr/local/opt/mysql-client/bin
+  # /usr/local/opt/postgresql@16/bin
 
-  # append_path "$VOLTA_HOME"/bin
+  /usr/local/bin
+  /usr/bin
+  /bin
 
-  repos="$HOME/repos"
-  export CHEZMOISOURCEDIR="$repos"/github.com/knaka/src/conf/chezmoi-source
+  /usr/local/sbin
+  /usr/sbin
+  /sbin
+)
 
-  # システムの実行ファイルパス
-  append_path /bin
-  append_path /sbin
-  # /usr は bin よりも local を優先
-  append_path /usr/local/bin
-  append_path /usr/bin
-  append_path /usr/sbin
-  append_path /usr/local/sbin
+if command -v mise >/dev/null 2>&1
+then
+  # "Parameter Expansion Flags"
+  # "f: Split the result of the expansion at newlines. This is a shorthand for ‘ps:\n:’."
+  # — zsh: 14 Expansion https://zsh.sourceforge.io/Doc/Release/Expansion.html
+  path=(${(f)"$(mise bin-paths)"} $path)
+fi
 
-  # prepend_path "$HOME"/.local/share/mise/shims
-  prepend_path "$HOME"/.local/bin
-# fi
+# "Parameter Expansion"
+# "${^spec}: Turn on the RC_EXPAND_PARAM option for the evaluation of spec"
+#
+# "Glob Qualifiers"
+# "N: sets the NULL_GLOB option for the current pattern"
+# "-: toggles between making the qualifiers work on symbolic links (the default) and the files they point to, if any; any symbolic link for whose target the ‘stat’ system call fails (whatever the cause of the failure) is treated as a file in its own right"
+# "/: directories"
+path=(${^path}(N-/))
+
+export PATH
 
 #endregion
 
@@ -665,8 +651,3 @@ fi
 [ -s "/Users/knaka/.bun/_bun" ] && source "/Users/knaka/.bun/_bun"
 
 #endregion
-
-export PATH
-
-unfunction append_path
-unfunction prepend_path

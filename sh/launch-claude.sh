@@ -9,11 +9,20 @@ shift 2
 cd "$1" || exit 1; shift 2
 
 launch_claude() {
-  test -t 0 || exec claude "$@"
-  local terminal_title
-  terminal_title="$(printf "* Claude Code (%s)" "${TERMINAL_TITLE-"$PWD"}")"
-  set_terminal_title "$terminal_title"
-  CLAUDE_CODE_DISABLE_TERMINAL_TITLE=1 claude "$@"
+  if ! test -t 0
+  then
+    local terminal_title
+    terminal_title="$(printf "* Claude Code (%s)" "${TERMINAL_TITLE-"$PWD"}")"
+    set_terminal_title "$terminal_title"
+  fi
+  if test "${1+set}" = set && test "$1" = "--disable-mise"
+  then
+    shift
+    set -- claude "$@"
+  else
+    set -- mise exec -- claude "$@"
+  fi
+  CLAUDE_CODE_DISABLE_TERMINAL_TITLE=1 "$@"
 }
 
 case "${0##*/}" in
