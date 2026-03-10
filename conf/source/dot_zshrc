@@ -1,28 +1,6 @@
 set -o nounset
 
 # ==========================================================================
-#region グローバル変数
-
-# Visual editor (= full-screen editor)
-export VISUAL="edw"
-# Line editor
-export EDITOR="$VISUAL"
-export GIT_EDITOR="$VISUAL"
-export SVN_EDITOR="$VISUAL"
-export FCEDIT="$VISUAL"
-export SUDO_EDITOR="$VISUAL"
-
-repos="$HOME/repos"
-
-# todo: remove
-# export CHEZMOISOURCEDIR="$repos"/github.com/knaka/src/conf/chezmoi-source
-unset CHEZMOISOURCEDIR
-
-# export VOLTA_HOME="$HOME/.volta"
-
-#endregion
-
-# ==========================================================================
 #region $PATH env var
 
 # "In cases where there are two parameters with an upper- and lowercase form of the same name, such as path and PATH, the lowercase form is an array and the uppercase form is a scalar with the elements of the array joined together by colons. These are similar to tied parameters created via ‘typeset -T’."
@@ -67,7 +45,21 @@ export PATH
 #endregion
 
 # ==========================================================================
-#region よく使う変数
+#region 環境変数
+
+# Visual editor (= full-screen editor)
+export VISUAL="edw"
+# Line editor
+export EDITOR="$VISUAL"
+export GIT_EDITOR="$VISUAL"
+export SVN_EDITOR="$VISUAL"
+export FCEDIT="$VISUAL"
+export SUDO_EDITOR="$VISUAL"
+
+#endregion
+
+# ==========================================================================
+#region グローバル変数
 
 # TMPDIR: This variable shall represent a pathname of a directory made available for programs that need a place to create temporary files. — Environment Variables https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap08.html
 t="$TMPDIR"
@@ -307,8 +299,7 @@ PS1='%F{${__prompt_fgcolor}}%K{${__prompt_bgcolor}}$__prompt_bold$__prompt_str%b
 #endregion
 
 # ==========================================================================
-#region Bindings
-
+#region Key Bindings
 
 # MacのVimでCtrl + sとCtrl + qのキーマップ割り当てが効かない問題 - Qiita https://qiita.com/minamijoyo/items/727e97956a118bae1a99
 stty stop undef
