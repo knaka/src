@@ -51,13 +51,25 @@ repo() {
   if test -n "$prefix"
   then
     local IFS="$newline_char"
-    # shellcheck disable=SC2046
-    set -- $(printf "%s\n" "$@" | grep -E -e "\b$prefix")
-    if test $# -eq 0
-    then
-      echo "No matching entry for '$prefix'." >&2
-      return 1
-    fi
+    while :
+    do
+      # Exact match
+      if printf "%s\n" "$@" | grep -E -e "/$prefix$" >/dev/null 2>&1
+      then
+        # shellcheck disable=SC2046
+        set -- $(printf "%s\n" "$@" | grep -E -e "/$prefix$")
+        break
+      fi
+      # Match by prefix
+      # shellcheck disable=SC2046
+      set -- $(printf "%s\n" "$@" | grep -E -e "/$prefix")
+      if test $# -eq 0
+      then
+        echo "No matching entry for '$prefix'." >&2
+        return 1
+      fi
+      break
+    done
   fi
   test $# -eq 0 && return 1
   if test $# -ge 2
