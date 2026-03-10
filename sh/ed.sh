@@ -32,11 +32,13 @@ edit_file() {
 }
 
 ed() {
-  OPTIND=1; while getopts _-: OPT
+  local dereference=false
+  OPTIND=1; while getopts _-:L OPT
   do
     test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
     case "$OPT" in
       (b|block|w|wait) should_block_b69939e=true;;
+      (L|dereference) dereference=true;;
       (*) echo "Unexpected option: $OPT" >&2; exit 1;;
     esac
   done
@@ -67,6 +69,10 @@ ed() {
         arg_dir="$(dirname "$arg")"
         arg_base="$(basename "$arg")"
         arg="$(realpath "$arg_dir")"/"$arg_base"
+        if "$dereference"
+        then
+          arg="$(realpath "$arg")"
+        fi
         # case "$arg" in
         #   (${HOME}/.*)
         #     if \
@@ -97,6 +103,10 @@ ed() {
       arg_dir="$(dirname "$arg")"
       arg_base="$(basename "$arg")"
       arg="$(realpath "$arg_dir")"/"$arg_base"
+      if "$dereference"
+      then
+        arg="$(realpath "$arg")"
+      fi
       if ! test -e "$arg"
       then
         printf "File %s does not exist. " "$arg" >&2
