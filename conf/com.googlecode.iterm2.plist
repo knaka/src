@@ -10,6 +10,8 @@
 	<string>1D39DCC5-684F-4FB7-96F7-E8212D1A5DD3</string>
 	<key>DisablePotentiallyInsecureEscapeSequences</key>
 	<true/>
+	<key>ExperimentalKeyHandling</key>
+	<true/>
 	<key>GlobalKeyMap</key>
 	<dict>
 		<key>0xd-0x20000-0x24</key>

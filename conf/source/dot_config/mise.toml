@@ -1,7 +1,21 @@
 [tools]
+"jq" = "1.8.1"
+"yq" = "4.52.4"
+"yj" = "5.1.0"
+"fx" = "39.2.0"
+"htmlq" = "0.4.0"
+
+"gh" = "2.87.3"
+"ripgrep" = "15.1.0"
+"aqua:sharkdp/fd" = "8.7.0"
+"bat" = "0.26.1"
+"delta" = "0.18.2"
+
+# "sqlite" = "3.52.0"
+"shellcheck" = "0.11.0"
+
 node = "24"
 python = "3.14"
-"jq" = "1.8.1"
 
 "gcloud" = "559.0.0"
 # Releases · googleworkspace/cli https://github.com/googleworkspace/cli/releases
