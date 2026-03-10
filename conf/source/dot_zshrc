@@ -13,7 +13,10 @@ export FCEDIT="$VISUAL"
 export SUDO_EDITOR="$VISUAL"
 
 repos="$HOME/repos"
-export CHEZMOISOURCEDIR="$repos"/github.com/knaka/src/conf/chezmoi-source
+
+# todo: remove
+# export CHEZMOISOURCEDIR="$repos"/github.com/knaka/src/conf/chezmoi-source
+unset CHEZMOISOURCEDIR
 
 # export VOLTA_HOME="$HOME/.volta"
 
