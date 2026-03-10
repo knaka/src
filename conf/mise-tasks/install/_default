@@ -1,8 +1,8 @@
 #!/usr/bin/env sh
 
-# Code generated from "tasks-project.sh" by task:route task. DO NOT EDIT.
+# Code generated from "tasks-project.sh" by tasks:expand task. DO NOT EDIT.
 
-#ed9038b1-9de5-40fd-bede-eabed9b60306
+#marker ed9038b1-9de5-40fd-bede-eabed9b60306
 #MISE description="Install configuration files."
 saved_pwd_474b89b="$PWD"
 _APPDIR="$MISE_PROJECT_ROOT"/mise-tasks

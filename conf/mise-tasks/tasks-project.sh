@@ -5,16 +5,16 @@
 set -- "$PWD" "${0%/*}" "$@"; test -z "${_APPDIR-}" && { test "$2" = "$0" && _APPDIR=. || _APPDIR="$2"; cd "$_APPDIR" || exit 1; }
 set -- _LIBDIR .lib "$@"
 . ./.lib/utils.lib.sh
-. ./.lib/tools.lib.sh
+. ./.lib/commands.lib.sh
 shift 2
 cd "$1" || exit 1; shift 2
 
-chezmoi_source_dir="$PROJECT_DIR"/chezmoi-source
+chezmoi_source_dir="$PROJECT_DIR"/source
 
-# Install dotfiles to $HOME/
-task_dotfiles__install() {
-  chezmoi --source="$chezmoi_source_dir" apply
-}
+# # Install dotfiles to $HOME/
+# task_dotfiles__install() {
+#   chezmoi --source="$chezmoi_source_dir" apply
+# }
 
 # Update karabiner.json
 task_karabiner_json__update() {
