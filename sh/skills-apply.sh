@@ -8,14 +8,22 @@ set -- _LIBDIR .lib "$@"
 shift 2
 cd "$1" || exit 1; shift 2
 
-add_skills() {
+skills_add_b61e4de() {
   local source="$1"
   shift
   local arg
-  for arg in "$@"
+  while test "$1" != "--skill"
   do
+    arg="$1"
     shift
-    set -- "$@" --skill "$arg"
+    if test "$arg" = "--add"
+    then
+      local val="$1"
+      shift
+      set -- "$@" --skill "$val"
+    else
+      shift
+    fi
   done
   skills add \
     "$source" \
@@ -25,14 +33,22 @@ add_skills() {
     "$@"
 }
 
-remove_skills() {
+skills_remove_217f03b() {
   local source="$1"
   shift
   local arg
-  for arg in "$@"
+  while test "$1" != "--skill"
   do
+    arg="$1"
     shift
-    set -- "$@" --skill "$arg"
+    if test "$arg" = "--remove"
+    then
+      local val="$1"
+      shift
+      set -- "$@" --skill "$val"
+    else
+      shift
+    fi
   done
   skills remove \
     "$source" \
@@ -42,24 +58,21 @@ remove_skills() {
     "$@"
 }
 
-# cli/skills at main · googleworkspace/cli https://github.com/googleworkspace/cli/tree/main/skills
-skills_apply_gws() {
-  local source="github:googleworkspace/cli"
-  add_skills \
-    "$source" \
-    gws-shared \
-    gws-gmail \
-    gws-gmail-send \
-    #nop
-  remove_skills \
-    "$source" \
-    gws-gmail-watch \
-    #nop
+skills_apply() {
+  skills_add_b61e4de "$@"
+  skills_remove_217f03b "$@"
 }
 
 case "${0##*/}" in
   (skills-apply.sh|skills-apply)
     set -o nounset -o errexit
-    skills_apply_gws "$@"
+    # cli/skills at main · googleworkspace/cli https://github.com/googleworkspace/cli/tree/main/skills
+    skills_apply \
+      "github:googleworkspace/cli" \
+      --add gws-shared \
+      --add gws-gmail \
+      --add gws-gmail-send \
+      --remove gws-chat \
+      #nop
     ;;
 esac
