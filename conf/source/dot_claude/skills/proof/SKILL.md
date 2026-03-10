@@ -1,5 +1,5 @@
 ---
-description: 'Proofread a document, string or comments in code and correct. The verb "cmdproof" means the same as "proofread" or "proof".'
+description: 'Proofread a document, string or comments in code and correct. The verb "&proof" means the same as "proofread" or "proof".'
 user-invokable: true
 ---
 
