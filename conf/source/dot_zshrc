@@ -6,8 +6,8 @@ set -o nounset
 # "In cases where there are two parameters with an upper- and lowercase form of the same name, such as path and PATH, the lowercase form is an array and the uppercase form is a scalar with the elements of the array joined together by colons. These are similar to tied parameters created via ‘typeset -T’."
 # — zsh: 15 Parameters https://zsh.sourceforge.io/Doc/Release/Parameters.html#Array-Parameters
 path=(
-  "$HOME"/*-bin
   "$HOME"/.local/bin
+  "$HOME"/*-bin
 
   # Homebrew Keg-only
   /usr/local/opt/sqlite/bin
@@ -31,6 +31,9 @@ then
   path=(${(f)"$(mise bin-paths)"} $path)
 fi
 
+# Claude Code はここに入るのだが、Node.js の方がパスで先にあると、self-update で Node.js 版の方を入れてしまうみたいだ。なので、先頭にしてみる
+path=("$HOME"/.local/bin $path)
+  
 # "Parameter Expansion"
 # "${^spec}: Turn on the RC_EXPAND_PARAM option for the evaluation of spec"
 #

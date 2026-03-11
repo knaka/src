@@ -38,6 +38,7 @@ brew 'pstree'
 # brew 'yj'
 # brew 'yq' # mikefarah の方の yq(1) — mikefarah/yq: yq is a portable command-line YAML, JSON, XML, CSV, TOML and properties processor https://github.com/mikefarah/yq
 # brew 'wget'
+brew 'python' # なんでか Claude Code が、/usr/local/bin/python3 が無いとうるさい
 
 #endregion
  
