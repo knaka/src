@@ -11,14 +11,14 @@ tap 'jmespath/jmespath' # for 'jp'
 # ==========================================================================
 #region fomulae 一覧・検索 https://formulae.brew.sh/formula/
 
-brew 'coreutils'
-brew 'cpulimit' # https://github.com/opsengine/cpulimit
-brew 'gawk'
-brew 'gh' # GitHub CLI について - GitHub Docs https://docs.github.com/ja/github-cli/github-cli/about-github-cli
+# brew 'coreutils'
+# brew 'cpulimit' # https://github.com/opsengine/cpulimit
+# brew 'gawk'
+# brew 'gh' # GitHub CLI について - GitHub Docs https://docs.github.com/ja/github-cli/github-cli/about-github-cli
 # brew 'ghcup' # VSCode が language server を探すのに要るかも？ いや、なまじ Brew や Mise で入れていると、自動セットアップが働かなくて、もろもろのバージョン不一致やパスが通っていなかったりで動かないことがある
 brew 'git'
 # brew 'go' # ~/go/ は $GOPATH であり、$GOROOT とは別であることが望ましいらしい？
-brew 'jj'
+# brew 'jj'
 # brew 'jp' # AWS CLI の query 言語である、JMESPath のツール —jmespath/jp: Command line interface to JMESPath - http://jmespath.org https://github.com/jmespath/jp
 # brew 'jq'
 brew 'less' # Mac の less は正規表現が不足
@@ -30,14 +30,14 @@ brew 'mysql' # brew services list で一覧 | brew services start/stop mysql は
 # brew 'plantuml'
 brew 'postgresql@14' # brew services list で一覧 | brew services start/stop postgresql は、即時の開始終了と同時に永続的な register/unregister を行う | ログは /usr/local/var/log/postgresql@14.log
 brew 'postgresql@15'
-brew 'purescript'
+# brew 'purescript'
 brew 'pstree'
 # brew 'python-yq' # https://formulae.brew.sh/formula/python-yq | yq コマンドはこれ — yq: Command-line YAML/XML/TOML processor - jq wrapper for YAML, XML, TOML documents — yq documentation https://kislyuk.github.io/yq/
 # brew 'volta' # nvm は、nvm use するまで切り替えてくれない。avn を入れろと言われたが、npm パッケージのルート導入はしたくない。volta はどうか。…周辺のサポートや IDE のサポートを考え、NVM に戻すか。…と思ったが、やはり Volta は出来が良いな
-brew 'tmux'
-brew 'yj'
-brew 'yq' # mikefarah の方の yq(1) — mikefarah/yq: yq is a portable command-line YAML, JSON, XML, CSV, TOML and properties processor https://github.com/mikefarah/yq
-brew 'wget'
+# brew 'tmux'
+# brew 'yj'
+# brew 'yq' # mikefarah の方の yq(1) — mikefarah/yq: yq is a portable command-line YAML, JSON, XML, CSV, TOML and properties processor https://github.com/mikefarah/yq
+# brew 'wget'
 
 #endregion
  

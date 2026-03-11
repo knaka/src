@@ -1,25 +1,21 @@
 [tools]
-"jq" = "1.8.1"
-"yq" = "4.52.4"
-"yj" = "5.1.0"
-"fx" = "39.2.0"
-"htmlq" = "0.4.0"
-
-"gh" = "2.87.3"
-"ripgrep" = "15.1.0"
 "aqua:sharkdp/fd" = "8.7.0"
 "bat" = "0.26.1"
 "delta" = "0.18.2"
-
-# "sqlite" = "3.52.0"
-"shellcheck" = "0.11.0"
-
-node = "24"
-python = "3.14"
-
+"fx" = "39.2.0"
 "gcloud" = "559.0.0"
-# Releases · googleworkspace/cli https://github.com/googleworkspace/cli/releases
-"github:googleworkspace/cli" = "0.8.0"
+"gh" = "2.87.3"
+"github:googleworkspace/cli" = "0.11.1"
+"htmlq" = "0.4.0"
+"jq" = "1.8.1"
+"node" = "24"
+"python" = "3.14"
+"ripgrep" = "15.1.0"
+"shellcheck" = "0.11.0"
+# "sqlite" = "3.52.0"
+"tmux" = "3.6a"
+"yj" = "5.1.0"
+"yq" = "4.52.4"
 
 # marlocarlo/psmux: Tmux on Windows Powershell - tmux for PowerShell, Windows Terminal, cmd.exe. Includes psmux, pmux, and tmux commands. This is native Powershell Tmux designed for Windows in Rust 🦀 https://github.com/marlocarlo/psmux
 [tools."github:marlocarlo/psmux"]
