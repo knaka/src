@@ -5,11 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "env >>/tmp/tmp.log"
-          },
-          {
-            "type": "command",
-            "command": "mise run beep"
+            "command": "\"$HOME\"/.claude/hooks/beep"
           }
         ]
       }
