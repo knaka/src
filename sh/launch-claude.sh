@@ -27,7 +27,7 @@ launch_claude() {
     DISABLE_AUTOUPDATER=1 \
     CLAUDE_CODE_DISABLE_TERMINAL_TITLE=1 \
     "$@"
-  if test $(($(date +%s) % 100)) -eq 0
+  if test $(($(date +%s) % 30)) -eq 0
   then
     claude update >&2
   fi
