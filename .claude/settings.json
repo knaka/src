@@ -1,1 +1,15 @@
-{}
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "async": true,
+            "command": "\"$CLAUDE_PROJECT_DIR\"/mise run hooks:log"
+          }
+        ]
+      }
+    ]
+  }
+}

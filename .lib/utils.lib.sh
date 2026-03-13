@@ -18,6 +18,7 @@
 # Current project directory.
 : "${PROJECT_DIR=}"
 : "${PROJECT_DIR:=${MISE_PROJECT_ROOT:-}}"
+: "${PROJECT_DIR:=.}"
 
 # The project directory where the task is defined.
 : "${TASK_PROJECT_DIR=}"

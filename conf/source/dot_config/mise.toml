@@ -16,6 +16,7 @@
 "tmux" = "3.6a"
 "yj" = "5.1.0"
 "yq" = "4.52.4"
+"gum" = "0.17.0"
 
 # marlocarlo/psmux: Tmux on Windows Powershell - tmux for PowerShell, Windows Terminal, cmd.exe. Includes psmux, pmux, and tmux commands. This is native Powershell Tmux designed for Windows in Rust 🦀 https://github.com/marlocarlo/psmux
 [tools."github:marlocarlo/psmux"]

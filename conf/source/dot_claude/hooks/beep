@@ -11,11 +11,11 @@ cd "$1" || exit 1; shift 2
 beep() {
   if test -d "c:/" -o -d "/c/"
   then
-    # pwsh -c "[console]::beep(1000,300)" &
-    rundll32 user32.dll,MessageBeep &
+    # pwsh -c "[console]::beep(1000,300)"
+    rundll32 user32.dll,MessageBeep
   elif test -r /System/Library/CoreServices/SystemVersion.plist
   then
-    osascript -e 'beep' &
+    osascript -e 'beep'
   fi
 }
 
