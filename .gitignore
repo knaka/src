@@ -18,3 +18,4 @@ revive.log
 mise.local.toml
 /.claude/worktrees
 /temp.log
+/hooks.log

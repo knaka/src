@@ -26,7 +26,7 @@ task_hooks__log() {
     date
     printf "hook_event: %s\n" "$hook_event"
     printf "body: %s\n" "$body"
-  } >>"$PROJECT_DIR"/temp.log
+  } >>"$PROJECT_DIR"/hooks.log
 }
 
 case "${0##*/}" in
