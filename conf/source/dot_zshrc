@@ -183,11 +183,8 @@ then
   TMUX_WINDOW_NAME="$(tmux display -p "#{window_name}")"
 fi
 
-# `precmd` は、コマンドプロンプトを表示する直前に実行される。他の名前で、`add-zsh-hook precmd <function>` として登録することもできるようだ
-# スクリーン: 2
-# ステータス: 20
-# デリミタ: 2
-# しめて 24 なので、パスに 56 使える
+# `precmd` は、コマンドプロンプトを表示する直前に実行される
+# 他の名前で登録するには、`add-zsh-hook precmd <function>` のようにする
 precmd() {
   local rc=$?
   "$executed_something_f881915" || rc=0
@@ -241,14 +238,16 @@ precmd() {
   git_branches="$(command -v git >/dev/null 2>&1 && git branch 2>/dev/null)" || :
   if test -n "$git_branches"
   then
-    # Project Directory
-    PTD="$(git rev-parse --show-toplevel 2>/dev/null)" || :
+    # Project Top Directory
+    # PTD="$(git rev-parse --show-toplevel 2>/dev/null)" || :
+    PTD="$(cd "$(git rev-parse --show-cdup 2>/dev/null)"; echo "$PWD")"
     ptd="$PTD"
+    local rel_path="${PWD#$PTD}"
     local git_branch
     git_branch="$(echo "$git_branches" | sed -n -e 's/^* *//p')"
     right_str="${delim}${right_str} $git_branch"
     delim=" "
-    title="git:${PTD##*/}"
+    title="git:${PTD##*/}""$rel_path"
   fi
 
   # * main, stat を確立させます
