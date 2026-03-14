@@ -69,9 +69,9 @@ ed() {
         local magenta="#efafef"
         local cyan="#afefef"
         case "$arg" in
-          ("$HOME"/repos/github.com/knaka/src) color="$red";;
-          ("$HOME"/MyDrive/doc) color="$green";;
-          (187f091) color="$blue";;
+          (d8f0794|"$HOME"/repos/github.com/knaka/src) color="$red";;
+          (8182711) color="$green";;
+          (187f091|"$HOME"/MyDrive/doc) color="$blue";;
           (a5bf109) color="$yellow";;
           (ba8454d) color="$magenta";;
           (bb67412) color="$cyan";;
@@ -94,7 +94,10 @@ ed() {
               ],
               "settings": {
                 "workbench.colorCustomizations": {
-                  "activityBar.background": $color
+                  "activityBar.background": $color,
+                  "statusBar.background": $color,
+                  "titleBar.activeBackground": $color,
+                  "titleBar.inactiveBackground": $color,
                 }
               }
             }
