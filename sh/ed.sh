@@ -5,6 +5,7 @@
 set -- "$PWD" "${0%/*}" "$@"; test -z "${_APPDIR-}" && { test "$2" = "$0" && _APPDIR=. || _APPDIR="$2"; cd "$_APPDIR" || exit 1; }
 set -- _LIBDIR .lib "$@"
 . ./.lib/utils.lib.sh
+. ./.lib/commands.lib.sh
 shift 2
 # . ./conf.sh
 cd "$1" || exit 1; shift 2
@@ -60,6 +61,47 @@ ed() {
         fi
         # It is preferable to open the workspace with the actual path rather than the symlink location. Otherwise, when tools open FILES with real paths, they may not recognize them as being within the workspace directory.
         arg="$(realpath "$arg")"
+        local color=
+        local red="#efafaf"
+        local green="#afefaf"
+        local blue="#afafef"
+        local yellow="#efefaf"
+        local magenta="#efafef"
+        local cyan="#afefef"
+        case "$arg" in
+          ("$HOME"/repos/github.com/knaka/src) color="$red";;
+          ("$HOME"/MyDrive/doc) color="$green";;
+          (187f091) color="$blue";;
+          (a5bf109) color="$yellow";;
+          (ba8454d) color="$magenta";;
+          (bb67412) color="$cyan";;
+          (*) ;;
+        esac
+        if test -n "$color"
+        then
+          local base
+          base="$(basename "$arg")"
+          local dir="$HOME/.cache/code-workspaces"
+          mkdir -p "$dir"
+          local file="$dir"/"$base".code-workspace
+          jq -n -c \
+          --arg path "$arg" \
+          --arg color "$color" \
+          '
+            {
+              "folders": [
+                { "path": $path }
+              ],
+              "settings": {
+                "workbench.colorCustomizations": {
+                  "activityBar.background": $color
+                }
+              }
+            }
+          ' \
+          >"$file"
+          arg="$file"
+        fi
       # File exists
       elif test -f "$arg"
       then
