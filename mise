@@ -32,6 +32,12 @@ mise() {
   local cmd_path="$app_dir_path/mise$exe_ext"
   if ! command -v "$cmd_path" >/dev/null 2>&1
   then
+    if test "${TEMP_DIR+set}" != set
+    then
+      TEMP_DIR="$(mktemp -d)"
+      # shellcheck disable=SC2064
+      trap "rm -fr '$TEMP_DIR'" EXIT
+    fi
     local arch
     case "$(uname -m)" in
       (x86_64) arch=x64;;

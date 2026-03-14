@@ -8,6 +8,7 @@ set -- _LIBDIR .lib "$@"
 . ./.lib/commands.lib.sh
 shift 2
 # . ./conf.sh
+. ./edr.sh
 cd "$1" || exit 1; shift 2
 
 # bar cafead0abc
@@ -34,12 +35,14 @@ edit_file() {
 
 ed() {
   local dereference=false
-  OPTIND=1; while getopts _-:L OPT
+  local raw=false
+  OPTIND=1; while getopts _-:Lr OPT
   do
     test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
     case "$OPT" in
       (b|block|w|wait) should_block_b69939e=true;;
       (L|dereference) dereference=true;;
+      (r|raw) raw=true;;
       (*) echo "Unexpected option: $OPT" >&2; exit 1;;
     esac
   done
@@ -71,8 +74,8 @@ ed() {
         case "$arg" in
           (d8f0794|"$HOME"/repos/github.com/knaka/src) color="$red";;
           (8182711) color="$green";;
-          (187f091|"$HOME"/MyDrive/doc) color="$blue";;
-          (a5bf109) color="$yellow";;
+          (187f091) color="$blue";;
+          (a5bf109|"$HOME"/MyDrive/doc) color="$yellow";;
           (ba8454d) color="$magenta";;
           (bb67412) color="$cyan";;
           (*) ;;
@@ -117,6 +120,11 @@ ed() {
         if "$dereference"
         then
           arg="$(realpath "$arg")"
+        fi
+        if "$raw"
+        then
+          edr "$arg"
+          continue
         fi
         # case "$arg" in
         #   (${HOME}/.*)
