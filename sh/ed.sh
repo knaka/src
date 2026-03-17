@@ -33,6 +33,17 @@ edit_file() {
   fi
 }
 
+color_midpoint() {
+  python -c "
+import sys
+def parse(h): return int(h[1:3],16), int(h[3:5],16), int(h[5:7],16)
+def mid(a,b): return (a+b)//2
+c1, c2 = parse('$1'), parse('$2')
+r,g,b = mid(c1[0],c2[0]), mid(c1[1],c2[1]), mid(c1[2],c2[2])
+print(f'#{r:02x}{g:02x}{b:02x}')
+"
+}
+
 ed() {
   local dereference=false
   local raw=false
@@ -66,6 +77,7 @@ ed() {
         arg="$(realpath "$arg")"
         local color=
         local subcolor=
+        local midcolor=
         local red="#efafaf"
         local green="#afefaf"
         local blue="#afafef"
@@ -79,7 +91,9 @@ ed() {
             color="$blue"
             case "$arg" in
               ("$HOME"/repos/github.com/knaka/src/sh*) subcolor="$red";;
-              ("$HOME"/repos/github.com/knaka/src/go*) subcolor="$blue";;
+              ("$HOME"/repos/github.com/knaka/src/go*)
+                subcolor="$green"
+                ;;
             esac
             ;;
           (2623229|"$HOME"/MyDrive/doc) color="$yellow";;
@@ -89,6 +103,10 @@ ed() {
         esac
         if test -n "$color"
         then
+          if test -n "$subcolor"
+          then
+            midcolor="$(color_midpoint "$color" "$subcolor")"
+          fi
           local base
           base="$(basename "$arg")"
           local dir="$HOME/.cache/code-workspaces"
@@ -98,6 +116,7 @@ ed() {
           --arg path "$arg" \
           --arg color "$color" \
           --arg subcolor "$subcolor" \
+          --arg midcolor "$midcolor" \
           '
             {
               "folders": [
@@ -111,6 +130,9 @@ ed() {
                   }
                   + if $subcolor != "" then {
                     "statusBar.background": $subcolor
+                  } else {} end
+                  + if $midcolor != "" then {
+                    "activityBar.background": $midcolor
                   } else {} end
                 )
               }
