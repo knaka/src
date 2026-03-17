@@ -33,15 +33,49 @@ edit_file() {
   fi
 }
 
+b2=ef
+b1=cf
+b0=af
+
+bred="#${b2}${b0}${b0}"
+bgreen="#${b0}${b2}${b0}"
+bblue="#${b0}${b0}${b2}"
+byellow="#${b2}${b2}${b0}"
+bmagenta="#${b2}${b0}${b2}"
+bcyan="#${b0}${b2}${b2}"
+
 color_midpoint() {
-  python -c "
-import sys
-def parse(h): return int(h[1:3],16), int(h[3:5],16), int(h[5:7],16)
-def mid(a,b): return (a+b)//2
-c1, c2 = parse('$1'), parse('$2')
-r,g,b = mid(c1[0],c2[0]), mid(c1[1],c2[1]), mid(c1[2],c2[2])
-print(f'#{r:02x}{g:02x}{b:02x}')
-"
+  local x
+
+  x="${1#?}"
+  local red1="${x%????}"; x="${x#??}"
+  local green1="${x%??}"
+  local blue1="${x#??}"
+
+  x="${2#?}"
+  local red2="${x%????}"; x="${x#??}"
+  local green2="${x%??}"
+  local blue2="${x#??}"
+
+  local red
+  case "$red1" in
+    ("$b0") case "$red2" in ("$b0") red="$b0";; ("$b2") red="$b1";; esac;;
+    ("$b2") case "$red2" in ("$b0") red="$b1";; ("$b2") red="$b2";; esac;;
+  esac
+
+  local green
+  case "$green1" in
+    ("$b0") case "$green2" in ("$b0") green="$b0";; ("$b2") green="$b1";; esac;;
+    ("$b2") case "$green2" in ("$b0") green="$b1";; ("$b2") green="$b2";; esac;;
+  esac
+
+  local blue
+  case "$blue1" in
+    ("$b0") case "$blue2" in ("$b0") blue="$b0";; ("$b2") blue="$b1";; esac;;
+    ("$b2") case "$blue2" in ("$b0") blue="$b1";; ("$b2") blue="$b2";; esac;;
+  esac
+
+  printf "#%s%s%s" "$red" "$green" "$blue"
 }
 
 ed() {
@@ -78,27 +112,20 @@ ed() {
         local color=
         local subcolor=
         local midcolor=
-        local red="#efafaf"
-        local green="#afefaf"
-        local blue="#afafef"
-        local yellow="#efefaf"
-        local magenta="#efafef"
-        local cyan="#afefef"
+
         case "$arg" in
-          (a98b8e7) color="$red";;
-          (fa85ca2) color="$green";;
+          (a98b8e7) color="$bred";;
+          (fa85ca2) color="$bgreen";;
           (a9e64c6|"$HOME"/repos/github.com/knaka/src*)
-            color="$blue"
+            color="$bblue"
             case "$arg" in
-              ("$HOME"/repos/github.com/knaka/src/sh*) subcolor="$red";;
-              ("$HOME"/repos/github.com/knaka/src/go*)
-                subcolor="$green"
-                ;;
+              ("$HOME"/repos/github.com/knaka/src/sh*) subcolor="$bred";;
+              ("$HOME"/repos/github.com/knaka/src/go*) subcolor="$bgreen";;
             esac
             ;;
-          (2623229|"$HOME"/MyDrive/doc) color="$yellow";;
-          (e33a5eb) color="$magenta";;
-          (f9f6bec) color="$cyan";;
+          (2623229|"$HOME"/MyDrive/doc) color="$byellow";;
+          (e33a5eb) color="$bmagenta";;
+          (f9f6bec) color="$bcyan";;
           (*) ;;
         esac
         if test -n "$color"
@@ -106,6 +133,9 @@ ed() {
           if test -n "$subcolor"
           then
             midcolor="$(color_midpoint "$color" "$subcolor")"
+          else
+            subcolor="$color"
+            midcolor="$color"
           fi
           local base
           base="$(basename "$arg")"
