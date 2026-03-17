@@ -65,6 +65,7 @@ ed() {
         # It is preferable to open the workspace with the actual path rather than the symlink location. Otherwise, when tools open FILES with real paths, they may not recognize them as being within the workspace directory.
         arg="$(realpath "$arg")"
         local color=
+        local subcolor=
         local red="#efafaf"
         local green="#afefaf"
         local blue="#afafef"
@@ -72,12 +73,18 @@ ed() {
         local magenta="#efafef"
         local cyan="#afefef"
         case "$arg" in
-          (d8f0794|"$HOME"/repos/github.com/knaka/src) color="$red";;
-          (8182711) color="$green";;
-          (187f091) color="$blue";;
-          (a5bf109|"$HOME"/MyDrive/doc) color="$yellow";;
-          (ba8454d) color="$magenta";;
-          (bb67412) color="$cyan";;
+          (a98b8e7) color="$red";;
+          (fa85ca2) color="$green";;
+          (a9e64c6|"$HOME"/repos/github.com/knaka/src*)
+            color="$blue"
+            case "$arg" in
+              ("$HOME"/repos/github.com/knaka/src/sh*) subcolor="$red";;
+              ("$HOME"/repos/github.com/knaka/src/go*) subcolor="$blue";;
+            esac
+            ;;
+          (2623229|"$HOME"/MyDrive/doc) color="$yellow";;
+          (e33a5eb) color="$magenta";;
+          (f9f6bec) color="$cyan";;
           (*) ;;
         esac
         if test -n "$color"
@@ -90,22 +97,27 @@ ed() {
           jq -n -c \
           --arg path "$arg" \
           --arg color "$color" \
+          --arg subcolor "$subcolor" \
           '
             {
               "folders": [
                 { "path": $path }
               ],
               "settings": {
-                "workbench.colorCustomizations": {
-                  "activityBar.background": $color,
-                  "statusBar.background": $color,
-                  "titleBar.activeBackground": $color,
-                  "titleBar.inactiveBackground": $color,
-                }
+                "workbench.colorCustomizations": (
+                  {
+                    "titleBar.activeBackground": $color,
+                    "titleBar.inactiveBackground": $color
+                  }
+                  + if $subcolor != "" then {
+                    "statusBar.background": $subcolor
+                  } else {} end
+                )
               }
             }
           ' \
           >"$file"
+          # "activityBar.background": $color,
           arg="$file"
         fi
       # File exists

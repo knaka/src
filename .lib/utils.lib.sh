@@ -912,10 +912,17 @@ is_dir_empty() {
 
 # [<file>] Read the file and print substituting environment variables. Unlike envsubst(1), this tries to expand undefined environment variables and fails for that.
 env_subst() {
-  local template_file="$1"
-  eval "cat <<EOF
+  if test "$#" -gt 0
+  then
+    local template_file="$1"
+    eval "cat <<EOF
 $(cat "$template_file")
 EOF"
+  else
+    eval "cat <<EOF
+$(cat)
+EOF"
+  fi
 }
 
 # [regex replacement ...] Substitute text that matches regex patterns in stdin input. Takes pairs of regex/replacement arguments and applies them via sed(1).
