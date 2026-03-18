@@ -9,33 +9,35 @@ set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test 
 set -- _LIBDIR .lib "$@"
 . ./.lib/utils.lib.sh
 shift 2
-. ./edw.sh
+# . ./edw.sh
 cd "$1" || exit 1; shift 2
 
-check() {
-  local origin="$1"
-  local file="$2"
-  if newer "$file" --than "$origin"
-  then
-    cat "$file" >"$origin"
-  fi
-}
+# check() {
+#   local origin="$1"
+#   local file="$2"
+#   if newer "$file" --than "$origin"
+#   then
+#     cat "$file" >"$origin"
+#   fi
+# }
 
 edr() {
-  register_temp_cleanup
-  register_child_cleanup
-  test $# -ge 1 || return
-  local origin="$1"
-  local file
-  file="$(mktemp "$TEMP_DIR"/edr_XXXXXX)"
-  cp -a "$origin" "$file"
-  while true
-  do
-    check "$origin" "$file"
-    sleep 5
-  done &
-  edw "$file"
-  check "$origin" "$file"
+  # register_temp_cleanup
+  # register_child_cleanup
+  # test $# -ge 1 || return
+  # local origin="$1"
+  # local file
+  # file="$(mktemp "$TEMP_DIR"/edr_XXXXXX)"
+  # cp -a "$origin" "$file"
+  # while true
+  # do
+  #   check "$origin" "$file"
+  #   sleep 5
+  # done &
+  # edw "$file"
+  # check "$origin" "$file"
+  cd "$_APPDIR" || exit 1
+  ./mise exec --cd="$OLDPWD" -- python "$_APPDIR"/ed.py --raw "$@"
 }
 
 case "${0##*/}" in

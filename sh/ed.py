@@ -6,13 +6,15 @@ import os
 import shutil
 import subprocess
 import sys
+import tempfile
+import threading
 from pathlib import Path
 
 import argparse
 
 HOME = Path.home()
 
-# Color palette
+# Color palette, bright colors
 bred    = "#efafaf"
 bgreen  = "#afefaf"
 bblue   = "#afafef"
@@ -66,7 +68,7 @@ def make_workspace(arg: Path) -> Path | None:
   # (prefix_or_exact_path, color, subcolor_or_None)
   rules: list[tuple[Path, str, str | None]] = [
     (src_root / "sh", bblue, bred),
-    (src_root / "go", bblue, byellow),
+    (src_root / "go", bblue, bgreen),
     (src_root,        bblue, None),
     (HOME / "MyDrive" / "doc", byellow, None),
   ]
@@ -108,13 +110,32 @@ def launch_editor(paths: list[Path], block: bool) -> None:
   cmd = get_editor_cmd(block)
   subprocess.run(cmd + [str(p) for p in paths])
 
+def _sync_if_newer(src: Path, dst: Path) -> None:
+  """Copy src to dst if src is newer than dst."""
+  if src.stat().st_mtime > dst.stat().st_mtime:
+    shutil.copy2(src, dst)
+
 def edit(
   paths: list[str],
   block: bool = False,
   dereference: bool = False,
   raw: bool = False,
 ) -> None:
+  """Open files in an editor.
+
+  block:       Wait for the editor to close before returning.
+  dereference: Resolve symlinks fully before opening.
+  raw:         Open a temporary copy with a random name (no extension) so that
+               the editor does not associate it with any language mode,
+               suppressing formatters and linters tied to the original
+               filename/extension. Changes are synced back to the original
+               file periodically and on exit.
+  """
   to_open: list[Path] = []
+  # pairs of (tmp_copy, original) for raw mode
+  raw_pairs: list[tuple[Path, Path]] = []
+  tmp_dir: str | None = None
+  stop_event = threading.Event()
 
   for arg_str in paths:
     arg = Path(arg_str)
@@ -135,8 +156,15 @@ def edit(
         if dereference:
           resolved = resolved.resolve()
         if raw:
-          # edr: open a temporary copy and sync back — replicate simply as direct open
-          to_open.append(resolved)
+          if tmp_dir is None:
+            tmp_dir = tempfile.mkdtemp(prefix="edr_")
+          fd, tmp_str = tempfile.mkstemp(dir=tmp_dir)
+          os.close(fd)
+          tmp = Path(tmp_str)
+          shutil.copy2(resolved, tmp)
+          raw_pairs.append((tmp, resolved))
+          to_open.append(tmp)
+          block = True
         else:
           to_open.append(resolved)
       else:
@@ -154,8 +182,26 @@ def edit(
         resolved.touch()
       to_open.append(resolved)
 
-  if to_open:
-    launch_editor(to_open, block)
+  if raw_pairs:
+    def sync_loop() -> None:
+      while True:
+        if stop_event.wait(5):
+          break
+        for tmp, origin in raw_pairs:
+          _sync_if_newer(src=tmp, dst=origin)
+    t = threading.Thread(target=sync_loop, daemon=True)
+    t.start()
+
+  try:
+    if to_open:
+      launch_editor(to_open, block)
+  finally:
+    if raw_pairs:
+      stop_event.set()
+      for tmp, origin in raw_pairs:
+        _sync_if_newer(src=tmp, dst=origin)
+    if tmp_dir:
+      shutil.rmtree(tmp_dir, ignore_errors=True)
 
 def main() -> None:
   parser = argparse.ArgumentParser(prog="ed", add_help=False)
