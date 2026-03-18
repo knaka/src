@@ -18,7 +18,7 @@ mise() {
   if test -r /System/Library/CoreServices/SystemVersion.plist
   then
     os=macos
-  elif test -d "c:/" -a ! -d /proc
+  elif test -d "c:/" -o -d "/c/" && ! test -d /proc
   then
     os=windows
     exe_ext=.exe
