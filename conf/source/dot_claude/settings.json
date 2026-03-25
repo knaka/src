@@ -1,7 +1,6 @@
 {
   "permissions": {
     "allow": [
-      "Bash(~/.claude/skills/commit/commit-with-message *)",
       "Bash(git diff *)",
       "Bash(git * diff *)",
       "Bash(grep *)",
