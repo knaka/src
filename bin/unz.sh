@@ -39,7 +39,7 @@ case "$file" in
   (*.tar | *.gem) tar xvf "$file" ;;
   (*.rpm) rpm2cpio "$file" | cpio --unconditional --extract --make-directories -v ;;
   (*.lzh | *.Lzh | *.LZH) lha x "%s" ;;
-  (*.msi | *.7z) 7z x "$file" ;;
+  # (*.msi | *.7z) 7z x "$file" ;;
   (*.rar) unrar x "$file" ;;
   (*.txz | *.tar.xz) tar Jxvf "$file" ;;
   (*.phar) unzphar "$file" ;;
