@@ -55,9 +55,12 @@ conf() {
 case "${0##*/}" in
   (conf.sh|conf)
     set -o nounset -o errexit
+    # conf \
+    #   --source="$HOME/repos/github.com/knaka/src/conf/source" \
+    #   --mode="symlink" \
+    #   "$@"
     conf \
       --source="$HOME/repos/github.com/knaka/src/conf/source" \
-      --mode="symlink" \
       "$@"
     ;;
 esac

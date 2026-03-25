@@ -1,13 +1,15 @@
 {
   "permissions": {
     "allow": [
+      "Bash(\"/Users/knaka/.claude/skills/commit/commit-with-message\" *)",
       "Bash(/Users/knaka/.claude/skills/commit/commit-with-message *)",
       "Bash(git diff *)",
       "Bash(git * diff *)",
       "Bash(grep *)",
       "Bash(printf *)",
       "Bash(echo *)"
-    ],
+    ]
+  },
   "hooks": {
     "Stop": [
       {
