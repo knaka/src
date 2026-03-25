@@ -32,7 +32,7 @@ DYELLOW: Final  = "#909010"
 DMAGENTA: Final = "#109090"
 DCYAN: Final    = "#901090"
 
-DCOLORS = [DRED, DGREEN, DBLUE, DYELLOW, DMAGENTA, DCYAN,]
+DCOLORS: Final = [DRED, DGREEN, DBLUE, DYELLOW, DMAGENTA, DCYAN,]
 
 def color_midpoint(c1: str, c2: str) -> str:
   """Return the midpoint color between two hex colors (#rrggbb)."""
