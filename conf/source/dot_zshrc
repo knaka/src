@@ -7,6 +7,7 @@ set -o nounset
 # — zsh: 15 Parameters https://zsh.sourceforge.io/Doc/Release/Parameters.html#Array-Parameters
 path=(
   "$HOME"/.local/bin
+  "$HOME"/bin
   "$HOME"/*-bin
 
   # Homebrew Keg-only

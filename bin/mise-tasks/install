@@ -27,7 +27,7 @@ EOF
 # Install shell scripts.
 install() {
   push_dir "$PROJECT_DIR" || exit 1
-  local bin_dir_path="$HOME"/sh-bin
+  local bin_dir_path="$HOME"/bin
   mkdir -p "$bin_dir_path"
   if test "${executed_thru_t_bb789ec+set}" = set
   then

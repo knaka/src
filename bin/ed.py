@@ -79,9 +79,9 @@ def make_workspace(arg: Path) -> Path | None:
 
   # (prefix_or_exact_path, color, subcolor_or_None)
   rules: list[tuple[Path, str, str | None]] = [
-    (src_root / "sh", BBLUE, BRED),
-    (src_root / "go", BBLUE, BGREEN),
-    (src_root,        BBLUE, None),
+    (src_root / "bin", BBLUE, BRED),
+    (src_root / "go",  BBLUE, BGREEN),
+    (src_root,         BBLUE, None),
     (HOME / "MyDrive" / "doc", BYELLOW, None),
   ]
 
