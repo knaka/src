@@ -1,9 +1,11 @@
 {
   "permissions": {
     "allow": [
-      "Bash(~/.claude/skills/commit/commit)"
-    ]
-  },
+      "Bash(/Users/knaka/.claude/skills/commit/commit)",
+      "Bash(grep *)",
+      "Bash(printf *)",
+      "Bash(echo *)"
+    ],
   "hooks": {
     "Stop": [
       {
