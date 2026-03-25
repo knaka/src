@@ -42,7 +42,7 @@ case "$file" in
   # (*.msi | *.7z) 7z x "$file" ;;
   (*.rar) unrar x "$file" ;;
   (*.txz | *.tar.xz) tar Jxvf "$file" ;;
-  (*.phar) unzphar "$file" ;;
+  # (*.phar) unzphar "$file" ;;
   (*)
     echo Not supported: "$file"
     exit 1
