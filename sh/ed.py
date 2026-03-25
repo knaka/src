@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # vim: set filetype=python tabstop=2 shiftwidth=2 expandtab :
 
+from typing import Final
 import json
 import os
 import shutil
@@ -9,18 +10,29 @@ import sys
 import tempfile
 import threading
 from pathlib import Path
-
 import argparse
 
-HOME = Path.home()
+HOME: Final = Path.home()
 
-# Color palette, bright colors
-bred    = "#efafaf"
-bgreen  = "#afefaf"
-bblue   = "#afafef"
-byellow = "#efefaf"
-bmagenta= "#efafef"
-bcyan   = "#afefef"
+# Bright colors
+BRED: Final     = "#efafaf"
+BGREEN: Final   = "#afefaf"
+BBLUE: Final    = "#afafef"
+BYELLOW: Final  = "#efefaf"
+BMAGENTA: Final = "#efafef"
+BCYAN: Final    = "#afefef"
+
+BCOLORS: Final = [BRED, BGREEN, BBLUE, BYELLOW, BMAGENTA, BCYAN,]
+
+# And dark colors
+DRED: Final     = "#901010"
+DGREEN: Final   = "#109010"
+DBLUE: Final    = "#101090"
+DYELLOW: Final  = "#909010"
+DMAGENTA: Final = "#109090"
+DCYAN: Final    = "#901090"
+
+DCOLORS = [DRED, DGREEN, DBLUE, DYELLOW, DMAGENTA, DCYAN,]
 
 def color_midpoint(c1: str, c2: str) -> str:
   """Return the midpoint color between two hex colors (#rrggbb)."""
@@ -67,10 +79,10 @@ def make_workspace(arg: Path) -> Path | None:
 
   # (prefix_or_exact_path, color, subcolor_or_None)
   rules: list[tuple[Path, str, str | None]] = [
-    (src_root / "sh", bblue, bred),
-    (src_root / "go", bblue, bgreen),
-    (src_root,        bblue, None),
-    (HOME / "MyDrive" / "doc", byellow, None),
+    (src_root / "sh", BBLUE, BRED),
+    (src_root / "go", BBLUE, BGREEN),
+    (src_root,        BBLUE, None),
+    (HOME / "MyDrive" / "doc", BYELLOW, None),
   ]
 
   for prefix, c, sc in rules:
@@ -87,6 +99,14 @@ def make_workspace(arg: Path) -> Path | None:
   else:
     subcolor = color
     midcolor = color
+  fgcolor = "#000000"
+  inactive_fgcolor = "#7f7f7f"
+  if color in BCOLORS:
+    fgcolor = "#000000"
+    inactive_fgcolor = "#7f7f7f"
+  elif color in DCOLORS:
+    fgcolor = "#ffffff"
+    inactive_fgcolor = "#cfcfcf"
 
   cache_dir = HOME / ".cache" / "code-workspaces"
   cache_dir.mkdir(parents=True, exist_ok=True)
@@ -97,9 +117,16 @@ def make_workspace(arg: Path) -> Path | None:
     "settings": {
       "workbench.colorCustomizations": {
         "titleBar.activeBackground": color,
+        "titleBar.activeForeground": fgcolor,
         "titleBar.inactiveBackground": color,
-        "statusBar.background": subcolor,
+        "titleBar.inactiveForeground": fgcolor,
+
         "activityBar.background": midcolor,
+        "activityBar.foreground": fgcolor,
+        "activityBar.inactiveForeground": inactive_fgcolor,
+  
+        "statusBar.background": subcolor,
+        "statusBar.foreground": fgcolor,
       }
     },
   }
