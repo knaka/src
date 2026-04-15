@@ -47,10 +47,10 @@ brew 'python' # なんでか Claude Code が、/usr/local/bin/python3 が無い�
 
 cask "hammerspoon"
 cask 'alt-tab' # alt-tab — Homebrew Formulae https://formulae.brew.sh/cask/alt-tab
-cask 'chromium'
+# cask 'chromium'
 cask 'docker'
 # cask 'drawio' # jgraph/drawio-desktop: Official electron build of draw.io https://github.com/jgraph/drawio-desktop
-cask 'dropbox'
+# cask 'dropbox' # 利用をやめる
 cask 'google-chrome'
 # cask 'google-japanese-ime' # システムに近いところにあるので、Homebrew が勝手に上げると変なことになるようなので、やめておく
 cask 'iterm2'

@@ -20,7 +20,7 @@ chezmoi_source_dir="$PROJECT_DIR"/source
 task_karabiner_json__update() {
   newer karabiner.yaml --than karabiner.json || return 0
   echo "Updating karabiner.json" >&2
-  yj -yj karabiner.yaml >karabiner.json
+  yj -yj <karabiner.yaml >karabiner.json
 }
 
 # Install karabiner.json to $HOME/.config/karabiner as hard link
@@ -50,7 +50,7 @@ task_ps1__install() {
 
 # Install configuration files.
 task_install() {
-  task_dotfiles__install
+  #task_dotfiles__install
   task_karabiner_json__install
   task_ps1__install
 }
