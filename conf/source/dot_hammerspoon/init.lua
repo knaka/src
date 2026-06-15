@@ -1,4 +1,29 @@
--- Available keys — Hammerspoon docs: hs.keycodes https://www.hammerspoon.org/docs/hs.keycodes.html#map
+-- Open and Closing Quotation Marks, then move to left
+hs.hotkey.bind({"option"}, "[", function()
+  hs.eventtap.keyStrokes("“”")
+  hs.eventtap.keyStroke({}, "left", 0)
+end)
+
+-- &Variable Expansion (parameter expansion)
+hs.hotkey.bind({"option"}, "v", function()
+  hs.eventtap.keyStrokes("\"$\"")
+  hs.eventtap.keyStroke({}, "left", 0)
+end)
+
+-- &Command Substitution \"$(...)\"
+hs.hotkey.bind({"option"}, "c", function()
+  hs.eventtap.keyStrokes("\"$()\"")
+  hs.eventtap.keyStroke({}, "left", 0)
+  hs.eventtap.keyStroke({}, "left", 0)
+end)
+
+-- hs.hotkey.bind({"option"}, "z", function()
+--   hs.eventtap.keyStrokes("hello")
+--   hs.eventtap.keyStroke({"command"}, "escape", 0)
+-- end)
+
+-- ファンクションキーの内で、キーボード上に実際にあるのは F1～F12 で、HammerSpoon としては F20 まで認識する。なので、F13～F20 に機能を定義して、それへ KarabinerElements でキーを bind する。
+-- — Available keys — Hammerspoon docs: hs.keycodes https://www.hammerspoon.org/docs/hs.keycodes.html#map
 
 -- ISO 8601 datetime (local time with timezone)
 hs.hotkey.bind(
@@ -52,27 +77,3 @@ hs.hotkey.bind(
     hs.eventtap.keyStrokes(dateSerial)
   end
 )
-
--- Open and Closing Quotation Marks, then move to left
-hs.hotkey.bind({"option"}, "[", function()
-  hs.eventtap.keyStrokes("“”")
-  hs.eventtap.keyStroke({}, "left", 0)
-end)
-
--- &Variable Expansion (parameter expansion)
-hs.hotkey.bind({"option"}, "v", function()
-  hs.eventtap.keyStrokes("\"$\"")
-  hs.eventtap.keyStroke({}, "left", 0)
-end)
-
--- &Command Substitution \"$(...)\"
-hs.hotkey.bind({"option"}, "c", function()
-  hs.eventtap.keyStrokes("\"$()\"")
-  hs.eventtap.keyStroke({}, "left", 0)
-  hs.eventtap.keyStroke({}, "left", 0)
-end)
-
-hs.hotkey.bind({"option"}, "z", function()
-  hs.eventtap.keyStrokes("hello")
-  hs.eventtap.keyStroke({"command"}, "escape", 0)
-end)

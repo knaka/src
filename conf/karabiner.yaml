@@ -232,33 +232,43 @@ profiles:
             - type: basic
               conditions: *conditions_vscode
               from: { "key_code": "tab", "modifiers": { "mandatory": ["control"] } }
-              to: [{ "key_code": "close_bracket", "modifiers": ["command", "shift"] }]
+              # to: [{ "key_code": "close_bracket", "modifiers": ["command", "shift"] }]
+              to: [{ "key_code": "right_arrow", "modifiers": ["option", "command"] }]
             # 同・逆向き
             - type: basic
               conditions: *conditions_vscode
               from: { "key_code": "tab", "modifiers": { "mandatory": ["control", "shift"] } }
-              to: [{ "key_code": "open_bracket", "modifiers": ["command", "shift"] }]
+              # to: [{ "key_code": "open_bracket", "modifiers": ["command", "shift"] }] # ？ Tahoe で？効かなくなった
+              to: [{ "key_code": "left_arrow", "modifiers": ["option", "command"] }]
         # 以下、システム全体の設定
         - description: "international1（ろ） → Shift"
           # 英語設定にした日本語キーボードで、右下の「_ ろ」キーが余るので、遠すぎる `~ を単押しへ移動。modifier としては右 Shift。
           manipulators:
-            # 試しに、fenced-code-block 出力
+            # 試しに、fenced-code-block 出力。これ hammerspoon でやっていないのはなぜ？
             - type: basic
               from: {key_code: "international1", modifiers: {mandatory: [control]}}
               to: [
                 {key_code: "japanese_eisuu", modifiers: []},
                 # 組で出すエディタがあるので、2 の倍数個を出す
-                {key_code: "international3", modifiers: []},
-                {key_code: "international3", modifiers: []},
-                {key_code: "international3", modifiers: []},
-                {key_code: "international3", modifiers: []},
+                # {key_code: "international3", modifiers: []},
+                # {key_code: "international3", modifiers: []},
+                # {key_code: "international3", modifiers: []},
+                # {key_code: "international3", modifiers: []},
+                {key_code: "grave_accent_and_tilde", modifiers: []},
+                {key_code: "grave_accent_and_tilde", modifiers: []},
+                {key_code: "grave_accent_and_tilde", modifiers: []},
+                {key_code: "grave_accent_and_tilde", modifiers: []},
                 # Enter だとプロンプトから送られてしまうので、Shift + Enter で
                 {key_code: "return_or_enter", modifiers: [shift]},
                 {key_code: "return_or_enter", modifiers: [shift]},
-                {key_code: "international3", modifiers: []},
-                {key_code: "international3", modifiers: []},
-                {key_code: "international3", modifiers: []},
-                {key_code: "international3", modifiers: []},
+                # {key_code: "international3", modifiers: []},
+                # {key_code: "international3", modifiers: []},
+                # {key_code: "international3", modifiers: []},
+                # {key_code: "international3", modifiers: []},
+                {key_code: "grave_accent_and_tilde", modifiers: []},
+                {key_code: "grave_accent_and_tilde", modifiers: []},
+                {key_code: "grave_accent_and_tilde", modifiers: []},
+                {key_code: "grave_accent_and_tilde", modifiers: []},
                 {key_code: "left_arrow"},
                 {key_code: "left_arrow"},
                 {key_code: "left_arrow"},
@@ -277,14 +287,16 @@ profiles:
               to: [
                 # Turn off Japanese input conversion, then enter a tilde.
                 {key_code: "japanese_eisuu", modifiers: []},
-                {key_code: "international3", modifiers: []},
+                # {key_code: "international3", modifiers: []},
+                {key_code: "grave_accent_and_tilde", modifiers: []},
               ]
             - type: basic
               from: {key_code: spacebar, modifiers: {mandatory: [left_command, shift]}}
               to: [
                 # 日本語変換をオフにしてから
                 {key_code: "japanese_eisuu", modifiers: []},
-                {key_code: "international3", modifiers: [shift]},
+                # {key_code: "international3", modifiers: [shift]}, # JANSI ではこれだった
+                {key_code: "grave_accent_and_tilde", modifiers: [shift]},
               ]
         - description: "右 Command + Space → Escape"
           manipulators:
@@ -493,11 +505,11 @@ profiles:
             # 1
             - type: basic
               from: {key_code: "1", modifiers: {mandatory: [option, command]}}
-              to: [{shell_command: "osascript $HOME/src/applescript/activate-browser-tab.scpt https://mail.google.com/mail/u/0/"}]          
+              to: [{shell_command: "osascript $HOME/src/applescript/activate-browser-tab.applescript https://mail.google.com/mail/u/0/"}]          
             # 2
             - type: basic
               from: {key_code: "2", modifiers: {mandatory: [option, command]}}
-              to: [{shell_command: "osascript $HOME/src/applescript/activate-browser-tab.scpt https://mail.google.com/mail/u/1/"}]
+              to: [{shell_command: "osascript $HOME/src/applescript/activate-browser-tab.applescript https://mail.google.com/mail/u/1/"}]
             # Browser
             - type: basic
               from: {key_code: b, modifiers: {mandatory: [option, command]}}
@@ -540,7 +552,7 @@ profiles:
             # Twitter
             - type: basic
               from: {key_code: t, modifiers: {mandatory: [option, command]}}
-              to: [{shell_command: "osascript $HOME/src/applescript/activate-browser-tab.scpt https://x.com"}]
+              to: [{shell_command: "osascript $HOME/src/applescript/activate-browser-tab.applescript https://x.com"}]
             # U
             # Viewer
             - type: basic
@@ -550,7 +562,7 @@ profiles:
             # X (TRNASformer)
             - type: basic
               from: {key_code: x, modifiers: {mandatory: [option, command]}}
-              to: [{shell_command: "osascript $HOME/src/applescript/activate-browser-tab.scpt https://claude.ai https://gemini.google.com"}]
+              to: [{shell_command: "osascript $HOME/src/applescript/activate-browser-tab.applescript https://claude.ai https://gemini.google.com"}]
             # Y
             # Z
         - description: "Hammerspoon"

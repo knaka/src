@@ -48,7 +48,7 @@ brew 'python' # なんでか Claude Code が、/usr/local/bin/python3 が無い�
 cask "hammerspoon"
 cask 'alt-tab' # alt-tab — Homebrew Formulae https://formulae.brew.sh/cask/alt-tab
 # cask 'chromium'
-cask 'docker'
+cask 'docker-desktop'
 # cask 'drawio' # jgraph/drawio-desktop: Official electron build of draw.io https://github.com/jgraph/drawio-desktop
 # cask 'dropbox' # 利用をやめる
 cask 'google-chrome'
@@ -56,6 +56,8 @@ cask 'google-chrome'
 cask 'iterm2'
 cask 'karabiner-elements'
 cask 'visual-studio-code'
+cask '1password' # 1password — Homebrew Formulae https://formulae.brew.sh/cask/1password
+cask '1password-cli' # 1password-cli — Homebrew Formulae https://formulae.brew.sh/cask/1password-cli
 
 #endregion
 

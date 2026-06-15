@@ -14,6 +14,7 @@ path=(
   /usr/local/opt/sqlite/bin
   /usr/local/opt/mysql-client/bin
   # /usr/local/opt/postgresql@16/bin
+  /opt/homebrew/bin
 
   /usr/local/bin
   /usr/bin
@@ -501,7 +502,6 @@ bindkey '^g' delete-char-or-list-or-region
 #   * 何らかのショートカットで widget を起動して ZLE で挿入する
 # 後者が素直で効率的だが、キーが限られる？ いやそもそも、peco 併用でいろいろ起動するショートカットを作ればいいのか
 
-
 # autoload -Uz compinit; compinit;
 # bindkey "^k" _expand_alias
 # zstyle ':completion:*' completer _expand_alias _complete _ignored
@@ -540,8 +540,8 @@ attach() {
   return 1
 }
 
-alias 1plogin=1psignin
-alias 1psignin='eval $(1p signin)'
+alias 1p=/opt/homebrew/bin/op
+alias 1psignin='eval $(/opt/homebrew/bin/op signin)'
 alias any-apply='command brew-apply && command gobin-apply && command npm-apply && PATH=$PATH'
 alias brew-apply='command brew-apply && PATH=$PATH'
 alias brew-upgrade='command brew update && command brew upgrade && PATH=$PATH'
