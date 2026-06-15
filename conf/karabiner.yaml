@@ -241,45 +241,6 @@ profiles:
               # to: [{ "key_code": "open_bracket", "modifiers": ["command", "shift"] }] # ？ Tahoe で？効かなくなった
               to: [{ "key_code": "left_arrow", "modifiers": ["option", "command"] }]
         # 以下、システム全体の設定
-        - description: "international1（ろ） → Shift"
-          # 英語設定にした日本語キーボードで、右下の「_ ろ」キーが余るので、遠すぎる `~ を単押しへ移動。modifier としては右 Shift。
-          manipulators:
-            # 試しに、fenced-code-block 出力。これ hammerspoon でやっていないのはなぜ？
-            - type: basic
-              from: {key_code: "international1", modifiers: {mandatory: [control]}}
-              to: [
-                {key_code: "japanese_eisuu", modifiers: []},
-                # 組で出すエディタがあるので、2 の倍数個を出す
-                # {key_code: "international3", modifiers: []},
-                # {key_code: "international3", modifiers: []},
-                # {key_code: "international3", modifiers: []},
-                # {key_code: "international3", modifiers: []},
-                {key_code: "grave_accent_and_tilde", modifiers: []},
-                {key_code: "grave_accent_and_tilde", modifiers: []},
-                {key_code: "grave_accent_and_tilde", modifiers: []},
-                {key_code: "grave_accent_and_tilde", modifiers: []},
-                # Enter だとプロンプトから送られてしまうので、Shift + Enter で
-                {key_code: "return_or_enter", modifiers: [shift]},
-                {key_code: "return_or_enter", modifiers: [shift]},
-                # {key_code: "international3", modifiers: []},
-                # {key_code: "international3", modifiers: []},
-                # {key_code: "international3", modifiers: []},
-                # {key_code: "international3", modifiers: []},
-                {key_code: "grave_accent_and_tilde", modifiers: []},
-                {key_code: "grave_accent_and_tilde", modifiers: []},
-                {key_code: "grave_accent_and_tilde", modifiers: []},
-                {key_code: "grave_accent_and_tilde", modifiers: []},
-                {key_code: "left_arrow"},
-                {key_code: "left_arrow"},
-                {key_code: "left_arrow"},
-                {key_code: "left_arrow"},
-                {key_code: "left_arrow"},
-              ]
-            - type: basic
-              from: {key_code: "international1", modifiers: {optional: [any]}}
-              to: [{key_code: "right_shift"}]
-              to_if_alone: [{key_code: "international3"}]
-              to_if_held_down: [{key_code: "right_shift"}]
         - description: "左 Command → Backquotes (Backticks) / tilde"
           manipulators:
             - type: basic
@@ -565,6 +526,7 @@ profiles:
               to: [{shell_command: "osascript $HOME/src/applescript/activate-browser-tab.applescript https://claude.ai https://gemini.google.com"}]
             # Y
             # Z
+        # HammerSpoon の設定は ~/.hammerspoon/init.lua
         - description: "Hammerspoon"
           manipulators:
             - type: basic
@@ -576,3 +538,42 @@ profiles:
             - type: basic
               from: {key_code: "s", modifiers: {mandatory: [command, shift]}}
               to: [{key_code: f15, modifiers: [shift]}]
+            # 英語設定にした日本語キーボードで、右下の「_ ろ」キーが余るので、遠すぎる `~ を単押しへ移動。modifier としては右 Shift。
+            # international1 が backtick を出力するのだが、これなぜだろうな。
+            # 試しに、fenced-code-block 出力。これを HammerSpoon でやっていなかったのはなぜ？ たぶん international1 を直接マップできないのと IME-off をしたかったのとが理由だが、それ考慮しなくて良さそうだ。
+            - type: basic 
+              from: {key_code: "international1", modifiers: {mandatory: [control]}}
+              to: [{key_code: f16, modifiers: [shift]}]
+              # to: [
+              #   {key_code: "japanese_eisuu", modifiers: []},
+              #   # 1 ストロークの入力に対して、backtick を 2 つ出すエディタがあるので、2 の倍数個（ここでは 4）を出すようにする
+              #   # {key_code: "international3", modifiers: []},
+              #   # {key_code: "international3", modifiers: []},
+              #   # {key_code: "international3", modifiers: []},
+              #   # {key_code: "international3", modifiers: []},
+              #   {key_code: "grave_accent_and_tilde", modifiers: []},
+              #   {key_code: "grave_accent_and_tilde", modifiers: []},
+              #   {key_code: "grave_accent_and_tilde", modifiers: []},
+              #   {key_code: "grave_accent_and_tilde", modifiers: []},
+              #   # Enter だとプロンプトから送られてしまうので、Shift + Enter で
+              #   {key_code: "return_or_enter", modifiers: [shift]},
+              #   {key_code: "return_or_enter", modifiers: [shift]},
+              #   # {key_code: "international3", modifiers: []},
+              #   # {key_code: "international3", modifiers: []},
+              #   # {key_code: "international3", modifiers: []},
+              #   # {key_code: "international3", modifiers: []},
+              #   {key_code: "grave_accent_and_tilde", modifiers: []},
+              #   {key_code: "grave_accent_and_tilde", modifiers: []},
+              #   {key_code: "grave_accent_and_tilde", modifiers: []},
+              #   {key_code: "grave_accent_and_tilde", modifiers: []},
+              #   {key_code: "left_arrow"},
+              #   {key_code: "left_arrow"},
+              #   {key_code: "left_arrow"},
+              #   {key_code: "left_arrow"},
+              #   {key_code: "left_arrow"},
+              # ]
+            # - type: basic
+            #   from: {key_code: "international1", modifiers: {optional: [any]}}
+            #   to: [{key_code: "right_shift"}]
+            #   to_if_alone: [{key_code: "international3"}]
+            #   to_if_held_down: [{key_code: "right_shift"}]

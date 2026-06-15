@@ -785,113 +785,6 @@
             ]
           },
           {
-            "description": "international1（ろ） → Shift",
-            "manipulators": [
-              {
-                "type": "basic",
-                "from": {
-                  "key_code": "international1",
-                  "modifiers": {
-                    "mandatory": [
-                      "control"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "key_code": "japanese_eisuu",
-                    "modifiers": []
-                  },
-                  {
-                    "key_code": "grave_accent_and_tilde",
-                    "modifiers": []
-                  },
-                  {
-                    "key_code": "grave_accent_and_tilde",
-                    "modifiers": []
-                  },
-                  {
-                    "key_code": "grave_accent_and_tilde",
-                    "modifiers": []
-                  },
-                  {
-                    "key_code": "grave_accent_and_tilde",
-                    "modifiers": []
-                  },
-                  {
-                    "key_code": "return_or_enter",
-                    "modifiers": [
-                      "shift"
-                    ]
-                  },
-                  {
-                    "key_code": "return_or_enter",
-                    "modifiers": [
-                      "shift"
-                    ]
-                  },
-                  {
-                    "key_code": "grave_accent_and_tilde",
-                    "modifiers": []
-                  },
-                  {
-                    "key_code": "grave_accent_and_tilde",
-                    "modifiers": []
-                  },
-                  {
-                    "key_code": "grave_accent_and_tilde",
-                    "modifiers": []
-                  },
-                  {
-                    "key_code": "grave_accent_and_tilde",
-                    "modifiers": []
-                  },
-                  {
-                    "key_code": "left_arrow"
-                  },
-                  {
-                    "key_code": "left_arrow"
-                  },
-                  {
-                    "key_code": "left_arrow"
-                  },
-                  {
-                    "key_code": "left_arrow"
-                  },
-                  {
-                    "key_code": "left_arrow"
-                  }
-                ]
-              },
-              {
-                "type": "basic",
-                "from": {
-                  "key_code": "international1",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "key_code": "right_shift"
-                  }
-                ],
-                "to_if_alone": [
-                  {
-                    "key_code": "international3"
-                  }
-                ],
-                "to_if_held_down": [
-                  {
-                    "key_code": "right_shift"
-                  }
-                ]
-              }
-            ]
-          },
-          {
             "description": "左 Command → Backquotes (Backticks) / tilde",
             "manipulators": [
               {
@@ -2107,6 +2000,25 @@
                 "to": [
                   {
                     "key_code": "f15",
+                    "modifiers": [
+                      "shift"
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "from": {
+                  "key_code": "international1",
+                  "modifiers": {
+                    "mandatory": [
+                      "control"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "key_code": "f16",
                     "modifiers": [
                       "shift"
                     ]
