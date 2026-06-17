@@ -13,8 +13,12 @@ configure_macbook() {
   # The -a, -b, -c, -u flags determine whether the settings apply to battery ( -b ), charger (wall power) ( -c ), UPS ( -u ) or all ( -a ).
   sudo pmset -a standby 1
   # コマンドで sleep させる際に hibernate mode を指定する方法はなさげ。charger では safe sleep, battery では deep sleep にしてみる
-  sudo pmset -c hibernatemode 3
   sudo pmset -b hibernatemode 25
+  sudo pmset -b displaysleep 3
+  sudo pmset -b sleep 10
+  sudo pmset -c hibernatemode 3
+  sudo pmset -c displaysleep 10
+  sudo pmset -c sleep 0
   # Powernap をオフにしておけば、カバンの中で勝手に復帰することはなくなるかな？ なくなって欲しい
   sudo pmset -a powernap 0
 }

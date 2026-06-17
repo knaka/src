@@ -310,7 +310,9 @@ profiles:
                     - option
                     - command
               to:
-                - shell_command: pmset sleepnow
+                # - shell_command: pmset sleepnow
+                # wait 入れないと、キー押してるからすぐ復帰してしまうようだ
+                - shell_command: sleep 1 && pmset displaysleepnow
         - description: "スクリーンロック, Screen Loc&k"
           manipulators: 
             - type: basic

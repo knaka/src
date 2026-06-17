@@ -970,7 +970,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "pmset sleepnow"
+                    "shell_command": "sleep 1 && pmset displaysleepnow"
                   }
                 ]
               }
