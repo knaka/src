@@ -2,7 +2,7 @@
 # shellcheck shell=sh
 "${sourced_ce86c4b-false}" && return 0; sourced_ce86c4b=true
 
-#MISE description="Generate bootstrap scripts."
+#MISE description="Generate Mise bootstrap scripts."
 
 set -- "$PWD" "${0%/*}" "$@"; test -z "${_APPDIR-}" && { test "$2" = "$0" && _APPDIR=. || _APPDIR="$2"; cd "$_APPDIR" || exit 1; }
 set -- _LIBDIR .lib "$@"
