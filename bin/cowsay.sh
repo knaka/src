@@ -23,7 +23,7 @@ shift 2
 cd "$1" || exit 1; shift 2
 
 cowsay() {
-  mise exec npm:"cowsay@$cowsay_version_14ac6ce" -- cowsay "$@"
+  mise_exec "npm:cowsay@$cowsay_version_14ac6ce" -- cowsay "$@"
 }
 
 case "${0##*/}" in

@@ -14,36 +14,63 @@ then
 fi
 cd "$1" || exit 1; shift
 
-jq() {
-  is_windows && set -- --binary "$@"
-  mise exec jq -- jq "$@"
-}
-
-# Under Mise environment context, this file is not required.
+# Mise tasks do not require this script.
 test "${MISE_CONFIG_ROOT+set}" = set && return 0
 
 export MISE_ACTIVATE_AGGRESSIVE=true
 
-caddy() { mise exec caddy -- caddy "$@"; } 
-chezmoi() { mise exec chezmoi -- chezmoi "$@"; }
-claude() { mise exec "npm:@anthropic-ai/claude-code" -- claude "$@"; }
-gemini() { mise exec "npm:@google/gemini-cli" -- gemini "$@"; }
-ghq() { mise exec ghq -- ghq "$@"; }
-go() { mise exec go -- go "$@"; }
-gofmt() { mise exec go -- gofmt "$@"; }
-gum() { mise exec gum -- gum "$@"; }
-htmlq() { mise exec htmlq -- htmlq "$@"; }
-jmespath() { mise exec jmespath -- jp "$@"; }
-lua() { mise exec lua -- lua "$@"; }
-mdpp() { mise exec "github:knaka/mdpp" -- mdpp "$@"; }
-mlr() { mise exec miller -- mlr "$@"; }
-node() { mise exec node -- node "$@"; }
-npm() { mise exec node -- npm "$@"; }
-npx() { mise exec node -- npx "$@"; }
-peco() { mise exec "go:github.com/knaka/peco/cmd/peco@latest" -- peco "$@"; }
-perl() { mise exec perl -- perl "$@"; }
-python() { mise exec python -- python "$@"; }
-tblcalc() { mise exec "github:knaka/tblcalc" -- tblcalc "$@"; }
-yj() { mise exec yj -- yj "$@"; } # sclevine/yj: CLI - Convert between YAML, TOML, JSON, and HCL. Preserves map order. https://github.com/sclevine/yj
-yq() { mise exec yq -- yq "$@"; }
-skills() { mise exec "npm:skills" -- skills "$@"; }
+mise_exec() {
+  if test "${_APPDIR+set}" != "set"
+  then
+    mise exec "$@"
+    return "$?"
+  fi
+  push_dir "$_APPDIR"
+  while test "$1" != "--"
+  do
+    if ! mise where "$1" >/dev/null 2>&1
+    then
+      mise install "$1"
+    fi
+    PATH="$(mise bin-paths "$1"):$PATH"
+    shift
+  done
+  pop_dir
+  export PATH
+  shift
+  command "$@"
+}
+
+jq() {
+  is_windows && set -- --binary "$@"
+  if which jq >/dev/null 2>&1
+  then
+    command jq "$@"
+    return "$?"
+  fi
+  mise_exec jq@latest -- jq "$@"
+}
+
+caddy() { mise_exec caddy@latest -- caddy "$@"; } 
+chezmoi() { mise_exec chezmoi@latest -- chezmoi "$@"; }
+claude() { mise_exec "npm:@anthropic-ai/claude-code@latest" -- claude "$@"; }
+gemini() { mise_exec "npm:@google/gemini-cli@latest" -- gemini "$@"; }
+ghq() { mise_exec ghq@latest -- ghq "$@"; }
+go() { mise_exec go@latest -- go "$@"; }
+gofmt() { mise_exec go -- gofmt "$@"; }
+gum() { mise_exec gum@latest -- gum "$@"; }
+htmlq() { mise_exec htmlq@latest -- htmlq "$@"; }
+jmespath() { mise_exec jmespath@latest -- jp "$@"; }
+lua() { mise_exec lua@latest -- lua "$@"; }
+mdpp() { mise_exec github:knaka/mdpp@latest -- mdpp "$@"; }
+mlr() { mise_exec miller@latest -- mlr "$@"; }
+node() { mise_exec node@latest -- node "$@"; }
+npm() { mise_exec node@latest -- npm "$@"; }
+npx() { mise_exec node@latest -- npx "$@"; }
+peco() { mise_exec go:github.com/knaka/peco/cmd/peco@latest@latest -- peco "$@"; }
+perl() { mise_exec perl@latest -- perl "$@"; }
+python() { mise_exec python@latest -- python "$@"; }
+tblcalc() { mise_exec github:knaka/tblcalc@latest -- tblcalc "$@"; }
+yj() { mise_exec yj@latest -- yj "$@"; } # sclevine/yj: CLI - Convert between YAML, TOML, JSON, and HCL. Preserves map order. https://github.com/sclevine/yj
+yq() { mise_exec yq@latest -- yq "$@"; }
+skills() { mise_exec "npm:skills@latest" -- skills "$@"; }

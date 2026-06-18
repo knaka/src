@@ -25,7 +25,7 @@ shift 2
 cd "$1" || exit 1; shift 2
 
 clipper() {
-  mise exec npm:"@philschmid/clipper@$clipper_version_2b8a94e" -- clipper "$@"
+  mise_exec npm:"@philschmid/clipper@$clipper_version_2b8a94e" -- clipper "$@"
 }
 
 case "${0##*/}" in

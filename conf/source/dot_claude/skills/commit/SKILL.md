@@ -1,4 +1,5 @@
 ---
+name: "commit"
 description: Make a git commit for the staged changes with an appropriate message.
 user-invocable: true
 allowed-tools: Bash
