@@ -57,7 +57,7 @@ claude() { mise_exec "npm:@anthropic-ai/claude-code@latest" -- claude "$@"; }
 gemini() { mise_exec "npm:@google/gemini-cli@latest" -- gemini "$@"; }
 ghq() { mise_exec ghq@latest -- ghq "$@"; }
 go() { mise_exec go@latest -- go "$@"; }
-gofmt() { mise_exec go -- gofmt "$@"; }
+gofmt() { mise_exec go@latest -- gofmt "$@"; }
 gum() { mise_exec gum@latest -- gum "$@"; }
 htmlq() { mise_exec htmlq@latest -- htmlq "$@"; }
 jmespath() { mise_exec jmespath@latest -- jp "$@"; }
