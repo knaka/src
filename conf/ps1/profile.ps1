@@ -74,7 +74,7 @@ Get-ChildItem -Path "$env:USERPROFILE\*-bin" -Directory | ForEach-Object {
 }
 
 # これを優先したい
-prepend_path $env:USERPROFILE\sh-bin
+prepend_path $env:USERPROFILE\bin
 
 # prepend_path "C:\msys64\usr\bin"
 
@@ -106,10 +106,10 @@ New-Alias -Name aws-switch-profile -Value aws_switch_profile -Force
 
 # New-Alias -Name gc -Value gc.cmd -Force
 
-New-Alias -Name ls -Value $ENV:USERPROFILE\sh-bin\glob-ls.cmd -Force
-New-Alias -Name ll -Value $ENV:USERPROFILE\sh-bin\glob-ll.cmd -Force
-New-Alias -Name find -Value $ENV:USERPROFILE\sh-bin\noglob-find.cmd -Force
-New-Alias -Name grep -Value $ENV:USERPROFILE\sh-bin\noglob-grep.cmd -Force
+New-Alias -Name ls -Value $ENV:USERPROFILE\bin\glob-ls.cmd -Force
+New-Alias -Name ll -Value $ENV:USERPROFILE\bin\glob-ll.cmd -Force
+New-Alias -Name find -Value $ENV:USERPROFILE\bin\noglob-find.cmd -Force
+New-Alias -Name grep -Value $ENV:USERPROFILE\bin\noglob-grep.cmd -Force
 
 # cmd - How to make PowerShell tab completion work like Bash - Stack Overflow https://stackoverflow.com/questions/8264655/how-to-make-powershell-tab-completion-work-like-bash
 Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete

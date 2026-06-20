@@ -55,18 +55,22 @@ def get_editor_cmd(block: bool) -> list[str]:
 
 def prompt_confirm(message: str, default: str = "n") -> bool:
   """Show a yes/no prompt and return the user's choice (single keypress)."""
-  import tty
-  import termios
   default = default.lower()
   choices = "Y/n" if default == "y" else "y/N"
   print(f"{message} [{choices}]: ", end="", flush=True, file=sys.stderr)
-  fd = sys.stdin.fileno()
-  old = termios.tcgetattr(fd)
-  try:
-    tty.setraw(fd)
-    ch = sys.stdin.read(1).lower()
-  finally:
-    termios.tcsetattr(fd, termios.TCSADRAIN, old)
+  if sys.platform == "win32":
+    import msvcrt
+    ch = msvcrt.getwch().lower()
+  else:
+    import tty
+    import termios
+    fd = sys.stdin.fileno()
+    old = termios.tcgetattr(fd)
+    try:
+      tty.setraw(fd)
+      ch = sys.stdin.read(1).lower()
+    finally:
+      termios.tcsetattr(fd, termios.TCSADRAIN, old)
   response = ch if ch.strip() else default
   print(response, file=sys.stderr)
   return response in ("y", "yes")
