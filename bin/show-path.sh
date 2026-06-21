@@ -10,11 +10,11 @@ shift 2
 cd "$1" || exit 1; shift 2
 
 show_path() {
-  if is_windows
-  then
-    echo 'Not for Windows. Call "win-env" instead.' >&2
-    exit 1
-  fi
+  # if is_windows
+  # then
+  #   echo 'Not for Windows. Call "win-env" instead.' >&2
+  #   exit 1
+  # fi
   local IFS=':'
   # shellcheck disable=SC2086
   printf "%s\n" $PATH

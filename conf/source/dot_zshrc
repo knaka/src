@@ -23,7 +23,17 @@ path=(
   /usr/local/sbin
   /usr/sbin
   /sbin
+  $path
 )
+
+is_windows() {
+  test -d /c/
+}
+
+if is_windows
+then
+  path=("$(cygpath $LOCALAPPDATA)"/Microsoft/WinGet/Links $path)
+fi
 
 if command -v mise >/dev/null 2>&1
 then
@@ -67,8 +77,8 @@ export SUDO_EDITOR="$VISUAL"
 #region グローバル変数
 
 # TMPDIR: This variable shall represent a pathname of a directory made available for programs that need a place to create temporary files. — Environment Variables https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap08.html
-t="$TMPDIR"
-T="$t"
+# t="$TMPDIR"
+# T="$t"
 
 d="$HOME"/doc
 doc="$d"
@@ -193,6 +203,10 @@ precmd() {
 
   # black, red, green, yellow, blue, magenta, cyan and white // zsh: 18 Zsh Line Editor https://zsh.sourceforge.io/Doc/Release/Zsh-Line-Editor.html
   __prompt_fgcolor=black
+  if is_windows
+  then
+    __prompt_fgcolor=white
+  fi
   __prompt_bgcolor=green
   # __prompt_bgcolor='#00FF00'
   # __prompt_bgcolor='10' # 明るい
