@@ -3,7 +3,10 @@
 "${sourced_21fac06-false}" && return 0; sourced_21fac06=true
 
 pushd "${BASH_SOURCE[0]%/*}" >/dev/null 2>&1 || pushd . >/dev/null
+. ./.lib/utils.lib.bash
 popd >/dev/null || exit 1
+
+register_child_cleanup
 
 loop() {
   local id="${1-N/A}"
@@ -12,7 +15,9 @@ loop() {
     echo -n "$id: "
     date
     echo Sleeping... >&2
-    sleep 1
+    # sleep 1
+    sleep 1 &
+    wait $!
   done
 }
 

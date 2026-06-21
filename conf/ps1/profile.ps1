@@ -76,7 +76,10 @@ Get-ChildItem -Path "$env:USERPROFILE\*-bin" -Directory | ForEach-Object {
 # これを優先したい
 prepend_path $env:USERPROFILE\bin
 
-# prepend_path "C:\msys64\usr\bin"
+prepend_path "C:\msys64\usr\bin"
+
+# prepend_path "C:\Program Files\Git\usr\bin"
+# prepend_path "C:\Program Files\Git\bin"
 
 function set_env {
   param (
