@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# Code generated from "tasks-new.bash" by tasks:expand task. DO NOT EDIT.
+
+#marker ed9038b1-9de5-40fd-bede-eabed9b60306
+#MISE description="Bash foo."
+saved_pwd_07b3056="$PWD"
+cd "$MISE_PROJECT_ROOT"/".mise/tasks"
+. ./"tasks-new.bash"
+cd "$saved_pwd_07b3056"
+set -o nounset -o errexit -o pipefail
+task_bash__foo "$@"

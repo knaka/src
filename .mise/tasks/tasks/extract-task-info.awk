@@ -17,14 +17,16 @@ BEGIN {
   }
   next
 }
-/^(task_|subcmd_)[[:alnum:]_]()/ {
+/^(task_|task-|subcmd_)[[:alnum:]_-]()/ {
   func_name = $1
+  # Cut trailing parentheses.
   sub(/\(\).*$/, "", func_name)
   type = func_name
-  sub(/_.*$/, "", type)
+  sub(/[_-].*$/, "", type)
   name = func_name
-  sub(/^[^_]+_/, "", name)
+  sub(/^[^_-]+[_-]/, "", name)
   gsub(/__/, ":", name)
+  gsub(/--/, ":", name)
   base = FILENAME
   sub(/^.*\//, "", base)
   print type " " name " " func_name " " base " " desc

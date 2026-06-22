@@ -7,7 +7,7 @@
 pushd "${BASH_SOURCE[0]%/*}" >/dev/null 2>&1 || pushd . >/dev/null
 . ./.lib/utils.bash
 . ./rand7.bash
-popd >/dev/null
+popd >/dev/null || exit 1
 
 gen_header_bf7ac7d() { cat <<EOF
 # vim: set filetype=bash tabstop=2 shiftwidth=2 expandtab :
@@ -19,7 +19,7 @@ EOF
 gen_source_block_67741b4() { cat <<'EOF'
 # pushd "${BASH_SOURCE[0]%/*}" >/dev/null 2>&1 || pushd . >/dev/null
 # . ./.lib/utils.bash
-# popd >/dev/null
+# popd >/dev/null || exit 1
 EOF
 }
 

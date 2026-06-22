@@ -1,13 +1,11 @@
-#!/usr/bin/env sh
-# vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
-# shellcheck shell=sh
-"${sourced_0d6bf87-false}" && return 0; sourced_0d6bf87=true
+#!/usr/bin/env bash
+# vim: set filetype=bash tabstop=2 shiftwidth=2 expandtab :
+# shellcheck shell=bash
+"${sourced_f72c003-false}" && return 0; sourced_f72c003=true
 
-set -- "$PWD" "${0%/*}" "$@"; test -z "${_APPDIR-}" && { test "$2" = "$0" && _APPDIR=. || _APPDIR="$2"; cd "$_APPDIR" || exit 1; }
-set -- _LIBDIR .lib "$@"
-. ./.lib/utils.lib.sh
-shift 2
-cd "$1" || exit 1; shift 2
+pushd "${BASH_SOURCE[0]%/*}" >/dev/null 2>&1 || pushd . >/dev/null
+. ./.lib/utils.bash
+popd >/dev/null
 
 #MISE description="Generate routing scripts for tasks defined in monolithic shell files."
 #MISE tools={"jq"="1.8"}
@@ -17,8 +15,9 @@ marker_93949c9="ed9038b1-9de5-40fd-bede-eabed9b60306"
 # Parse shell task files and extract task/subcmd information with their metadata.
 # Outputs lines in format: "<type> <name> <func_name> <basename> <body>"
 extract_task_info() {
+  test $# = 0 && return 0
   # shellcheck disable=SC2016
-  local scr='BEGIN {desc = "";mise_hdrs_count = 0;}/^#MISE / || /^# *\[MISE\] / {line = $0;gsub(/^#MISE +/, "", line);gsub(/^# *\[MISE\] +/, "", line);mise_hdrs[mise_hdrs_count++] = line;next;}/^#/ {if (desc == "") {line = $0;gsub(/^#+[ ]*/, "", line);desc = line;}next;}/^(task_|subcmd_)[[:alnum:]_]()/ {func_name = $1;sub(/\(\).*$/, "", func_name);type = func_name;sub(/_.*$/, "", type);name = func_name;sub(/^[^_]+_/, "", name);gsub(/__/, ":", name);base = FILENAME;sub(/^.*\//, "", base);print type " " name " " func_name " " base " " desc;for (i = 0; i < mise_hdrs_count; i++) {type = "mise";print type " " name " " func_name " " base " " mise_hdrs[i];}desc = "";delete mise_hdrs;mise_hdrs_count = 0;next;}{desc = "";delete mise_hdrs;mise_hdrs_count = 0;}END {print "nop - - - -";}' #EMBED: ./extract-task-info.awk
+  local scr='BEGIN {desc = "";mise_hdrs_count = 0;}/^#MISE / || /^# *\[MISE\] / {line = $0;gsub(/^#MISE +/, "", line);gsub(/^# *\[MISE\] +/, "", line);mise_hdrs[mise_hdrs_count++] = line;next;}/^#/ {if (desc == "") {line = $0;gsub(/^#+[ ]*/, "", line);desc = line;}next;}/^(task_|task-|subcmd_)[[:alnum:]_-]()/ {func_name = $1;sub(/\(\).*$/, "", func_name);type = func_name;sub(/[_-].*$/, "", type);name = func_name;sub(/^[^_-]+[_-]/, "", name);gsub(/__/, ":", name);gsub(/--/, ":", name);base = FILENAME;sub(/^.*\//, "", base);print type " " name " " func_name " " base " " desc;for (i = 0; i < mise_hdrs_count; i++) {type = "mise";print type " " name " " func_name " " base " " mise_hdrs[i];}desc = "";delete mise_hdrs;mise_hdrs_count = 0;next;}{desc = "";delete mise_hdrs;mise_hdrs_count = 0;}END {print "nop - - - -";}' #EMBED: ./extract-task-info.awk
   awk "$scr" "$@"
 }
 
@@ -81,17 +80,79 @@ generate_tasks() {
   done
 }
 
-main() {
-  local TASKS_DIR="$(realpath "$MISE_TASK_DIR"/..)"
-  local TASKS_REL_DIR="$(abs2rel "$TASKS_DIR" "$MISE_PROJECT_ROOT")"
+gen_b902391() {
+  # Not to be recognized as a MISE header of this file.
+  local mise_header="#MISE"
+  cat <<EOF
+#!/usr/bin/env bash
+
+# Code generated from "$base" by tasks:expand task. DO NOT EDIT.
+
+#marker ${marker_93949c9}
+${mise_header} description="$body"
+saved_pwd_07b3056="\$PWD"
+cd "\$MISE_PROJECT_ROOT"/"$TASKS_REL_DIR"
+. ./"$base"
+cd "\$saved_pwd_07b3056"
+set -o nounset -o errexit -o pipefail
+${func_name} "\$@"
+EOF
+}
+
+generate_bash_tasks() {
+  local base_prev=
+  local type name func_name base body
+  while read -r type name func_name base body
+  do
+    if test "$base" != "$base_prev"
+    then
+      :
+    fi
+    local file_path
+    # shellcheck disable=SC2086
+    file_path="$PWD$(IFS=:; printf "/%s" $name)/_default"
+    local dir_path
+    dir_path="$(dirname "$file_path")"
+    case "$type" in
+      (task|subcmd)
+        mkdir -p "$dir_path"
+        gen_b902391 >"$file_path"
+        chmod +x "$file_path"
+        ;;
+      (mise)
+        echo "#MISE $body" >>"$file_path"
+        ;;
+      (nop)
+        ;;
+      (*)
+        exit 1
+    esac
+    base_prev="$base"
+  done
+}
+
+expand() {
+  local TASKS_DIR TASKS_REL_DIR
+  TASKS_DIR="$(realpath "$MISE_TASK_DIR"/..)"
+  TASKS_REL_DIR="$(abs2rel "$TASKS_DIR" "$MISE_PROJECT_ROOT")"
   echo "Expanding task definitions in project \"$TASKS_DIR\"." >&2
   cd "$TASKS_DIR" || exit 1
   find . -type f -print0 \
   | xargs -0 grep -l "#marker ${marker_93949c9}" \
-  | xargs rm -f
+  | xargs rm -f \
+  || :
+  local saved_nullglob
+  saved_nullglob=$(shopt -p nullglob) || :
+  shopt -s nullglob
   extract_task_info ./*.sh | generate_tasks
+  extract_task_info ./*.bash | generate_bash_tasks
+  eval "$saved_nullglob"
 }
 
-set -o nounset -o errexit
+set -o nounset -o errexit -o pipefail
 
-main "$@"
+if test "$0" = "${BASH_SOURCE[0]}"
+then
+  set -o nounset -o errexit -o pipefail
+  expand "$@"
+fi
