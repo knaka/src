@@ -23,6 +23,7 @@ path=(
   /usr/local/sbin
   /usr/sbin
   /sbin
+
   $path
 )
 
