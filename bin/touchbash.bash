@@ -1,24 +1,25 @@
-# vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
+# vim: set filetype=bash tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=bash
 "${sourced_9999a15-false}" && return 0; sourced_9999a15=true
 
 # Generate Bash shell script scaffold.
 
 pushd "${BASH_SOURCE[0]%/*}" >/dev/null 2>&1 || pushd . >/dev/null
-. ./.lib/utils.lib.bash
+. ./.lib/utils.bash
 . ./rand7.bash
-popd >/dev/null || exit 1
+popd >/dev/null
 
 gen_header_bf7ac7d() { cat <<EOF
-# vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
+# vim: set filetype=bash tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=bash
 "\${sourced_${unique_id}-false}" && return 0; sourced_${unique_id}=true
 EOF
 }
 
 gen_source_block_67741b4() { cat <<'EOF'
-pushd "${BASH_SOURCE[0]%/*}" >/dev/null 2>&1 || pushd . >/dev/null
-popd >/dev/null || exit 1
+# pushd "${BASH_SOURCE[0]%/*}" >/dev/null 2>&1 || pushd . >/dev/null
+# . ./.lib/utils.bash
+# popd >/dev/null
 EOF
 }
 
@@ -27,12 +28,11 @@ ${func_name}() {
   echo "Function \"${func_name}\" is not implemented yet."
 }
 
-case "\${0##*/}" in
-  ("\${BASH_SOURCE[0]##*/}"|"\${BASH_SOURCE[0]##*/}".bash)
-    set -o nounset -o errexit -o pipefail
-    ${func_name} "\$@"
-    ;;
-esac
+if test "\$0" = "\${BASH_SOURCE[0]}"
+then
+  set -o nounset -o errexit -o pipefail
+  ${func_name} "\$@"
+fi
 EOF
 }
 
@@ -64,15 +64,12 @@ touchbash() {
   fi
   local func_name
   func_name="${file_base%.bash}"
-  local pattern
   local has_ext
   case "$file_base" in
     (*.bash)
-      pattern="$file_base|${file_base%.bash}"
       has_ext=true
       ;;
     (*)
-      pattern="$file_base"
       has_ext=false
       ;;
   esac
@@ -120,12 +117,10 @@ touchbash() {
   then
     chmod +x "$path"
   fi
-
 }
 
-case "${0##*/}" in
-  ("${BASH_SOURCE[0]##*/}"|"${BASH_SOURCE[0]##*/}".bash)
-    set -o nounset -o errexit -o pipefail
-    touchbash "$@"
-    ;;
-esac
+if test "$0" = "${BASH_SOURCE[0]}"
+then
+  set -o nounset -o errexit -o pipefail
+  touchbash "$@"
+fi
