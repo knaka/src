@@ -1,6 +1,6 @@
 # vim: set filetype=bash tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=bash
-"${sourced_b1cc8f6-false}" && return 0; sourced_b1cc8f6=true
+_() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ 43d0de4 && return 0
 
 pushd "${BASH_SOURCE[0]%/*}" >/dev/null 2>&1 || pushd . >/dev/null
 . ./.lib/utils.bash

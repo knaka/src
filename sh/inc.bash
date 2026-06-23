@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # vim: set filetype=bash tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=bash
-_loaded() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _loaded f276ebe && return 0
+_first_load() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _first_load f276ebe && return 0
 
 pushd "${BASH_SOURCE[0]%/*}" >/dev/null 2>&1 || pushd . >/dev/null
 . ./foo-dir/foo.lib.bash

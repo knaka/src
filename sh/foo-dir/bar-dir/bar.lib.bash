@@ -1,14 +1,14 @@
 # vim: set filetype=bash tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=bash
 # "${sourced_fbef65e-false}" && return 0; sourced_fbef65e=true
-# _(){ local v=sourced_183b217; ! "${!v-false}" && eval "${v}"=true && return 1 || :; }; _ && return 0
+_() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ 2823b44 && return 0
 
 # works
 # _loaded() { local IFS=" "; [[ "${_ids[*]-}" != *$1* ]] && _ids+=("$1") && return 1 || :; }; _loaded 0f125c4 && return 0
 
 # _loaded() { local IFS=" "; [[ "${_ids[*]-}" != *$1* ]] && _ids+=("$1") && return 1 || :; }; _loaded 0f125c4 && return 0
 
-_loaded() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1 ${_ids-}"; false;; esac; }; _loaded c97a612 && return 0
+# _loaded() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1 ${_ids-}"; false;; esac; }; _loaded c97a612 && return 0
 
 # works
 # _() {
