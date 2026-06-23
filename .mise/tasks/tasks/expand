@@ -91,6 +91,7 @@ gen_b902391() {
 #marker ${marker_93949c9}
 ${mise_header} description="$body"
 saved_pwd_07b3056="\$PWD"
+_APPDIR="\$MISE_PROJECT_ROOT"/"$TASKS_REL_DIR"
 cd "\$MISE_PROJECT_ROOT"/"$TASKS_REL_DIR"
 . ./"$base"
 cd "\$saved_pwd_07b3056"

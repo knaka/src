@@ -184,7 +184,7 @@ cmd_clone() {
         }
       '
     )"
-    jq --argjson entry "$new_entry" '.libraries += [$entry]' c > "$CONFIG_FILE.tmp"
+    jq --argjson entry "$new_entry" '.libraries += [$entry]' "$CONFIG_FILE" > "$CONFIG_FILE.tmp"
     mv "$CONFIG_FILE.tmp" "$CONFIG_FILE"
     echo "Added $name (commit: $(echo "$commit" | sed -E -e 's/^(.......).*/\1/'))"
   fi
