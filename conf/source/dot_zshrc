@@ -682,4 +682,9 @@ fi
 # bun completions
 [ -s "/Users/knaka/.bun/_bun" ] && source "/Users/knaka/.bun/_bun"
 
+if test -r "$HOME"/.iterm2_shell_integration.zsh
+then
+  . "$HOME"/.iterm2_shell_integration.zsh
+fi
+
 #endregion

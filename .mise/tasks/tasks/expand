@@ -142,7 +142,7 @@ expand() {
   | xargs rm -f \
   || :
   local saved_nullglob
-  saved_nullglob=$(shopt -p nullglob) || :
+  saved_nullglob=$(shopt -p nullglob || :)
   shopt -s nullglob
   extract_task_info ./*.sh | generate_tasks
   extract_task_info ./*.bash | generate_bash_tasks

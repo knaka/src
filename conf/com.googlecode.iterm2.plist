@@ -17,9 +17,9 @@
 	<key>AIVectorStore</key>
 	<integer>0</integer>
 	<key>AiMaxTokens</key>
-	<integer>400000</integer>
+	<integer>1050000</integer>
 	<key>AiModel</key>
-	<string>gpt-5.2</string>
+	<string>gpt-5.5</string>
 	<key>AiResponseMaxTokens</key>
 	<integer>128000</integer>
 	<key>AitermURL</key>
@@ -31,7 +31,7 @@
 	<key>Default Bookmark Guid</key>
 	<string>1D39DCC5-684F-4FB7-96F7-E8212D1A5DD3</string>
 	<key>DisablePotentiallyInsecureEscapeSequences</key>
-	<true/>
+	<false/>
 	<key>ExperimentalKeyHandling</key>
 	<true/>
 	<key>GlobalKeyMap</key>
@@ -1001,6 +1001,8 @@
 		</dict>
 	</dict>
 	<key>Print In Black And White</key>
+	<true/>
+	<key>RetinaInlineImages</key>
 	<true/>
 	<key>ShowFullScreenTabBar</key>
 	<false/>

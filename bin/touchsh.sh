@@ -14,7 +14,7 @@ cd "$1" || exit 1; shift 2
 gen_header_49df118() { cat <<EOF
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-"\${sourced_${unique_id}-false}" && return 0; sourced_${unique_id}=true
+_loaded() { case "\${_ids-}" in (*\$1*) ;; (*) _ids="\$1,\${_ids-}"; false;; esac; }; _loaded $unique_id && return 0
 EOF
 }
 

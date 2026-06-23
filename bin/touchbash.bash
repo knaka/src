@@ -1,6 +1,6 @@
 # vim: set filetype=bash tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=bash
-"${sourced_9999a15-false}" && return 0; sourced_9999a15=true
+_loaded() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _loaded 9989bcc && return 0
 
 # Generate Bash shell script scaffold.
 
@@ -9,10 +9,17 @@ pushd "${BASH_SOURCE[0]%/*}" >/dev/null 2>&1 || pushd . >/dev/null
 . ./rand7.bash
 popd >/dev/null || exit 1
 
+# gen_header_bf7ac7d() { cat <<EOF
+# # vim: set filetype=bash tabstop=2 shiftwidth=2 expandtab :
+# # shellcheck shell=bash
+# "\${sourced_${unique_id}-false}" && return 0; sourced_${unique_id}=true
+# EOF
+# }
+
 gen_header_bf7ac7d() { cat <<EOF
 # vim: set filetype=bash tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=bash
-"\${sourced_${unique_id}-false}" && return 0; sourced_${unique_id}=true
+_loaded() { case "\${_ids-}" in (*\$1*) ;; (*) _ids="\$1,\${_ids-}"; false;; esac; }; _loaded $unique_id && return 0
 EOF
 }
 
