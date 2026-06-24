@@ -2,6 +2,10 @@
 # shellcheck shell=sh
 "${sourced_f5f648c-false}" && return 0; sourced_f5f648c=true
 
+SIGPIPE=13
+# shellcheck disable=SC2034
+rc_sigpipe=$((128 + SIGPIPE))
+
 # ==========================================================================
 #region Environment variables.
 
@@ -894,6 +898,13 @@ if ! command -v tac >/dev/null 2>&1
 then
   tac() {
     tail -r
+  }
+fi
+
+if ! command -v shuf >/dev/null 2>&1
+then
+  shuf() {
+    cat
   }
 fi
 
