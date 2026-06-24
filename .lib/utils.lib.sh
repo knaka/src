@@ -52,42 +52,64 @@ TEMP_DIR=; unset TEMP_DIR
 cleanup_statements=":"
 
 append_cleanup() {
+  if test $# -ne 1
+  then
+    echo "append_cleanup takes one argument."
+    return 1
+  fi
   cleanup_statements="$cleanup_statements; ${1}"
   # shellcheck disable=SC2064
   trap "$cleanup_statements" EXIT
 }
 
 prepend_cleanup() {
+  if test $# -ne 1
+  then
+    echo "prepend_cleanup takes one argument."
+    return 1
+  fi
   cleanup_statements="${1}; $cleanup_statements"
   # shellcheck disable=SC2064
   trap "$cleanup_statements" EXIT
 }
 
+cleanup_temp() {
+  rm -fr "$TEMP_DIR"
+}
+
 # Create a temporary directory and assign $TEMP_DIR env var
-register_temp_cleanup() {
+init_temp() {
   first_call 14b82c7 || return 0
   TEMP_DIR="$(mktemp -d)"
   # shellcheck disable=SC2016
-  prepend_cleanup 'rm -fr "$TEMP_DIR"'
+  prepend_cleanup cleanup_temp
+}
+
+register_temp_cleanup() {
+  init_temp
+}
+
+cleanup_child_processes() {
+  trap : TERM
+  if is_windows
+  then
+    # After catching TERM, doing something seems to fail.
+    kill -TERM -$$
+  elif is_macos
+  then
+    kill -TERM 0
+  elif is_linux
+  then
+    kill -TERM 0
+  else
+    echo Not implemented >&2
+  fi
 }
 
 # Register child-proceses cleanup trap handler.
 register_child_cleanup() {
   first_call 5f719a3 || return 0
-  # trap : TERM; sleep 0.2s; 
-  if is_windows
-  then
-    # After catching TERM, doing something seems to fail.
-    append_cleanup 'trap : TERM; kill -TERM -$$'
-  elif is_macos
-  then
-    prepend_cleanup 'trap : TERM; kill -TERM 0'
-  elif is_linux
-  then
-    prepend_cleanup 'trap : TERM; kill -TERM 0'
-  else
-    echo Not implemented >&2
-  fi
+  append_cleanup cleanup_child_processes
 }
 
 # Call the finalization function before `exec` which does not call trap function.
