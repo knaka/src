@@ -3,6 +3,23 @@
 # "${sourced_fbef65e-false}" && return 0; sourced_fbef65e=true
 _() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ 2823b44 && return 0
 
+_() {
+  local rc=1
+  local saved_extdebug
+  saved_extdebug=$(shopt -p extdebug || :)
+  shopt -s extdebug
+  [[ ${BASH_ARGV[0]} != "${BASH_SOURCE[0]}" ]] && rc=0
+  eval "$saved_extdebug"
+  return "$rc"
+}
+
+if _
+then
+  echo 21848da
+else
+  echo b27c4c4
+fi
+
 # works
 # _loaded() { local IFS=" "; [[ "${_ids[*]-}" != *$1* ]] && _ids+=("$1") && return 1 || :; }; _loaded 0f125c4 && return 0
 

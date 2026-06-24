@@ -3,15 +3,19 @@
 # shellcheck shell=bash
 _first_load() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _first_load f276ebe && return 0
 
+# echo 2179710 "$@" >&2
+
 pushd "${BASH_SOURCE[0]%/*}" >/dev/null 2>&1 || pushd . >/dev/null
-. ./foo-dir/foo.lib.bash
+. ./foo-dir/foo.lib.bash foo1 foo2
 . ./foo-dir/bar-dir/bar.lib.bash
 popd >/dev/null || exit 1
+
+# echo "05ba22b" "$@" >&2
 
 inc-2() {
   echo "Function \"inc-2\" is not implemented yet."
 
-  echo "${aaa[@]-}"
+  # echo "${aaa[@]-}"
 
   # _sourced+="9cbce50"
   # _sourced+="05d62fb"

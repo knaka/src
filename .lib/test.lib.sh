@@ -114,6 +114,8 @@ run_tests() {
     fi
     local saved_flags
     saved_flags="$(set +o)"
+    # $(set +o) runs in a subshell where bash disables errexit, so it always
+    # outputs "set +o errexit". Check $- to capture the actual current state.
     case $- in
       (*e*) saved_flags="$saved_flags; set -e";;
       (*) saved_flags="$saved_flags; set +e";;
