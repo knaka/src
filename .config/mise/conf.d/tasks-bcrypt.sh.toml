@@ -1,0 +1,33 @@
+# Code generated from "tasks-bcrypt.sh" by tasks:expand task. DO NOT EDIT.
+
+#marker 532173c6-f594-49ca-a243-e160af3ef8b5
+
+[tasks."bcrypt:hash"]
+description='''[password] Create hash from password with bcrypt.'''
+run='''
+#!/usr/bin/env sh
+# task_bcrypt__hash@tasks-bcrypt.sh
+_APPDIR="$MISE_PROJECT_ROOT"/".config/mise/conf.d"
+saved_pwd_85053ae="$PWD"
+cd "$MISE_PROJECT_ROOT"/".config/mise/conf.d" || exit 1
+. ./"tasks-bcrypt.sh"
+cd "$saved_pwd_85053ae" || exit 1
+set -o nounset -o errexit
+task_bcrypt__hash "$@"
+'''
+tools={"uv"="0.10"}
+
+[tasks."bcrypt:verify"]
+description='''[--password=<password> --hash=<hash>] Verify password against bcrypt hash.'''
+run='''
+#!/usr/bin/env sh
+# task_bcrypt__verify@tasks-bcrypt.sh
+_APPDIR="$MISE_PROJECT_ROOT"/".config/mise/conf.d"
+saved_pwd_85053ae="$PWD"
+cd "$MISE_PROJECT_ROOT"/".config/mise/conf.d" || exit 1
+. ./"tasks-bcrypt.sh"
+cd "$saved_pwd_85053ae" || exit 1
+set -o nounset -o errexit
+task_bcrypt__verify "$@"
+'''
+tools={"uv"="0.10"}

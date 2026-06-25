@@ -1,0 +1,51 @@
+# Code generated from "tasks-session.sh" by tasks:expand task. DO NOT EDIT.
+
+#marker 532173c6-f594-49ca-a243-e160af3ef8b5
+
+[tasks."session:init"]
+description='''Clears the session environment.'''
+run='''
+#!/usr/bin/env sh
+# task_session__init@tasks-session.sh
+_APPDIR="$MISE_PROJECT_ROOT"/".config/mise/conf.d"
+saved_pwd_85053ae="$PWD"
+cd "$MISE_PROJECT_ROOT"/".config/mise/conf.d" || exit 1
+. ./"tasks-session.sh"
+cd "$saved_pwd_85053ae" || exit 1
+set -o nounset -o errexit
+task_session__init "$@"
+'''
+hide=true
+
+[tasks."appenv:ensure"]
+description='''Ensures the application environment variable $APP_ENV is set.'''
+run='''
+#!/usr/bin/env sh
+# task_appenv__ensure@tasks-session.sh
+_APPDIR="$MISE_PROJECT_ROOT"/".config/mise/conf.d"
+saved_pwd_85053ae="$PWD"
+cd "$MISE_PROJECT_ROOT"/".config/mise/conf.d" || exit 1
+. ./"tasks-session.sh"
+cd "$saved_pwd_85053ae" || exit 1
+set -o nounset -o errexit
+task_appenv__ensure "$@"
+'''
+hide=true
+depends=["session:init"]
+tools={"gum"="0.17.0"}
+
+[tasks."critical:confirm"]
+description='''Confirms a critical operation.'''
+run='''
+#!/usr/bin/env sh
+# task_critical__confirm@tasks-session.sh
+_APPDIR="$MISE_PROJECT_ROOT"/".config/mise/conf.d"
+saved_pwd_85053ae="$PWD"
+cd "$MISE_PROJECT_ROOT"/".config/mise/conf.d" || exit 1
+. ./"tasks-session.sh"
+cd "$saved_pwd_85053ae" || exit 1
+set -o nounset -o errexit
+task_critical__confirm "$@"
+'''
+hide=true
+depends=["appenv:ensure"]

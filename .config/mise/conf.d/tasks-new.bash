@@ -22,8 +22,14 @@ task-bash--bar() {
   echo ce12cf4 >&2
 }
 
-# Bash baz.
-#TASK name=bash:baz
+# baz task.
+#TASK
 baz() {
+  echo baz
+}
+
+# bash:baz task.
+#TASK
+bash__baz() {
   echo baz
 }

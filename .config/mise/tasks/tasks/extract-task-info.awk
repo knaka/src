@@ -1,6 +1,11 @@
 BEGIN {
   desc = ""
   mise_hdrs_count = 0
+  expecting_task = 0
+}
+/^#TASK/ {
+  expecting_task = 1
+  next
 }
 /^#MISE / || /^# *\[MISE\] / {
   line = $0
@@ -17,14 +22,22 @@ BEGIN {
   }
   next
 }
-/^(task_|task-|subcmd_)[[:alnum:]_-]()/ {
-  func_name = $1
+/^(task_|task-|subcmd_)[[:alnum:]_-].*\(\)/ || (expecting_task == 1 && /^[[:alnum:]_-].*\(\)/) {
+  func_name = $0
   # Cut trailing parentheses.
   sub(/\(\).*$/, "", func_name)
-  type = func_name
-  sub(/[_-].*$/, "", type)
+  if (expecting_task) {
+    type = "task"
+  } else {
+    type = func_name
+    sub(/[_-].*$/, "", type)
+  }
   name = func_name
-  sub(/^[^_-]+[_-]/, "", name)
+  if (expecting_task) {
+    ;
+  } else {
+    sub(/^[^_-]+[_-]/, "", name)
+  }
   gsub(/__/, ":", name)
   gsub(/--/, ":", name)
   base = FILENAME
@@ -43,6 +56,7 @@ BEGIN {
   desc = ""
   delete mise_hdrs
   mise_hdrs_count = 0
+  expecting_task = 0
 }
 END {
   print "nop - - - -"
