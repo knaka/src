@@ -1,5 +1,6 @@
 [tasks."file:baz"]
 run="""
 #!/usr/bin/env bash
+set
 echo Hello 89c7747
 """

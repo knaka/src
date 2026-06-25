@@ -30,6 +30,8 @@
 	<false/>
 	<key>Default Bookmark Guid</key>
 	<string>1D39DCC5-684F-4FB7-96F7-E8212D1A5DD3</string>
+	<key>Default Browser Profile Guid</key>
+	<string>FF0E9B13-DC58-4F23-AA63-17B03BD34E04</string>
 	<key>DisablePotentiallyInsecureEscapeSequences</key>
 	<false/>
 	<key>ExperimentalKeyHandling</key>

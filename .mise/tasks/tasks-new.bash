@@ -7,6 +7,7 @@ pushd "${BASH_SOURCE[0]%/*}" >/dev/null 2>&1 || pushd . >/dev/null
 popd >/dev/null || exit 1
 
 # Bash foo.
+#MISE hide=true
 task_bash__foo() {
   if is_windows
   then
@@ -19,4 +20,10 @@ task_bash__foo() {
 # Bash bar.
 task-bash--bar() {
   echo ce12cf4 >&2
+}
+
+# Bash baz.
+#TASK name=bash:baz
+baz() {
+  echo baz
 }
