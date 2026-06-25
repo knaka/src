@@ -106,11 +106,11 @@ run='''
 #!/usr/bin/env bash
 # $func_name@$base
 _APPDIR="\$MISE_PROJECT_ROOT"/"$TASKS_REL_DIR"
-pushd "\$MISE_PROJECT_ROOT"/"$TASKS_REL_DIR" >/dev/null || exit 1
+pushd "\$MISE_PROJECT_ROOT"/"$TASKS_REL_DIR" >/dev/null 2>&1 || exit 1
 . ./"$base"
+popd >/dev/null 2>&1 || exit 1
 set -o nounset -o errexit -o pipefail
 ${func_name} "\$@"
-popd || exit 1
 '''
 EOF
 }

@@ -21,6 +21,7 @@ run_worker() {
   set -m
   "$@" </dev/null >"$log_file" 2>&1 &
   local pid="$!"
+  disown %+
   "$restore_m" && set +m
   echo "$pid" >>"$worker_queue_dir_24f4ecb"/wids
   echo "$pid"
@@ -37,12 +38,28 @@ tail_worker() (
   declare -a log_files
   for wid in "$@"
   do
+    # shellcheck disable=SC2030
     log_files+=("$(cat "$worker_queue_dir_24f4ecb"/"log-file.$wid")")
   done
   trap : INT
   set -m
   tail -f "${log_files[@]}" || :
 )
+
+log_worker() {
+  if test $# -eq 0
+  then
+    # shellcheck disable=SC2046
+    set -- $(cat "$worker_queue_dir_24f4ecb"/wids)
+  fi
+  declare -a log_files
+  for wid in "$@"
+  do
+    # shellcheck disable=SC2031
+    log_files+=("$(cat "$worker_queue_dir_24f4ecb"/"log-file.$wid")")
+  done
+  cat "${log_files[@]}" || :
+}
 
 stop_worker() {
   local wid
