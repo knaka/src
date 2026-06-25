@@ -29,7 +29,7 @@ baz() {
 }
 
 # bash:baz task.
-#TASK
-bash__baz() {
+#TASK name=bash:baz
+bash_baz() {
   echo baz
 }

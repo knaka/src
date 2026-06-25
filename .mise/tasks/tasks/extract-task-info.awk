@@ -2,6 +2,13 @@ BEGIN {
   desc = ""
   mise_hdrs_count = 0
   expecting_task = 0
+  specified_name = ""
+}
+/^#TASK name=/ {
+  expecting_task = 1
+  specified_name = $0
+  gsub(/^#TASK name=/, "", specified_name)
+  next
 }
 /^#TASK/ {
   expecting_task = 1
@@ -34,7 +41,9 @@ BEGIN {
   }
   name = func_name
   if (expecting_task) {
-    ;
+    if (specified_name) {
+      name = specified_name
+    }
   } else {
     sub(/^[^_-]+[_-]/, "", name)
   }
@@ -57,6 +66,7 @@ BEGIN {
   delete mise_hdrs
   mise_hdrs_count = 0
   expecting_task = 0
+  specified_name = ""
 }
 END {
   print "nop - - - -"

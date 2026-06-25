@@ -16,7 +16,7 @@ cd "$1" || exit 1; shift 2
 build() {
   embed_minified \
     "$TASK_PROJECT_DIR"/.lib/json2sh.lib.sh \
-    "$TASK_PROJECT_DIR"/.config/mise/tasks/tasks/expand \
+    "$TASK_PROJECT_DIR"/.mise/tasks/tasks/expand \
     #nop
 }
 
