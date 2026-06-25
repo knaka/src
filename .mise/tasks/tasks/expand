@@ -3,7 +3,7 @@
 # shellcheck shell=bash
 _() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ 726fe90 && return 0
 
-#MISE description="Generate routing scripts for tasks defined in monolithic shell files."
+#MISE description="Generate Mise TOML tasks to call shell functions defined in monolithic shell files."
 
 # [<target> [source=$PWD]] Convert absolute path to relative path
 abs2rel() {
@@ -114,8 +114,7 @@ ${func_name} "\$@"
 EOF
 }
 
-bash_task() {
-  cat <<EOF
+bash_task() { cat <<EOF
 [tasks."$name"]
 description='''$body'''
 run='''
