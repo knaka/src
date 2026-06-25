@@ -9,11 +9,11 @@ popd >/dev/null || exit 1
 # ==========================================================================
 #region Worker queue
 
-worker_queue_dir_24f4ecb=; unset worker_queue_dir_24f4ecb
+: "${worker_queue_dir_24f4ecb-}"
 
 run_worker() {
-  local log_file
-  local base="$(echo "$*" | sed -Ee 's/[^[:alnum:]]/_/g')"
+  local base log_file
+  base="$(echo "$*" | sed -Ee 's/[^[:alnum:]]/_/g')"
   log_file="$(mktemp "$worker_queue_dir_24f4ecb"/"$base.log.XXXXX")"
   touch "$log_file"
   local restore_m=false

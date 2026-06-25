@@ -47,7 +47,7 @@ mkdir -p "$CACHE_DIR"
 # ==========================================================================
 #region Temporary directory and cleaning up
 
-TEMP_DIR=; unset TEMP_DIR
+: "${TEMP_DIR-}"
 
 cleanup_statements=":"
 
