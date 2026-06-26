@@ -6,7 +6,7 @@
 
 set -- "$PWD" "$@"; if test "${2:+$2}" = _LIBDIR; then cd "$3" || exit 1; fi
 . ./utils.lib.sh
-. ./tools.lib.sh
+. ./commands.lib.sh
 cd "$1" || exit 1; shift
 
 # Called before `subtree:*` tasks/subcommands by the task runner.

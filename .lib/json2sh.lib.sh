@@ -3,7 +3,7 @@
 "${sourced_a5dd01a-false}" && return 0; sourced_a5dd01a=true
 
 set -- "$PWD" "$@"; if test "${2:+$2}" = _LIBDIR; then cd "$3" || exit 1; fi
-. ./tools.lib.sh
+. ./commands.lib.sh
 cd "$1" || exit 1; shift
 
 # Convert JSON object or array to shell variable assignment expressions.
