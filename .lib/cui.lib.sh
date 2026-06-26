@@ -3,11 +3,9 @@
 "${sourced_3f9fe75-false}" && return 0; sourced_3f9fe75=true
 
 set -- "$PWD" "$@"; if test "${2:+$2}" = _LIBDIR; then cd "$3" || exit 1; fi
-set -- _LIBDIR . "$@"
 . ./utils.lib.sh
 . ./bindump.lib.sh
 . ./commands.lib.sh
-shift 2
 cd "$1" || exit 1; shift
 
 # Alternative `gum choose` which takes value not label for `--selected=...`.

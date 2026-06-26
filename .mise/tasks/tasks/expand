@@ -166,7 +166,6 @@ tasks__expand() {
     for file in \
       "$MISE_PROJECT_ROOT"/.config/mise/conf.d/tasks-*.{sh,bash} \
       "$MISE_PROJECT_ROOT"/.config/mise/tasks-*.{sh,bash} \
-      "$MISE_PROJECT_ROOT"/.config/tasks-*.{sh,bash} \
       "$MISE_PROJECT_ROOT"/.mise/tasks-*.{sh,bash} \
       "$MISE_PROJECT_ROOT"/mise/tasks-*.{sh,bash} \
       "$MISE_PROJECT_ROOT"/tasks-*.{sh,bash}

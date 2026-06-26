@@ -3,7 +3,7 @@
 "${sourced_21fac06-false}" && return 0; sourced_21fac06=true
 
 pushd "${BASH_SOURCE[0]%/*}" >/dev/null 2>&1 || pushd . >/dev/null
-. ./.lib/utils.lib.bash
+. ./.lib/utils.bash
 popd >/dev/null || exit 1
 
 register_child_cleanup

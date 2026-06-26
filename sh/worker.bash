@@ -3,7 +3,7 @@
 "${sourced_0f8a56d-false}" && return 0; sourced_0f8a56d=true
 
 pushd "${BASH_SOURCE[0]%/*}" >/dev/null 2>&1 || pushd . >/dev/null
-. ./.lib/utils.lib.bash
+. ./.lib/utils.bash
 popd >/dev/null || exit 1
 
 worker-run() {

@@ -6,7 +6,6 @@ set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test 
 set -- _LIBDIR .lib "$@"
 . ./.lib/utils.lib.sh
 shift 2
-. ./ed.sh
 cd "$1" || exit 1; shift 2
 
 vw() {

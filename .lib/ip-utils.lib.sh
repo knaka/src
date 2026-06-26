@@ -3,9 +3,7 @@
 test "${sourced_a642529-}" = true && return 0; sourced_a642529=true
 
 set -- "$PWD" "$@"; if test "${2:+$2}" = _LIBDIR; then cd "$3" || exit 1; fi
-set -- _LIBDIR . "$@"
 . ./utils.lib.sh
-shift 2
 cd "$1" || exit 1; shift
 
 # List IP ports in use.
