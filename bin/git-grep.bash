@@ -29,7 +29,8 @@ git-grep() {
   shift
   {
     # Search in commit logs
-    git log $all_opt $color_opt --regexp-ignore-case --grep="$pattern"
+    git log $all_opt $color_opt --regexp-ignore-case --grep="$pattern" \
+    | awk '{ print; found=1 } END { if (!found) print "(No commit message matches)" }'
     # Then search in diffs if paths are specified
     if test $# -gt 0
     then
