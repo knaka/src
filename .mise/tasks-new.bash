@@ -22,14 +22,14 @@ task-bash--bar() {
   echo ce12cf4 >&2
 }
 
-# baz task.
+# Baz task.
 #TASK
 baz() {
   echo baz
 }
 
-# bash:baz task.
-#TASK name=bash:baz
+# Not used desc.
+#TASK name=bash:baz desc="Bash baz." dummy=foo
 bash_baz() {
   echo baz
 }

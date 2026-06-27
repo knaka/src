@@ -150,7 +150,7 @@ task-bash--bar "$@"
 '''
 
 [tasks."baz"]
-description='''baz task.'''
+description='''Baz task.'''
 run='''
 #!/usr/bin/env bash
 # baz@tasks-new.bash
@@ -163,7 +163,7 @@ baz "$@"
 '''
 
 [tasks."bash:baz"]
-description='''bash:baz task.'''
+description='''Bash baz.'''
 run='''
 #!/usr/bin/env bash
 # bash_baz@tasks-new.bash

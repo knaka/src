@@ -1,73 +1,85 @@
-BEGIN {
+function reset_vars() {
   desc = ""
+  delete mise_hdrs
   mise_hdrs_count = 0
-  expecting_task = 0
-  specified_name = ""
+  is_task = 0
+  task_name = ""
 }
-/^#TASK name=/ {
-  expecting_task = 1
-  specified_name = $0
-  gsub(/^#TASK name=/, "", specified_name)
+
+BEGIN {
+  reset_vars()
+}
+
+/^#TASK($| +)/ {
+  is_task = 1
+  if (/^.* name=/) {
+    _ = $0
+    sub(/^.* name=/, "", _)
+    sub(/ +.*$/, "", _)
+    task_name = _
+  }
+  if (/^.* desc=/) {
+    _ = $0
+    sub(/^.* desc="/, "", _)
+    sub(/".*$/, "", _)
+    desc = _
+  }
   next
 }
-/^#TASK/ {
-  expecting_task = 1
-  next
-}
+
 /^#MISE / || /^# *\[MISE\] / {
-  line = $0
-  gsub(/^#MISE +/, "", line)
-  gsub(/^# *\[MISE\] +/, "", line)
-  mise_hdrs[mise_hdrs_count++] = line
+  _ = $0
+  gsub(/^#MISE +/, "", _)
+  gsub(/^# *\[MISE\] +/, "", _)
+  mise_hdrs[mise_hdrs_count++] = _
   next
 }
+
 /^#/ {
   if (desc == "") {
-    line = $0
-    gsub(/^#+[ ]*/, "", line)
-    desc = line
+    _ = $0
+    gsub(/^#+[ ]*/, "", _)
+    desc = _
   }
   next
 }
-/^(task_|task-|subcmd_)[[:alnum:]_-].*\(\)/ || (expecting_task == 1 && /^[[:alnum:]_-].*\(\)/) {
-  func_name = $0
-  # Cut trailing parentheses.
-  sub(/\(\).*$/, "", func_name)
-  if (expecting_task) {
+
+(is_task && /^[[:alnum:]_-].*\(\)/) || /^(task_|task-|subcmd_)[[:alnum:]_-].*\(\)/ {
+  _ = $0
+  sub(/\(\).*$/, "", _)
+  func_name = _
+  if (is_task) {
     type = "task"
-  } else {
-    type = func_name
-    sub(/[_-].*$/, "", type)
-  }
-  name = func_name
-  if (expecting_task) {
-    if (specified_name) {
-      name = specified_name
+    if (! task_name) {
+      _ = func_name
+      gsub(/(__|--)/, ":", _)
+      task_name = _
     }
   } else {
-    sub(/^[^_-]+[_-]/, "", name)
+    _ = func_name
+    sub(/[_-].*$/, "", _)
+    type = _
+    _ = func_name
+    sub(/^[^_-]+[_-]/, "", _)
+    gsub(/(__|--)/, ":", _)
+    task_name = _
   }
-  gsub(/__/, ":", name)
-  gsub(/--/, ":", name)
-  base = FILENAME
-  sub(/^.*\//, "", base)
-  print type " " name " " func_name " " base " " desc
+  _ = FILENAME
+  sub(/^.*\//, "", _)
+  base = _
+  print type " " task_name " " func_name " " base " " desc
   for (i = 0; i < mise_hdrs_count; i++) {
     type = "mise"
-    print type " " name " " func_name " " base " " mise_hdrs[i]
+    print type " " task_name " " func_name " " base " " mise_hdrs[i]
   }
-  desc = ""
-  delete mise_hdrs
-  mise_hdrs_count = 0
+  reset_vars()
   next
 }
+
 {
-  desc = ""
-  delete mise_hdrs
-  mise_hdrs_count = 0
-  expecting_task = 0
-  specified_name = ""
+  reset_vars()
 }
+
 END {
   print "nop - - - -"
 }
