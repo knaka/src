@@ -8,6 +8,7 @@ task_output = "interleave"
 MISE_PID = "{{mise_pid}}"
 
 [tools]
+"python" = "latest"
 "gum" = "0.17.0"
 "watchexec" = "2.3.3"
 "ghcup" = "0.1.50.2"

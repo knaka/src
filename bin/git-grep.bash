@@ -13,7 +13,8 @@ git-grep() {
     test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
     case "$OPT" in
       (all) all_opt="--all";;
-      (*) echo "Unexpected option: $OPT" >&2; exit 1;;
+      (?) exit 1;;
+      (*) echo "$0: illegal option -- $OPT" >&2; exit 1;;
     esac
   done
   shift $((OPTIND-1))
