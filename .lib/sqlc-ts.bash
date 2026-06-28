@@ -7,6 +7,6 @@ rewrite_sqlcgen_ts() {
   perl -pi \
     -e 'if (m#^.*cloudflare/workers-types/2022-11-30.*$#) { $_ = "" };' \
     -e 's#^([[:blank:]]*[_[:alnum:]]+)(: .* \| null;)$#$1?$2#;' \
-    -e 's#^(.*\.\bbind\()([^.][^)]*)(\).*)$#$1 . join(", ", map { "typeof $_ === \"undefined\"? null: $_" } split(/,\s*/, $2)) . $3#e;' \
+    -e 's#^(.*\.bind\()([^.][^)]*)(\).*)$#$1 . join(", ", map { "typeof $_ === \"undefined\"? null: $_" } split(/,\s*/, $2)) . $3#e;' \
     "$@"
 }
