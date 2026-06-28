@@ -8,19 +8,17 @@ task_output = "interleave"
 MISE_PID = "{{mise_pid}}"
 
 [tools]
-"python" = "latest"
+"node" = "24"
+"python" = "3.14"
+"jq" = "1.8.1"
+"yj" = "5.1.0"
+"yq" = "4.52.4"
 "gum" = "0.17.0"
-"watchexec" = "2.3.3"
-"ghcup" = "0.1.50.2"
-"stack" = "3.9.3"
 
-[tools."github:msys2/msys2-installer"]
+# Releases · msys2/msys2-installer https://github.com/msys2/msys2-installer/releases
+[tools."http:msys2"]
 os = ["windows"]
 version = "2026-06-11"
-matching_regex = ".*zst.*"
 bin_path = "msys64/usr/bin"
-
-# powershell | mise versions https://mise-versions.jdx.dev/tools/powershell
-[tools."powershell"]
-# os = ["linux", "macos"]
-version = "7"
+url = 'https://github.com/msys2/msys2-installer/releases/download/{{ version }}/msys2-base-{{ arch() }}-{{ version }}.tar.zst'
+platforms.windows-amd64 = { checksum = 'sha256:ace898d250d7302a24259a0288d69354649365af9cc64c8bcc2f219bc1e28374' }
