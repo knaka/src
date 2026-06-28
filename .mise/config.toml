@@ -1,6 +1,7 @@
-min_version = '2026.2.7'
+min_version = "2026.6.11"
 
 [settings]
+activate_aggressive = true
 # Print output as it comes in to utilize Gum. // Settings | mise-en-place https://mise.jdx.dev/configuration/settings.html
 task_output = "interleave"
 
