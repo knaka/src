@@ -8,6 +8,7 @@ popd >/dev/null || exit 1
 
 regex() {
   local haystack="foo bar baz"
+  local needle=bar
 
   # regex - Does bash support word boundary regular expressions? - Stack Overflow https://stackoverflow.com/questions/9792702/does-bash-support-word-boundary-regular-expressions
     [[ "$haystack" =~ ba ]] || return 1
@@ -15,6 +16,17 @@ regex() {
   ! [[ "$haystack" =~ ${lwb}ba${rwb} ]] || return 1
     [[ "$haystack" =~ ${lwb}bar${rwb} ]] || return 1
   ! [[ "$haystack" =~ ${lwb}barr${rwb} ]] || return 1
+    [[ "$haystack" =~ $lwb$needle$rwb ]] || return 1
+  :
+
+  local lwb2="(^|[^[:alnum:]_])"
+  local rwb2="($|[^[:alnum:]_])"
+    [[ "$haystack" =~ ba ]] || return 1
+    [[ "$haystack" =~ bar ]] || return 1
+  ! [[ "$haystack" =~ ${lwb2}ba${rwb2} ]] || return 1
+    [[ "$haystack" =~ ${lwb2}bar${rwb2} ]] || return 1
+  ! [[ "$haystack" =~ ${lwb2}barr${rwb2} ]] || return 1
+    [[ "$haystack" =~ $lwb2$needle$rwb2 ]] || return 1
   :
 }
 

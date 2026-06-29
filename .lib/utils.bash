@@ -98,7 +98,8 @@ init_worker_queue() {
 # ==========================================================================
 #region Misc.
 
-: "${lwb:=}"
-: "${rwb:=}"
+# Sometimes shellcheck cannot find the definitions in sub files.
+: "${lwb:=(^|[^[:alnum:]_])}"
+: "${rwb:=($|[^[:alnum:]_])}"
 
 #endregion
