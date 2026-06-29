@@ -111,7 +111,7 @@ sh_task() { cat <<EOF
 description='''$body'''
 run='''
 #!/usr/bin/env sh
-# $func_name@$base
+# $base:$func_name
 _APPDIR="\$MISE_PROJECT_ROOT"/"$TASKS_REL_DIR"
 saved_pwd_85053ae="\$PWD"
 cd "\$MISE_PROJECT_ROOT"/"$TASKS_REL_DIR" || exit 1
@@ -128,7 +128,7 @@ bash_task() { cat <<EOF
 description='''$body'''
 run='''
 #!/usr/bin/env bash
-# $func_name@$base
+# $base:$func_name
 _APPDIR="\$MISE_PROJECT_ROOT"/"$TASKS_REL_DIR"
 pushd "\$MISE_PROJECT_ROOT"/"$TASKS_REL_DIR" >/dev/null || exit 1
 . ./"$base"

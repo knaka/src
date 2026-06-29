@@ -71,6 +71,7 @@ touchbash() {
   fi
   local func_name
   func_name="${file_base%.bash}"
+  func_name="${func_name//-/_}"
   local has_ext
   case "$file_base" in
     (*.bash)
