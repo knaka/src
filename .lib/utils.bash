@@ -96,31 +96,9 @@ init_worker_queue() {
 #endregion
 
 # ==========================================================================
-#region
+#region Misc.
 
-# Check if arguments are passed.
-_() {
-  local rc=1
-  local saved_extdebug
-  saved_extdebug="$(shopt -p extdebug || :)"
-  shopt -s extdebug
-  [[ "${BASH_ARGV[0]}" != "${BASH_SOURCE[0]}" ]] && rc=0
-  eval "$saved_extdebug"
-  return "$rc"
-}
-
-if test $# -gt 0 && _
-then
-  OPTIND=1; while getopts _-: OPT
-  do
-    test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
-    case "$OPT" in
-      (init-temp|init-temp-dir) register_temp_cleanup;;
-      (init-worker-queue) init_worker_queue;;
-      (*) echo "Unexpected option: $OPT" >&2; exit 1;;
-    esac
-  done
-  shift $((OPTIND-1))
-fi
+: "${lwb:=}"
+: "${rwb:=}"
 
 #endregion

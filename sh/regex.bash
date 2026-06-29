@@ -10,11 +10,11 @@ regex() {
   local haystack="foo bar baz"
 
   # regex - Does bash support word boundary regular expressions? - Stack Overflow https://stackoverflow.com/questions/9792702/does-bash-support-word-boundary-regular-expressions
-  [[ "$haystack" =~ bar ]] || return 1
-  [[ "$haystack" =~ ba ]] || return 1
-  [[ "$haystack" =~ ${lwb}ba${rwb} ]] && return 1
-  [[ "$haystack" =~ ${lwb}bar${rwb} ]] || return 1
-  [[ "$haystack" =~ ${lwb}barr${rwb} ]] && return 1
+    [[ "$haystack" =~ ba ]] || return 1
+    [[ "$haystack" =~ bar ]] || return 1
+  ! [[ "$haystack" =~ ${lwb}ba${rwb} ]] || return 1
+    [[ "$haystack" =~ ${lwb}bar${rwb} ]] || return 1
+  ! [[ "$haystack" =~ ${lwb}barr${rwb} ]] || return 1
   :
 }
 
