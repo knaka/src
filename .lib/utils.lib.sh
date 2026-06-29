@@ -133,6 +133,19 @@ is_terminal() {
   test -t 1
 }
 
+usv_called_6b2a1df="$us"
+
+# Run only once
+run_once() {
+  case "$usv_called_6b2a1df" in
+    (*"$us$*$us"*)
+      return 0
+      ;;
+  esac
+  "$@"
+  usv_called_6b2a1df="$usv_called_6b2a1df$*$us"
+}
+
 # Check if external command exists in $PATH.
 has_external_command() {
   # test -x "$(command -v "$1" 2>/dev/null)"
@@ -336,6 +349,7 @@ invoke() {
 # Unit separator (US), Information Separator One (0x1F)
 # shellcheck disable=SC2034
 readonly ch_us=""
+# shellcheck disable=SC2034
 readonly us="$ch_us"
 # shellcheck disable=SC2034
 readonly ch_is="$ch_us"
@@ -886,9 +900,9 @@ fi
 menu_item() {
   echo "$1" | sed -E \
     -e 's/&&/@ampersand_ff37f3a@/g' \
-    -e "s/^([^&]*)(&([^& ]))?(.*)$/\1${is1}\3${is1}\4/" \
+    -e "s/^([^&]*)(&([^& ]))?(.*)$/\1${ch_is1}\3${ch_is1}\4/" \
   | (
-    IFS="$is1" read -r pre char_to_emph post
+    IFS="$ch_is1" read -r pre char_to_emph post
     if test -n "$char_to_emph"
     then
       printf -- "%s%s%s" "$pre" "$(emph "$char_to_emph")" "$post"
