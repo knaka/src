@@ -4,7 +4,7 @@
 description='''[password] Create hash from password with bcrypt.'''
 run='''
 #!/usr/bin/env sh
-# task_bcrypt__hash@tasks-bcrypt.sh
+# .mise/tasks-bcrypt.sh:task_bcrypt__hash
 _APPDIR="$MISE_PROJECT_ROOT"/".mise"
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
@@ -19,7 +19,7 @@ tools={"uv"="0.10"}
 description='''[--password=<password> --hash=<hash>] Verify password against bcrypt hash.'''
 run='''
 #!/usr/bin/env sh
-# task_bcrypt__verify@tasks-bcrypt.sh
+# .mise/tasks-bcrypt.sh:task_bcrypt__verify
 _APPDIR="$MISE_PROJECT_ROOT"/".mise"
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
@@ -34,7 +34,7 @@ tools={"uv"="0.10"}
 description=''''''
 run='''
 #!/usr/bin/env sh
-# task_hooks__log__test@tasks-hooks.sh
+# .mise/tasks-hooks.sh:task_hooks__log__test
 _APPDIR="$MISE_PROJECT_ROOT"/".mise"
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
@@ -49,7 +49,7 @@ hide=true
 description=''''''
 run='''
 #!/usr/bin/env sh
-# task_hooks__log@tasks-hooks.sh
+# .mise/tasks-hooks.sh:task_hooks__log
 _APPDIR="$MISE_PROJECT_ROOT"/".mise"
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
@@ -64,7 +64,7 @@ hide=true
 description='''Convert JSON object to shell variable assignment expressions.'''
 run='''
 #!/usr/bin/env sh
-# task_json2sh@tasks-project.sh
+# .mise/tasks-project.sh:task_json2sh
 _APPDIR="$MISE_PROJECT_ROOT"/".mise"
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
@@ -78,7 +78,7 @@ task_json2sh "$@"
 description='''Clears the session environment.'''
 run='''
 #!/usr/bin/env sh
-# task_session__init@tasks-session.sh
+# .mise/tasks-session.sh:task_session__init
 _APPDIR="$MISE_PROJECT_ROOT"/".mise"
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
@@ -93,7 +93,7 @@ hide=true
 description='''Ensures the application environment variable $APP_ENV is set.'''
 run='''
 #!/usr/bin/env sh
-# task_appenv__ensure@tasks-session.sh
+# .mise/tasks-session.sh:task_appenv__ensure
 _APPDIR="$MISE_PROJECT_ROOT"/".mise"
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
@@ -110,7 +110,7 @@ tools={"gum"="0.17.0"}
 description='''Confirms a critical operation.'''
 run='''
 #!/usr/bin/env sh
-# task_critical__confirm@tasks-session.sh
+# .mise/tasks-session.sh:task_critical__confirm
 _APPDIR="$MISE_PROJECT_ROOT"/".mise"
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
@@ -126,7 +126,7 @@ depends=["appenv:ensure"]
 description='''Bash foo.'''
 run='''
 #!/usr/bin/env bash
-# task_bash__foo@tasks-new.bash
+# .mise/tasks-new.bash:task_bash__foo
 _APPDIR="$MISE_PROJECT_ROOT"/".mise"
 pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
 . ./"tasks-new.bash"
@@ -140,7 +140,7 @@ hide=true
 description='''Bash bar.'''
 run='''
 #!/usr/bin/env bash
-# task-bash--bar@tasks-new.bash
+# .mise/tasks-new.bash:task-bash--bar
 _APPDIR="$MISE_PROJECT_ROOT"/".mise"
 pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
 . ./"tasks-new.bash"
@@ -153,7 +153,7 @@ task-bash--bar "$@"
 description='''Baz task.'''
 run='''
 #!/usr/bin/env bash
-# baz@tasks-new.bash
+# .mise/tasks-new.bash:baz
 _APPDIR="$MISE_PROJECT_ROOT"/".mise"
 pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
 . ./"tasks-new.bash"
@@ -166,7 +166,7 @@ baz "$@"
 description='''Bash baz.'''
 run='''
 #!/usr/bin/env bash
-# bash_baz@tasks-new.bash
+# .mise/tasks-new.bash:bash_baz
 _APPDIR="$MISE_PROJECT_ROOT"/".mise"
 pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
 . ./"tasks-new.bash"

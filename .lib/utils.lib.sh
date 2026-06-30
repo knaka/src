@@ -164,7 +164,7 @@ is_mise() {
 }
 
 is_linux() {
-  test -d /sys
+  test -d /sys -a -f /etc/os-release
 }
 
 is_macos() {

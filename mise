@@ -40,10 +40,7 @@ mise() {
     chmod +x "$cmd_path"
   fi
   export MISE_ACTIVATE_AGGRESSIVE=true
-  if "$should_exec_9bf84a8"
-  then
-    exec "$cmd_path" "$@"
-  fi
+  "$should_exec_9bf84a8" && exec "$cmd_path" "$@"
   command "$cmd_path" "$@"
 }
 
