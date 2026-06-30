@@ -19,21 +19,15 @@ if "%PROCESSOR_ARCHITECTURE%" == "x86" (
   exit /b 1 
 )
 
-set cmd_name=busybox.exe
-set cache_dir_path=%USERPROFILE%\.cache\task-sh\busybox@%bb_ver%
+set cache_dir_path=%USERPROFILE%\.cache\busybox
 if not exist !cache_dir_path! (
   mkdir "!cache_dir_path!"
 )
-set cmd_path=!cache_dir_path!\!cmd_name!
+set cmd_path=!cache_dir_path!\busybox-%bb_ver%.exe
 if not exist !cmd_path! (
   echo Downloading BusyBox for Windows. >&2
   curl.exe --fail --location --output "!cmd_path!" https://frippery.org/files/busybox/busybox-w!bb_arch!-!bb_ver!.exe || exit /b !ERRORLEVEL!
 )
-if not exist !cache_dir_path!\sh.exe (
-  !cmd_path! --install !cache_dir_path!
-)
-
-@REM Shell-command ready (a5f342b)
 
 set "ARG0=%~f0"
 set "ARG0BASE=%~n0"
