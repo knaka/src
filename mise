@@ -6,7 +6,7 @@
 # Mise - Home | mise-en-place https://mise.jdx.dev/
 
 # Copied from .\mise.cmd .
-mise_ver_e8ccfbb='2026.6.11'
+mise_ver_e8ccfbb='2026.6.14'
 
 command_9934d8a=false
 
@@ -18,18 +18,20 @@ mise() {
   if test -r /System/Library/CoreServices/SystemVersion.plist
   then
     os=macos
-  elif test -d "c:/" -o -d "/c/" && ! test -d /proc
+  elif test -d c:/
   then
     os=windows
     exe_ext=.exe
-    ext=.zip
-  elif test -d /proc -o -d /sys
+    ext=.exe
+  elif test -d /proc
   then
     os=linux
+  else
+    exit 1
   fi
-  local app_dir_path="$CACHE_DIR/mise@$ver"
+  local app_dir_path="$HOME/.cache/mise"
   mkdir -p "$app_dir_path"
-  local cmd_path="$app_dir_path/mise$exe_ext"
+  local cmd_path="$app_dir_path/mise-$mise_ver_e8ccfbb$exe_ext"
   if ! command -v "$cmd_path" >/dev/null 2>&1
   then
     if test "${TEMP_DIR+set}" != set
@@ -55,12 +57,18 @@ mise() {
     local saved_pwd="$PWD"
     cd "$work_dir_path" || exit 1
     case "$ext" in
-      (.zip) unzip "$out_file_path" >&2 ;;
-      (.tar.gz) tar -xf "$out_file_path" >&2 ;;
+      (.exe)
+        mv "$out_file_path" "$cmd_path"
+        cd "$saved_pwd" || exit 1
+        ;;
+      (.tar.gz)
+        tar -xf "$out_file_path" >&2
+        cd "$saved_pwd" || exit 1
+        mv "$work_dir_path"/mise/bin/mise "$cmd_path"
+        chmod +x "$cmd_path"
+        ;;
       (*) exit 1;;
     esac
-    cd "$saved_pwd" || exit 1
-    mv "$work_dir_path"/mise/bin/* "$app_dir_path"
   fi
   export MISE_ACTIVATE_AGGRESSIVE=true
   if "$command_9934d8a"
@@ -74,7 +82,6 @@ mise() {
 case "${0##*/}" in
   (mise)
     set -o nounset -o errexit
-    CACHE_DIR="$HOME"/.cache/task-sh
     TEMP_DIR="$(mktemp -d)"
     command_9934d8a=true
     trap 'rm -fr "$TEMP_DIR"' EXIT
