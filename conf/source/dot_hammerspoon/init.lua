@@ -1,24 +1,28 @@
 -- Open and Closing Quotation Marks, then move to left
 hs.hotkey.bind({"option"}, "[", function()
   hs.eventtap.keyStrokes("“”")
+  hs.timer.usleep(1000)
   hs.eventtap.keyStroke({}, "left", 0)
 end)
 
 -- &Variable Expansion (parameter expansion)
 hs.hotkey.bind({"option"}, "v", function()
   hs.eventtap.keyStrokes("\"$\"")
+  hs.timer.usleep(1000)
   hs.eventtap.keyStroke({}, "left", 0)
 end)
 
 -- &Command Substitution \"$(...)\"
 hs.hotkey.bind({"option"}, "c", function()
   hs.eventtap.keyStrokes("\"$()\"")
+  hs.timer.usleep(1000)
   hs.eventtap.keyStroke({}, "left", 0)
   hs.eventtap.keyStroke({}, "left", 0)
 end)
 
 hs.hotkey.bind({"option"}, "z", function()
   hs.eventtap.keyStrokes("hello")
+  hs.timer.usleep(1000)
   hs.eventtap.keyStroke({}, "return", 0)
 end)
 
@@ -84,9 +88,11 @@ hs.hotkey.bind(
   function()
     hs.eventtap.keyStrokes("````")
     -- Enter だとプロンプトから送られてしまうことがあるので、Shift + Enter を emit
+  hs.timer.usleep(1000)
     hs.eventtap.keyStroke({"shift"}, "return", 0)
     hs.eventtap.keyStroke({"shift"}, "return", 0)
     hs.eventtap.keyStrokes("````")
+  hs.timer.usleep(1000)
     hs.eventtap.keyStroke({"shift"}, "return", 0)
     hs.eventtap.keyStroke({}, "left", 0)
     hs.eventtap.keyStroke({}, "left", 0)

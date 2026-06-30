@@ -8,7 +8,7 @@
 # Copied from .\mise.cmd .
 mise_ver_e8ccfbb='__MISE_VERSION__'
 
-command_9934d8a=false
+should_exec_9bf84a8=false
 
 mise() {
   local ver="$mise_ver_e8ccfbb"
@@ -63,7 +63,7 @@ mise() {
     mv "$work_dir_path"/mise/bin/* "$app_dir_path"
   fi
   export MISE_ACTIVATE_AGGRESSIVE=true
-  if "$command_9934d8a"
+  if "$should_exec_9bf84a8"
   then
     rm -fr "$TEMP_DIR"
     exec "$cmd_path" "$@"
@@ -76,7 +76,7 @@ case "${0##*/}" in
     set -o nounset -o errexit
     CACHE_DIR="$HOME"/.cache/task-sh
     TEMP_DIR="$(mktemp -d)"
-    command_9934d8a=true
+    should_exec_9bf84a8=true
     trap 'rm -fr "$TEMP_DIR"' EXIT
     mise "$@"
     ;;

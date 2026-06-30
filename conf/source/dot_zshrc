@@ -383,8 +383,8 @@ shift-move() {
 for key             kcap seq         widget (
     left            LFT  $'\e[1;2D'  backward-char
     right           RIT  $'\e[1;2C'  forward-char
-    alt-shift-left  x    $'\e[1;10D' backward-word
-    alt-shift-right x    $'\e[1;10C' forward-word
+    alt-shift-left  x    $'\e[1;4D' backward-word
+    alt-shift-right x    $'\e[1;4C' forward-word
     f13             x    $'\e[1;2P'  beginning-of-line
     f14             x    $'\e[1;2Q'  end-of-line
 ) {
