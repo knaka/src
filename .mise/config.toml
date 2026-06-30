@@ -10,7 +10,8 @@ MISE_PID = "{{ mise_pid }}"
 
 [vars]
 # Releases · msys2/msys2-installer https://github.com/msys2/msys2-installer/releases
-MSYS2_VERSION="2026-06-11"
+MSYS2_VERSION = "2026-06-11"
+MSYS2_AMD64_SUM = "sha256:ace898d250d7302a24259a0288d69354649365af9cc64c8bcc2f219bc1e28374"
 
 [tools]
 "node" = "24"
@@ -27,5 +28,5 @@ version = "{{ vars.MSYS2_VERSION }}"
 bin_path = "msys64/usr/bin"
 # “version” cannot be filtered as tera template.
 url = 'https://github.com/msys2/msys2-installer/releases/download/{{ version }}/msys2-base-{{ arch(x64="x86_64") }}-{{ vars.MSYS2_VERSION | replace(from="-", to="") }}.tar.zst'
-# https://github.com/msys2/msys2-installer/releases/download/2026-06-11/msys2-base-x86_64-20260611.tar.zst
-platforms.windows-amd64 = { checksum = 'sha256:ace898d250d7302a24259a0288d69354649365af9cc64c8bcc2f219bc1e28374' }
+checksum_url = 'https://github.com/msys2/msys2-installer/releases/download/{{ version }}/msys2-base-{{ arch(x64="x86_64") }}-{{ vars.MSYS2_VERSION | replace(from="-", to="") }}.tar.zst'
+platforms.windows-amd64 = { checksum = "{{ vars.MSYS2_AMD64_SUM }}" }
