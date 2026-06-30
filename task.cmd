@@ -1,8 +1,7 @@
 @REM BusyBox for Windows https://frippery.org/busybox/index.html
 @REM Release Notes https://frippery.org/busybox/release-notes/index.html
 @REM Index of /files/busybox https://frippery.org/files/busybox/?C=M;O=D
-@REM The version is copied from ./mise.toml by the "versions:sync" task.
-@set bb_ver=FRP-5857-g3681e397f
+@set ver=FRP-6075-g169694ebd
 
 @echo off
 setlocal enabledelayedexpansion
@@ -23,10 +22,10 @@ set cache_dir_path=%USERPROFILE%\.cache\busybox
 if not exist !cache_dir_path! (
   mkdir "!cache_dir_path!"
 )
-set cmd_path=!cache_dir_path!\busybox-%bb_ver%.exe
+set cmd_path=!cache_dir_path!\busybox-%ver%.exe
 if not exist !cmd_path! (
   echo Downloading BusyBox for Windows. >&2
-  curl.exe --fail --location --output "!cmd_path!" https://frippery.org/files/busybox/busybox-w!bb_arch!-!bb_ver!.exe || exit /b !ERRORLEVEL!
+  curl.exe --fail --location --output "!cmd_path!" https://frippery.org/files/busybox/busybox-w!bb_arch!-!ver!.exe || exit /b !ERRORLEVEL!
 )
 
 set "ARG0=%~f0"
