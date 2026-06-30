@@ -1,5 +1,3 @@
-[settings.github]
-
 [tools]
 "aqua:sharkdp/fd" = "8.7.0"
 "bat" = "0.26.1"
@@ -9,7 +7,6 @@
 "gh" = "2.87.3"
 "github:googleworkspace/cli" = "0.17.0"
 "jq" = "1.8.1"
-# 何かが 26 に未対応
 "node" = "24"
 "python" = "3.14"
 "yj" = "5.1.0"
@@ -19,7 +16,7 @@
 [tasks.beep]
 run = """
 #!/usr/bin/env sh
-if test -d "c:/" -a ! -d /proc
+if test -d "/c/" -a ! -d /proc
 then
   # pwsh -c "[console]::beep(1000,300)" &
   rundll32 user32.dll,MessageBeep &

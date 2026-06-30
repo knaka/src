@@ -30,7 +30,7 @@ path=(
 )
 
 is_windows() {
-  test -d /c/
+  test -d c:/
 }
 
 if is_windows
@@ -260,12 +260,12 @@ precmd() {
   local title="$pwd_str"
 
   local git_branches
-  git_branches="$(command -v git >/dev/null 2>&1 && git branch 2>/dev/null)" || :
+  git_branches="$(command git branch 2>/dev/null)" || :
   if test -n "$git_branches"
   then
     # Project Top Directory
     # PTD="$(git rev-parse --show-toplevel 2>/dev/null)" || :
-    PTD="$(cd "$(git rev-parse --show-cdup 2>/dev/null)"; echo "$PWD")"
+    PTD="$(cd "$(command git rev-parse --show-cdup 2>/dev/null)"; echo "$PWD")"
     ptd="$PTD"
     local rel_path="${PWD#$PTD}"
     local git_branch
@@ -589,6 +589,7 @@ alias r='command r'
 alias rl='readlink'
 # alias t="launch-task"
 # alias task="launch-task"
+# alias git='mygit'
 
 # ! which tac >/dev/null && alias tac="tail -r" || :
 

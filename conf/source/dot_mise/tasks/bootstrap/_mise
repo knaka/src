@@ -27,9 +27,9 @@ mise() {
   then
     os=linux
   fi
-  local app_dir_path="$CACHE_DIR/mise"
+  local app_dir_path="$CACHE_DIR/mise@$ver"
   mkdir -p "$app_dir_path"
-  local cmd_path="$app_dir_path/mise-$mise_ver_e8ccfbb$exe_ext"
+  local cmd_path="$app_dir_path/mise$exe_ext"
   if ! command -v "$cmd_path" >/dev/null 2>&1
   then
     if test "${TEMP_DIR+set}" != set
@@ -74,7 +74,7 @@ mise() {
 case "${0##*/}" in
   (mise)
     set -o nounset -o errexit
-    CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}"
+    CACHE_DIR="$HOME"/.cache/task-sh
     TEMP_DIR="$(mktemp -d)"
     command_9934d8a=true
     trap 'rm -fr "$TEMP_DIR"' EXIT

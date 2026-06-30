@@ -164,7 +164,7 @@ is_mise() {
 }
 
 is_linux() {
-  test '(' -d /proc -o -d /sys ')' -a ! -d c:/
+  test -d /sys
 }
 
 is_macos() {
@@ -172,6 +172,7 @@ is_macos() {
 }
 
 is_windows() {
+  # Mixed form path works both on MSYS2 and Busybox for Windows.
   test -d c:/
 }
 

@@ -4,17 +4,13 @@
 "${sourced_1b73bd7-false}" && return 0; sourced_1b73bd7=true
 
 # Mise - Home | mise-en-place https://mise.jdx.dev/
-
-# Copied from .\mise.cmd .
 mise_ver_e8ccfbb='2026.6.14'
 
-command_9934d8a=false
+should_exec_9bf84a8=false
 
 mise() {
-  local ver="$mise_ver_e8ccfbb"
   local os
   local exe_ext=
-  local ext=.tar.gz
   if test -r /System/Library/CoreServices/SystemVersion.plist
   then
     os=macos
@@ -22,69 +18,39 @@ mise() {
   then
     os=windows
     exe_ext=.exe
-    ext=.exe
-  elif test -d /proc
+  elif test -d /sys
   then
     os=linux
   else
     exit 1
   fi
-  local app_dir_path="$HOME/.cache/mise"
-  mkdir -p "$app_dir_path"
-  local cmd_path="$app_dir_path/mise-$mise_ver_e8ccfbb$exe_ext"
+  local cache_dir_path="${XDG_CACHE_HOME:-$HOME}"/.cache/mise
+  mkdir -p "$cache_dir_path"
+  local cmd_path="$cache_dir_path/mise-$mise_ver_e8ccfbb$exe_ext"
   if ! command -v "$cmd_path" >/dev/null 2>&1
   then
-    if test "${TEMP_DIR+set}" != set
-    then
-      TEMP_DIR="$(mktemp -d)"
-      # shellcheck disable=SC2064
-      trap "rm -fr '$TEMP_DIR'" EXIT
-    fi
     local arch
     case "$(uname -m)" in
       (x86_64) arch=x64;;
       (arm64) arch=arm64;;
     esac
-    local url="https://github.com/jdx/mise/releases/download/v${ver}/mise-v${ver}-${os}-${arch}${ext}"
-    local out_file_path="$TEMP_DIR/mise$ext"
-    if ! curl --fail --location "$url" --output "$out_file_path"
-    then
-      echo "Failed to download: $url" >&2
-      exit 1
-    fi
-    local work_dir_path="$TEMP_DIR"/work-$$
-    mkdir -p "$work_dir_path"
-    local saved_pwd="$PWD"
-    cd "$work_dir_path" || exit 1
-    case "$ext" in
-      (.exe)
-        mv "$out_file_path" "$cmd_path"
-        cd "$saved_pwd" || exit 1
-        ;;
-      (.tar.gz)
-        tar -xf "$out_file_path" >&2
-        cd "$saved_pwd" || exit 1
-        mv "$work_dir_path"/mise/bin/mise "$cmd_path"
-        chmod +x "$cmd_path"
-        ;;
-      (*) exit 1;;
-    esac
+    local url="https://github.com/jdx/mise/releases/download/v$mise_ver_e8ccfbb/mise-v$mise_ver_e8ccfbb-$os-$arch$exe_ext"
+    echo "Downloading $url" >&2
+    curl --fail --location "$url" --output "$cmd_path" || exit 1
+    chmod +x "$cmd_path"
   fi
   export MISE_ACTIVATE_AGGRESSIVE=true
-  if "$command_9934d8a"
+  if "$should_exec_9bf84a8"
   then
-    rm -fr "$TEMP_DIR"
     exec "$cmd_path" "$@"
   fi
   command "$cmd_path" "$@"
 }
 
 case "${0##*/}" in
-  (mise)
+  (mise|mise.sh)
     set -o nounset -o errexit
-    TEMP_DIR="$(mktemp -d)"
-    command_9934d8a=true
-    trap 'rm -fr "$TEMP_DIR"' EXIT
+    should_exec_9bf84a8=true
     mise "$@"
     ;;
 esac
