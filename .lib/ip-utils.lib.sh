@@ -49,10 +49,10 @@ ip_free_ports() {
   local port="$1"
   local end="$2"
   local priv_ports_path="$TEMP_DIR"/f5c41b5
-  seq "$port" "$end" >"$priv_ports_path"
+  seq "$port" "$end" | sort >"$priv_ports_path"
   local used_ports_path="$TEMP_DIR"/6157e29
-  ip_ports_in_use >"$used_ports_path"
-  comm -23 "$priv_ports_path" "$used_ports_path"
+  ip_ports_in_use | sort >"$used_ports_path"
+  comm -23 "$priv_ports_path" "$used_ports_path" | sort -n
 }
 
 ip_random_free_port() {

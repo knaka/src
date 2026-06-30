@@ -164,7 +164,7 @@ is_mise() {
 }
 
 is_linux() {
-  test -d /proc -o -d /sys
+  test '(' -d /proc -o -d /sys ')' -a ! -d c:/
 }
 
 is_macos() {
@@ -172,7 +172,7 @@ is_macos() {
 }
 
 is_windows() {
-  test -d "c:/" -a ! -d /proc
+  test -d c:/
 }
 
 # Executable file extension.
@@ -749,7 +749,7 @@ browse() {
     open "$1"
   elif is_windows
   then
-    PowerShell -Command "Start-Process '$1'"
+    PowerShell -NoProfile -Command "Start-Process '$1'"
   else
     echo "Unsupported OS: $(uname -s)" >&2
     exit 1

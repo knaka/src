@@ -12,7 +12,7 @@ gc() {
   then
     # `Get-Clipboard` appends a trailing newline. I do not know why, — What is the easiest way to remove 1st and last line from file with awk? - Stack Overflow https://stackoverflow.com/questions/15856733/what-is-the-easiest-way-to-remove-1st-and-last-line-from-file-with-awk
     # shellcheck disable=SC2016
-    pwsh.exe -NoProfile -command '(Get-Clipboard -Raw).TrimEnd("`r`n")'
+    pwsh.exe -NoProfile -command '(Get-Clipboard -Raw).TrimEnd("`r`n")' | tr -d '\r'
   elif command -v pbpaste > /dev/null 2>&1 # macOS
   then
     pbpaste

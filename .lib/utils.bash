@@ -65,7 +65,7 @@ stop_worker() {
   local wid
   for wid in "$@"
   do
-    kill -TERM "$wid"
+    kill -TERM "$wid" || :
   done
   sleep 0.1
   for wid in "$@"
