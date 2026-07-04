@@ -122,6 +122,25 @@ finalize() {
 # ==========================================================================
 #region Utilities
 
+# Unit separator (US), Information Separator One (0x1F)
+# shellcheck disable=SC2034
+readonly ch_us=""
+# shellcheck disable=SC2034
+readonly us="$ch_us"
+# shellcheck disable=SC2034
+readonly ch_is="$ch_us"
+# shellcheck disable=SC2034
+readonly ch_is1="$ch_us"
+
+# shellcheck disable=SC2034
+readonly ch_lf="
+"
+# shellcheck disable=SC2034
+readonly newline_char="$ch_lf"
+
+# shellcheck disable=SC2034
+readonly tab_char="	"
+
 # Guard against multiple calls. $1 is a unique ID
 first_call() {
   eval "\${called_$1-false}" && return 1
@@ -346,25 +365,6 @@ invoke() {
 
 # ==========================================================================
 #region Misc
-
-# Unit separator (US), Information Separator One (0x1F)
-# shellcheck disable=SC2034
-readonly ch_us=""
-# shellcheck disable=SC2034
-readonly us="$ch_us"
-# shellcheck disable=SC2034
-readonly ch_is="$ch_us"
-# shellcheck disable=SC2034
-readonly ch_is1="$ch_us"
-
-# shellcheck disable=SC2034
-readonly ch_lf="
-"
-# shellcheck disable=SC2034
-readonly newline_char="$ch_lf"
-
-# shellcheck disable=SC2034
-readonly tab_char="	"
 
 # Canonicalize path
 canon_path() {

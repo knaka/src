@@ -8,7 +8,7 @@ pushd "${BASH_SOURCE[0]%/*}" >/dev/null 2>&1 || pushd . >/dev/null
 . ./.lib/utils.bash
 popd >/dev/null || exit 1
 
-git_lgrep() {
+git_search() {
   local all_opt=""
   local i_opt=""
   OPTIND=1; while getopts _i-: OPT
@@ -66,5 +66,5 @@ git_lgrep() {
 if test "$0" = "${BASH_SOURCE[0]}"
 then
   set -o nounset -o errexit -o pipefail
-  git_lgrep "$@"
+  git_search "$@"
 fi
