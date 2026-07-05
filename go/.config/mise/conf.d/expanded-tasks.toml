@@ -43,7 +43,7 @@ task_depbuild "$@"
 '''
 
 [tasks."build"]
-description='''DEPREATED'''
+description='''Build'''
 run='''
 #!/usr/bin/env sh
 # .mise/tasks-project.sh:task_build

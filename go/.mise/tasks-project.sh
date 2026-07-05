@@ -60,7 +60,7 @@ task_depbuild() {
   pop_dir
 }
 
-# DEPREATED
+# Build
 task_build() {
   task_depbuild "$@"
 }
@@ -77,10 +77,10 @@ EOF
 gen_unixy_shim_3b0072c() { cat <<EOF
 #!/usr/bin/env sh
 saved_pwd="\$PWD"
-cd "$PWD"
+cd "$PWD" || exit 1
 ./task "$task" "$name"
-cd "\$saved_pwd"
-exec $PWD/build/$name "\$@"
+cd "\$saved_pwd" || exit 1
+exec "$PWD"/build/$name "\$@"
 EOF
 }
 
@@ -106,7 +106,8 @@ task_install() {
     target_shim_path="$go_shim_dir_path/$name"
     if is_windows
     then
-      local pwd_backslash="$(echo "$PWD" | sed 's|/|\\|g')"
+      local pwd_backslash
+      pwd_backslash="$(echo "$PWD" | sed 's|/|\\|g')"
       go_build_dir_path_backslash=$(echo "$(realpath .)"/build | sed 's|/|\\|g')
       gen_win_shim_0d8d45c >"$target_shim_path".cmd
     else
