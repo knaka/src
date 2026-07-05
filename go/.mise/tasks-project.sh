@@ -86,7 +86,7 @@ EOF
 
 # Install Go tools.
 task_install() {
-  local task="./.mise/tasks-project.sh:task_depbuild"
+  local task="tasks-project.sh:task_depbuild"
   local go_shim_dir_path="$HOME"/go-bin
   mkdir -p "$go_shim_dir_path"
   rm -f "$go_shim_dir_path"/*
