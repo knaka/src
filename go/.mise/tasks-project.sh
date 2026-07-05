@@ -117,6 +117,11 @@ task_install() {
   done
 }
 
+# Go foo
+task_go__foo() {
+  echo 5029f61
+}
+
 case "${0##*/}" in
   (tasks-*)
     set -o nounset -o errexit
