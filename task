@@ -34,6 +34,7 @@ task() {
   shift $((OPTIND-1))
 
   test $# = 0 && exec "$_APPDIR"/mise tasks
+  test -n "$mise_env" && export MISE_ENV="$mise_env"
   case "$1" in
     (*.sh:*|*.bash:*)
       # "file_name:function_name"
