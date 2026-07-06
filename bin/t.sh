@@ -21,38 +21,49 @@ run_mise() {
   fi
 }
 
+is_mise_project_dir() {
+  local dir=.
+  test $# -gt 0 && dir="$1"
+  # Configuration | mise-en-place https://mise.jdx.dev/configuration.html
+    test -r "$dir"/mise.local.toml \
+  || test -r "$dir"/mise.toml \
+  || test -r "$dir"/mise/config.toml \
+  || test -r "$dir"/.mise/config.toml \
+  || test -r "$dir"/.config/mise.toml \
+  || test -r "$dir"/.config/mise/config.toml \
+  || test -d "$dir"/.config/mise/conf.d \
+  #nop
+}
+
 t() {
   if is_windows
   then
     # Marker
     export executed_thru_t_bb789ec=true
   fi
-  local dir="$PWD"
-  if test -x task
-  then
-    exec sh ./task "$@"
-  fi
+  local original_pwd="$PWD"
   while :
   do
-    if is_root_dir "$dir"
+    if is_mise_project_dir
     then
-      echo "Reached to root directory." >&2
+      if test -x ./task
+      then
+        cmd="$PWD"/task
+        cd "$original_pwd" || return 1
+        "$cmd" "$@"
+        return $?
+      else
+        cd "$original_pwd" || return 1
+        mise run "$@"
+        return $?
+      fi
+    fi
+    cd ..
+    if test "$PWD" = "$OLDPWD"
+    then
+      echo Reached to the root. >&2
       return 1
     fi
-    if test -r "$dir"/mise.toml
-    then
-      run_mise "$@"
-      return
-    elif ! is_windows && test -f "$dir"/task && test -x "$dir"/task
-    then
-      "$dir"/task "$@"
-      return
-    elif is_windows && test -r "$dir"/task.cmd
-    then
-      "$dir"/task.cmd "$@"
-      return
-    fi
-    dir="$dir"/..
   done
 }
 

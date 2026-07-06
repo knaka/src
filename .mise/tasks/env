@@ -17,10 +17,12 @@ env() {
     echo "On Windows." >&2
   fi
   command set
+  pwd
+  echo "$MISE_ORIGINAL_CWD"
 }
 
-case "${0##*/}" in
-  (env.sh|env)
+case ",${0##*/},${0##*\\}," in
+  (*,env,*)
     set -o nounset -o errexit
     env "$@"
     ;;
