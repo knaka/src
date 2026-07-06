@@ -15,6 +15,7 @@ cd "$1" || exit 1; shift 2
 test_47fd512() {
   cd "$PROJECT_DIR/.lib-test" || exit 1
   run_tests "$@"
+  bash ./test.bash
 }
 
 case "${0##*/}" in
