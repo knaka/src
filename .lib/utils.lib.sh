@@ -183,6 +183,7 @@ is_mise() {
 }
 
 is_linux() {
+  # MSYS2 has /proc dir.
   test -d /sys -a -f /etc/os-release
 }
 
