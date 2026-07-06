@@ -22,7 +22,7 @@ _canon_arg0() {
   done
 }
 
-case ",${0##*/},${##*\\}," in
+case ",${0##*/},${0##*\\}," in
   (*,_canon_arg0.sh,*|*,_canon_arg0,*)
     set -o nounset -o errexit
     _canon_arg0 "$@"
