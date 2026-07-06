@@ -2,7 +2,6 @@
 # Releases · msys2/msys2-installer https://github.com/msys2/msys2-installer/releases
 msys2_version = "2026-06-11"
 
-# Releases · msys2/msys2-installer https://github.com/msys2/msys2-installer/releases
 [tools."http:msys2"]
 os = ["windows"]
 version = "{{ vars.msys2_version }}"
