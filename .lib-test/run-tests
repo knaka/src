@@ -120,10 +120,12 @@ run_tests() {
     fi
   done
 
+  local opt=
+  "$should_run_fulltest_80e79eb" && opt=--full
   if "$all" || test -n "$tests_to_run"
   then
     # shellcheck disable=SC2086
-    if ! bash ./run-tests.bash $tests_to_run
+    if ! bash ./run-tests.bash $opt $tests_to_run
     then
       some_failed=true
     fi

@@ -15,6 +15,16 @@ pushd "${BASH_SOURCE[0]%/*}" >/dev/null 2>&1 || pushd . >/dev/null
 popd >/dev/null || exit 1
 
 run_tests() {
+  OPTIND=1; while getopts _-: OPT
+  do
+    test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
+    case "$OPT" in
+      (full) should_run_fulltest_80e79eb=true;;
+      (?) exit 1;;
+      (*) echo "$0: illegal option -- $OPT" >&2; exit 1;;
+    esac
+  done
+
   local RED=""
   local GREEN=""
   local YELLOW=""

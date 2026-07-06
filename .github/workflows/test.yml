@@ -40,7 +40,7 @@ jobs:
       - name: Run Tests
         if: ${{ github.event_name == 'push' }}
         run: mise run test
-      - name: Run All Tests
+      - name: Run Full Tests
         if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' && github.event.schedule == '0 0 * * 6' }}
         run: mise run test --full
   test-windows:
@@ -58,6 +58,6 @@ jobs:
       - name: Run Tests
         if: ${{ github.event_name == 'push' }}
         run: mise run test
-      - name: Run All Tests
+      - name: Run Full Tests
         if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' && github.event.schedule == '0 0 * * 6' }}
         run: mise run test --full
