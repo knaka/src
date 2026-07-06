@@ -89,8 +89,8 @@ yaml2json() {
   fi
 }
 
-case "${0##*/}" in
-  (yaml2json.sh|yaml2json)
+case ",${0##*/},${0##*\\}," in
+  (*,yaml2json.sh,*|*,yaml2json,*)
     set -o nounset -o errexit
     yaml2json "$@"
     ;;

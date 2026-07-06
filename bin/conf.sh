@@ -52,8 +52,8 @@ conf() {
   chezmoi "$@"
 }
 
-case "${0##*/}" in
-  (conf.sh|conf)
+case ",${0##*/},${0##*\\}," in
+  (*,conf.sh,*|*,conf,*)
     set -o nounset -o errexit
     set -- --source="$HOME/repos/github.com/knaka/src/conf/source" "$@"
     set -- --mode="symlink" "$@"
