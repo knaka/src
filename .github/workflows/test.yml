@@ -28,6 +28,7 @@ jobs:
           - macos-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: jdx/mise-action@v4
       - name: Uname
         run: uname -a
       - name: Environment Variables
@@ -36,35 +37,25 @@ jobs:
         run: bash --version
       - name: Run Tests
         if: ${{ github.event_name == 'push' }}
-        run: ./task test
+        run: mise run test
       - name: Run All Tests
         if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' && github.event.schedule == '0 0 * * 6' }}
-        run: ./task test --full
+        run: mise run test --full
   test-windows:
     runs-on: windows-latest
     steps:
       - name: Enable Symlinks
         run: git config --global core.symlinks true
       - uses: actions/checkout@v4
+      - uses: jdx/mise-action@v4
       - name: System Info
         run: systeminfo
       - name: Environment Variables
         run: set
         shell: cmd
-      - name: Cache BusyBox
-        # actions/cache: Cache dependencies and build outputs in GitHub Actions https://github.com/actions/cache
-        uses: actions/cache@v4
-        with:
-          # “Please note that Windows environment variables (like %LocalAppData%) will NOT be expanded by this action. Instead, prefer using ~ in your paths which will expand to the HOME directory.”
-          path: ~\.cache\busybox
-          key: busybox-${{ runner.os }}-${{ hashFiles('task.cmd') }}
-          restore-keys: |
-            busybox-${{ runner.os }}-
-      - name: Load BusyBox
-        run: .\task.cmd nop
       - name: Run Tests
         if: ${{ github.event_name == 'push' }}
-        run: .\task.cmd test
+        run: mise run test
       - name: Run All Tests
         if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' && github.event.schedule == '0 0 * * 6' }}
-        run: .\task.cmd test --full
+        run: mise run test --full
