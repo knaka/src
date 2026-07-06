@@ -122,7 +122,8 @@ run_tests() {
 
   if "$all" || test -n "$tests_to_run"
   then
-    if ! bash ./run-tests.bash "$tests_to_run"
+    # shellcheck disable=SC2086
+    if ! bash ./run-tests.bash $tests_to_run
     then
       some_failed=true
     fi
