@@ -37,7 +37,7 @@ ${func_name}() {
   echo "Function \"${func_name}\" is not implemented yet."
 }
 
-case ",\${0##*/},\${##*\\\\}," in
+case ",\${0##*/},\${0##*\\\\}," in
   (${pattern})
     set -o nounset -o errexit
     ${func_name} "\$@"

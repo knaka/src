@@ -11,7 +11,7 @@ cd "$1" || exit 1; shift
 
 test_abs2rel() {
   local relpath
-  if is_windows
+  if is_bbwin
   then
     relpath="$(abs2rel "$PWD/sh" "$PWD/go")"
     assert_eq "$relpath" "C:../sh"
@@ -32,6 +32,9 @@ test_abs2rel() {
     assert_eq -m "6724104" "C:../.." "$relpath"
     relpath="$(abs2rel C:/Windows/System32 D:/Somewhere/Foo/Bar)"
     assert_eq -m "349094b" "C:/Windows/System32" "$relpath"
+  elif is_msys2
+  then
+    skip
   else
     relpath="$(abs2rel "$PWD/sh" "$PWD/go")"
     assert_eq "$relpath" "../sh"

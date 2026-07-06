@@ -191,8 +191,15 @@ is_macos() {
 }
 
 is_windows() {
-  # Mixed form path works both on MSYS2 and Busybox for Windows.
-  test -d c:/
+  test -d c:\\
+}
+
+is_msys2() {
+  test -d c:\\ && test -d /proc
+}
+
+is_bbwin() {
+  test -d c:\\ && test "${BBGLOBBING+set}" = set
 }
 
 # Executable file extension.

@@ -18,18 +18,20 @@ cd "$1" || exit 1; shift 2
 iso_date_format='%Y-%m-%dT%H:%M:%S%z'
 
 date_iso() {
-  if command -v jq >/dev/null 2>&1
-  then
-    jq -nr 'now | strftime("%FT%T%z")'
-    return
-  elif is_windows
+  # if command -v jq >/dev/null 2>&1
+  # then
+  #   jq -nr 'now | strftime("%FT%T%z")'
+  #   return
+  # fi
+  if is_bbwin
   then
     # -I[SPEC]: Output ISO-8601 date / SPEC=date (default), hours, minutes, seconds or ns
     date -Iseconds
     return
   fi
-  # -j: Do not try to set the date
-  date -j +"$iso_date_format"
+  # # -j: Do not try to set the date
+  # date -j +"$iso_date_format"
+  date +"$iso_date_format"
 }
 
 case "${0##*/}" in

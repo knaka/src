@@ -13,7 +13,7 @@ iso_date_format_utc_590c473='%Y-%m-%dT%H:%M:%SZ'
 # Usage: date_iso
 # Example: date_iso  # => 2024-01-01T12:00:00+0900
 date_iso() {
-  if is_windows
+  if is_bbwin
   then
     # -I[SPEC]: Output ISO-8601 date / SPEC=date (default), hours, minutes, seconds or ns
     date -Iseconds | sed -E -e 's/([[:digit:]]{2}):([[:digit:]]{2})$/\1\2/'
@@ -66,7 +66,7 @@ epoch_to_iso() {
 set_last_mod_iso() {
   local file="$1"
   local time="$2"
-  if is_windows
+  if is_bbwin
   then
     # BusyBox date(1) does not seem to handle "%z". Use PowerShell to do this.
     pwsh.exe -NoProfile -Command "Set-ItemProperty \"$file\" -Name LastWriteTime -Value \"$time\""
@@ -94,7 +94,7 @@ last_mod_iso() {
     # S: String
     # a, m, c, B: Last accessed or modified, or when the inode was last changed, or the birth time of the inode
     stat -f "%Sm" -t "$iso_date_format_590c473" "$1"
-  elif is_windows
+  elif is_bbwin
   then
     local epoch
     epoch="$(stat -c "%Y" "$1")"

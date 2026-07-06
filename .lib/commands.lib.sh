@@ -12,6 +12,16 @@ then
 fi
 cd "$1" || exit 1; shift
 
+jq() {
+  is_windows && set -- --binary "$@"
+  if which jq >/dev/null 2>&1
+  then
+    command jq "$@"
+    return "$?"
+  fi
+  mise_exec jq@latest -- jq "$@"
+}
+
 # Mise tasks do not require this script.
 test "${MISE_CONFIG_ROOT+set}" = set && return 0
 
@@ -37,16 +47,6 @@ mise_exec() {
   export PATH
   shift
   command "$@"
-}
-
-jq() {
-  is_windows && set -- --binary "$@"
-  if which jq >/dev/null 2>&1
-  then
-    command jq "$@"
-    return "$?"
-  fi
-  mise_exec jq@latest -- jq "$@"
 }
 
 caddy() { mise_exec caddy@latest -- caddy "$@"; } 
