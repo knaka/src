@@ -11,10 +11,19 @@ fi
 pushd "${BASH_SOURCE[0]%/*}" >/dev/null 2>&1 || pushd . >/dev/null
 . ./.lib/utils.bash
   init_temp
-. ./.lib/test.bash
+. ./test.lib.sh
 popd >/dev/null || exit 1
 
 run_tests() {
+  OPTIND=1; while getopts _-: OPT
+  do
+    test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
+    case "$OPT" in
+      (?) exit 1;;
+      (*) echo "$0: illegal option -- $OPT" >&2; exit 1;;
+    esac
+  done
+
   local RED=""
   local GREEN=""
   local YELLOW=""
@@ -50,6 +59,11 @@ run_tests() {
   local some_failed=false
   for test_name in $tests
   do
+    if ! LC_ALL=C type "test_$test_name" 2>/dev/null | grep -q -E -e 'function$'
+    then
+      echo "Test not found: $test_name" >&2
+      return 1
+    fi
     local restore_errexit="set +o errexit"
     [[ $- = *e* ]] && restore_errexit="set -o errexit"
     set +o errexit

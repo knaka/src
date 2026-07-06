@@ -10,6 +10,8 @@ cd "$1" || exit 1; shift
 
 # This function is tested, do not inlined.
 embed_minified_sub() {
+  # -u     : force the stdout and stderr streams to be unbuffered;
+  #          this option has no effect on stdin; also PYTHONUNBUFFERED=x
   python -u "$script_902b082" "$1"
 }
 

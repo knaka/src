@@ -191,15 +191,15 @@ is_macos() {
 }
 
 is_windows() {
-  test -d c:\\
+  test -d \\
 }
 
 is_msys2() {
-  test -d c:\\ && test -d /proc
+  test -d \\ && test -d /proc
 }
 
 is_bbwin() {
-  test -d c:\\ && test "${BBGLOBBING+set}" = set
+  test -d \\ && test "${BBGLOBBING+set}" = set
 }
 
 # Executable file extension.

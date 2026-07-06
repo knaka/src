@@ -3,7 +3,6 @@
 "${sourced_65c09fd-false}" && return 0; sourced_65c09fd=true
 
 . ./utils.lib.sh
-. ./test.lib.sh
 . ./_assert.lib.sh
 
 yaml_021812a() {
