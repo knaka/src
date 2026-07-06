@@ -37,7 +37,7 @@ ${func_name}() {
   echo "Function \"${func_name}\" is not implemented yet."
 }
 
-case "\${0##*/}" in
+case ",\${0##*/},\${##*\\\\}," in
   (${pattern})
     set -o nounset -o errexit
     ${func_name} "\$@"
@@ -89,11 +89,11 @@ touchsh() {
   local has_ext
   case "$file_base" in
     (*.sh)
-      pattern="$file_base|${file_base%.sh}"
+      pattern="*,$file_base,*|*,${file_base%.sh},*"
       has_ext=true
       ;;
     (*)
-      pattern="$file_base"
+      pattern="*,$file_base,*"
       has_ext=false
       ;;
   esac
