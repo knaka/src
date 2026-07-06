@@ -18,14 +18,5 @@ test_47fd512() {
   bash ./test.bash
 }
 
-echo 5d326bc "$0" >&2
-
-case "${0##*/}" in
-  (test|test.sh)
-    echo 276276b >&2
-    set -o nounset -o errexit
-    test_47fd512 "$@"
-    ;;
-esac
-
-echo 3bf8595 >&2
+set -o nounset -o errexit
+test_47fd512 "$@"
