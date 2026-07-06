@@ -1,6 +1,13 @@
 # vim: set filetype=bash tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=bash
 
+if test "${BASH_VERSION+set}" != set || test "${POSIXLY_CORRECT+set}" = set
+then
+  echo This test runner is for BASH. >&2
+  # shellcheck disable=SC2317
+  return 0 2>/dev/null || exit 0
+fi
+
 pushd "${BASH_SOURCE[0]%/*}" >/dev/null 2>&1 || pushd . >/dev/null
 . ./.lib/utils.bash
   init_temp

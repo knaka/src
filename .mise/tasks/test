@@ -18,5 +18,9 @@ test_47fd512() {
   bash ./test.bash
 }
 
-set -o nounset -o errexit
-test_47fd512 "$@"
+case ",${0##*/},${##*\\}," in
+  (*,test,*|*,test.sh,*)
+    set -o nounset -o errexit
+    test_47fd512 "$@"
+    ;;
+esac
