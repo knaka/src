@@ -16,6 +16,8 @@ on:
   schedule:
     - cron: '0 0 * * 6'
   workflow_dispatch:
+env:
+  VERBOSE: true
 jobs:
   test-unixy:
     runs-on: ${{ matrix.os }}
@@ -34,10 +36,10 @@ jobs:
         run: bash --version
       - name: Run Tests
         if: ${{ github.event_name == 'push' }}
-        run: ./task --verbose test
+        run: ./task test
       - name: Run All Tests
         if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' && github.event.schedule == '0 0 * * 6' }}
-        run: ./task --verbose test --full
+        run: ./task test --full
   test-windows:
     runs-on: windows-latest
     steps:
@@ -62,7 +64,7 @@ jobs:
         run: .\task.cmd nop
       - name: Run Tests
         if: ${{ github.event_name == 'push' }}
-        run: .\task.cmd --verbose test
+        run: .\task.cmd test
       - name: Run All Tests
         if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' && github.event.schedule == '0 0 * * 6' }}
-        run: .\task.cmd --verbose test --full
+        run: .\task.cmd test --full
