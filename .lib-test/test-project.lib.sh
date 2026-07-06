@@ -34,7 +34,25 @@ test_abs2rel() {
     assert_eq -m "349094b" "C:/Windows/System32" "$relpath"
   elif is_msys2
   then
-    skip
+    relpath="$(abs2rel "$PWD/sh" "$PWD/go")"
+    assert_eq "$relpath" "../sh"
+    relpath="$(abs2rel /c/Windows/System32)"
+    assert_match -m "bf12b50" '^\.\.' "$relpath"
+    assert test -d "$relpath"
+    relpath="$(abs2rel /c/Windows/System32 /c/Windows)"
+    assert_eq "System32" "$relpath"
+    relpath="$(abs2rel /c/Windows /c/Windows/System32)"
+    assert_eq ".." "$relpath"
+    relpath="$(abs2rel /Windows /Windows/System32)"
+    assert_eq ".." "$relpath"
+    relpath="$(abs2rel /Windows/System32 /Windows/System)"
+    assert_eq "../System32" "$relpath"
+    relpath="$(abs2rel /c/Windows/System32 /c/Windows/System32)"
+    assert_eq -m "e057121" "." "$relpath"
+    relpath="$(abs2rel /c/ /c/Windows/System32)"
+    assert_eq -m "6724104" "../.." "$relpath"
+    relpath="$(abs2rel C:/Windows/System32 D:/Somewhere/Foo/Bar)"
+    assert_eq -m "349094b" "C:/Windows/System32" "$relpath"
   else
     relpath="$(abs2rel "$PWD/sh" "$PWD/go")"
     assert_eq "$relpath" "../sh"

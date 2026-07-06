@@ -377,20 +377,12 @@ invoke() {
 # Canonicalize path
 canon_path() {
   local target="$1"
-  target="$(echo "$target" | sed -E -e 's|[/\\]+|/|g')"
-  if test -d "$target"
+  if is_msys2
   then
-    # -P: Handle the operand dot-dot physically
-    (
-      cd -P -- "$target" || exit 1
-      echo "$PWD"
-    )
-  else
-    (
-      cd -P -- "$(dirname -- "$target")" || exit 1
-      printf "%s/%s\n" "$PWD" "$(basename -- "$target")"
-    )
+    realpath "$(cygpath "$target")"
+    return $?
   fi
+  realpath "$target"
 }
 
 # Check if root directory
@@ -473,6 +465,16 @@ strip_escape_sequences() {
 abs2rel() {
   local target="$1"
   shift
+  local source="$PWD"
+  if test "$#" -gt 0
+  then
+    source="$1"
+  fi
+  # if is_msys2
+  # then
+  #   realpath "$target" --relative-to "$source"
+  #   return $?
+  # fi
   local drive=
   if is_windows
   then
@@ -482,11 +484,6 @@ abs2rel() {
         target="${target#*:}"
         ;;
     esac
-  fi
-  local source="$PWD"
-  if test "$#" -gt 0
-  then
-    source="$1"
   fi
   if is_windows
   then
