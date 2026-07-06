@@ -472,6 +472,16 @@ strip_escape_sequences() {
 abs2rel() {
   local target="$1"
   shift
+  local source="$PWD"
+  if test "$#" -gt 0
+  then
+    source="$1"
+  fi
+  # if is_msys2
+  # then
+  #   realpath "$target" --relative-to "$source"
+  #   return $?
+  # fi
   local drive=
   if is_windows
   then
@@ -481,11 +491,6 @@ abs2rel() {
         target="${target#*:}"
         ;;
     esac
-  fi
-  local source="$PWD"
-  if test "$#" -gt 0
-  then
-    source="$1"
   fi
   if is_windows
   then
