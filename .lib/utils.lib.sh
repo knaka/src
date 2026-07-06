@@ -376,20 +376,12 @@ invoke() {
 # Canonicalize path
 canon_path() {
   local target="$1"
-  target="$(echo "$target" | sed -E -e 's|[/\\]+|/|g')"
-  if test -d "$target"
+  if is_msys2
   then
-    # -P: Handle the operand dot-dot physically
-    (
-      cd -P -- "$target" || exit 1
-      echo "$PWD"
-    )
-  else
-    (
-      cd -P -- "$(dirname -- "$target")" || exit 1
-      printf "%s/%s\n" "$PWD" "$(basename -- "$target")"
-    )
+    realpath "$(cygpath "$target")"
+    return $?
   fi
+  realpath "$target"
 }
 
 # Check if root directory
