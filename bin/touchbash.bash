@@ -4,7 +4,7 @@ _loaded() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }
 
 # Generate Bash shell script scaffold.
 
-pushd "${BASH_SOURCE[0]%/*}" >/dev/null 2>&1 || pushd . >/dev/null
+{ pushd "${BASH_SOURCE[0]%/*}" || pushd "${BASH_SOURCE[0]%\\*}" || pushd .; } >/dev/null 2>&1
 . ./.lib/utils.bash
 . ./rand7.bash
 popd >/dev/null || exit 1
@@ -24,7 +24,7 @@ EOF
 }
 
 gen_source_block_67741b4() { cat <<'EOF'
-# pushd "${BASH_SOURCE[0]%/*}" >/dev/null 2>&1 || pushd . >/dev/null
+# { pushd "${BASH_SOURCE[0]%/*}" || pushd "${BASH_SOURCE[0]%\\*}" || pushd .; } >/dev/null 2>&1
 # . ./.lib/utils.bash
 # popd >/dev/null || exit 1
 EOF

@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-"${sourced_9913f0e-false}" && return 0; sourced_9913f0e=true
+_() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ b1dae46 && return 0
 
 set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test "$2" != "$0"; then _APPDIR="$2"; fi; cd "$_APPDIR" || exit 1; fi
 set -- _LIBDIR .lib "$@"
@@ -10,37 +10,29 @@ set -- _LIBDIR .lib "$@"
 shift 2
 cd "$1" || exit 1; shift 2
 
-run_mise() {
-  if test $# = 0
-  then
-    mise tasks
-  else
-    local subcmd="$1"
-    shift
-    mise run "$subcmd" "$@"
-  fi
-}
-
 is_mise_project_dir() {
   local dir=.
   test $# -gt 0 && dir="$1"
-  # Configuration | mise-en-place https://mise.jdx.dev/configuration.html
-    test -r "$dir"/mise.local.toml \
+  # 6 files, 1 dir // Configuration | mise-en-place https://mise.jdx.dev/configuration.html
+  # 5 dirs // File Tasks | mise-en-place https://mise.jdx.dev/tasks/file-tasks.html
+     test -r "$dir"/mise.local.toml \
   || test -r "$dir"/mise.toml \
   || test -r "$dir"/mise/config.toml \
   || test -r "$dir"/.mise/config.toml \
   || test -r "$dir"/.config/mise.toml \
   || test -r "$dir"/.config/mise/config.toml \
   || test -d "$dir"/.config/mise/conf.d \
+  || test -d "$dir"/mise-tasks \
+  || test -d "$dir"/mise/tasks \
+  || test -d "$dir"/.mise-tasks \
+  || test -d "$dir"/.mise/tasks \
+  || test -d "$dir"/.config/mise/tasks \
   #nop
 }
 
 t() {
-  if is_windows
-  then
-    # Marker
-    export executed_thru_t_bb789ec=true
-  fi
+  # Marker
+  is_windows && export executed_thru_t_bb789ec=true
   local original_pwd="$PWD"
   while :
   do
@@ -48,27 +40,36 @@ t() {
     then
       if test -x ./task
       then
-        cmd="$PWD"/task
-        cd "$original_pwd" || return 1
-        "$cmd" "$@"
-        return $?
+        set -- "$PWD"/task "$@"
       else
-        cd "$original_pwd" || return 1
-        mise run "$@"
-        return $?
+        if test $# -gt 0
+        then
+          set -- run "$@"
+        else
+          set -- tasks
+        fi
+        if test -x ./mise
+        then
+          set -- "$PWD"/mise "$@"
+        else
+          set -- mise "$@"
+        fi
       fi
+      cd "$original_pwd" || return 1
+      exec "$@"
+      return $?
     fi
     cd ..
     if test "$PWD" = "$OLDPWD"
     then
-      echo Reached to the root. >&2
+      echo Reached to the root dir. >&2
       return 1
     fi
   done
 }
 
-case "${0##*/}" in
-  (t.sh|t)
+case ",${0##*/},${0##*\\}," in
+  (*,t.sh,*|*,t,*)
     set -o nounset -o errexit
     t "$@"
     ;;

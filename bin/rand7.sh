@@ -1,12 +1,13 @@
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-"${sourced_7326780-false}" && return 0; sourced_7326780=true
+_() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ c97d42e && return 0
 
-set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test "$2" != "$0"; then _APPDIR="$2"; fi; cd "$_APPDIR" || exit 1; fi
+test "${_APPDIR+set}" = set || { cd "${0%/*}" || cd "${0%\\*}" || cd . || exit 1; _APPDIR="$PWD"; cd "$OLDPWD" || exit 1; } 2>/dev/null
+if test "${1:+$1}" = _LIBDIR; then cd "$2" || exit 1; else cd "$_APPDIR" || exit 1; fi; set -- "$OLDPWD" "$@"
 set -- _LIBDIR .lib "$@"
 . ./.lib/utils.lib.sh
 shift 2
-cd "$1" || exit 1; shift 2
+cd "$1" || exit 1; shift
 
 # Generates a random 7-digit hexadecimal number
 rand7() {
@@ -29,9 +30,9 @@ rand7() {
   awk -v seed="$seed" 'BEGIN { srand(seed); printf "%07x\n", int(rand() * 268435456) }'
 }
 
-case "${0##*/}" in
-  (rand7.sh|rand7)
-    set -o nounset -o errexit
-    rand7 "$@"
-    ;;
-esac
+_() { test "${0##*/}" = "$1" -o "${0##*\\}" = "$1" -o "${0##*/}" = "$1.sh" -o "${0##*\\}" = "$1.sh"; }
+if _ rand7
+then
+  set -o nounset -o errexit
+  rand7 "$@"
+fi

@@ -38,9 +38,22 @@ date_iso() {
   date +"$iso_date_format"
 }
 
-case "${0##*/}" in
-  (date-iso|date-iso.sh|date-rfc3339|date-rfc3339.sh)
-    set -o nounset -o errexit
-    date_iso "$@"
-    ;;
-esac
+_() {
+  local x="$1"
+  shift
+  x="${x##*/}"
+  x="${x##*\\}"
+  IFS=,
+  case ",$*," in
+    (*,"${x%.sh}",*)
+      return 0
+      ;;
+  esac
+  return 1
+}
+
+if _ "$0" date-rfc3339 date-iso
+then
+  set -o nounset -o errexit
+  date_iso "$@"
+fi

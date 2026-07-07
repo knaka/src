@@ -2,7 +2,7 @@
 # shellcheck shell=bash
 "${sourced_f967886-false}" && return 0; sourced_f967886=true
 
-pushd "${BASH_SOURCE[0]%/*}" >/dev/null 2>&1 || pushd . >/dev/null
+{ pushd "${BASH_SOURCE[0]%/*}" || pushd "${BASH_SOURCE[0]%\\*}" || pushd .; } >/dev/null 2>&1
 . ./.lib/utils.bash
 popd >/dev/null || exit 1
 

@@ -1,6 +1,6 @@
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-"${sourced_14437a3-false}" && return 0; sourced_14437a3=true
+_() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ 9d04520 && return 0
 
 # libsync - Library synchronization tool
 #
@@ -17,13 +17,14 @@
 #   libsync remove-path <name> <path>...    Remove paths from a library (config only)
 #   libsync list                            List all registered libraries
 
-set -- "$PWD" "${0%/*}" "$@"; test -z "${_APPDIR-}" && { test "$2" = "$0" && _APPDIR=. || _APPDIR="$2"; cd "$_APPDIR" || exit 1; }
+test "${_APPDIR+set}" = set || { cd "${0%/*}" || cd "${0%\\*}" || cd . || exit 1; _APPDIR="$PWD"; cd "$OLDPWD" || exit 1; } 2>/dev/null
+if test "${1:+$1}" = _LIBDIR; then cd "$2" || exit 1; else cd "$_APPDIR" || exit 1; fi; set -- "$OLDPWD" "$@"
 set -- _LIBDIR .lib "$@"
 . ./.lib/utils.lib.sh
 . ./.lib/time.lib.sh
 . ./.lib/commands.lib.sh
 shift 2
-cd "$1" || exit 1; shift 2
+cd "$1" || exit 1; shift
 
 CONFIG_FILE=".libsync.json"
 
@@ -311,27 +312,38 @@ cmd_list() {
   jq -r '.libraries[]? | "\(.name) (\(.commit[0:7])) -> \(.dest)"' "$CONFIG_FILE"
 }
 
+help_9a49745() {
+  echo "Usage: libsync {add|pull|diff|add-path|remove-path|list}"
+}
+
+ensure_config() {
+  test -f "$CONFIG_FILE" || jq -n '{}' >"$CONFIG_FILE"
+}
+
 libsync() {
   register_temp_cleanup
-  if ! test -f "$CONFIG_FILE"
-  then
-    jq -n '{}' >"$CONFIG_FILE"
-  fi
-  test $# = 0 && set -- -
+  
   case "$1" in
-    (add|clone) shift; cmd_clone "$@";;
-    (update|pull) shift; cmd_clone --pull "$@";;
-    (diff) shift; cmd_diff "$@";;
-    (add-path) shift; cmd_add_path "$@";;
-    (remove-path) shift; cmd_remove_path "$@";;
-    (list) cmd_list;;
-    (*) echo "Usage: libsync {add|pull|diff|add-path|remove-path|list}" ;;
+    (add|clone) shift; ensure_config; cmd_clone "$@";;
+    (update|pull) shift; ensure_config; cmd_clone --pull "$@";;
+    (diff) shift; ensure_config; cmd_diff "$@";;
+    (add-path) shift; ensure_config; cmd_add_path "$@";;
+    (remove-path) shift; ensure_config; cmd_remove_path "$@";;
+    (list) shift; ensure_config; cmd_list;;
+    (help)
+      help_9a49745
+      return 0
+      ;;
+    (*)
+      help_9a49745
+      return 1
+      ;;
   esac
 }
 
-case "${0##*/}" in
-  (libsync.sh|libsync)
+_() { test "${0##*/}" = "$1" -o "${0##*\\}" = "$1" -o "${0##*/}" = "$1.sh" -o "${0##*\\}" = "$1.sh"; }
+if _ libsync
+then
   set -o nounset -o errexit
   libsync "$@"
-  ;;
-esac
+fi

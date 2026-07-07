@@ -19,7 +19,7 @@ jq() {
     command jq "$@"
     return "$?"
   fi
-  mise_exec jq@latest -- jq "$@"
+  mise exec jq@latest -- jq "$@"
 }
 
 # Mise tasks do not require this script.
@@ -33,17 +33,18 @@ mise_exec() {
     mise exec "$@"
     return "$?"
   fi
-  # push_dir "$_APPDIR"
-  # while test "$1" != "--"
-  # do
-  #   if ! mise where "$1" >/dev/null 2>&1
-  #   then
-  #     mise install "$1"
-  #   fi
-  #   PATH="$(mise bin-paths "$1"):$PATH"
-  #   shift
-  # done
-  # pop_dir
+  # Not to re-enter.
+  push_dir "$_APPDIR"
+  while test "$1" != "--"
+  do
+    if ! mise where "$1" >/dev/null 2>&1
+    then
+      mise install "$1"
+    fi
+    PATH="$(mise bin-paths "$1"):$PATH"
+    shift
+  done
+  pop_dir
   export PATH
   shift
   command "$@"

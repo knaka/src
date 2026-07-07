@@ -25,10 +25,12 @@ EOF
 }
 
 gen_source_block_8d319a6() { cat <<'EOF'
-set -- "$PWD" "${0%/*}" "$@"; test -z "${_APPDIR-}" && { test "$2" = "$0" && _APPDIR=. || _APPDIR="$2"; cd "$_APPDIR" || exit 1; }
-set -- _LIBDIR .lib "$@"
-shift 2
-cd "$1" || exit 1; shift 2
+# test "${_APPDIR+set}" = set || { cd "${0%/*}" || cd "${0%\\*}" || cd . || exit 1; _APPDIR="$PWD"; cd "$OLDPWD" || exit 1; } 2>/dev/null
+# if test "${1:+$1}" = _LIBDIR; then cd "$2" || exit 1; else cd "$_APPDIR" || exit 1; fi; set -- "$OLDPWD" "$@"
+# set -- _LIBDIR .lib "$@"
+# . ./.lib/utils.lib.sh
+# shift 2
+# cd "$1" || exit 1; shift
 EOF
 }
 
@@ -37,12 +39,12 @@ ${func_name}() {
   echo "Function \"${func_name}\" is not implemented yet."
 }
 
-case ",\${0##*/},\${0##*\\\\}," in
-  (${pattern})
-    set -o nounset -o errexit
-    ${func_name} "\$@"
-    ;;
-esac
+_() { test "\${0##*/}" = "\$1" -o "\${0##*\\\\}" = "\$1" -o "\${0##*/}" = "\$1.sh" -o "\${0##*\\\\}" = "\$1.sh"; }
+if _ ${func_name}
+then
+  set -o nounset -o errexit
+  ${func_name} "\$@"
+fi
 EOF
 }
 
@@ -122,7 +124,8 @@ touchsh() {
     echo
     if "$is_lib"
     then
-      gen_lib_source_block_bba821b
+      # gen_lib_source_block_bba821b
+      gen_sou
       echo
     elif "$is_tasks"
     then

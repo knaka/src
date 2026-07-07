@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# vim: set filetype=bash tabstop=2 shiftwidth=2 expandtab :
+# shellcheck shell=bash
+_() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ fe5d974 && return 0
+
+{ pushd "${BASH_SOURCE[0]%/*}" || pushd "${BASH_SOURCE[0]%\\*}" || pushd .; } >/dev/null 2>&1
+. ./bin/rand7.bash
+popd >/dev/null || exit 1
+
+test_bash() {
+  rand7 "$@"
+}
+
+if test "$0" = "${BASH_SOURCE[0]}"
+then
+  set -o nounset -o errexit -o pipefail
+  test_bash "$@"
+fi
