@@ -2,7 +2,7 @@
 # shellcheck shell=bash
 _() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ b0cdf45 && return 0
 
-pushd "${BASH_SOURCE[0]%/*}" >/dev/null 2>&1 || pushd . >/dev/null
+{ pushd "${BASH_SOURCE[0]%/*}" || pushd "${BASH_SOURCE[0]%\\*}" || pushd .; } >/dev/null 2>&1
 . ./utils.lib.sh
 popd >/dev/null || exit 1
 
@@ -16,13 +16,13 @@ run_worker() {
   base="$(echo "$*" | sed -Ee 's/[^[:alnum:]]/_/g')"
   log_file="$(mktemp "$worker_queue_dir_24f4ecb"/"$base.log.XXXXX")"
   touch "$log_file"
-  local restore_m=false
-  [[ $- != *m* ]] && restore_m=true
-  set -m
+  local disable_monitor=false
+  [[ $- != *m* ]] && set -m && disable_monitor=true
   "$@" </dev/null >"$log_file" 2>&1 &
   local pid="$!"
+  # `disown` is Bash specific.
   disown %+
-  "$restore_m" && set +m
+  "$disable_monitor" && set +m
   echo "$pid" >>"$worker_queue_dir_24f4ecb"/wids
   echo "$pid"
   echo "$log_file" >"$worker_queue_dir_24f4ecb"/"log-file.$pid"

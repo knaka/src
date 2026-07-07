@@ -6,7 +6,9 @@ _loaded() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }
 
 { pushd "${BASH_SOURCE[0]%/*}" || pushd "${BASH_SOURCE[0]%\\*}" || pushd .; } >/dev/null 2>&1
 . ./.lib/utils.bash
-. ./rand7.bash
+set -- _LIBDIR . "$@"
+. ./rand7.sh
+shift 2
 popd >/dev/null || exit 1
 
 # gen_header_bf7ac7d() { cat <<EOF
