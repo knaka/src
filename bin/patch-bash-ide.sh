@@ -12,7 +12,7 @@ cd "$1" || exit 1; shift 2
 patch_bash_ide() {
   local user_exts_dir="$HOME/.vscode/extensions"
   local bash_ide_ext_dir
-  local bash_ide_ext_dir="$(
+  bash_ide_ext_dir="$(
     find "$user_exts_dir" -maxdepth 1 -name "mads-hartmann.bash-ide-vscode-*" \
     | sort_version -r \
     | head -1

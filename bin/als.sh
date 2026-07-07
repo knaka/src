@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 set -o nounset -o errexit
 
-test $# -eq 0 || exit 1
+test $# -gt 0 || exit 1
 
 finalize() {
   if test "${tmpdir+SET}" = SET
@@ -38,7 +38,7 @@ case "$file" in
   ( *.lzh | *.Lzh | *.LZH ) lha l "%s" ;;
   ( *.msi | *.7z ) 7z l "$file" ;;
   ( *.rar ) unrar l "$file" ;;
-  ( *.txz | *.tar.xz ) tar Jtvf "$file" ;;
+  (*.txz|*.tar.xz) tar Jtvf "$file" ;;
   ( *.phar ) alsphar "$file" ;;
   ( * )
     echo Not supported: "$file"

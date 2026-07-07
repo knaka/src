@@ -321,8 +321,7 @@ ensure_config() {
 }
 
 libsync() {
-  register_temp_cleanup
-  
+  init_temp
   case "$1" in
     (add|clone) shift; ensure_config; cmd_clone "$@";;
     (update|pull) shift; ensure_config; cmd_clone --pull "$@";;

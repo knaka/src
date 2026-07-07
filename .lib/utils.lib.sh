@@ -184,11 +184,14 @@ is_mise() {
 
 is_linux() {
   # MSYS2 has /proc dir.
-  test -d /sys -a -f /etc/os-release
+  test -d /proc -a -d /sys/kernel
+  # test -r /proc/sys/kernel/ostype \
+  #   && read -r os </proc/sys/kernel/ostype \
+  #   && test "$os" = Linux
 }
 
 is_macos() {
-  test -r /System/Library/CoreServices/SystemVersion.plist
+  test -f /System/Library/CoreServices/SystemVersion.plist
 }
 
 is_windows() {
