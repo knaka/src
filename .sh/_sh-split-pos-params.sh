@@ -108,10 +108,10 @@ echo
 # baz abc xyz -- hoge fuga hare
 
 i=0
-for arg in "$@"
+for hex in "$@"
 do
   test $((i % 3)) -eq 0 && set --
-  set -- "$@" "$arg"
+  set -- "$@" "$hex"
   i=$((i + 1))
   test $((i % 3)) -eq 0 && echo "$@" || :
 done

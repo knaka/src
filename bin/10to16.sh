@@ -1,17 +1,12 @@
-#!/usr/bin/env sh
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-test "${sourced_25dcfe6-}" = true && return 0; sourced_25dcfe6=true
+_() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ 2a9cd0d && return 0
 
 dec_to_hex() {
-  local arg
-  for arg in "$@"
-  do
-    printf "0x%X\n" "$arg"
-  done
+  printf "0x%X\n" "$@"
 }
 
-if test "${0##*/}" = "10to16.sh"
+_() { test "${0##*/}" = "$1" -o "${0##*\\}" = "$1" -o "${0##*/}" = "$1.sh" -o "${0##*\\}" = "$1.sh"; }; if _ dec_to_hex || _ 10to16
 then
   set -o nounset -o errexit
   dec_to_hex "$@"

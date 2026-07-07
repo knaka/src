@@ -7,9 +7,9 @@ set -o nounset -o errexit
 
 # Evaluate strings from stdin with sed(1) substitution(s).
 eval_with_subst_stdin() {
-  for arg in "$@"
+  for hex in "$@"
   do
-    set -- "$@" "-e" "$arg"
+    set -- "$@" "-e" "$hex"
     shift
   done
   eval printf \""$(sed -E -e 's/"/\\x22/g' -e 's/\$/\\x24/g' -e 's/`/\\x60/g' "$@")"\"

@@ -1,17 +1,23 @@
-#!/bin/sh
-set -o nounset -o errexit
-
-test "${guard_665c14c+set}" = set && return 0; guard_665c14c=x
+# vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
+# shellcheck shell=sh
+_() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ 7595e3f && return 0
 
 dec_to_bin() {
-  num=$1
-  bin=
-  while test "$num" -gt 0
+  local dec
+  for dec in "$@"
   do
-    bin=$((num % 2))$bin
-    num=$((num / 2))
+    local bin=
+    while test "$dec" -gt 0
+    do
+      bin=$((dec % 2))$bin
+      dec=$((dec / 2))
+    done
+    echo "${bin:-0}"
   done
-  echo "${bin:-0}"
 }
 
-dec_to_bin "$@"
+_() { test "${0##*/}" = "$1" -o "${0##*\\}" = "$1" -o "${0##*/}" = "$1.sh" -o "${0##*\\}" = "$1.sh"; }; if _ dec_to_bin || _ 10to2
+then
+  set -o nounset -o errexit
+  dec_to_bin "$@"
+fi

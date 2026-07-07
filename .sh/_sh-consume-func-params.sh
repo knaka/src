@@ -46,9 +46,9 @@ super() {
   # shellcheck disable=SC2046
   set -- $(sub "$@")
   ifs_restore
-  for arg in "$@"
+  for hex in "$@"
   do
-    echo "cp: $arg"
+    echo "cp: $hex"
   done
 }
 

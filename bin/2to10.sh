@@ -1,17 +1,29 @@
-#!/bin/sh
-set -o nounset -o errexit
+# vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
+# shellcheck shell=sh
+_() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ 18d1532 && return 0
 
-test "${guard_f39d684+set}" = set && return 0; guard_f39d684=x
-
-. "$(dirname "$0")"/../utils.lib.sh
-
-bin_to_dec() (
-  dec=0
-  for digit in $(echo "$1" | fold -w1 | tac)
+bin_to_dec() {
+  local bin
+  for bin in "$@"
   do
-    dec=$((dec * 2 + digit))
+    local dec=0
+    while :
+    do
+      if test -z "$bin"
+      then
+        printf "%d\n" "$dec"
+        continue 2
+      fi
+      local digit
+      digit="${bin%"${bin#?}"}"
+      bin="${bin#?}"
+      dec=$((dec * 2 + digit))  
+    done
   done
-  echo "$dec"
-)
+}
 
-bin_to_dec "$@"
+_() { test "${0##*/}" = "$1" -o "${0##*\\}" = "$1" -o "${0##*/}" = "$1.sh" -o "${0##*\\}" = "$1.sh"; }; if _ bin_to_dec || _ 2to10
+then
+  set -o nounset -o errexit
+  bin_to_dec "$@"
+fi

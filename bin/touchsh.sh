@@ -1,8 +1,8 @@
 # vim: set filetype=sh :
 # shellcheck shell=sh
-"${sourced_10bd1b4-false}" && return 0; sourced_10bd1b4=true
+_() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ cb103e0 && return 0
 
-# Generate shell scriipt scaffold.
+# Generate Bourne shell script scaffold.
 
 set -- "$PWD" "${0%/*}" "$@"; test -z "${_APPDIR-}" && { test "$2" = "$0" && _APPDIR=. || _APPDIR="$2"; cd "$_APPDIR" || exit 1; }
 set -- _LIBDIR .lib "$@"
@@ -39,8 +39,7 @@ ${func_name}() {
   echo "Function \"${func_name}\" is not implemented yet."
 }
 
-_() { test "\${0##*/}" = "\$1" -o "\${0##*\\\\}" = "\$1" -o "\${0##*/}" = "\$1.sh" -o "\${0##*\\\\}" = "\$1.sh"; }
-if _ ${func_name}
+_() { test "\${0##*/}" = "\$1" -o "\${0##*\\\\}" = "\$1" -o "\${0##*/}" = "\$1.sh" -o "\${0##*\\\\}" = "\$1.sh"; }; if _ ${func_name}
 then
   set -o nounset -o errexit
   ${func_name} "\$@"
@@ -150,9 +149,8 @@ touchsh() {
   fi
 }
 
-case "${0##*/}" in
-  (touchsh|touchsh.sh)
-    set -o nounset -o errexit
-    touchsh "$@"
-    ;;
-esac
+_() { test "${0##*/}" = "$1" -o "${0##*\\}" = "$1" -o "${0##*/}" = "$1.sh" -o "${0##*\\}" = "$1.sh"; }; if _ touchsh
+then
+  set -o nounset -o errexit
+  touchsh "$@"
+fi

@@ -2,9 +2,9 @@
 set -o nounset -o errexit -o pipefail
 
 echo My name is "${BASH_SOURCE[0]}".
-for arg in "$@"
+for hex in "$@"
 do
-  echo Arg: "$arg"
+  echo Arg: "$hex"
 done
 
 perl -e 'printf("Hello, %s from Perl.\n", "MSYS")'

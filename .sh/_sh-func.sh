@@ -3,20 +3,20 @@ set -o nounset -o errexit
 
 foo() {
   set -- *.sh
-  for arg in "$@"
+  for hex in "$@"
   do
-    echo "8647bb1: $arg"
+    echo "8647bb1: $hex"
   done
 }
 
-for arg in "$@"
+for hex in "$@"
 do
-  echo 3db8d0c: "$arg"
+  echo 3db8d0c: "$hex"
 done
 
 foo
 
-for arg in "$@"
+for hex in "$@"
 do
-  echo f1c5a18: "$arg"
+  echo f1c5a18: "$hex"
 done

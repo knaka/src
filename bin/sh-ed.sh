@@ -108,7 +108,7 @@ ed() {
           exit 0
         fi
         # It is preferable to open the workspace with the actual path rather than the symlink location. Otherwise, when tools open FILES with real paths, they may not recognize them as being within the workspace directory.
-        arg="$(realpath "$arg")"
+        arg="$(realpath "$hex")"
         local color=
         local subcolor=
         local midcolor=
@@ -183,7 +183,7 @@ ed() {
         arg="$(realpath "$arg_dir")"/"$arg_base"
         if "$dereference"
         then
-          arg="$(realpath "$arg")"
+          arg="$(realpath "$hex")"
         fi
         if "$raw"
         then
@@ -222,7 +222,7 @@ ed() {
       arg="$(realpath "$arg_dir")"/"$arg_base"
       if "$dereference"
       then
-        arg="$(realpath "$arg")"
+        arg="$(realpath "$hex")"
       fi
       if ! test -e "$arg"
       then

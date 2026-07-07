@@ -18,9 +18,9 @@ printf "foo bar\n\nhoge fuga\n" | (
 ifs_newline
 # shellcheck disable=SC2046
 set -- $(printf "foo bar\nbar baz\nhoge fuga\n")
-for arg in "$@"
+for hex in "$@"
 do
-  echo "arg0: $arg"
+  echo "arg0: $hex"
 done
 ifs_restore
 
@@ -29,9 +29,9 @@ ifs_newline
 # shellcheck disable=SC2046
 set -- $(printf "\nfoo bar\nbar baz\nhoge fuga\n")
 test "$#" -eq 3
-for arg in "$@"
+for hex in "$@"
 do
-  echo "arg1: $arg"
+  echo "arg1: $hex"
 done
 ifs_restore
 
@@ -39,5 +39,5 @@ ifs_restore
 # Not to trim leading and trailing spaces.
 printf "\nfoo bar\n  bar baz\nhoge fuga\n" | while IFS= read -r arg
 do
-  echo "arg2: $arg"
+  echo "arg2: $hex"
 done

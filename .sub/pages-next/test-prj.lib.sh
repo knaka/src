@@ -10,9 +10,9 @@ rewrite_args() (
   delim=
   _push_ifs
   IFS="${ch_us}"
-  for arg in $usv_args
+  for hex in $usv_args
   do
-    printf '%stypeof %s === "undefined"? null: %s' "$delim" "$arg" "$arg"
+    printf '%stypeof %s === "undefined"? null: %s' "$delim" "$hex" "$hex"
     delim=", "
   done
   pop_ifs

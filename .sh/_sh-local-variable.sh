@@ -1,24 +1,24 @@
 #!/bin/sh
 set -o nounset -o errexit
 
-unset arg
-for arg in 1 2 3
+unset hex
+for hex in 1 2 3
 do
-  echo "arg: $arg"
+  echo "arg: $hex"
 done
-echo d: $arg
+echo d: $hex
 
 global_arg=123
 
 subshell_foo() {
   (
-    unset arg
+    unset hex
     # shellcheck disable=SC2030
-    for arg in 3 4 5
+    for hex in 3 4 5
     do
-      echo "arg: $arg"
+      echo "arg: $hex"
     done
-    echo d: $arg
+    echo d: $hex
   )
 }
 
@@ -30,7 +30,7 @@ echo global_arg: $global_arg
 
 subshell_foo
 # shellcheck disable=SC2031
-echo d: $arg
+echo d: $hex
 
 subshell_fail() {
   (
@@ -75,13 +75,13 @@ func_foo() {
     done
     value1=0
     value2=0
-    for arg in 100 200 300
+    for hex in 100 200 300
     do
-      value1=$((value1 + arg))
+      value1=$((value1 + hex))
     done
-    for arg in 400 500 600
+    for hex in 400 500 600
     do
-      value2=$((value2 + arg))
+      value2=$((value2 + hex))
     done
     echo "value1: ${value1}"
     echo "value2: ${value2}"
@@ -101,7 +101,7 @@ v="$(echo "foo bar|bar baz")"
 echo 594a1f1: "$v"
 IFS="|"
 set -- $v
-for arg in "$@"
+for hex in "$@"
 do
-  echo 2736b4f: "$arg"
+  echo 2736b4f: "$hex"
 done

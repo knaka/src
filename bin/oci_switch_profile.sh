@@ -17,6 +17,8 @@ oci_switch_profile() {
   else
     local unset="<UNSET>"
     set -- "$unset"
+    mkdir -p "$HOME"/.oci
+    touch "$HOME"/.oci/config
     # shellcheck disable=SC2046
     set -- "$@" $(sed -n -E -e 's/\[(profile )?(.*)\]/\2/p' <"$HOME"/.oci/config)
     profile="$(gum choose --selected="${OCI_PROFILE:-}" "$@")"

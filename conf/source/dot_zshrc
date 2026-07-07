@@ -602,9 +602,6 @@ aws-switch-profile() {
   if test -n "$AWS_PROFILE"
   then
     export AWS_PROFILE
-    unset AWS_ACCESS_KEY_ID
-    unset AWS_DEFAULT_REGION
-    unset AWS_SECRET_ACCESS_KEY
   else
     unset AWS_PROFILE
   fi
