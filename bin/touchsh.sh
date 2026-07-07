@@ -1,3 +1,4 @@
+#!/usr/bin/env sh
 # vim: set filetype=sh :
 # shellcheck shell=sh
 _() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ cb103e0 && return 0
@@ -5,22 +6,19 @@ _() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ cb
 # Generate Bourne shell script scaffold.
 
 set -- "$PWD" "${0%/*}" "$@"; test -z "${_APPDIR-}" && { test "$2" = "$0" && _APPDIR=. || _APPDIR="$2"; cd "$_APPDIR" || exit 1; }
-set -- _LIBDIR .lib "$@"
+set -- _LIBDIR ./.lib "$@"
 . ./.lib/utils.lib.sh
 shift 2
+set -- _LIBDIR . "$@"
 . ./rand7.sh 
+shift 2
 cd "$1" || exit 1; shift 2
 
 gen_header_49df118() { cat <<EOF
+#!/usr/bin/env sh
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
 _() { case "\${_ids-}" in (*\$1*) ;; (*) _ids="\$1,\${_ids-}"; false;; esac; }; _ $unique_id && return 0
-EOF
-}
-
-gen_lib_source_block_bba821b() { cat <<'EOF'
-set -- "$PWD" "$@"; if test "${2:+$2}" = _LIBDIR; then cd "$3" || exit 1; fi
-cd "$1" || exit 1; shift
 EOF
 }
 
@@ -115,10 +113,10 @@ touchsh() {
     (*) is_tasks=false;;
   esac
   {
-    if ! "$is_lib" && ! "$has_ext"
-    then
-      echo '#!/usr/bin/env sh'
-    fi
+    # if ! "$is_lib" && ! "$has_ext"
+    # then
+    #   echo '#!/usr/bin/env sh'
+    # fi
     gen_header_49df118
     echo
     if "$is_lib"
