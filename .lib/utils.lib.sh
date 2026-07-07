@@ -194,16 +194,19 @@ is_macos() {
   test -f /System/Library/CoreServices/SystemVersion.plist
 }
 
+# Windows
 is_windows() {
   test -d \\
 }
 
+# MSYS2 on Windows
 is_msys2() {
-  test -d \\ && test -d /proc
+  test -d \\ -a -d /proc
 }
 
+# BusyBox for Windows ash
 is_bbwin() {
-  test -d \\ && test "${BBGLOBBING+set}" = set
+  test -d \\ -a ! -d /proc -a "${BBGLOBBING+set}" = set
 }
 
 # Executable file extension.
