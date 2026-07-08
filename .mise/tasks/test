@@ -6,8 +6,8 @@
 #MISE description="[names...] Run tests. If no test names are provided, all tests are run."
 
 set -- "$PWD" "${0%/*}" "$@"; test -z "${_APPDIR-}" && { test "$2" = "$0" && _APPDIR=. || _APPDIR="$2"; cd "$_APPDIR" || exit 1; }
-set -- _LIBDIR ../../.lib "$@"
-. ../../.lib/utils.sh
+set -- _LIBDIR ./.lib "$@"
+. ./.lib/utils.sh
 shift 2
 cd "$1" || exit 1; shift 2
 
@@ -16,9 +16,8 @@ test_47fd512() {
   ./run-tests "$@"
 }
 
-case ",${0##*/},${0##*\\}," in
-  (*,test,*|*,test.sh,*)
-    set -o nounset -o errexit
-    test_47fd512 "$@"
-    ;;
-esac
+_() { test "${0##*/}" = "$1" -o "${0##*\\}" = "$1" -o "${0##*/}" = "$1.sh" -o "${0##*\\}" = "$1.sh"; }; if _ test
+then
+  set -o nounset -o errexit
+  test_47fd512 "$@"
+fi
