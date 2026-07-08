@@ -13,6 +13,7 @@ cd "$1" || exit 1; shift
 
 test_string_case() {
   tolower_ "AbC:XyZ:123"
+  # shellcheck disable=SC2153
   assert_eq "$RESULT" "abc:xyz:123"
   toupper_ "AbC:XyZ:123"
   assert_eq "$RESULT" "ABC:XYZ:123"
@@ -28,18 +29,26 @@ test_string_substr() {
 test_string_sub() {
   sub_ "foo bar baz bar" "bar" "xyz"
   assert_eq "$RESULT" "foo xyz baz bar"
+  sub_ "foo" "" "bar"
+  assert_eq "$RESULT" "foo"
 }
 
 test_string_gsub() {
   set_result_name RESULT_XYZ
   gsub_ "foo bar baz bar 123" "bar" "xyz"
   assert_eq "$RESULT_XYZ" "foo xyz baz xyz 123"
+  gsub_ "foo" "" "bar"
+  assert_eq "$RESULT_XYZ" "foo"
 }
 
 test_string_index() {
   index "peanut" "an"
   assert_eq "$RESULT" 3
   index "peanut" "XXX"
+  assert_eq "$RESULT" 0
+  index "" ""
+  assert_eq "$RESULT" 0
+  index "foo" ""
   assert_eq "$RESULT" 0
 }
 

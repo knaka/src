@@ -103,6 +103,7 @@ substr_() {
   local start="$2"
   local length="${3-${#s}}"
   local end=$((start+length))
+  local c
   local i=1
   while test -n "$s"
   do
@@ -121,7 +122,9 @@ sub_() {
   local result=
   local s="$1"
   local from="$2"
+  test -z "$from" && set_result "$s" && return 0
   local to="$3"
+  local c
   while test -n "$s"
   do
     case "$s" in
@@ -145,7 +148,9 @@ gsub_() {
   local result=
   local s="$1"
   local from="$2"
+  test -z "$from" && set_result "$s" && return 0
   local to="$3"
+  local c
   while test -n "$s"
   do
     case "$s" in
@@ -168,6 +173,7 @@ index() {
   local result=0
   local s="$1"
   local find="$2"
+  test -z "$find" && set_result "$result" && return 0
   local processed=
   while test -n "$s"
   do
@@ -190,7 +196,5 @@ length() {
 }
 
 split() {
-  local s="$1"
-  local fieldsep="$2"
-  gsub_ "$s" "$fieldsep" " "
+  gsub_ "$1" "$2" " "
 }
