@@ -3,7 +3,7 @@
 _() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ b0cdf45 && return 0
 
 { pushd "${BASH_SOURCE[0]%/*}" || pushd "${BASH_SOURCE[0]%\\*}" || pushd .; } >/dev/null 2>&1
-. ./utils.lib.sh
+. ./utils.sh
 popd >/dev/null || exit 1
 
 # ==========================================================================

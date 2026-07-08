@@ -4,7 +4,7 @@
 
 set -- "$PWD" "${0%/*}" "$@"; test -z "${_APPDIR-}" && { test "$2" = "$0" && _APPDIR=. || _APPDIR="$2"; cd "$_APPDIR" || exit 1; }
 set -- _LIBDIR .lib "$@"
-. ./.lib/utils.lib.sh
+. ./.lib/utils.sh
 shift 2
 . ./mise
 cd "$1" || exit 1; shift 2

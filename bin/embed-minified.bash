@@ -5,7 +5,7 @@ _() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ 70
 pushd "${BASH_SOURCE[0]%/*}" >/dev/null 2>&1 || pushd . >/dev/null
 . ./.lib/utils.bash
 set -- _LIBDIR .lib "$@"
-. ./.lib/embed-script.lib.sh
+. ./.lib/embed-script.sh
 shift 2
 popd >/dev/null || exit 1
 

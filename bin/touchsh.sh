@@ -7,7 +7,7 @@ _() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ cb
 
 set -- "$PWD" "${0%/*}" "$@"; test -z "${_APPDIR-}" && { test "$2" = "$0" && _APPDIR=. || _APPDIR="$2"; cd "$_APPDIR" || exit 1; }
 set -- _LIBDIR ./.lib "$@"
-. ./.lib/utils.lib.sh
+. ./.lib/utils.sh
 shift 2
 set -- _LIBDIR . "$@"
 . ./rand7.sh 
@@ -25,8 +25,8 @@ EOF
 gen_source_block_8d319a6() { cat <<'EOF'
 # test "${_APPDIR+set}" = set || { cd "${0%/*}" || cd "${0%\\*}" || cd . || exit 1; _APPDIR="$PWD"; cd "$OLDPWD" || exit 1; } 2>/dev/null
 # if test "${1:+$1}" = _LIBDIR; then cd "$2" || exit 1; else cd "$_APPDIR" || exit 1; fi; set -- "$OLDPWD" "$@"
-# set -- _LIBDIR .lib "$@"
-# . ./.lib/utils.lib.sh
+# set -- _LIBDIR ./.lib "$@"
+# . ./.lib/utils.sh
 # shift 2
 # cd "$1" || exit 1; shift
 EOF
@@ -98,7 +98,7 @@ touchsh() {
   esac
   local is_lib
   case "$file_base" in
-    (*.lib.sh|*.libsh|*.shlib)
+    (*.sh|*.libsh|*.shlib)
       is_lib=true
       echo Generating library shell script. >&2
       ;;
@@ -122,8 +122,9 @@ touchsh() {
     if "$is_lib"
     then
       # gen_lib_source_block_bba821b
-      gen_sou
+      gen_source_block_8d319a6
       echo
+      gen_body_e1af234
     elif "$is_tasks"
     then
       gen_source_block_8d319a6

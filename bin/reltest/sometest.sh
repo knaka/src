@@ -5,7 +5,7 @@
 
 set -o errexit -o nounset
 
-. ./main.lib.sh
+. ./main.sh
 
 x="$(xd7660ef)"
 test -n "$x"
