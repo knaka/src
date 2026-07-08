@@ -6,9 +6,9 @@ _() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ 1d
 
 set -- "$PWD" "${0%/*}" "$@"; test -z "${_APPDIR-}" && { test "$2" = "$0" && _APPDIR=. || _APPDIR="$2"; cd "$_APPDIR" || exit 1; }
 set -- _LIBDIR .lib "$@"
-. ./.lib/utils.lib.sh
+. ./.lib/utils.sh
 shift 2
-. ./test.lib.sh
+. ./test.sh
 cd "$1" || exit 1; shift 2
 
 # Run tests in test files (test-*) in current directory. If no test names are provided, all tests are run.
@@ -44,7 +44,7 @@ run_tests() {
   local psv_test_file_paths=
   for test_file_path in \
     *-test.shlib \
-    test-*.lib.sh \
+    test-*.sh \
     test-*.shlib \
     _CENTINEL
   do

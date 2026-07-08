@@ -4,8 +4,8 @@
 
 set -- "$PWD" "$@"; if test "${2:+$2}" = _LIBDIR; then cd "$3" || exit 1; fi
 set -- _LIBDIR .lib "$@"
-. ./.lib/bindump.lib.sh
-. ./.lib/assert.lib.sh
+. ./.lib/bindump.sh
+. ./.lib/assert.sh
 shift 2
 cd "$1" || exit 1; shift
 

@@ -11,7 +11,7 @@ fi
 pushd "${BASH_SOURCE[0]%/*}" >/dev/null 2>&1 || pushd . >/dev/null
 . ./.lib/utils.bash
   init_temp
-. ./test.lib.sh
+. ./test.sh
 popd >/dev/null || exit 1
 
 run_tests() {
