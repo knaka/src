@@ -4,7 +4,7 @@
 
 set -- "$PWD" "$@"; if test "${2:+$2}" = _LIBDIR; then cd "$3" || exit 1; fi
 set -- _LIBDIR .lib "$@"
-. ./.lib/utils.lib.sh
+. ./.lib/utils.sh
 shift 2
 cd "$1" || exit 1; shift
 
@@ -51,9 +51,9 @@ gen_go_inlined() {
   fi
 
   (
-    cat utils.lib.sh
-    # Remove "source"s from go.lib.sh.
-    sed -e 's/^\. .*//' go.lib.sh
+    cat utils.sh
+    # Remove "source"s from go.sh.
+    sed -e 's/^\. .*//' go.sh
     cat <<'EOF'
 init_temp_dir
 gopath="${GOPATH:-$HOME/go}"

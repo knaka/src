@@ -9,12 +9,8 @@ set -- _LIBDIR .lib "$@"
 shift 2
 popd >/dev/null || exit 1
 
-embed-minified() {
-  embed_minified "$@"
-}
-
 if test "$0" = "${BASH_SOURCE[0]}"
 then
   set -o nounset -o errexit -o pipefail
-  embed-minified "$@"
+  embed_minified "$@"
 fi

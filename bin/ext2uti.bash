@@ -6,6 +6,7 @@ _() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ c4
 . ./.lib/utils.bash
 popd >/dev/null || exit 1
 
+# File extension to UTI // Uniform Type Identifier - Wikipedia https://en.wikipedia.org/wiki/Uniform_Type_Identifier
 ext2uti() {
   is_macos || return 1
   test $# -eq 0 && return 1

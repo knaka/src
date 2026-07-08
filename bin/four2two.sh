@@ -22,14 +22,14 @@ four_to_two() {
     test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
     case "$OPT" in
       (d|diff) shows_diff=true;;
-      (*) echo "Unexpected option: $OPT" >&2; exit 1;;
+      (?) return 1;;
+      (*) echo "$0: illegal option -- $OPT" >&2; return 1;;
     esac
   done
-  shift $((OPTIND-1))
 
   if "$shows_diff"
   then
-    register_temp_cleanup
+    init_temp
     local source_file="$TEMP_DIR/source-$$.tmp"
     local dest_file="$TEMP_DIR/dest-$$.tmp"
     cat >"$source_file"
@@ -44,9 +44,8 @@ four_to_two() {
   fi
 }
 
-case "${0##*/}" in
-  (four2two.sh|four2two)
-    set -o nounset -o errexit
-    four_to_two "$@"
-    ;;
-esac
+_() { test "${0##*/}" = "$1" -o "${0##*\\}" = "$1" -o "${0##*/}" = "$1.sh" -o "${0##*\\}" = "$1.sh"; }; if _ four_to_two
+then
+  set -o nounset -o errexit
+  four_to_two "$@"
+fi
