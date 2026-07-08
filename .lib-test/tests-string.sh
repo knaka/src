@@ -31,8 +31,9 @@ test_string_sub() {
 }
 
 test_string_gsub() {
+  set_result_name RESULT_XYZ
   gsub_ "foo bar baz bar 123" "bar" "xyz"
-  assert_eq "$RESULT" "foo xyz baz xyz 123"
+  assert_eq "$RESULT_XYZ" "foo xyz baz xyz 123"
 }
 
 test_string_index() {
@@ -50,4 +51,11 @@ test_string_length() {
 test_string_split() {
   split "cul-de-sac" "-"
   assert_eq "$RESULT" "cul de sac"
+}
+
+test_result_name() {
+  set_result_name "RESULT_X"
+  local x="it's a \$test * [glob] \"quote\""
+  set_result "$x"
+  assert_eq "$x" "$RESULT_X"
 }

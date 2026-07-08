@@ -3,47 +3,16 @@
 # shellcheck shell=sh
 _() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ 95ac582 && return 0
 
-: "${RESULT:=}"
+# AWK-like string functions not using subshell.
 
-tolower_() {
-  local result=
-  local s="$*"
-  local c
-  while test -n "$s"
-  do
-    c="${s%"${s#?}"}"
-    s="${s#?}"
-    case "$c" in
-      (A) result="${result}a";;
-      (B) result="${result}b";;
-      (C) result="${result}c";;
-      (D) result="${result}d";;
-      (E) result="${result}e";;
-      (F) result="${result}f";;
-      (G) result="${result}g";;
-      (H) result="${result}h";;
-      (I) result="${result}i";;
-      (J) result="${result}j";;
-      (K) result="${result}k";;
-      (L) result="${result}l";;
-      (M) result="${result}m";;
-      (N) result="${result}n";;
-      (O) result="${result}o";;
-      (P) result="${result}p";;
-      (Q) result="${result}q";;
-      (R) result="${result}r";;
-      (S) result="${result}s";;
-      (T) result="${result}t";;
-      (U) result="${result}u";;
-      (V) result="${result}v";;
-      (W) result="${result}w";;
-      (X) result="${result}x";;
-      (Y) result="${result}y";;
-      (Z) result="${result}z";;
-      (*) result="${result}$c";;
-    esac
-  done
-  RESULT="$result"
+result_name_9a2b2db=RESULT
+
+set_result_name() {
+  result_name_9a2b2db="$1"
+}
+
+set_result() {
+  eval "$result_name_9a2b2db=\$1"
 }
 
 toupper_() {
@@ -84,11 +53,51 @@ toupper_() {
       (*) result="${result}$c";;
     esac
   done
-  RESULT="$result"
+  set_result "$result"
+}
+
+tolower_() {
+  local result=
+  local s="$*"
+  local c
+  while test -n "$s"
+  do
+    c="${s%"${s#?}"}"
+    s="${s#?}"
+    case "$c" in
+      (A) result="${result}a";;
+      (B) result="${result}b";;
+      (C) result="${result}c";;
+      (D) result="${result}d";;
+      (E) result="${result}e";;
+      (F) result="${result}f";;
+      (G) result="${result}g";;
+      (H) result="${result}h";;
+      (I) result="${result}i";;
+      (J) result="${result}j";;
+      (K) result="${result}k";;
+      (L) result="${result}l";;
+      (M) result="${result}m";;
+      (N) result="${result}n";;
+      (O) result="${result}o";;
+      (P) result="${result}p";;
+      (Q) result="${result}q";;
+      (R) result="${result}r";;
+      (S) result="${result}s";;
+      (T) result="${result}t";;
+      (U) result="${result}u";;
+      (V) result="${result}v";;
+      (W) result="${result}w";;
+      (X) result="${result}x";;
+      (Y) result="${result}y";;
+      (Z) result="${result}z";;
+      (*) result="${result}$c";;
+    esac
+  done
+  set_result "$result"
 }
 
 substr_() {
-  # echo e563541 "$@" >&2
   local result=
   local s="$1"
   local start="$2"
@@ -105,7 +114,7 @@ substr_() {
     fi
     i=$((i+1))
   done
-  RESULT="$result"
+  set_result "$result"
 }
 
 sub_() {
@@ -119,7 +128,7 @@ sub_() {
       ("$from"*)
         result="$result$to"
         substr_ "$s" $((${#from}+1))
-        result="$result$RESULT"
+        eval "result=\"\$result\$$result_name_9a2b2db\""
         break
         ;;
       (*)
@@ -129,7 +138,7 @@ sub_() {
         ;;
     esac
   done
-  RESULT="$result"
+  set_result "$result"
 }
 
 gsub_() {
@@ -143,7 +152,7 @@ gsub_() {
       ("$from"*)
         result="$result$to"
         substr_ "$s" $((${#from}+1))
-        s="$RESULT"
+        eval "s=\"\$$result_name_9a2b2db\""
         ;;
       (*)
         c="${s%"${s#?}"}"
@@ -152,7 +161,7 @@ gsub_() {
         ;;
     esac
   done
-  RESULT="$result"
+  set_result "$result"
 }
 
 index() {
@@ -173,11 +182,11 @@ index() {
         ;;
     esac
   done
-  RESULT="$result"
+  set_result "$result"
 }
 
 length() {
-  RESULT=${#1}
+  set_result ${#1}
 }
 
 split() {
