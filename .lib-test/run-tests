@@ -45,6 +45,7 @@ run_tests() {
   for test_file_path in \
     *-test.shlib \
     test-*.sh \
+    tests-*.sh \
     test-*.shlib \
     _CENTINEL
   do

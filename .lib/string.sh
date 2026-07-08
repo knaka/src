@@ -3,13 +3,6 @@
 # shellcheck shell=sh
 _() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ 95ac582 && return 0
 
-# test "${_APPDIR+set}" = set || { cd "${0%/*}" || cd "${0%\\*}" || cd . || exit 1; _APPDIR="$PWD"; cd "$OLDPWD" || exit 1; } 2>/dev/null
-# if test "${1:+$1}" = _LIBDIR; then cd "$2" || exit 1; else cd "$_APPDIR" || exit 1; fi; set -- "$OLDPWD" "$@"
-# set -- _LIBDIR ./.lib "$@"
-# . ./.lib/utils.sh
-# shift 2
-# cd "$1" || exit 1; shift
-
 : "${RESULT:=}"
 
 tolower_() {
@@ -94,12 +87,101 @@ toupper_() {
   RESULT="$result"
 }
 
-string() {
-  echo "Function \"string\" is not implemented yet."
+substr_() {
+  # echo e563541 "$@" >&2
+  local result=
+  local s="$1"
+  local start="$2"
+  local length="${3-${#s}}"
+  local end=$((start+length))
+  local i=1
+  while test -n "$s"
+  do
+    c="${s%"${s#?}"}"
+    s="${s#?}"
+    if test "$i" -ge "$start" -a "$i" -lt "$end"
+    then
+      result="${result}$c"
+    fi
+    i=$((i+1))
+  done
+  RESULT="$result"
 }
 
-_() { test "${0##*/}" = "$1" -o "${0##*\\}" = "$1" -o "${0##*/}" = "$1.sh" -o "${0##*\\}" = "$1.sh"; }; if _ string
-then
-  set -o nounset -o errexit
-  string "$@"
-fi
+sub_() {
+  local result=
+  local s="$1"
+  local from="$2"
+  local to="$3"
+  while test -n "$s"
+  do
+    case "$s" in
+      ("$from"*)
+        result="$result$to"
+        substr_ "$s" $((${#from}+1))
+        result="$result$RESULT"
+        break
+        ;;
+      (*)
+        c="${s%"${s#?}"}"
+        s="${s#?}"
+        result="${result}$c"
+        ;;
+    esac
+  done
+  RESULT="$result"
+}
+
+gsub_() {
+  local result=
+  local s="$1"
+  local from="$2"
+  local to="$3"
+  while test -n "$s"
+  do
+    case "$s" in
+      ("$from"*)
+        result="$result$to"
+        substr_ "$s" $((${#from}+1))
+        s="$RESULT"
+        ;;
+      (*)
+        c="${s%"${s#?}"}"
+        s="${s#?}"
+        result="${result}$c"
+        ;;
+    esac
+  done
+  RESULT="$result"
+}
+
+index() {
+  local result=0
+  local s="$1"
+  local find="$2"
+  local processed=
+  while test -n "$s"
+  do
+    case "$s" in
+      ("$find"*)
+        result=$((${#processed}+1))
+        break
+        ;;
+      (*)
+        s="${s#?}"
+        processed="${processed}x"
+        ;;
+    esac
+  done
+  RESULT="$result"
+}
+
+length() {
+  RESULT=${#1}
+}
+
+split() {
+  local s="$1"
+  local fieldsep="$2"
+  gsub_ "$s" "$fieldsep" " "
+}
