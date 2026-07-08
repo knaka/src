@@ -1,13 +1,22 @@
+#!/usr/bin/env sh
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-"${sourced_9b8cccc-false}" && return 0; sourced_9b8cccc=true
+_() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ ff007c8 && return 0
 
 set -- "$PWD" "${0%/*}" "$@"; test -z "${_APPDIR-}" && { test "$2" = "$0" && _APPDIR=. || _APPDIR="$2"; cd "$_APPDIR" || exit 1; }
-set -- _LIBDIR .lib "$@"
+set -- _LIBDIR ./.lib "$@"
+. ./.lib/utils.sh
 shift 2
 cd "$1" || exit 1; shift 2
 
-configure_macbook() {
+configure_mac_system() {
+  if ! is_macos
+  then
+    echo "For MacOS." >&2
+    return 1
+  fi
+
+  # スクリーンロックからの復帰には即パスワード要求
   sysadminctl -password - -screenLock immediate
 
   # The -a, -b, -c, -u flags determine whether the settings apply to battery ( -b ), charger (wall power) ( -c ), UPS ( -u ) or all ( -a ).
@@ -56,9 +65,9 @@ configure_macbook() {
 #  disksleep            10
 #  SleepServices        0
 
-case "${0##*/}" in
-  (configure-macbook.sh|configure-macbook)
-    set -o nounset -o errexit
-    configure_macbook "$@"
-    ;;
-esac
+_() { test "${0##*/}" = "$1" -o "${0##*\\}" = "$1" -o "${0##*/}" = "$1.sh" -o "${0##*\\}" = "$1.sh"; }; if _ configure_mac_system | _ configure-mac-system
+then
+  set -o nounset -o errexit
+  configure_mac_system
+   "$@"
+fi

@@ -6,11 +6,11 @@
 # Launch editor and block until it exits.
 
 set -- "$PWD" "${0%/*}" "$@"; test -z "${_APPDIR-}" && { test "$2" = "$0" && _APPDIR=. || _APPDIR="$2"; cd "$_APPDIR" || exit 1; }
-. ./launch-python.sh
+. ./ed.sh
 cd "$1" || exit 1; shift 2
 
 edw() {
-  launch_python "$_APPDIR"/ed.py --wait "$@"
+  ed --wait "$@"
 }
 
 case "${0##*/}" in

@@ -186,8 +186,8 @@ is_linux() {
   # MSYS2 has /proc dir.
   test -d /proc -a -d /sys/kernel
   # test -r /proc/sys/kernel/ostype \
-  #   && read -r os </proc/sys/kernel/ostype \
-  #   && test "$os" = Linux
+  #   && read -r RESULT </proc/sys/kernel/ostype \
+  #   && test "$RESULT" = Linux
 }
 
 is_macos() {

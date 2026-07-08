@@ -1,6 +1,7 @@
+#!/usr/bin/env sh
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-"${sourced_88f1f74-false}" && return 0; sourced_88f1f74=true
+_() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ 5ca1189 && return 0
 
 set -- "$PWD" "${0%/*}" "$@"; test -z "${_APPDIR-}" && { test "$2" = "$0" && _APPDIR=. || _APPDIR="$2"; cd "$_APPDIR" || exit 1; }
 set -- _LIBDIR .lib "$@"
@@ -18,10 +19,10 @@ conf() {
     case "$OPT" in
       (source) source_path="$OPTARG";;
       (mode) mode="$OPTARG";;
-      (*) echo "Unexpected option: $OPT" >&2; exit 1;;
+      (?) return 1;;
+      (*) echo "$0: illegal option -- $OPT" >&2; exit 1;;
     esac
   done
-  shift $((OPTIND-1))
 
   local found_subcmd=false
   local arg
@@ -52,11 +53,10 @@ conf() {
   chezmoi "$@"
 }
 
-case ",${0##*/},${0##*\\}," in
-  (*,conf.sh,*|*,conf,*)
-    set -o nounset -o errexit
-    set -- --source="$HOME/repos/github.com/knaka/src/conf/source" "$@"
-    set -- --mode="symlink" "$@"
-    conf "$@"
-    ;;
-esac
+_() { test "${0##*/}" = "$1" -o "${0##*\\}" = "$1" -o "${0##*/}" = "$1.sh" -o "${0##*\\}" = "$1.sh"; }; if _ conf
+then
+  set -o nounset -o errexit
+  set -- --source="$HOME/repos/github.com/knaka/src/conf/source" "$@"
+  set -- --mode="symlink" "$@"
+  conf "$@"
+fi

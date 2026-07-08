@@ -1,5 +1,6 @@
 ---
-description: 'Proofread a document, string or comments in code and correct. The verb "&proof" means the same as "proofread" or "proof".'
+name: "proof"
+description: 'Proofread a document, string or comments in code and correct. The verb "&proof" and "&proofread" means the same as "proof" and "proofread".'
 user-invokable: true
 ---
 

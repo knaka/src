@@ -1,12 +1,10 @@
-#!/bin/sh
-test "${guard_be53e21+set}" = set && return 0; guard_be53e21=x
-set -o nounset -o errexit
+#!/usr/bin/env sh
+# vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
+# shellcheck shell=sh
+_() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ 1b5b685 && return 0
 
-#echo -n "$* -> "
-#echo -n $(($*))
-#echo
+# expression=$(echo "$@" | perl -pe 's/,([[:digit:]]{3})/\1/g')
+# perl -e "print (\"$* -> \" . (${expression}) . \"\n\");"
 
-expression=$(echo "$@" | perl -pe 's/,([[:digit:]]{3})/\1/g')
-perl -e "print (\"$* -> \" . (${expression}) . \"\n\");"
-
-#echo -n "$* -> " ; echo "$*" | bc
+printf "%s" "$* -> "
+printf "%s" "$*" | bc

@@ -8,3 +8,10 @@ set -- _LIBDIR ./.lib "$@"
 . ./.lib/string.sh
 shift 2
 cd "$1" || exit 1; shift 2
+
+_() { test "${0##*/}" = "$1" -o "${0##*\\}" = "$1" -o "${0##*/}" = "$1.sh" -o "${0##*\\}" = "$1.sh"; }; if _ toupper
+then
+  set -o nounset -o errexit
+  toupper_ "$@"
+  printf "%s\n" "$RESULT"
+fi

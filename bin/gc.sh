@@ -1,9 +1,10 @@
-# vim: set filetype=bash tabstop=2 shiftwidth=2 expandtab :
-# shellcheck shell=bash
-_() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ 3100e42 && return 0
+#!/usr/bin/env sh
+# vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
+# shellcheck shell=sh
+_() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ a6afe8e && return 0
 
 gc() {
-  if test "${SSH_CONNECTION+set}" = set
+  if test "${SSH_CONNECTION+set}" = set # ?
   then
     local reader_port="${READER_PORT-10002}"
     nc -q0 127.0.0.1 "$reader_port" </dev/null
@@ -17,18 +18,23 @@ gc() {
     pbpaste
   elif command -v xclip > /dev/null 2>&1 # Linux
   then
+    # astrand/xclip: Command line interface to the X11 clipboard https://github.com/astrand/xclip
     xclip -selection clipboard -o
   elif command -v xsel > /dev/null 2>&1 # Linux
   then
+    # kfish/xsel: A command-line program for getting and setting the contents of the X selection https://github.com/kfish/xsel
     xsel --clipboard --output
+  # elif command -v xclipboard
+  # then
+  #   xclipboard ?
   else
     echo "No clipboard utility found." >&2
     exit 1
   fi
 }
 
-if test "$0" = "${BASH_SOURCE[0]}"
+_() { test "${0##*/}" = "$1" -o "${0##*\\}" = "$1" -o "${0##*/}" = "$1.sh" -o "${0##*\\}" = "$1.sh"; }; if _ gc
 then
-  set -o nounset -o errexit -o pipefail
+  set -o nounset -o errexit
   gc "$@"
 fi

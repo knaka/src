@@ -1,17 +1,18 @@
 #!/usr/bin/env sh
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-"${sourced_b361d7d-false}" && return 0; sourced_b361d7d=true
+_() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ c3a6820 && return 0
 
-# ClipBoard ARchiver
-
-set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test "$2" != "$0"; then _APPDIR="$2"; fi; cd "$_APPDIR" || exit 1; fi
+set -- "$PWD" "${0%/*}" "$@"; test -z "${_APPDIR-}" && { test "$2" = "$0" && _APPDIR=. || _APPDIR="$2"; cd "$_APPDIR" || exit 1; }
+set -- _LIBDIR . "$@"
 . ./sc.sh
 . ./gc.sh
+shift 2
 cd "$1" || exit 1; shift 2
 
+# ClipBoard ARchiver
 cbar() {
-  if test $# -ge 1
+  if test $# -gt 0
   then
     # If arguments are specified, archive them as files/directories, convert to text, and set to clipboard.
     tar czvf - "$@" | base64 | sc
@@ -21,9 +22,8 @@ cbar() {
   fi
 }
 
-case "${0##*/}" in
-  (cbar.sh|cbar)
-    set -o nounset -o errexit
-    cbar "$@"
-    ;;
-esac
+_() { test "${0##*/}" = "$1" -o "${0##*\\}" = "$1" -o "${0##*/}" = "$1.sh" -o "${0##*\\}" = "$1.sh"; }; if _ cbar
+then
+  set -o nounset -o errexit
+  cbar "$@"
+fi
