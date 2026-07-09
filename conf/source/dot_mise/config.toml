@@ -5,23 +5,28 @@
 "fx" = "39.2.0"
 "gcloud" = "559.0.0"
 "gh" = "2.87.3"
-"github:googleworkspace/cli" = "0.17.0"
+# "github:googleworkspace/cli" = "0.17.0"
+"gum" = "0.17.0"
 "jq" = "1.8.1"
 "node" = "24"
 "python" = "3.14"
 "yj" = "5.1.0"
 "yq" = "4.52.4"
-"gum" = "0.17.0"
 
 [tasks.beep]
-run = """
+description = "Beep."
+run = '''
 #!/usr/bin/env sh
-if test -d "/c/" -a ! -d /proc
+# Beep: User TOML
+if test -d \\
 then
   # pwsh -c "[console]::beep(1000,300)" &
   rundll32 user32.dll,MessageBeep &
 elif test -r /System/Library/CoreServices/SystemVersion.plist
 then
   osascript -e 'beep' &
+else
+  # printf '\a'
+  tput bel
 fi
-"""
+'''

@@ -7,12 +7,3 @@ set -- _LIBDIR . "$@"
 . ./utils.sh
 shift 2
 popd >/dev/null || exit 1
-
-# ==========================================================================
-#region Misc.
-
-# Sometimes shellcheck cannot find the definitions in sub files.
-: "${lwb:=(^|[^[:alnum:]_])}"
-: "${rwb:=($|[^[:alnum:]_])}"
-
-#endregion

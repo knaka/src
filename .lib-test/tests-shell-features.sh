@@ -14,16 +14,16 @@ test_unconditional_skip() {
 }
 
 func_global_ifs() {
-  IFS="$newline_char"
-  assert_eq "$newline_char" "$IFS"
+  IFS="$ch_lf"
+  assert_eq "$ch_lf" "$IFS"
   # shellcheck disable=SC2046
   set -- $(printf "foo bar\nbar baz\nhoge fuga\n")
   assert_eq $# 3
 }
 
 func_local_ifs() {
-  local IFS="$newline_char"
-  assert_eq "$newline_char" "$IFS"
+  local IFS="$ch_lf"
+  assert_eq "$ch_lf" "$IFS"
   # shellcheck disable=SC2046
   set -- $(printf "foo bar\nbar baz\nhoge fuga\n")
   assert_eq $# 3
@@ -35,7 +35,7 @@ test_local_ifs() (
   
   func_global_ifs
   # IFS should still be changed after function returns
-  assert_eq "$newline_char" "$IFS"
+  assert_eq "$ch_lf" "$IFS"
   
   # Reset for next test
   IFS="$original_ifs"
@@ -56,7 +56,7 @@ test_pos_params() {
   assert_eq 2 $#
 
   local IFS
-  IFS="$newline_char"
+  IFS="$ch_lf"
 
   # shellcheck disable=SC2046
   set -- $(printf "x%s\n" "$@")

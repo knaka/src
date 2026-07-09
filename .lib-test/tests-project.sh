@@ -6,6 +6,7 @@ set -- "$PWD" "$@"; if test "${2:+$2}" = _LIBDIR; then cd "$3" || exit 1; fi
 set -- _LIBDIR .lib "$@"
 . ./.lib/utils.sh
 . ./.lib/assert.sh
+. ./.lib/path.sh
 shift 2
 cd "$1" || exit 1; shift
 
@@ -72,4 +73,22 @@ test_abs2rel() {
     relpath="$(abs2rel / /usr/bin)"
     assert_eq -m "6724104" "../.." "$relpath"
   fi
+}
+
+counter_268b0bb=
+
+increment_2cfb6e4() {
+  first_call aa08b06 || return 0
+  counter_268b0bb=$((counter_268b0bb + 1))
+}
+
+test_first_call() {
+  counter_268b0bb=0
+  increment_2cfb6e4
+  increment_2cfb6e4
+  increment_2cfb6e4
+  increment_2cfb6e4
+  increment_2cfb6e4
+  increment_2cfb6e4
+  assert_eq "$counter_268b0bb" 1
 }

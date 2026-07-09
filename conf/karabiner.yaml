@@ -220,7 +220,7 @@ profiles:
               conditions: *conditions_vscode
               from: {key_code: "backslash", modifiers: {mandatory: [control], optional: []}}
               to: [{key_code: "return_or_enter", modifiers: [shift]},]
-            # 画面縦割り (Split Editor in Group)。戻すのもこれでできている
+            # 画面縦割り (Split Editor in Group)。戻すのもこれでできている。カーソル移動は Ctrl-T/Shift-Ctrl-T
             - type: basic
               conditions: *conditions_vscode
               from: {key_code: d, modifiers: {mandatory: [command]}}

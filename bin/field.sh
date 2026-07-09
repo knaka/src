@@ -3,10 +3,11 @@
 # shellcheck shell=sh
 _() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ 7952163 && return 0
 
-field() {
-  # Print 1-indexed n-th field of input lines.
-  awk "{ print \$${1}} "
-}
+set -- "$PWD" "${0%/*}" "$@"; test -z "${_APPDIR-}" && { test "$2" = "$0" && _APPDIR=. || _APPDIR="$2"; cd "$_APPDIR" || exit 1; }
+set -- _LIBDIR ./.lib "$@"
+. ./.lib/utils.sh
+shift 2
+cd "$1" || exit 1; shift 2
 
 _() { test "${0##*/}" = "$1" -o "${0##*\\}" = "$1" -o "${0##*/}" = "$1.sh" -o "${0##*\\}" = "$1.sh"; }; if _ field
 then
