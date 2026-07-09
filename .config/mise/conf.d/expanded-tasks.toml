@@ -30,6 +30,77 @@ task_bcrypt__verify "$@"
 '''
 tools={"uv"="0.10"}
 
+[tasks."docker:status"]
+description='''Show the status of Docker.'''
+run='''
+#!/usr/bin/env sh
+# .mise/tasks-docker.sh:task_docker__status
+_APPDIR="$MISE_PROJECT_ROOT"/".mise"
+saved_pwd_85053ae="$PWD"
+cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
+. ./"tasks-docker.sh"
+cd "$saved_pwd_85053ae" || exit 1
+set -o nounset -o errexit
+task_docker__status "$@"
+'''
+
+[tasks."docker:start"]
+description='''Start Docker.'''
+run='''
+#!/usr/bin/env sh
+# .mise/tasks-docker.sh:task_docker__start
+_APPDIR="$MISE_PROJECT_ROOT"/".mise"
+saved_pwd_85053ae="$PWD"
+cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
+. ./"tasks-docker.sh"
+cd "$saved_pwd_85053ae" || exit 1
+set -o nounset -o errexit
+task_docker__start "$@"
+'''
+
+[tasks."docker:stop"]
+description='''Stop Docker.'''
+run='''
+#!/usr/bin/env sh
+# .mise/tasks-docker.sh:task_docker__stop
+_APPDIR="$MISE_PROJECT_ROOT"/".mise"
+saved_pwd_85053ae="$PWD"
+cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
+. ./"tasks-docker.sh"
+cd "$saved_pwd_85053ae" || exit 1
+set -o nounset -o errexit
+task_docker__stop "$@"
+'''
+
+[tasks."docker:start:temp"]
+description='''Start Docker service temporarily. If Docker is already running, do nothing when the task runner exits.'''
+run='''
+#!/usr/bin/env sh
+# .mise/tasks-docker.sh:task_docker__start__temp
+_APPDIR="$MISE_PROJECT_ROOT"/".mise"
+saved_pwd_85053ae="$PWD"
+cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
+. ./"tasks-docker.sh"
+cd "$saved_pwd_85053ae" || exit 1
+set -o nounset -o errexit
+task_docker__start__temp "$@"
+'''
+hide=true
+
+[tasks."docker:debian:exec"]
+description='''Run Docker container.'''
+run='''
+#!/usr/bin/env sh
+# .mise/tasks-docker.sh:task_docker__debian__exec
+_APPDIR="$MISE_PROJECT_ROOT"/".mise"
+saved_pwd_85053ae="$PWD"
+cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
+. ./"tasks-docker.sh"
+cd "$saved_pwd_85053ae" || exit 1
+set -o nounset -o errexit
+task_docker__debian__exec "$@"
+'''
+
 [tasks."hooks:log:test"]
 description=''''''
 run='''
@@ -59,77 +130,6 @@ set -o nounset -o errexit
 task_hooks__log "$@"
 '''
 hide=true
-
-[tasks."docker:status"]
-description='''Show the status of Docker.'''
-run='''
-#!/usr/bin/env sh
-# .mise/tasks-project.sh:task_docker__status
-_APPDIR="$MISE_PROJECT_ROOT"/".mise"
-saved_pwd_85053ae="$PWD"
-cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
-. ./"tasks-project.sh"
-cd "$saved_pwd_85053ae" || exit 1
-set -o nounset -o errexit
-task_docker__status "$@"
-'''
-
-[tasks."docker:start"]
-description='''Start Docker.'''
-run='''
-#!/usr/bin/env sh
-# .mise/tasks-project.sh:task_docker__start
-_APPDIR="$MISE_PROJECT_ROOT"/".mise"
-saved_pwd_85053ae="$PWD"
-cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
-. ./"tasks-project.sh"
-cd "$saved_pwd_85053ae" || exit 1
-set -o nounset -o errexit
-task_docker__start "$@"
-'''
-
-[tasks."docker:stop"]
-description='''Stop Docker.'''
-run='''
-#!/usr/bin/env sh
-# .mise/tasks-project.sh:task_docker__stop
-_APPDIR="$MISE_PROJECT_ROOT"/".mise"
-saved_pwd_85053ae="$PWD"
-cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
-. ./"tasks-project.sh"
-cd "$saved_pwd_85053ae" || exit 1
-set -o nounset -o errexit
-task_docker__stop "$@"
-'''
-
-[tasks."docker:start:temp"]
-description='''Start Docker service temporarily. If Docker is already running, do nothing when the task runner exits.'''
-run='''
-#!/usr/bin/env sh
-# .mise/tasks-project.sh:task_docker__start__temp
-_APPDIR="$MISE_PROJECT_ROOT"/".mise"
-saved_pwd_85053ae="$PWD"
-cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
-. ./"tasks-project.sh"
-cd "$saved_pwd_85053ae" || exit 1
-set -o nounset -o errexit
-task_docker__start__temp "$@"
-'''
-hide=true
-
-[tasks."docker:debian:exec"]
-description=''''''
-run='''
-#!/usr/bin/env sh
-# .mise/tasks-project.sh:task_docker__debian__exec
-_APPDIR="$MISE_PROJECT_ROOT"/".mise"
-saved_pwd_85053ae="$PWD"
-cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
-. ./"tasks-project.sh"
-cd "$saved_pwd_85053ae" || exit 1
-set -o nounset -o errexit
-task_docker__debian__exec "$@"
-'''
 
 [tasks."session:init"]
 description='''Clears the session environment.'''
