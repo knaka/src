@@ -15,7 +15,7 @@ mise() {
   then
     os=windows
     exe_ext=.exe
-  elif test -f /System/Library/CoreServices/SystemVersion.plist
+  elif test -r /System/Library/CoreServices/SystemVersion.plist
   then
     os=macos
   elif test -d /proc -a -d /sys/kernel
@@ -34,7 +34,7 @@ mise() {
     local arch
     case "$(uname -m)" in
       (x86_64) arch=x64;;
-      (arm64) arch=arm64;;
+      (aarch64) arch=arm64;;
       (*) return 1;
     esac
     local exe_base="mise-v$mise_ver_e8ccfbb-$os-$arch$exe_ext"

@@ -3,12 +3,13 @@
 # shellcheck shell=sh
 "${sourced_454f41d-false}" && return 0; sourced_454f41d=true
 
-set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test "$2" != "$0"; then _APPDIR="$2"; fi; cd "$_APPDIR" || exit 1; fi
-set -- _LIBDIR .lib "$@"
+test "${_APPDIR+set}" = set || { cd "${0%/*}" || cd "${0%\\*}" || cd . || exit 1; _APPDIR="$PWD"; cd "$OLDPWD" || exit 1; } 2>/dev/null
+if test "${1:+$1}" = _LIBDIR; then cd "$2" || exit 1; else cd "$_APPDIR" || exit 1; fi; set -- "$OLDPWD" "$@"
+set -- _LIBDIR ./.lib "$@"
 . ./.lib/utils.sh
 . ./.lib/commands.sh
 shift 2
-cd "$1" || exit 1; shift 2
+cd "$1" || exit 1; shift
 
 go_build() {
   # If the directory from which a command is executed is in a symlink and it appears outside of the workspace the IDE is working in, the debugger treats breakpoints as not set.

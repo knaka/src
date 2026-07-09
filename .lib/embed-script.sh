@@ -2,10 +2,12 @@
 # shellcheck shell=sh
 "${sourced_eaf97e4-false}" && return 0; sourced_eaf97e4=true
 
-set -- "$PWD" "$@"; if test "${2:+$2}" = _LIBDIR; then cd "$3" || exit 1; fi
+test "${_APPDIR+set}" = set || { cd "${0%/*}" || cd "${0%\\*}" || cd . || exit 1; _APPDIR="$PWD"; cd "$OLDPWD" || exit 1; } 2>/dev/null
+if test "${1:+$1}" = _LIBDIR; then cd "$2" || exit 1; else cd "$_APPDIR" || exit 1; fi; set -- "$OLDPWD" "$@"
+set -- _LIBDIR . "$@"
 . ./utils.sh
 . ./commands.sh
-script_902b082="$(realpath ./embed.py)"
+shift 2
 cd "$1" || exit 1; shift
 
 # This function is tested, do not inlined.
