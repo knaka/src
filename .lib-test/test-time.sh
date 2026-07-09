@@ -11,6 +11,8 @@ shift 2
 cd "$1" || exit 1; shift
 
 test_time() {
+  init_temp
+
   local result
 
   # Outputs current date and time in ISO-8601 format.

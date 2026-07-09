@@ -11,6 +11,7 @@ shift 2
 cd "$1" || exit 1; shift
 
 test_script_embed() {
+  init_temp
   if sh ./testdata/original.sh | grep -q "BEGINNING"
   then
     false

@@ -102,7 +102,7 @@ run_tests() {
     (
       unset TEMP_DIR
       trap : EXIT
-      echo "($test_name)"
+      # echo "($test_name)"
       set -o errexit
       "test_$test_name"
     ) >"$log_file_path" 2>&1

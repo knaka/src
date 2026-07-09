@@ -20,5 +20,5 @@ test_worker() {
   is_worker_alive "$wid" "$wid2"
   stop_worker "$wid"
   wait_worker --timeout-sec=10 "$wid"
-  ! kill -0 "$(pid_of_worker "$wid")"
+  ! kill -0 "$(pid_of_worker "$wid")" >/dev/null 2>&1
 }

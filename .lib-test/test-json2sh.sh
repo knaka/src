@@ -21,6 +21,8 @@ EOF
 }
 
 test_json2sh() {
+  init_temp
+  
   local expected="$TEMP_DIR/390f638.sh"
   json2sh_expected >"$expected"
 

@@ -78,7 +78,7 @@ stop_worker() {
   local wid
   for wid in "$@"
   do
-    kill -TERM "$wid" || :
+    kill -TERM "$wid" >/dev/null 2>&1 || :
   done
   sleep 0.1
   for wid in "$@"
