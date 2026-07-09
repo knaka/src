@@ -77,7 +77,7 @@ run_tests() {
     )
   fi
   local some_failed=false
-  local log_file_path="$TEMP_DIR"/485d347
+  local log_file_path
   "$VERBOSE" && echo "Running tests: $*" >&2
   local test_name
   for test_name in "$@"
@@ -87,6 +87,7 @@ run_tests() {
       tests_to_run="$tests_to_run $test_name"
       continue
     fi
+    log_file_path="$(mktemp "$TEMP_DIR"/XXXXXX)"
     local saved_flags
     saved_flags="$(set +o)"
     # $(set +o) runs in a subshell where bash disables errexit, so it always
@@ -99,6 +100,9 @@ run_tests() {
     set +o errexit
     # Run test in a subshell with errexit enabled. This allows the test to exit immediately on error while the parent shell continues to run subsequent tests.
     (
+      unset TEMP_DIR
+      trap : EXIT
+      echo "($test_name)"
       set -o errexit
       "test_$test_name"
     ) >"$log_file_path" 2>&1
@@ -109,14 +113,14 @@ run_tests() {
       printf "%sTest \"%s\" Passed%s\n" "$GREEN" "$test_name" "$NORMAL" >&2
       if "$VERBOSE"
       then
-        sed -e 's/^/  /' <"$log_file_path" >&2
+        test -r "$log_file_path" && sed -e 's/^/  /' <"$log_file_path" >&2
       fi
     elif test "$rc" -eq "$rc_test_skipped"
     then
       printf "%sTest \"%s\" Skipped%s\n" "$YELLOW" "$test_name" "$NORMAL" >&2
     else
       printf "%sTest \"%s\" Failed with RC %d%s\n" "$RED" "$test_name" "$rc" "$NORMAL" >&2
-      sed -e 's/^/  /' <"$log_file_path" >&2
+      test -r "$log_file_path" && sed -e 's/^/  /' <"$log_file_path" >&2
       some_failed=true
     fi
   done

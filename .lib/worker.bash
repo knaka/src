@@ -122,7 +122,11 @@ wait_worker_start() {
     while :
     do
       is_worker_alive "$wid" && break
-      test "$timeout_sec" -eq 0 && return 1
+      if test "$timeout_sec" -eq 0
+      then
+        echo "Timedout to wait start: \"$(cat "$TEMP_DIR"/args."$wid")\"" >&2
+        return 1
+      fi
       sleep 1
       timeout_sec=$((timeout_sec - 1))
     done
@@ -156,7 +160,11 @@ wait_worker() {
     while :
     do
       is_worker_alive "$wid" || break
-      test "$timeout_sec" -eq 0 && return 1
+      if test "$timeout_sec" -eq 0
+      then
+        echo "Timedout to wait: \"$(cat "$TEMP_DIR"/args."$wid")\"" >&2
+        return 1
+      fi
       sleep 1
       timeout_sec=$((timeout_sec - 1))
     done

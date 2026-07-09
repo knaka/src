@@ -79,7 +79,7 @@ cleanup_temp() {
 
 # Create a temporary directory and assign $TEMP_DIR env var
 init_temp() {
-  first_call 14b82c7 || return 0
+  test "${TEMP_DIR+set}" && return 0
   TEMP_DIR="$(mktemp -d)"
   # shellcheck disable=SC2016
   prepend_cleanup cleanup_temp
