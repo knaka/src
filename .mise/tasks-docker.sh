@@ -74,7 +74,7 @@ task_docker__start__temp() {
 }
 
 # Run Debian Docker container.
-task_docker__debian__exec() {
-  task_docker__start__temp
+task_docker__debian__run() {
+  run_once task_docker__start__temp
   docker run --rm -it -v "$PWD:/work" "$(docker build --quiet --file debian.Dockerfile .)" "$@"
 }
