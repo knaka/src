@@ -90,9 +90,8 @@ task() {
   esac
 }
 
-case "${0##*/}" in
-  (task|task.sh)
-    set -o nounset -o errexit
-    task "$@"
-    ;;
-esac
+_() { test "${0##*/}" = "$1" -o "${0##*\\}" = "$1" -o "${0##*/}" = "$1.sh" -o "${0##*\\}" = "$1.sh"; }; if _ task
+then
+  set -o nounset -o errexit
+  task "$@"
+fi

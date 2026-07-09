@@ -55,7 +55,6 @@ run_tests() {
     . ./"$test_file_path"
     psv_test_file_paths="$psv_test_file_paths$test_file_path|"
   done
-  
   all=false
   # If no test names are provided, run all.
   if test $# -eq 0
