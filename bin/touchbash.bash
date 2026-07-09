@@ -5,8 +5,8 @@ _loaded() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }
 # Generate Bash shell script scaffold.
 
 { pushd "${BASH_SOURCE[0]%/*}" || pushd "${BASH_SOURCE[0]%\\*}" || pushd .; } >/dev/null 2>&1
-. ./.lib/utils.bash
 set -- _LIBDIR . "$@"
+. ./.lib/utils.sh
 . ./rand7.sh
 shift 2
 popd >/dev/null || exit 1

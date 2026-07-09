@@ -11,13 +11,6 @@ set -- _LIBDIR ./.lib "$@"
 shift 2
 cd "$1" || exit 1; shift
 
-# set -- "$PWD" "${0%/*}" "$@"; test -z "${_APPDIR-}" && { test "$2" = "$0" && _APPDIR=. || _APPDIR="$2"; cd "$_APPDIR" || exit 1; }
-# if test "${1:+$1}" = _LIBDIR; then cd "$2" || exit 1; else cd "$_APPDIR" || exit 1; fi; set -- "$OLDPWD" "$@"
-# set -- _LIBDIR ./.lib "$@"
-# . ./.lib/utils.sh
-# shift 2
-# cd "$1" || exit 1; shift 2
-
 is_mise_project_dir() {
   local dir=.
   test $# -gt 0 && dir="$1"

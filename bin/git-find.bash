@@ -2,10 +2,6 @@
 # shellcheck shell=bash
 _() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ a7d2af9 && return 0
 
-# pushd "${BASH_SOURCE[0]%/*}" >/dev/null 2>&1 || pushd . >/dev/null
-# . ./.lib/utils.bash
-# popd >/dev/null || exit 1
-
 git-find() {
   local all_opt=""
   OPTIND=1; while getopts _-: OPT

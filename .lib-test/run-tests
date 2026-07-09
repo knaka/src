@@ -51,8 +51,10 @@ run_tests() {
   do
     test -r "$test_file_path" || continue
     "$VERBOSE" && echo "Reading test file \"$test_file_path\" in $PWD." >&2
+    set -- _LIBDIR . "$@"
     # shellcheck disable=SC1090
     . ./"$test_file_path"
+    shift 2
     psv_test_file_paths="$psv_test_file_paths$test_file_path|"
   done
   all=false

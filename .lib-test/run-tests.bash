@@ -8,10 +8,11 @@ then
   return 0 2>/dev/null || exit 0
 fi
 
-pushd "${BASH_SOURCE[0]%/*}" >/dev/null 2>&1 || pushd . >/dev/null
-. ./.lib/utils.bash
+{ pushd "${BASH_SOURCE[0]%/*}" || pushd "${BASH_SOURCE[0]%\\*}" || pushd .; } >/dev/null 2>&1
+set -- _LIBDIR ./.lib "$@"
+. ./.lib/utils.sh
   init_temp
-. ./test.sh
+shift 2
 popd >/dev/null || exit 1
 
 run_tests() {

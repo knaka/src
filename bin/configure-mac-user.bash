@@ -4,7 +4,9 @@
 _loaded() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _loaded 191d016 && return 0
 
 { pushd "${BASH_SOURCE[0]%/*}" || pushd "${BASH_SOURCE[0]%\\*}" || pushd .; } >/dev/null 2>&1
-. ./.lib/utils.bash
+#set -- _LIBDIR ./.lib "$@"
+. ./.lib/utils.sh
+# shift 2
 . ./ext2uti.bash
 popd >/dev/null || exit 1
 

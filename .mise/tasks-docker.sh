@@ -67,7 +67,6 @@ task_docker__start__temp() {
   then
     echo "Docker is already running. Using the existing Docker." >&2
   else
-    echo 2f783ed
     run_once task_docker__start
     prepend_cleanup task_docker__stop
   fi
