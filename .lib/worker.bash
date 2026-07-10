@@ -78,7 +78,10 @@ stop_worker() {
   local wid
   for wid in "$@"
   do
-    kill -TERM "$wid" >/dev/null 2>&1 || :
+    # Signal the whole process group (run_worker starts each job in its own
+    # group via `set -m`), so any children the worker itself backgrounded
+    # get terminated too, not just the worker's top-level process.
+    kill -TERM -- "-$wid" >/dev/null 2>&1 || :
   done
   sleep 0.1
   for wid in "$@"
