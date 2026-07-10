@@ -1,4 +1,4 @@
-# embed.py - Embeds minified file contents into shell-script files
+# Embeds minified file contents into shell-script files
 #
 # This script processes input files line by line, looking for #EMBED directives.
 # When a line matches the pattern:
@@ -7,7 +7,7 @@
 # referenced file, preserving the #EMBED comment for future updates.
 #
 # Usage:
-#   python embed.py input_file >output_file
+#   python embed-script.py input_file >output_file
 #
 # Supported file types for minification:
 #   .awk  - Removes comments, leading whitespace, and appends semicolons

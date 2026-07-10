@@ -6,9 +6,9 @@ test "${_APPDIR+set}" = set || { cd "${0%/*}" || cd "${0%\\*}" || cd . || exit 1
 if test "${1:+$1}" = _LIBDIR; then cd "$2" || exit 1; else cd "$_APPDIR" || exit 1; fi; set -- "$OLDPWD" "$@"
 set -- _LIBDIR . "$@"
 . ./utils.sh
-. ./commands.sh
+test -r ./.commands.sh && . ./commands.sh
 shift 2
-script_902b082="$(realpath ./embed.py)"
+script_902b082="$(realpath ./embed-script.py)"
 cd "$1" || exit 1; shift
 
 # This function is tested, do not inlined.

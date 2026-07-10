@@ -6,18 +6,20 @@
 #MISE description="Build stuff."
 # #MISE depends=["tasks:expand"]
 
-set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test "$2" != "$0"; then _APPDIR="$2"; fi; cd "$_APPDIR" || exit 1; fi
-set -- _LIBDIR .lib "$@"
-. ./.lib/utils.lib.sh
-. ./.lib/embed-script.lib.sh
+test "${_APPDIR+set}" = set || { cd "${0%/*}" || cd "${0%\\*}" || cd . || exit 1; _APPDIR="$PWD"; cd "$OLDPWD" || exit 1; } 2>/dev/null
+if test "${1:+$1}" = _LIBDIR; then cd "$2" || exit 1; else cd "$_APPDIR" || exit 1; fi; set -- "$OLDPWD" "$@"
+set -- _LIBDIR ../../.lib "$@"
+. ../../.lib/utils.sh
+. ../../.lib/embed-script.sh
 shift 2
-cd "$1" || exit 1; shift 2
+cd "$1" || exit 1; shift
+
+: "${LSV_EMBED_TARGETS=}"
 
 build() {
-  embed_minified \
-    "$TASK_PROJECT_DIR"/.lib/json2sh.lib.sh \
-    "$TASK_PROJECT_DIR"/.mise/tasks/tasks/expand \
-    #nop
+  local IFS="$ch_lf"
+  # shellcheck disable=SC2086
+  embed_minified $LSV_EMBED_TARGETS
 }
 
 case "${0##*/}" in
