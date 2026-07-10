@@ -92,6 +92,26 @@ has_external_command() {
   which "$1" >/dev/null
 }
 
+: "${RESULT-}"
+
+cmdbase_snake() {
+  local result=
+  local s="$1"
+  s="${s##*/}"
+  s="${s##*\\}"
+  s="${s%.sh}"
+  s="${s%.bash}"
+  local c
+  while test -n "$s"
+  do
+    c="${s%"${s#?}"}"
+    s="${s#?}"
+    test "$c" = - && c=_
+    result="$result$c"
+  done
+  RESULT="$result"
+}
+
 #endregion
 
 # ==========================================================================

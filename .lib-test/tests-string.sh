@@ -68,3 +68,14 @@ test_result_name() {
   set_result "$x"
   assert_eq "$x" "$RESULT_X"
 }
+
+test_cmdbase_snake() {
+  cmdbase_snake "/home/foo/bin/some"
+  assert_eq "some" "$RESULT"
+  cmdbase_snake "/home/foo/bin/some_name"
+  assert_eq "some_name" "$RESULT"
+  cmdbase_snake "/home/foo/bin/some-name"
+  assert_eq "some_name" "$RESULT"
+  cmdbase_snake "/home/foo/bin/some-name.sh"
+  assert_eq "some_name" "$RESULT"
+}

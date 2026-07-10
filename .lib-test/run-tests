@@ -103,7 +103,7 @@ run_tests() {
     # Run test in a subshell with errexit enabled. This allows the test to exit immediately on error while the parent shell continues to run subsequent tests.
     (
       unset TEMP_DIR
-      trap : EXIT
+      # trap : EXIT
       # echo "($test_name)"
       set -o errexit
       "test_$test_name"
