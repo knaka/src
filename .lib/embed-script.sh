@@ -23,11 +23,7 @@ embed_minified_sub() {
 # between single quotes with the minified contents of the referenced file.
 # Files are only updated if the content actually changes.
 embed_minified() {
-  if test $# = 0
-  then
-    echo "Usage: embed_minified <file>..." >&2
-    return 1
-  fi
+  test $# = 0 && return 0
 
   register_temp_cleanup
   local path

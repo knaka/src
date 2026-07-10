@@ -4,7 +4,7 @@
 _() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ d37a3cf && return 0
 
 # Mise - Home | mise-en-place https://mise.jdx.dev/
-mise_ver_e8ccfbb='__MISE_VERSION__'
+mise_ver_e8ccfbb=2026.7.5
 
 should_exec_9bf84a8=false
 
@@ -34,8 +34,8 @@ mise() {
     local arch
     case "$(uname -m)" in
       (x86_64) arch=x64;;
-      (aarch64) arch=arm64;;
-      (*) return 1;
+      (arm64|aarch64) arch=arm64;;
+      (*) return 1;;
     esac
     local exe_base="mise-v$mise_ver_e8ccfbb-$os-$arch$exe_ext"
     local exe_url="https://github.com/jdx/mise/releases/download/v$mise_ver_e8ccfbb/$exe_base"

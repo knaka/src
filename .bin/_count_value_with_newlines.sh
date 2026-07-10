@@ -85,8 +85,8 @@ count_lines_param() {
   while :
   do
     case "$1" in
-      (*"$newline_char"*)
-        set -- "${1#*"$newline_char"}" $(($2 + 1))
+      (*"$ch_lf"*)
+        set -- "${1#*"$ch_lf"}" $(($2 + 1))
         ;;
       (*)
         break
@@ -109,7 +109,7 @@ echo Solution 6: Use set -- to split by newlines and count positional parameters
 # avoids external commands and uses shell built-ins only.
 count_lines_b8ba285() {
   local saved_ifs="$IFS"
-  IFS="$newline_char"
+  IFS="$ch_lf"
   # shellcheck disable=SC2086
   set -- $1
   echo "$#"
@@ -132,7 +132,7 @@ echo Solution 7: Use positional parameters. >&2
 # shellcheck disable=SC2046
 x2702fbe() {
   local saved_ifs="$IFS"
-  IFS="$newline_char"
+  IFS="$ch_lf"
   set -- $(grep xxx "$file"); echo "$#" # 0 (correct)
   # shellcheck disable=SC2046
   set -- $(grep foo "$file"); echo "$#" # 1 (correct)

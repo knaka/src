@@ -7,9 +7,12 @@ task_output = "interleave"
 
 [env]
 MISE_PID = "{{ mise_pid }}"
-LSV_EMBED_TARGETS = """
+LSV_EMBED_SCRIPT_TARGETS = """
 {{ config_root }}/.lib/json2sh.sh
 {{ config_root }}/.mise/tasks/tasks/expand
+"""
+LSV_EMBED_HEREDOC_TARGETS = """
+{{ config_root }}/.mise/tasks/bootstrap/generate
 """
 
 [tools]

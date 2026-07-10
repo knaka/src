@@ -45,12 +45,12 @@ repo() {
     esac
   fi
   # If no ghq-subcommand is specified, show the list of repos.
-  local IFS="$newline_char"
+  local IFS="$ch_lf"
   # shellcheck disable=SC2046
   set -- $(ghq_list)
   if test -n "$prefix"
   then
-    local IFS="$newline_char"
+    local IFS="$ch_lf"
     while :
     do
       # Exact match

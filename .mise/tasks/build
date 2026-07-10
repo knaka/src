@@ -11,15 +11,19 @@ if test "${1:+$1}" = _LIBDIR; then cd "$2" || exit 1; else cd "$_APPDIR" || exit
 set -- _LIBDIR ../../.lib "$@"
 . ../../.lib/utils.sh
 . ../../.lib/embed-script.sh
+. ../../.lib/embed-heredoc.sh
 shift 2
 cd "$1" || exit 1; shift
 
-: "${LSV_EMBED_TARGETS=}"
+: "${LSV_EMBED_SCRIPT_TARGETS=}"
+: "${LSV_EMBED_HEREDOC_TARGETS=}"
 
 build() {
   local IFS="$ch_lf"
   # shellcheck disable=SC2086
-  embed_minified $LSV_EMBED_TARGETS
+  embed_minified $LSV_EMBED_SCRIPT_TARGETS
+  # shellcheck disable=SC2086
+  embed_heredoc $LSV_EMBED_HEREDOC_TARGETS
 }
 
 case "${0##*/}" in

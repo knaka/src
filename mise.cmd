@@ -1,6 +1,6 @@
 @REM Home | mise-en-place https://mise.jdx.dev/
 @REM Releases · jdx/mise https://github.com/jdx/mise/releases
-@set ver=2026.7.0
+@set ver=2026.7.5
 
 @echo off
 setlocal enabledelayedexpansion

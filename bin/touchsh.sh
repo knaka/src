@@ -36,13 +36,28 @@ gen_body_e1af234() { cat <<EOF
 ${func_name}() {
   echo "Function \"${func_name}\" is not implemented yet."
 }
+EOF
+}
 
+gen_call_33c667a() {
+if test "$func_name" = "$call_name"  
+then
+cat <<EOF
 _() { test "\${0##*/}" = "\$1" -o "\${0##*\\\\}" = "\$1" -o "\${0##*/}" = "\$1.sh" -o "\${0##*\\\\}" = "\$1.sh"; }; if _ ${func_name}
 then
   set -o nounset -o errexit
   ${func_name} "\$@"
 fi
 EOF
+else
+cat <<EOF
+_() { test "\${0##*/}" = "\$1" -o "\${0##*\\\\}" = "\$1" -o "\${0##*/}" = "\$1.sh" -o "\${0##*\\\\}" = "\$1.sh"; }; if _ ${func_name} || _ ${call_name}
+then
+  set -o nounset -o errexit
+  ${func_name} "\$@"
+fi
+EOF
+fi
 }
 
 gen_tasks_body_f774151() { cat <<EOF
@@ -84,6 +99,8 @@ touchsh() {
   fi
   local func_name
   func_name="$(echo "${file_base%.sh}" | tr '-' '_')"
+  local call_name
+  call_name="$(echo "${file_base%.sh}")"
   local pattern
   local has_ext
   case "$file_base" in
@@ -125,6 +142,8 @@ touchsh() {
       gen_source_block_8d319a6
       echo
       gen_body_e1af234
+      echo
+      gen_call_33c667a
     elif "$is_tasks"
     then
       gen_source_block_8d319a6
@@ -134,6 +153,8 @@ touchsh() {
       gen_source_block_8d319a6
       echo
       gen_body_e1af234
+      echo
+      gen_call_33c667a
     fi
   } \
   | if "$is_stdout"
