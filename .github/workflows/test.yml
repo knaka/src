@@ -53,6 +53,9 @@ jobs:
       - name: Run Full Tests
         if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' && github.event.schedule == '0 0 * * 6' }}
         run: mise run test --full
+      - name: Mise bootstrap
+        if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' && github.event.schedule == '0 0 * * 6' }}
+        run: ./mise version
   test-windows:
     runs-on: windows-latest
     steps:
@@ -71,3 +74,6 @@ jobs:
       - name: Run Full Tests
         if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' && github.event.schedule == '0 0 * * 6' }}
         run: mise run test --full
+      - name: Mise bootstrap
+        if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' && github.event.schedule == '0 0 * * 6' }}
+        run: .\mise.cmd version

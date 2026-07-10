@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-"${sourced_681a654-false}" && return 0; sourced_681a654=true
+_() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ 202658d && return 0
 
 set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test "$2" != "$0"; then _APPDIR="$2"; fi; cd "$_APPDIR" || exit 1; fi
 set -- _LIBDIR .lib "$@"
@@ -9,8 +9,7 @@ set -- _LIBDIR .lib "$@"
 shift 2
 cd "$1" || exit 1; shift 2
 
-yaml2json_help() {
-  cat <<EOF
+yaml2json_help() { cat <<EOF
 Convert YAML to JSON.
 
 Usage: ${0##*/} [options] [file...]
