@@ -37,7 +37,7 @@ date_iso() {
   date +"$iso_date_format"
 }
 
-if cmdbase_snake "$0"; test "$RESULT" = date_iso
+if cmdbase_snake_ "$0"; test "$RESULT" = date_iso
 then
   set -o nounset -o errexit
   date_iso "$@"

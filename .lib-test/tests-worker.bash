@@ -22,3 +22,8 @@ test_worker() {
   wait_worker --timeout-sec=10 "$wid"
   ! kill -0 "$(pid_of_worker "$wid")" >/dev/null 2>&1
 }
+
+test_zzz() {
+  init_temp 
+  ls -l "$TEMP_DIR"
+}

@@ -70,12 +70,12 @@ test_result_name() {
 }
 
 test_cmdbase_snake() {
-  cmdbase_snake "/home/foo/bin/some"
+  cmdbase_snake_ "/home/foo/bin/some"
   assert_eq "some" "$RESULT"
-  cmdbase_snake "/home/foo/bin/some_name"
+  cmdbase_snake_ "/home/foo/bin/some_name"
   assert_eq "some_name" "$RESULT"
-  cmdbase_snake "/home/foo/bin/some-name"
+  cmdbase_snake_ "/home/foo/bin/some-name"
   assert_eq "some_name" "$RESULT"
-  cmdbase_snake "/home/foo/bin/some-name.sh"
+  cmdbase_snake_ "/home/foo/bin/some-name.sh"
   assert_eq "some_name" "$RESULT"
 }

@@ -94,7 +94,7 @@ has_external_command() {
 
 : "${RESULT-}"
 
-cmdbase_snake() {
+cmdbase_snake_() {
   local result=
   local s="$1"
   s="${s##*/}"
