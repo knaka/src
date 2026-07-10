@@ -174,6 +174,7 @@ wait_worker() {
 cleanup_worker_queue() {
   # shellcheck disable=SC2046
   stop_worker --timeout-sec=10 $(cat "$worker_queue_dir_24f4ecb"/wids)
+  rm -fr "$worker_queue_dir_24f4ecb"
 }
 
 init_worker_queue() {

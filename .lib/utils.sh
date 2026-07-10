@@ -131,13 +131,13 @@ prepend_cleanup() {
   if test "$cleanup_cmds_054cf7c" != :
   then
     # shellcheck disable=SC3028
-    if test -n "$prev_bashpid_73b382c"
+    if test -n "$prev_bashpid_73b382c" # Bash >= 4
     then
       if test "$prev_bashpid_73b382c" != "$BASHPID"
       then
         cleanup_cmds_054cf7c=:
       fi
-    else
+    else # Others
       local temp_file
       temp_file="$(mktemp)"
       trap >"$temp_file"
