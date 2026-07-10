@@ -20,3 +20,21 @@ test_new_success() {
 test_new_success2() {
   assert_eq "$((1 + 2 + 3 + 4))" 10
 }
+
+cleanup1bash() { echo cleanup1bash; };
+cleanup2bash() { echo cleanup2bash; };
+cleanup3bash() { echo cleanup3bash; };
+
+test_prepend_cleanup_bash() {
+  local temp_file
+  temp_file="$(mktemp)"
+  prepend_cleanup cleanup1bash
+  (
+    prepend_cleanup cleanup2bash
+    prepend_cleanup cleanup3bash
+  ) >"$temp_file"
+  grep -q cleanup1bash "$temp_file" && false
+  grep -q cleanup2bash "$temp_file" || false
+  grep -q cleanup3bash "$temp_file" || false
+  rm -f "$temp_file"
+}

@@ -120,6 +120,7 @@ cmdbase_snake_() {
 : "${TEMP_DIR-}"
 
 cleanup_cmds_054cf7c=:
+previous_pid_73b382c=
 
 prepend_cleanup() {
   if test $# -ne 1
@@ -129,28 +130,30 @@ prepend_cleanup() {
   fi
   if test "$cleanup_cmds_054cf7c" != :
   then
-    local temp_file
-    temp_file="$(mktemp)"
-    # `trap -p ...` is available on POSIX.1-2024.
-    # shellcheck disable=SC3045
-    if trap -p EXIT >"$temp_file" 2>/dev/null
+    # shellcheck disable=SC3028
+    if test -n "$previous_pid_73b382c" \
+      && test "$previous_pid_73b382c" != "$BASHPID"
     then
-      if ! test -s "$temp_file"
-      then
-        cleanup_cmds_054cf7c=:
-      fi
+      cleanup_cmds_054cf7c=:
     else
+      local temp_file
+      temp_file="$(mktemp)"
       trap >"$temp_file"
       if ! grep EXIT "$temp_file" >/dev/null 2>&1
       then
         cleanup_cmds_054cf7c=:
       fi
+      rm -f "$temp_file"
     fi
-    rm -f "$temp_file"
   fi
   cleanup_cmds_054cf7c="${1}; $cleanup_cmds_054cf7c"
   # shellcheck disable=SC2064
   trap "$cleanup_cmds_054cf7c" EXIT
+  # shellcheck disable=SC3028
+  if test "${BASHPID+set}" = set
+  then
+    previous_pid_73b382c="$BASHPID"
+  fi
 }
 
 cleanup_temp() {

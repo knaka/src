@@ -92,3 +92,21 @@ test_first_call() {
   increment_2cfb6e4
   assert_eq "$counter_268b0bb" 1
 }
+
+cleanup1sh() { echo cleanup1sh; };
+cleanup2sh() { echo cleanup2sh; };
+cleanup3sh() { echo cleanup3sh; };
+
+test_prepend_cleanup_sh() {
+  local temp_file
+  temp_file="$(mktemp)"
+  prepend_cleanup cleanup1sh
+  (
+    prepend_cleanup cleanup2sh
+    prepend_cleanup cleanup3sh
+  ) >"$temp_file"
+  grep -q cleanup1sh "$temp_file" && false
+  grep -q cleanup2sh "$temp_file" || false
+  grep -q cleanup3sh "$temp_file" || false
+  rm -f "$temp_file"
+}
