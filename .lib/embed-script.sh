@@ -8,6 +8,7 @@ set -- _LIBDIR . "$@"
 . ./utils.sh
 . ./commands.sh
 shift 2
+script_902b082="$(realpath ./embed.py)"
 cd "$1" || exit 1; shift
 
 # This function is tested, do not inlined.
