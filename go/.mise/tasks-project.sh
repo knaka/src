@@ -1,13 +1,15 @@
+#!/usr/bin/env sh
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-"${sourced_c572edd-false}" && return 0; sourced_c572edd=true
+_() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ 45e2d86 && return 0
 
-set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test "$2" != "$0"; then _APPDIR="$2"; fi; cd "$_APPDIR" || exit 1; fi
-set -- _LIBDIR .lib "$@"
+test "${_APPDIR+set}" = set || { cd "${0%/*}" || cd "${0%\\*}" || cd . || exit 1; _APPDIR="$PWD"; cd "$OLDPWD" || exit 1; } 2>/dev/null
+if test "${1:+$1}" = _LIBDIR; then cd "$2" || exit 1; else cd "$_APPDIR" || exit 1; fi; set -- "$OLDPWD" "$@"
+set -- _LIBDIR ./.lib "$@"
 . ./.lib/utils.sh
 . ./.lib/commands.sh
 shift 2
-cd "$1" || exit 1; shift 2
+cd "$1" || exit 1; shift
 
 # Generate Go-inlined sample scripts.
 task_hello_sh__gen() {
@@ -30,7 +32,7 @@ task_depbuild() {
   then
     # shellcheck disable=SC2038
     # shellcheck disable=SC2046
-    set -- *.go $(find cmd -mindepth 1 -maxdepth 1 | xargs basename)
+    set -- *.go $(find cmd -print0 -mindepth 1 -maxdepth 1 | xargs -0 basename)
   fi
   local arg
   for arg in "$@"
@@ -76,10 +78,9 @@ EOF
 
 gen_unixy_shim_3b0072c() { cat <<EOF
 #!/usr/bin/env sh
-saved_pwd="\$PWD"
 cd "$PWD" || exit 1
 ./task "$task" "$name"
-cd "\$saved_pwd" || exit 1
+cd "\$OLDPWD" || exit 1
 exec "$PWD"/build/$name "\$@"
 EOF
 }
@@ -116,15 +117,3 @@ task_install() {
     fi
   done
 }
-
-# Go foo
-task_go__foo() {
-  echo 5029f61
-}
-
-case "${0##*/}" in
-  (tasks-*)
-    set -o nounset -o errexit
-    "$@"
-    ;;
-esac

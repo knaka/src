@@ -69,17 +69,3 @@ cd "$saved_pwd_85053ae" || exit 1
 set -o nounset -o errexit
 task_install "$@"
 '''
-
-[tasks."go:foo"]
-description='''Go foo'''
-run='''
-#!/usr/bin/env sh
-# .mise/tasks-project.sh:task_go__foo
-_APPDIR="$MISE_PROJECT_ROOT"/".mise"
-saved_pwd_85053ae="$PWD"
-cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
-. ./"tasks-project.sh"
-cd "$saved_pwd_85053ae" || exit 1
-set -o nounset -o errexit
-task_go__foo "$@"
-'''
