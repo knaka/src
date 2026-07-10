@@ -119,7 +119,7 @@ cmdbase_snake_() {
 
 : "${TEMP_DIR-}"
 
-clenaup_cmds_054cf7c=":"
+cleanup_cmds_054cf7c=:
 
 prepend_cleanup() {
   if test $# -ne 1
@@ -127,13 +127,35 @@ prepend_cleanup() {
     echo "prepend_cleanup takes one argument."
     return 1
   fi
-  clenaup_cmds_054cf7c="${1}; $clenaup_cmds_054cf7c"
+  if test "$cleanup_cmds_054cf7c" != :
+  then
+    local temp_file
+    temp_file="$(mktemp)"
+    # `trap -p ...` is available on POSIX.1-2024.
+    # shellcheck disable=SC3045
+    if trap -p EXIT >"$temp_file" 2>/dev/null
+    then
+      if ! test -s "$temp_file"
+      then
+        cleanup_cmds_054cf7c=:
+      fi
+    else
+      trap >"$temp_file"
+      if ! grep EXIT "$temp_file" >/dev/null 2>&1
+      then
+        cleanup_cmds_054cf7c=:
+      fi
+    fi
+    rm -f "$temp_file"
+  fi
+  cleanup_cmds_054cf7c="${1}; $cleanup_cmds_054cf7c"
   # shellcheck disable=SC2064
-  trap "$clenaup_cmds_054cf7c" EXIT
+  trap "$cleanup_cmds_054cf7c" EXIT
 }
 
 cleanup_temp() {
   rm -fr "$TEMP_DIR"
+  unset TEMP_DIR
 }
 
 # Create a temporary directory and assign $TEMP_DIR env var
@@ -173,7 +195,7 @@ register_child_cleanup() {
 
 # Call the finalization function before `exec` which does not call trap function.
 finalize() {
-  "$clenaup_cmds_054cf7c"
+  "$cleanup_cmds_054cf7c"
 }
 
 #endregion

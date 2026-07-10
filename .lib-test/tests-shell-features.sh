@@ -74,3 +74,8 @@ test_pos_params() {
   local count="$(printf "%s\n" $(printf "x%s\n" "$@") | wc -l)"
   assert_eq -m "f52c6b3" 2 "$count"
 }
+
+test_trap_p() {
+  # shellcheck disable=SC3045
+  trap -p EXIT
+}

@@ -26,6 +26,9 @@ trap_it() {
   trap clean_my_temp EXIT
   echo Parent
   trap
+  local old
+  old=$( (trap) )
+  echo 0e8faac "$old"
   echo ----
   (
     echo Child
