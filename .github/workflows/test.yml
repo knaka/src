@@ -13,7 +13,17 @@ on:
   # “In a public repository, scheduled workflows are automatically disabled when no repository activity has occurred in 60 days. ”
   #
   # — Events that trigger workflows - GitHub Docs https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows
+  #
+  # ┌───────────── minute (0 - 59)
+  # │ ┌───────────── hour (0 - 23)
+  # │ │ ┌───────────── day of the month (1 - 31)
+  # │ │ │ ┌───────────── month (1 - 12 or JAN-DEC)
+  # │ │ │ │ ┌───────────── day of the week (0 - 6 or SUN-SAT)
+  # │ │ │ │ │
+  # * * * * *
+  #
   schedule:
+    # Runs every Saturday at 00:00 UTC
     - cron: '0 0 * * 6'
   workflow_dispatch:
 env:

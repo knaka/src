@@ -24,6 +24,7 @@ run_tests() {
       (*) echo "$0: illegal option -- $OPT" >&2; exit 1;;
     esac
   done
+  shift $((OPTIND-1))
 
   cd "$_APPDIR" || exit 1
 

@@ -14,6 +14,7 @@ set -- _LIBDIR ./.lib "$@"
   init_temp
 shift 2
 popd >/dev/null || exit 1
+. ./test.sh
 
 run_tests() {
   OPTIND=1; while getopts _-: OPT
@@ -25,6 +26,7 @@ run_tests() {
       (*) echo "$0: illegal option -- $OPT" >&2; exit 1;;
     esac
   done
+  shift $((OPTIND-1))
 
   local RED=""
   local GREEN=""
