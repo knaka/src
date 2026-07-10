@@ -120,7 +120,7 @@ cmdbase_snake_() {
 : "${TEMP_DIR-}"
 
 cleanup_cmds_054cf7c=:
-previous_pid_73b382c=
+prev_bashpid_73b382c=
 
 prepend_cleanup() {
   if test $# -ne 1
@@ -131,10 +131,12 @@ prepend_cleanup() {
   if test "$cleanup_cmds_054cf7c" != :
   then
     # shellcheck disable=SC3028
-    if test -n "$previous_pid_73b382c" \
-      && test "$previous_pid_73b382c" != "$BASHPID"
+    if test -n "$prev_bashpid_73b382c"
     then
-      cleanup_cmds_054cf7c=:
+      if test "$prev_bashpid_73b382c" != "$BASHPID"
+      then
+        cleanup_cmds_054cf7c=:
+      fi
     else
       local temp_file
       temp_file="$(mktemp)"
@@ -152,7 +154,7 @@ prepend_cleanup() {
   # shellcheck disable=SC3028
   if test "${BASHPID+set}" = set
   then
-    previous_pid_73b382c="$BASHPID"
+    prev_bashpid_73b382c="$BASHPID"
   fi
 }
 
