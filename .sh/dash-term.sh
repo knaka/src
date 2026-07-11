@@ -11,14 +11,30 @@ shift 2
 cd "$1" || exit 1; shift
 
 dash_term() {
-  register_child_cleanup
-  while :
-  do
-    echo world
-    sleep 1
-  done &
-  sleep 5
-  echo hello
+  # register_child_cleanup
+  # while :
+  # do
+  #   echo world
+  #   sleep 1
+  # done &
+  # sleep 5
+  # echo hello
+  set -m
+  (
+    sleep 1234 &
+    pidsub=$!
+    echo 997e563 "$pidsub"
+    echo "$pidsub" >/tmp/pid.txt
+    sleep 3
+    kill -TERM -0
+    wait
+  ) &
+  pid=$!
+  echo 997e563 "$pid"
+  wait
+  pidsub="$(cat /tmp/pid.txt)"
+  echo 095a846"$pidsub"
+  ! kill -0 "$pidsub"
 }
 
 _() { test "${0##*/}" = "$1" -o "${0##*\\}" = "$1" -o "${0##*/}" = "$1.sh" -o "${0##*\\}" = "$1.sh"; }; if _ dash_term || _ dash-term

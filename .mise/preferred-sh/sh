@@ -1,0 +1,15 @@
+#!/bin/sh
+# vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
+# shellcheck shell=sh
+
+IFS='|'
+for shell in ${PSV_PREFERRED_SHELLS-bash --posix|/bin/sh|dash}
+do
+  cmd="${shell%% *}"
+  if command -v "$cmd" >/dev/null 2>&1
+  then
+    unset IFS
+    exec $shell "$@"
+  fi
+done
+exec /bin/sh "$@"
