@@ -19,6 +19,9 @@ run_worker() {
   touch "$log_file"
   local disable_monitor=false
   [[ $- != *m* ]] && set -m && disable_monitor=true
+  # Bash disables monitor mode inside a subshell, so any nested sub-subshell
+  # shares the same PGID. Note, however, that `$-` and `set -o` output inside
+  # a subshell still reflect the parent shell's state.
   "$@" </dev/null >"$log_file" 2>&1 &
   local pid="$!"
   # `disown` is Bash specific.

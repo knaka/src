@@ -128,8 +128,12 @@ prepend_cleanup() {
     echo "prepend_cleanup takes one argument."
     return 1
   fi
+  # Traps are reset in subshells, so "cleanup_cmds" must be reset too.
+  # — Command Execution Environment (Bash Reference Manual) https://doc.guix.gnu.org/bash/latest/en/html_node/Command-Execution-Environment.html
   if test "$cleanup_cmds_054cf7c" != :
   then
+    # Note that `trap -p ...` output inside a Bash subshell reflects the parent
+    # shell's state, so it cannot be relied on for this check.
     # shellcheck disable=SC3028
     if test -n "$prev_bashpid_73b382c" # Bash >= 4
     then
@@ -138,6 +142,9 @@ prepend_cleanup() {
         cleanup_cmds_054cf7c=:
       fi
     else # Others
+      # Piping directly into grep would check the subshell's own trap (since a
+      # pipeline stage runs in a subshell), so write the parent shell's trap
+      # state to a temp file first and grep that instead.
       local temp_file
       temp_file="$(mktemp)"
       trap >"$temp_file"
