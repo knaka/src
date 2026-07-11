@@ -38,3 +38,37 @@ test_prepend_cleanup_bash() {
   grep -q cleanup3bash "$temp_file" || false
   rm -f "$temp_file"
 }
+
+test_cleanup_child_processes_bash() {
+  init_temp
+  local child_pid_file="$TEMP_DIR/child_pid"
+
+  set -m
+  (
+    register_child_cleanup
+    sleep 100 &
+    echo "$!" >"$child_pid_file"
+    wait
+    echo This must not be printed. >&2
+  ) &
+  local harness_pid="$!"
+  set +m
+  sleep 0.1
+
+  # child_pid_file が現れるまでポーリング
+  local i=0
+  while ! test -s "$child_pid_file"
+  do
+    i=$((i + 1))
+    assert_true -m 2b0eace test $i -lt 100
+    sleep 0.1
+  done
+  local child_pid
+  child_pid="$(cat "$child_pid_file")"
+
+  kill -TERM "$harness_pid"
+  sleep 0.5
+
+  assert_false -m ee256b6 kill -0 "$child_pid" 2>/dev/null
+  assert_false -m 5cea2a3 kill -0 "$harness_pid" 2>/dev/null
+}

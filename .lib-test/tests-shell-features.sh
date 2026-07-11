@@ -81,6 +81,8 @@ test_pos_params() {
 # }
 
 test_cleanup_child_processes() {
+  skip_unless is_bash
+
   init_temp
   local child_pid_file="$TEMP_DIR/child_pid"
 
