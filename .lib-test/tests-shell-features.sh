@@ -90,9 +90,11 @@ test_cleanup_child_processes() {
     sleep 100 &
     echo "$!" >"$child_pid_file"
     wait
+    echo This must not be printed. >&2
   ) &
   local harness_pid="$!"
   set +m
+  sleep 0.1
 
   # child_pid_file が現れるまでポーリング
   local i=0
@@ -108,6 +110,6 @@ test_cleanup_child_processes() {
   kill -TERM "$harness_pid"
   sleep 0.5
 
-  assert_false -m 3e0485f "kill -0 $child_pid 2>/dev/null"
-  assert_false -m 4a65d72 "kill -0 $harness_pid 2>/dev/null"
+  assert_false -m 3e0485f kill -0 "$child_pid" 2>/dev/null
+  assert_false -m 4a65d72 kill -0 "$harness_pid" 2>/dev/null
 }
