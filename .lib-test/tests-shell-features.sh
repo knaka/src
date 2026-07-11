@@ -79,3 +79,35 @@ test_pos_params() {
 #   # shellcheck disable=SC3045
 #   trap -p EXIT
 # }
+
+test_cleanup_child_processes() {
+  init_temp
+  local child_pid_file="$TEMP_DIR/child_pid"
+
+  set -m
+  (
+    register_child_cleanup
+    sleep 100 &
+    echo "$!" >"$child_pid_file"
+    wait
+  ) &
+  local harness_pid="$!"
+  set +m
+
+  # child_pid_file が現れるまでポーリング
+  local i=0
+  while ! test -s "$child_pid_file"
+  do
+    i=$((i + 1))
+    assert_true -m 01da160 test $i -lt 100
+    sleep 0.1
+  done
+  local child_pid
+  child_pid="$(cat "$child_pid_file")"
+
+  kill -TERM "$harness_pid"
+  sleep 0.5
+
+  assert_false -m 3e0485f "kill -0 $child_pid 2>/dev/null"
+  assert_false -m 4a65d72 "kill -0 $harness_pid 2>/dev/null"
+}

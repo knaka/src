@@ -185,19 +185,13 @@ register_temp_cleanup() {
 
 cleanup_child_processes() {
   trap : TERM
-  if is_windows
+  if is_bbwin
   then
     # After catching TERM, doing something seems to fail.
     kill -TERM -$$
-  elif is_macos
-  then
-    kill -TERM 0
-  elif is_linux
-  then
-    kill -TERM 0
-  else
-    echo Not implemented >&2
+    return $?
   fi
+  kill -TERM 0
 }
 
 # Register child-proceses cleanup trap handler.
