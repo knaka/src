@@ -81,6 +81,7 @@ test_pos_params() {
 # }
 
 test_cleanup_child_processes() {
+  # Dash でも monitor で新規の PGID は付くのだが、kill -TERM 0 で親ごと terminated。
   skip_unless is_bash_binary
 
   init_temp
