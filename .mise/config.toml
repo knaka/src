@@ -14,7 +14,7 @@ LSV_EMBED_SCRIPT_TARGETS = """
 LSV_EMBED_HEREDOC_TARGETS = """
 {{ config_root }}/.mise/tasks/bootstrap/generate
 """
-_.path = [{os = ["linux"], path = "{{ config_root }}/.mise/preferred-sh"}]
+_.path = ["{{ config_root }}/.mise/preferred-sh"]
 
 [tools]
 "node" = "24"
