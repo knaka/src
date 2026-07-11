@@ -122,19 +122,14 @@ cmdbase_snake_() {
 cleanup_cmds_054cf7c=:
 prev_bashpid_73b382c=
 
-prepend_cleanup() {
-  if test $# -ne 1
-  then
-    echo "prepend_cleanup takes one argument."
-    return 1
-  fi
-  # Traps are reset in subshells, so "cleanup_cmds" must be reset too.
-  # — Command Execution Environment (Bash Reference Manual) https://doc.guix.gnu.org/bash/latest/en/html_node/Command-Execution-Environment.html
+# Traps are reset in subshells, so "cleanup_cmds" must be reset too.
+# — Command Execution Environment (Bash Reference Manual) https://doc.guix.gnu.org/bash/latest/en/html_node/Command-Execution-Environment.html
+# shellcheck disable=SC3028
+reset_cleanup_cmds_if_new_subshell() {
   if test "$cleanup_cmds_054cf7c" != :
   then
     # Note that `trap -p ...` output inside a Bash subshell reflects the parent
     # shell's state, so it cannot be relied on for this check.
-    # shellcheck disable=SC3028
     if test -n "$prev_bashpid_73b382c" # Bash >= 4
     then
       if test "$prev_bashpid_73b382c" != "$BASHPID"
@@ -155,14 +150,20 @@ prepend_cleanup() {
       rm -f "$temp_file"
     fi
   fi
+  test "${BASHPID+set}" = set && prev_bashpid_73b382c="$BASHPID"
+  :
+}
+
+prepend_cleanup() {
+  if test $# -ne 1
+  then
+    echo "prepend_cleanup takes one argument."
+    return 1
+  fi
+  reset_cleanup_cmds_if_new_subshell
   cleanup_cmds_054cf7c="${1}; $cleanup_cmds_054cf7c"
   # shellcheck disable=SC2064
   trap "$cleanup_cmds_054cf7c" EXIT
-  # shellcheck disable=SC3028
-  if test "${BASHPID+set}" = set
-  then
-    prev_bashpid_73b382c="$BASHPID"
-  fi
 }
 
 cleanup_temp() {
@@ -207,7 +208,9 @@ register_child_cleanup() {
 
 # Call the finalization function before `exec` which does not call trap function.
 finalize() {
+  reset_cleanup_cmds_if_new_subshell
   "$cleanup_cmds_054cf7c"
+  cleanup_cmds_054cf7c=:
 }
 
 #endregion
