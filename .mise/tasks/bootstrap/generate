@@ -61,8 +61,7 @@ mise() {
   command "$cmd_path" "$@"
 }
 
-_() { test "${0##*/}" = "$1" -o "${0##*\\}" = "$1" -o "${0##*/}" = "$1.sh" -o "${0##*\\}" = "$1.sh"; }
-if _ mise
+_() { case "${0##*[/\\]}" in ("$1"|"$1".*) :;; (*) ! :;; esac; }; if _ mise
 then
   set -o nounset -o errexit
   should_exec_9bf84a8=true
