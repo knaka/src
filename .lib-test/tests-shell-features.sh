@@ -89,6 +89,7 @@ test_cleanup_child_processes() {
 
   init_temp
   local child_pid_file="$TEMP_DIR/child_pid"
+
   set -m
   (
     register_child_cleanup
@@ -100,6 +101,7 @@ test_cleanup_child_processes() {
   local harness_pid="$!"
   set +m
   sleep 0.1
+
   # Poll until child_pid_file appears.
   local i=0
   while ! test -s "$child_pid_file"
