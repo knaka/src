@@ -23,7 +23,7 @@ EOF
 }
 
 gen_source_block_8d319a6() { cat <<'EOF'
-# test "${_APPDIR+set}" = set || { cd "${0%/*}" || cd "${0%\\*}" || cd . || exit 1; _APPDIR="$PWD"; cd "$OLDPWD" || exit 1; } 2>/dev/null
+# test "${_APPDIR+set}" = set || { cd "${0%[/\\]*}" || cd . || exit 1; _APPDIR="$PWD"; cd "$OLDPWD" || exit 1; } 2>/dev/null
 # if test "${1:+$1}" = _LIBDIR; then cd "$2" || exit 1; else cd "$_APPDIR" || exit 1; fi; set -- "$OLDPWD" "$@"
 # set -- _LIBDIR ./.lib "$@"
 # . ./.lib/utils.sh
@@ -43,7 +43,7 @@ gen_call_33c667a() {
 if test "$func_name" = "$call_name"  
 then
 cat <<EOF
-_() { test "\${0##*/}" = "\$1" -o "\${0##*\\\\}" = "\$1" -o "\${0##*/}" = "\$1.sh" -o "\${0##*\\\\}" = "\$1.sh"; }; if _ ${func_name}
+_() { test "\${0##*[/\\\\]}" = "\$1" -o "\${0##*[/\\\\]}" = "\$1.sh"; }; if _ ${func_name}
 then
   set -o nounset -o errexit
   ${func_name} "\$@"
@@ -100,7 +100,7 @@ touchsh() {
   local func_name
   func_name="$(echo "${file_base%.sh}" | tr '-' '_')"
   local call_name
-  call_name="$(echo "${file_base%.sh}")"
+  call_name="${file_base%.sh}"
   local pattern
   local has_ext
   case "$file_base" in

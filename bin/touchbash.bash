@@ -26,7 +26,7 @@ EOF
 }
 
 gen_source_block_67741b4() { cat <<'EOF'
-# { pushd "${BASH_SOURCE[0]%/*}" || pushd "${BASH_SOURCE[0]%\\*}" || pushd .; } >/dev/null 2>&1
+# { pushd "${BASH_SOURCE[0]%[/\\]*}" || pushd .; } >/dev/null 2>&1
 # . ./.lib/utils.bash
 # set -- _LIBDIR .lib "$@"
 # shift 2

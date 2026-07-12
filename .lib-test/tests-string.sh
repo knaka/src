@@ -6,6 +6,7 @@ _() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ 8e
 test "${_APPDIR+set}" = set || { cd "${0%/*}" || cd "${0%\\*}" || cd . || exit 1; _APPDIR="$PWD"; cd "$OLDPWD" || exit 1; } 2>/dev/null
 if test "${1:+$1}" = _LIBDIR; then cd "$2" || exit 1; else cd "$_APPDIR" || exit 1; fi; set -- "$OLDPWD" "$@"
 set -- _LIBDIR ./.lib "$@"
+. ./.lib/utils.sh
 . ./.lib/assert.sh
 . ./.lib/string.sh
 shift 2
@@ -42,24 +43,34 @@ test_string_gsub() {
 }
 
 test_string_index() {
-  index "peanut" "an"
+  index_ "peanut" "an"
   assert_eq "$RESULT" 3
-  index "peanut" "XXX"
+  index_ "peanut" "XXX"
   assert_eq "$RESULT" 0
-  index "" ""
+  index_ "" ""
   assert_eq "$RESULT" 0
-  index "foo" ""
+  index_ "foo" ""
   assert_eq "$RESULT" 0
 }
 
 test_string_length() {
-  length "apple"
+  length_ "apple"
   assert_eq "$RESULT" 5
 }
 
 test_string_split() {
-  split "cul-de-sac" "-"
+  split_ "cul-de-sac" "-"
   assert_eq "$RESULT" "cul de sac"
+
+  split_ --result-delimiter="${ch_us}" "foo bar baz|hoge fuga |hare" "|"
+  assert_eq "$RESULT" "foo bar baz${ch_us}hoge fuga ${ch_us}hare"
+  local saved_ifs="$IFS"; local IFS="$ch_us"
+  local arg
+  for arg in $RESULT
+  do
+    echo c80fd85 "$arg"
+  done
+  IFS="$saved_ifs"
 }
 
 test_result_name() {

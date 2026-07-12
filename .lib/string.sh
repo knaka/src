@@ -5,6 +5,13 @@ _() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ 95
 
 # AWK-like string functions not using subshell.
 
+test "${_APPDIR+set}" = set || { cd "${0%/*}" || cd "${0%\\*}" || cd . || exit 1; _APPDIR="$PWD"; cd "$OLDPWD" || exit 1; } 2>/dev/null
+if test "${1:+$1}" = _LIBDIR; then cd "$2" || exit 1; else cd "$_APPDIR" || exit 1; fi; set -- "$OLDPWD" "$@"
+set -- _LIBDIR . "$@"
+. ./utils.sh
+shift 2
+cd "$1" || exit 1; shift
+
 result_name_9a2b2db=RESULT
 
 set_result_name() {
@@ -150,26 +157,22 @@ gsub_() {
   local from="$2"
   test -z "$from" && set_result "$s" && return 0
   local to="$3"
-  local c
+  local left
   while test -n "$s"
   do
-    case "$s" in
-      ("$from"*)
-        result="$result$to"
-        substr_ "$s" $((${#from}+1))
-        eval "s=\"\$$result_name_9a2b2db\""
-        ;;
-      (*)
-        c="${s%"${s#?}"}"
-        s="${s#?}"
-        result="${result}$c"
-        ;;
-    esac
+    left=${s%%"$from"*}
+    if test "$left" = "$s"
+    then
+      result="$result$s"
+      break
+    fi
+    result="$result$left$to"
+    s="${s#*"$from"}"
   done
   set_result "$result"
 }
 
-index() {
+index_() {
   local result=0
   local s="$1"
   local find="$2"
@@ -191,10 +194,22 @@ index() {
   set_result "$result"
 }
 
-length() {
+length_() {
   set_result ${#1}
 }
 
-split() {
-  gsub_ "$1" "$2" " "
+split_() {
+  local delim=" "
+  OPTIND=1; while getopts _-: OPT
+  do
+    test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
+    case "$OPT" in
+      (delim|delimiter|result-delim|result-delimiter) delim="$OPTARG";;
+      (?) return 1;;
+      (*) echo "$0: illegal option -- $OPT" >&2; return 1;;
+    esac
+  done
+  shift $((OPTIND-1))
+
+  gsub_ "$1" "$2" "$delim"
 }

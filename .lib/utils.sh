@@ -95,21 +95,19 @@ has_external_command() {
 : "${RESULT-}"
 
 cmdbase_snake_() {
-  local result=
+  RESULT=
   local s="$1"
-  s="${s##*/}"
-  s="${s##*\\}"
+  s="${s##*[/\\]}"
   s="${s%.sh}"
   s="${s%.bash}"
-  local c
+  local left
   while test -n "$s"
   do
-    c="${s%"${s#?}"}"
-    s="${s#?}"
-    test "$c" = - && c=_
-    result="$result$c"
+    left=${s%%-*}
+    test "$left" = "$s" && RESULT="$RESULT$s" && return
+    RESULT="$RESULT$left"_
+    s="${s#*-}"
   done
-  RESULT="$result"
 }
 
 #endregion

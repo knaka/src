@@ -55,8 +55,7 @@ test_pos_params() {
   set -- "aaa  bbb" "ccc"
   assert_eq 2 $#
 
-  local IFS
-  IFS="$ch_lf"
+  local IFS="$ch_lf"
 
   # shellcheck disable=SC2046
   set -- $(printf "x%s\n" "$@")
