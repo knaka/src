@@ -22,7 +22,7 @@ cowsay() {
   mise exec "npm:cowsay@$cowsay_version_14ac6ce" -- cowsay "$@"
 }
 
-_() { test "${0##*[/\\]}" = "$1" -o "${0##*[/\\]}" = "$1.sh"; }; if _ cowsay
+_() { case "${0##*[/\\]}" in ("$1"|"$1".*) :;; (*) ! :;; esac; }; if _ cowsay
 then
   set -o nounset -o errexit
   cowsay "$@"

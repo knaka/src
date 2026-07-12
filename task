@@ -2,8 +2,8 @@
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
 
-set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test "$2" != "$0"; then _APPDIR="$2"; fi; cd "$_APPDIR" || exit 1; fi
-cd "$1" || exit 1; shift 2
+test "${_APPDIR+set}" = set || { cd "${0%[/\\]*}" || cd . || exit 1; _APPDIR="$PWD"; cd "$OLDPWD" || exit 1; } 2>/dev/null
+cd "$1" || exit 1; shift
 
 resolve_file() {
   test "${file+set}" = set || return 1

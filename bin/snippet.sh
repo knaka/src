@@ -15,8 +15,8 @@ snippet() {
     -e 's/^(.*)$/"\1",/' \
     -e 's@_rand7_@${RANDOM_HEX}${RANDOM_HEX/^(.).*/$1/}@g' \
     -e 's/foobar/${1}/g' \
-    -e 's/_tabstop_\(([^)]+)\)/${1:\1}/g' \
-    -e 's/_tabstop_\[([^]]+)\]/${1:\1}/g' \
+    -e 's/_tabstop_\(([^)]+)\)/${1\1}/g' \
+    -e 's/_tabstop_\[([^]]+)\]/${1\1}/g' \
     -e 's/_tabstop_/${1}/g' \
     -e 's/_220b91b_/\\\\\\\\/g' \
     -e 's/^/\t\t\t/'

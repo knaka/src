@@ -5,14 +5,15 @@ _() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ cb
 
 # Generate Bourne shell script scaffold.
 
-set -- "$PWD" "${0%/*}" "$@"; test -z "${_APPDIR-}" && { test "$2" = "$0" && _APPDIR=. || _APPDIR="$2"; cd "$_APPDIR" || exit 1; }
+test "${_APPDIR+set}" = set || { cd "${0%[/\\]*}" || cd . || exit 1; _APPDIR="$PWD"; cd "$OLDPWD" || exit 1; } 2>/dev/null
+case "${1:+$1}" in (_LIBDIR) cd "$2" || exit 1;; (*) cd "$_APPDIR" || exit 1;; esac; set -- "$OLDPWD" "$@"
 set -- _LIBDIR ./.lib "$@"
 . ./.lib/utils.sh
 shift 2
 set -- _LIBDIR . "$@"
 . ./rand7.sh 
 shift 2
-cd "$1" || exit 1; shift 2
+cd "$1" || exit 1; shift
 
 gen_header_49df118() { cat <<EOF
 #!/usr/bin/env sh
@@ -24,7 +25,7 @@ EOF
 
 gen_source_block_8d319a6() { cat <<'EOF'
 # test "${_APPDIR+set}" = set || { cd "${0%[/\\]*}" || cd . || exit 1; _APPDIR="$PWD"; cd "$OLDPWD" || exit 1; } 2>/dev/null
-# if test "${1:+$1}" = _LIBDIR; then cd "$2" || exit 1; else cd "$_APPDIR" || exit 1; fi; set -- "$OLDPWD" "$@"
+# case "${1:+$1}" in (_LIBDIR) cd "$2" || exit 1;; (*) cd "$_APPDIR" || exit 1;; esac; 
 # set -- _LIBDIR ./.lib "$@"
 # . ./.lib/utils.sh
 # shift 2
@@ -40,24 +41,18 @@ EOF
 }
 
 gen_call_33c667a() {
-if test "$func_name" = "$call_name"  
+local name="$func_name"
+if test "$func_name" != "$call_name"
 then
+  name="$call_name"
+fi
 cat <<EOF
-_() { test "\${0##*[/\\\\]}" = "\$1" -o "\${0##*[/\\\\]}" = "\$1.sh"; }; if _ ${func_name}
+_() { case "\${0##*[/\\\\]}" in ("\$1"|"\$1".*) :;; (*) ! :;; esac; }; if _ ${name}
 then
   set -o nounset -o errexit
   ${func_name} "\$@"
 fi
 EOF
-else
-cat <<EOF
-_() { test "\${0##*/}" = "\$1" -o "\${0##*\\\\}" = "\$1" -o "\${0##*/}" = "\$1.sh" -o "\${0##*\\\\}" = "\$1.sh"; }; if _ ${func_name} || _ ${call_name}
-then
-  set -o nounset -o errexit
-  ${func_name} "\$@"
-fi
-EOF
-fi
 }
 
 gen_tasks_body_f774151() { cat <<EOF
@@ -169,7 +164,7 @@ touchsh() {
   fi
 }
 
-_() { test "${0##*/}" = "$1" -o "${0##*\\}" = "$1" -o "${0##*/}" = "$1.sh" -o "${0##*\\}" = "$1.sh"; }; if _ touchsh
+_() { case "${0##*[/\\]}" in ("$1"|"$1".*) :;; (*) ! :;; esac; }; if _ touchsh
 then
   set -o nounset -o errexit
   touchsh "$@"
