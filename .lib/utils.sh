@@ -154,16 +154,37 @@ reset_cleanup_cmds_if_new_subshell() {
   :
 }
 
-prepend_cleanup() {
+add_cleanup_5fbc8c7() {
+  local should_append=false
+  OPTIND=1; while getopts _-: OPT
+  do
+    test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
+    case "$OPT" in
+      (append) should_append=true;;
+      (?) return 1;;
+      (*) echo "$0: illegal option -- $OPT" >&2; return 1;;
+    esac
+  done
+  shift $((OPTIND-1))
+
   if test $# -ne 1
   then
     echo "prepend_cleanup takes one argument."
     return 1
   fi
   reset_cleanup_cmds_if_new_subshell
-  cleanup_cmds_054cf7c="${1}; $cleanup_cmds_054cf7c"
+  if "$should_append"
+  then
+    cleanup_cmds_054cf7c="$cleanup_cmds_054cf7c; ${1}"
+  else
+    cleanup_cmds_054cf7c="${1}; $cleanup_cmds_054cf7c"
+  fi
   # shellcheck disable=SC2064
   trap "$cleanup_cmds_054cf7c" EXIT
+}
+
+prepend_cleanup() {
+  add_cleanup_5fbc8c7 "$@"
 }
 
 cleanup_temp() {
@@ -198,14 +219,14 @@ cleanup_child_processes() {
 # Register child-proceses cleanup trap handler.
 register_child_cleanup() {
   first_call 5f719a3 || return 0
-  prepend_cleanup cleanup_child_processes
+  add_cleanup_5fbc8c7 --append cleanup_child_processes
   trap : TERM
 }
 
 # Call the finalization function before `exec` which does not call trap function.
 finalize() {
   reset_cleanup_cmds_if_new_subshell
-  "$cleanup_cmds_054cf7c"
+  $cleanup_cmds_054cf7c
   cleanup_cmds_054cf7c=:
 }
 

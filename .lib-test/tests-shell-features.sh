@@ -70,15 +70,17 @@ test_pos_params() {
   assert_eq "foo   bar" "$1"
   assert_eq "baz" "$2"
 
+  local count
   # shellcheck disable=SC2046
-  local count="$(printf "%s\n" $(printf "x%s\n" "$@") | wc -l)"
+  count="$(printf "%s\n" $(printf "x%s\n" "$@") | wc -l)"
   assert_eq -m "f52c6b3" 2 "$count"
 }
 
-# test_trap_p() {
-#   # shellcheck disable=SC3045
-#   trap -p EXIT
-# }
+test_trap_p() {
+  skip_unless is_bash_binary
+  # shellcheck disable=SC3045
+  trap -p EXIT
+}
 
 test_cleanup_child_processes() {
   # Dash でも monitor で新規の PGID は付くのだが、kill -TERM 0 で親ごと terminated。
