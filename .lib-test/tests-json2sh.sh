@@ -9,8 +9,6 @@ set -- _LIBDIR .lib "$@"
 shift 2
 cd "$1" || exit 1; shift
 
-
-
 json2sh_expected() {
   cat <<EOF
 json__user__name="Alice"

@@ -2,8 +2,11 @@
 # shellcheck shell=sh
 "${sourced_a5dd01a-false}" && return 0; sourced_a5dd01a=true
 
-set -- "$PWD" "$@"; if test "${2:+$2}" = _LIBDIR; then cd "$3" || exit 1; fi
+test "${_APPDIR+set}" = set || { cd "${0%[/\\]*}" || cd . || exit 1; _APPDIR="$PWD"; cd "$OLDPWD" || exit 1; } 2>/dev/null
+case "${1:+$1}" in (_LIBDIR) cd "$2" || exit 1;; (*) cd "$_APPDIR" || exit 1;; esac; set -- "$OLDPWD" "$@";
+set -- _LIBDIR . "$@"
 . ./commands.sh
+shift 2
 cd "$1" || exit 1; shift
 
 # Convert JSON object or array to shell variable assignment expressions.
