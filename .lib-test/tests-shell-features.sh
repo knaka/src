@@ -82,13 +82,13 @@ test_trap_p() {
   trap -p EXIT
 }
 
+# If you need job control, prefer writing it in Bash rather than sh (which could be ash or dash).
 test_cleanup_child_processes() {
-  # Dash でも monitor で新規の PGID は付くのだが、kill -TERM 0 で親ごと terminated。
+  # Dash does assign a new PGID when job control is enabled, but `kill -TERM 0` appears to terminate the parent as well.
   skip_unless is_bash_binary
 
   init_temp
   local child_pid_file="$TEMP_DIR/child_pid"
-
   set -m
   (
     register_child_cleanup
@@ -100,8 +100,7 @@ test_cleanup_child_processes() {
   local harness_pid="$!"
   set +m
   sleep 0.1
-
-  # child_pid_file が現れるまでポーリング
+  # Poll until child_pid_file appears.
   local i=0
   while ! test -s "$child_pid_file"
   do
