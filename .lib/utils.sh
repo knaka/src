@@ -394,18 +394,6 @@ field() {
   awk "{ print \$${1}} "
 }
 
-# Memoize the (mainly external) command output.
-memoize() {
-  local cache_file_path
-  cache_file_path="$TEMP_DIR"/cache-"$(echo "$@" | sha256sum | field 1)"
-  if ! test -r "$cache_file_path"
-  then
-    "$@" >"$cache_file_path"
-    return $?
-  fi
-  cat "$cache_file_path"
-}
-
 # Check if the file(s)/directories are newer than the destination.
 newer() {
   local found_than=false

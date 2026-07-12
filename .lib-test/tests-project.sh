@@ -7,6 +7,7 @@ set -- _LIBDIR .lib "$@"
 . ./.lib/utils.sh
 . ./.lib/assert.sh
 . ./.lib/path.sh
+. ./.lib/memoize.sh
 shift 2
 cd "$1" || exit 1; shift
 
@@ -109,4 +110,97 @@ test_prepend_cleanup_sh() {
   grep -q cleanup2sh "$temp_file" || false
   grep -q cleanup3sh "$temp_file" || false
   rm -f "$temp_file"
+}
+
+counter_path_df088c2=
+
+init_counter_00c8d2f() {
+  register_temp_cleanup
+  counter_path_df088c2="$TEMP_DIR"/counter_34b7258
+  echo 0 >"$counter_path_df088c2"
+}
+
+some_heavy_8403e65() {
+  echo Hello, World! "$@"
+  echo Doing something heavy...
+  local counter
+  counter="$(cat "$counter_path_df088c2")"
+  echo Counter "$counter"
+  echo Counter "$counter" >&2
+  echo $((counter + 1)) >"$counter_path_df088c2"
+}
+
+some_heavy_wrapper_50305e1() {
+  try_memoize f3155cf "$@" || return 0
+  some_heavy_8403e65
+  # And other heavy loads...
+  end_memoize
+}
+
+test_block_memoize() {
+  local result1
+  local result2
+  local counter
+
+  init_counter_00c8d2f
+
+  result1="$(some_heavy_8403e65)" # 1
+  result2="$(some_heavy_8403e65)" # 2
+  assert_neq "$result1" "$result2"
+
+  counter="$(cat "$counter_path_df088c2")"
+  assert_eq "$counter" 2
+
+  result1="$(some_heavy_wrapper_50305e1)" # 3
+  result2="$(some_heavy_wrapper_50305e1)" # 3
+  assert_eq "$result1" "$result2"
+  assert test -n "$result1"
+
+  counter="$(cat "$counter_path_df088c2")"
+  assert_eq "$counter" 3
+}
+
+some_failure_0f0189f() {
+  echo Hello
+  false
+}
+
+test_memoize() {
+  local result1
+  local result2
+  local counter
+
+  init_counter_00c8d2f
+
+  result1="$(some_heavy_8403e65)" # 1
+  result2="$(some_heavy_8403e65)" # 2
+  assert_neq "$result1" "$result2"
+
+  counter="$(cat "$counter_path_df088c2")"
+  assert_eq "$counter" 2
+
+  result1="$(memoize some_heavy_8403e65)" # 3
+  result2="$(memoize some_heavy_8403e65)" # 3
+  assert_eq -m 5211d9b "$result1" "$result2"
+  assert test -n "$result1"
+
+  counter="$(cat "$counter_path_df088c2")"
+  assert_eq -m 80e4c5c "$counter" 3
+}
+
+test_memoize_failure() {
+  local result
+  if result="$(memoize some_failure_0f0189f)"
+  then
+    false
+  else
+    true
+  fi
+  test -n "$result"
+  if result="$(memoize some_failure_0f0189f)"
+  then
+    false
+  else
+    true
+  fi
 }
