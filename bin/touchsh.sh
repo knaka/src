@@ -1,11 +1,11 @@
 #!/usr/bin/env sh
 # vim: set filetype=sh :
 # shellcheck shell=sh
-_() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ cb103e0 && return 0
+_() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ TOUCHSH_SH && return 0
 
 # Generate Bourne shell script scaffold.
 
-test "${_APPDIR+set}" = set || { cd "${0%[/\\]*}" || cd . || exit 1; _APPDIR="$PWD"; cd "$OLDPWD" || exit 1; } 2>/dev/null
+test "${_APPDIR+set}" = set || { cd "${0%[/\\]*}" 2>/dev/null || cd . || exit 1; _APPDIR="$PWD"; cd "$OLDPWD" || exit 1; }
 case "${1:+$1}" in (_LIBDIR) cd "$2" || exit 1;; (*) cd "$_APPDIR" || exit 1;; esac; set -- "$OLDPWD" "$@";
 set -- _LIBDIR ./.lib "$@"
 . ./.lib/utils.sh
@@ -19,12 +19,12 @@ gen_header_49df118() { cat <<EOF
 #!/usr/bin/env sh
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-_() { case "\${_ids-}" in (*\$1*) ;; (*) _ids="\$1,\${_ids-}"; false;; esac; }; _ $unique_id && return 0
+_() { eval "\\\${_LOADED_\$1-false}" || ! eval "_LOADED_\$1=true"; }; _ ${unique_id} && return 0
 EOF
 }
 
 gen_source_block_8d319a6() { cat <<'EOF'
-# test "${_APPDIR+set}" = set || { cd "${0%[/\\]*}" || cd . || exit 1; _APPDIR="$PWD"; cd "$OLDPWD" || exit 1; } 2>/dev/null
+# test "${_APPDIR+set}" = set || { cd "${0%[/\\]*}" 2>/dev/null || cd . || exit 1; _APPDIR="$PWD"; cd "$OLDPWD" || exit 1; }
 # case "${1:+$1}" in (_LIBDIR) cd "$2" || exit 1;; (*) cd "$_APPDIR" || exit 1;; esac; set -- "$OLDPWD" "$@";
 # set -- _LIBDIR ./.lib "$@"
 # . ./.lib/utils.sh
@@ -47,7 +47,7 @@ then
   name="$call_name"
 fi
 cat <<EOF
-_() { case "\${0##*[/\\\\]}" in ("\$1"|"\$1".*) :;; (*) ! :;; esac; }; if _ ${name}
+_() { case "\${0##*[/\\\\]}" in ("\$1"|"\$1".*) ;; (*) false;; esac; }; if _ ${name}
 then
   set -o nounset -o errexit
   ${func_name} "\$@"

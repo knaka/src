@@ -1,10 +1,10 @@
 #!/usr/bin/env sh
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-_() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ f0d9993 && return 0
+_() { eval "\${_SOURCED_$1-false}" || ! eval "_SOURCED_$1"=true; }; _ a779d95 && return 0
 
-test "${_APPDIR+set}" = set || { cd "${0%[/\\]*}" || cd . || exit 1; _APPDIR="$PWD"; cd "$OLDPWD" || exit 1; } 2>/dev/null
-if test "${1:+$1}" = _LIBDIR; then cd "$2" || exit 1; else cd "$_APPDIR" || exit 1; fi; set -- "$OLDPWD" "$@"
+test "${_APPDIR+set}" = set || { cd "${0%[/\\]*}" 2>/dev/null || cd . || exit 1; _APPDIR="$PWD"; cd "$OLDPWD" || exit 1; } 
+case "${1:+$1}" in (_LIBDIR) cd "$2" || exit 1;; (*) cd "$_APPDIR" || exit 1;; esac; set -- "$OLDPWD" "$@";
 set -- _LIBDIR ./.lib "$@"
 . ./.lib/utils.sh
 . ./.lib/commands.sh
@@ -22,7 +22,7 @@ cowsay() {
   mise exec "npm:cowsay@$cowsay_version_14ac6ce" -- cowsay "$@"
 }
 
-_() { case "${0##*[/\\]}" in ("$1"|"$1".*) :;; (*) ! :;; esac; }; if _ cowsay
+_() { case "${0##*[/\\]}" in ("$1"|"$1".*) ;; (*) false;; esac; }; if _ cowsay
 then
   set -o nounset -o errexit
   cowsay "$@"
