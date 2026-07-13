@@ -26,7 +26,7 @@ set_result() {
 
 toupper_() {
   # shellcheck disable=SC3059
-  is_bash_bin 4 && set_result "${1^^}" && return
+  is_bash_bin 4 && set_result "${*^^}" && return
   local result=
   local s="$*"
   local c
@@ -69,7 +69,7 @@ toupper_() {
 
 tolower_() {
   # shellcheck disable=SC3059
-  is_bash_bin 4 && set_result "${1,,}" && return
+  is_bash_bin 4 && set_result "${*,,}" && return
   local result=
   local s="$*"
   local c
