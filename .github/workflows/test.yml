@@ -71,6 +71,7 @@ jobs:
         run: set
         shell: cmd
       - name: BusyBox Ash Tests
+        if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' && github.event.schedule == '0 0 * * 6' }}
         run: .\task.cmd ./.lib-test/run-tests.sh
       - name: Run Tests
         if: ${{ github.event_name == 'push' }}
