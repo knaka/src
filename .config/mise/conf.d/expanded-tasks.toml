@@ -101,6 +101,20 @@ set -o nounset -o errexit
 task_docker__debian__run "$@"
 '''
 
+[tasks."docker:busybox:run"]
+description='''Run BusyBox Docker container.'''
+run='''
+#!/usr/bin/env sh
+# .mise/tasks-docker.sh:task_docker__busybox__run
+_APPDIR="$MISE_PROJECT_ROOT"/".mise"
+saved_pwd_85053ae="$PWD"
+cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
+. ./"tasks-docker.sh"
+cd "$saved_pwd_85053ae" || exit 1
+set -o nounset -o errexit
+task_docker__busybox__run "$@"
+'''
+
 [tasks."hooks:log:test"]
 description=''''''
 run='''

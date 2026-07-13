@@ -10,6 +10,7 @@ _() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ LIB_UTILS_SH
 : "${INITIAL_DIR=}"
 : "${INITIAL_DIR:=${MISE_ORIGINAL_CWD:-}}" # https://mise.jdx.dev/tasks/toml-tasks.html
 : "${INITIAL_DIR:=${INIT_CWD:-}}" # https://docs.npmjs.com/cli/v8/using-npm/scripts
+test "${1-}" = _LIBDIR && : "${INITIAL_DIR:=$3}"
 : "${INITIAL_DIR:=$PWD}"
 # Aliases
 : "${ORIGINAL_CWD:=${INITIAL_DIR}}"

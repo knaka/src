@@ -11,6 +11,11 @@ shift 2
 cd "$1" || exit 1; shift
 
 test_script_embed() {
+  if ! has_external_command python
+  then
+    echo Python is not found on path. >&2
+    skip
+  fi
   init_temp
   if sh ./testdata/original.sh | grep -q "BEGINNING"
   then

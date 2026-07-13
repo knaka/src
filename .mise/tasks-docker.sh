@@ -77,3 +77,9 @@ task_docker__debian__run() {
   run_once task_docker__start__temp
   docker run --rm -it -v "$PWD:/work" "$(docker build --quiet --file debian.Dockerfile .)" "$@"
 }
+
+# Run BusyBox Docker container.
+task_docker__busybox__run() {
+  run_once task_docker__start__temp
+  docker run --rm -it -v "$PWD:/work" "$(docker build --quiet --file busybox.Dockerfile .)" "$@"
+}
