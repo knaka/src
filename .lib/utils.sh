@@ -4,12 +4,11 @@
 _() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ LIB_UTILS_SH && return
 
 # ==========================================================================
-#region Environment variables.
+#region Global variables.
 
 # The initial working directory when the command was started.
-: "${INITIAL_DIR=}"
-: "${INITIAL_DIR:=${MISE_ORIGINAL_CWD:-}}" # https://mise.jdx.dev/tasks/toml-tasks.html
-: "${INITIAL_DIR:=${INIT_CWD:-}}" # https://docs.npmjs.com/cli/v8/using-npm/scripts
+: "${INITIAL_DIR:=${MISE_ORIGINAL_CWD-}}" # https://mise.jdx.dev/tasks/toml-tasks.html
+: "${INITIAL_DIR:=${INIT_CWD-}}" # https://docs.npmjs.com/cli/v8/using-npm/scripts
 test "${1-}" = _LIBDIR && : "${INITIAL_DIR:=$3}"
 : "${INITIAL_DIR:=$PWD}"
 # Aliases
@@ -19,12 +18,15 @@ test "${1-}" = _LIBDIR && : "${INITIAL_DIR:=$3}"
 
 # Current project directory.
 : "${PROJECT_DIR=}"
-: "${PROJECT_DIR:=${MISE_PROJECT_ROOT:-}}"
+: "${PROJECT_DIR:=${MISE_PROJECT_ROOT-}}"
+test "${1-}" = _LIBDIR && : "${PROJECT_DIR:=$3}"
 : "${PROJECT_DIR:=$PWD}"
 
 # The project directory where the task is defined.
 : "${TASK_PROJECT_DIR=}"
-: "${TASK_PROJECT_DIR:=${MISE_CONFIG_ROOT:-}}"
+: "${TASK_PROJECT_DIR:=${MISE_CONFIG_ROOT-}}"
+: "${TASK_PROJECT_DIR:=${_APPDIR-}}"
+test "${1-}" = _LIBDIR && : "${TASK_PROJECT_DIR:=$3}"
 : "${TASK_PROJECT_DIR:=$PWD}"
 
 # Verbosity.
@@ -63,8 +65,8 @@ readonly rc_sigpipe=$((128 + SIGPIPE))
 
 # Guard against multiple calls. $1 is a unique ID
 first_call() {
-  eval "\${called_$1-false}" && return 1
-  eval "called_$1=true"
+  eval "\${_CALLED_$1-false}" && return 1
+  eval "_CALLED_$1=true"
 }
 
 # Check if stdout is tty.
@@ -72,11 +74,11 @@ is_terminal() {
   test -t 1
 }
 
-usv_called_6b2a1df="$ch_us"
+usv_called_6b2a1df=
 
 # Run only once
 run_once() {
-  case "$usv_called_6b2a1df" in
+  case "$ch_us$usv_called_6b2a1df" in
     (*"$ch_us$*$ch_us"*)
       return 0
       ;;

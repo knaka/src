@@ -6,7 +6,7 @@ _() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ BIN_TOUCHSH_
 # Generate Bourne shell script scaffold.
 
 test "${_APPDIR+set}" = set || { cd "${0%[/\\]*}" 2>/dev/null || cd . || exit 1; _APPDIR="$PWD"; cd "$OLDPWD" || exit 1; }
-case "${1:+$1}" in (_LIBDIR) cd "$2" || exit 1;; (*) cd "$_APPDIR" || exit 1;; esac; set -- "$OLDPWD" "$@";
+case "${1-}" in (_LIBDIR) cd "$2" || exit 1;; (*) cd "$_APPDIR" || exit 1;; esac; set -- "$OLDPWD" "$@";
 set -- _LIBDIR ./.lib "$@"
 . ./.lib/utils.sh
 shift 2
@@ -25,7 +25,7 @@ EOF
 
 gen_source_block_8d319a6() { cat <<'EOF'
 # test "${_APPDIR+set}" = set || { cd "${0%[/\\]*}" 2>/dev/null || cd .; _APPDIR="$PWD"; cd "$OLDPWD" || exit; }
-# case "${1:+$1}" in (_LIBDIR) cd "$2" || exit;; (*) cd "$_APPDIR" || exit;; esac; set -- "$OLDPWD" "$@";
+# case "${1-}" in (_LIBDIR) cd "$2" || exit;; (*) cd "$_APPDIR" || exit;; esac; set -- "$OLDPWD" "$@";
 # set -- _LIBDIR ./.lib "$@"
 # . ./.lib/utils.sh
 # shift 2
