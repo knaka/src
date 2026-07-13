@@ -2,7 +2,7 @@
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
 
-test "${_APPDIR+set}" = set || { cd "${0%[/\\]*}" || cd . || exit 1; _APPDIR="$PWD"; cd "$OLDPWD" || exit 1; } 2>/dev/null
+test "${_APPDIR+set}" = set || { cd "${0%[/\\]*}" 2>/dev/null || cd .; _APPDIR="$PWD"; cd "$OLDPWD" || exit; }
 
 resolve_file() {
   test "${file+set}" = set || return 1
