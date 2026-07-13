@@ -13,7 +13,7 @@ cd "$1" || exit 1; shift
 # Get a key from the user without echoing.
 get_key() {
   # Bash and BusyBox Ash provide the `-s` (silent mode) option.
-  if is_bbwin || is_bash
+  if is_bbwin || is_bash_bin
   then
     local key
     # shellcheck disable=SC3045

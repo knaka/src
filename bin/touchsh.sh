@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # vim: set filetype=sh :
 # shellcheck shell=sh
-_() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ TOUCHSH_SH && return 0
+_() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ BIN_TOUCHSH_SH && return
 
 # Generate Bourne shell script scaffold.
 
@@ -19,7 +19,7 @@ gen_header_49df118() { cat <<EOF
 #!/usr/bin/env sh
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-_() { eval "\\\${_LOADED_\$1-false}" || ! eval "_LOADED_\$1=true"; }; _ ${unique_id} && return 0
+_() { eval "\\\${_LOADED_\$1-false}" || ! eval "_LOADED_\$1=true"; }; _ ${unique_id} && return
 EOF
 }
 

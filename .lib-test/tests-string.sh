@@ -44,13 +44,13 @@ test_string_gsub() {
 
 test_string_index() {
   index_ "peanut" "an"
-  assert_eq "$RESULT" 3
+  assert_eq -m df40914 "$RESULT" 3
   index_ "peanut" "XXX"
-  assert_eq "$RESULT" 0
+  assert_eq -m cfed5a9 "$RESULT" 0
   index_ "" ""
-  assert_eq "$RESULT" 0
+  assert_eq -m 8f518b3 "$RESULT" 0
   index_ "foo" ""
-  assert_eq "$RESULT" 0
+  assert_eq -m 741fa10 "$RESULT" 0
 }
 
 test_string_length() {

@@ -1,16 +1,18 @@
 #!/usr/bin/env sh
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-_() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ 95ac582 && return 0
+_() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ LIB_STRING_SH && return
 
-# AWK-like string functions not using subshell.
-
-test "${_APPDIR+set}" = set || { cd "${0%/*}" || cd "${0%\\*}" || cd . || exit 1; _APPDIR="$PWD"; cd "$OLDPWD" || exit 1; } 2>/dev/null
-if test "${1:+$1}" = _LIBDIR; then cd "$2" || exit 1; else cd "$_APPDIR" || exit 1; fi; set -- "$OLDPWD" "$@"
+test "${_APPDIR+set}" = set || { cd "${0%[/\\]*}" 2>/dev/null || cd . || exit 1; _APPDIR="$PWD"; cd "$OLDPWD" || exit 1; } 
+case "${1:+$1}" in (_LIBDIR) cd "$2" || exit 1;; (*) cd "$_APPDIR" || exit 1;; esac; set -- "$OLDPWD" "$@";
 set -- _LIBDIR . "$@"
 . ./utils.sh
 shift 2
 cd "$1" || exit 1; shift
+
+# AWK-like string functions not using subshell.
+
+: "${RESULT-}"
 
 result_name_9a2b2db=RESULT
 
@@ -23,6 +25,8 @@ set_result() {
 }
 
 toupper_() {
+  # shellcheck disable=SC3059
+  is_bash4_bin && set_result "${1^^}" && return
   local result=
   local s="$*"
   local c
@@ -64,6 +68,8 @@ toupper_() {
 }
 
 tolower_() {
+  # shellcheck disable=SC3059
+  is_bash4_bin && set_result "${1,,}" && return
   local result=
   local s="$*"
   local c
@@ -126,46 +132,29 @@ substr_() {
 }
 
 sub_() {
-  local result=
   local s="$1"
   local from="$2"
-  test -z "$from" && set_result "$s" && return 0
+  test -z "$from" && set_result "$s" && return
   local to="$3"
-  local c
-  while test -n "$s"
-  do
-    case "$s" in
-      ("$from"*)
-        result="$result$to"
-        substr_ "$s" $((${#from}+1))
-        eval "result=\"\$result\$$result_name_9a2b2db\""
-        break
-        ;;
-      (*)
-        c="${s%"${s#?}"}"
-        s="${s#?}"
-        result="${result}$c"
-        ;;
-    esac
-  done
-  set_result "$result"
+  # shellcheck disable=SC3060
+  is_bash_bin && set_result "${s/$from/$to}" && return
+  local left="${s%%"$from"*}"
+  test "$left" = "$s" && set_result "$s" && return
+  set_result "$left$to${s#*"$from"}"
 }
 
 gsub_() {
   local result=
   local s="$1"
   local from="$2"
-  test -z "$from" && set_result "$s" && return 0
+  test -z "$from" && set_result "$s" && return
   local to="$3"
-  local left
+  # shellcheck disable=SC3060
+  is_bash_bin && set_result "${s//$from/$to}" && return
   while test -n "$s"
   do
-    left=${s%%"$from"*}
-    if test "$left" = "$s"
-    then
-      result="$result$s"
-      break
-    fi
+    local left="${s%%"$from"*}"
+    test "$left" = "$s" && result="$result$s" && break
     result="$result$left$to"
     s="${s#*"$from"}"
   done
@@ -173,25 +162,12 @@ gsub_() {
 }
 
 index_() {
-  local result=0
   local s="$1"
   local find="$2"
-  test -z "$find" && set_result "$result" && return 0
-  local processed=
-  while test -n "$s"
-  do
-    case "$s" in
-      ("$find"*)
-        result=$((${#processed}+1))
-        break
-        ;;
-      (*)
-        s="${s#?}"
-        processed="${processed}x"
-        ;;
-    esac
-  done
-  set_result "$result"
+  test -z "$find" && set_result 0 && return
+  local left="${s%%"$find"*}"
+  test "$left" = "$s" && set_result 0 && return
+  set_result $((${#left}+1))
 }
 
 length_() {
@@ -213,3 +189,22 @@ split_() {
 
   gsub_ "$1" "$2" "$delim"
 }
+
+_() { case "${0##*[/\\]}" in ("$1"|"$1".*) ;; (*) false;; esac; }; if _ string
+then
+  set -o nounset -o errexit
+  toupper_ "aBc"
+  test "$RESULT" = "ABC"
+  tolower_ "AbC"
+  test "$RESULT" = "abc"
+  substr_ "123456789" 4 3
+  test "$RESULT" = "456"
+  sub_ "foo bar baz bar" "bar" "xyz"
+  test "$RESULT" = "foo xyz baz bar"
+  gsub_ "foo bar baz bar 123" "bar" "xyz"
+  test "$RESULT" = "foo xyz baz xyz 123"
+  index_ "peanut" "an"
+  test "$RESULT" -eq 3
+
+  echo Done >&2
+fi

@@ -76,7 +76,7 @@ test_pos_params() {
 }
 
 test_trap_p() {
-  skip_unless is_bash_binary
+  skip_unless is_bash_bin
   # shellcheck disable=SC3045
   trap -p EXIT
 }
@@ -84,7 +84,7 @@ test_trap_p() {
 # If you need job control, prefer writing it in Bash rather than sh (which could be ash or dash).
 test_cleanup_child_processes() {
   # Dash does assign a new PGID when job control is enabled, but `kill -TERM 0` appears to terminate the parent as well.
-  skip_unless is_bash_binary
+  skip_unless is_bash_bin
 
   init_temp
   local child_pid_file="$TEMP_DIR/child_pid"

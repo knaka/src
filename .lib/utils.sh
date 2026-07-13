@@ -277,12 +277,28 @@ is_alpine() {
   test -f /etc/alpine-release
 }
 
-is_bash() {
-  test "${BASH_VERSION+set}" = set && test "${POSIXLY_CORRECT+set}" != set
+is_bash_bin() {
+  test "${BASH_VERSION+set}" = set
 }
 
-is_bash_binary() {
-  test "${BASH_VERSION+set}" = set
+is_bash4_bin() {
+  # shellcheck disable=SC3028
+  # shellcheck disable=SC3054
+  is_bash_bin && test "${BASH_VERSINFO[0]}" -ge 4
+}
+
+is_bash5_bin() {
+  # shellcheck disable=SC3028
+  # shellcheck disable=SC3054
+  is_bash_bin && test "${BASH_VERSINFO[0]}" -ge 5
+}
+
+is_bash_posix() {
+  is_bash_bin && test "${POSIXLY_CORRECT+set}" = set
+}
+
+is_bash_native() {
+  is_bash_bin && test "${POSIXLY_CORRECT+set}" != set
 }
 
 # Executable file extension.
