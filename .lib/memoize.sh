@@ -18,13 +18,20 @@ memoize() {
   local cache_file_path
   cache_file_path="$TEMP_DIR"/memoize-"$(echo "$@" | sha256sum | cut -d' ' -f1)"
   test -r "$cache_file_path" && cat "$cache_file_path" && return 0
+  local rc=0
+  if is_bbwin
+  then
+    "$@" >"$cache_file_path" || rc=$?
+    cat "$cache_file_path"
+    test $rc -ne 0 && rm -f "$cache_file_path"
+    return $rc
+  fi
   local fifo_path="$TEMP_DIR"/1f1ff14
   mkfifo "$fifo_path"
   "$@" >"$fifo_path" &
   local pid=$!
   tee "$cache_file_path" <"$fifo_path"
   rm -f "$fifo_path"
-  local rc=0
   wait "$pid" || rc=$?
   test "$rc" -ne 0 && rm -f "$cache_file_path"
   return "$rc"
@@ -44,6 +51,11 @@ try_memoize() {
   test -n "$tee_pid_2b6e9c4" && return 1
   cache_file_path_cb3727b="$TEMP_DIR"/block-memoize-"$(printf "%s" "$@" | sha256sum | cut -d' ' -f1)"
   test -r "$cache_file_path_cb3727b" && cat "$cache_file_path_cb3727b" && return 1
+  if is_bbwin
+  then
+    exec 9>&1 >"$cache_file_path_cb3727b"
+    return
+  fi
   fifo_path_1af0d3e="$TEMP_DIR"/fifo-47374f3
   mkfifo "$fifo_path_1af0d3e"
   exec 9>&1
@@ -56,6 +68,10 @@ try_memoize() {
 # for the background `tee` to finish writing the cache file before returning.
 end_memoize() {
   exec 1>&9 9>&-
+  if is_bbwin
+  then
+    cat "$cache_file_path_cb3727b" && return
+  fi
   wait "$tee_pid_2b6e9c4"
   tee_pid_2b6e9c4=
   rm -f "$fifo_path_1af0d3e"

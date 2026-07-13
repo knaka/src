@@ -15,7 +15,8 @@ cd "$1" || exit 1; shift
 embed_minified_sub() {
   # -u     : force the stdout and stderr streams to be unbuffered;
   #          this option has no effect on stdin; also PYTHONUNBUFFERED=x
-  python -u "$script_902b082" "$1"
+  command -v python
+  # python -u "$script_902b082" "$1"
 }
 
 # Embeds minified file contents into shell script files in-place.

@@ -246,7 +246,7 @@ is_msys2() {
 
 # BusyBox for Windows ash
 is_bbwin() {
-  test -d \\ -a ! -d /proc -a "${BBGLOBBING+set}" = set
+  test -d \\ -a ! -d /proc -a "${BB_GLOBBING+set}" = set
 }
 
 is_macos() {
