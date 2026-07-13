@@ -89,7 +89,7 @@ task() {
   esac
 }
 
-_() { case "${0##*[/\\]}" in ("$1"|"$1".*) :;; (*) ! :;; esac; }; if _ task
+_() { case "${0##*[/\\]}" in ("$1"|"$1".*) ;; (*) false;; esac; }; if _ task
 then
   set -o nounset -o errexit
   task "$@"

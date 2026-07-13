@@ -5,15 +5,15 @@ _() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ BIN_TOUCHSH_
 
 # Generate Bourne shell script scaffold.
 
-test "${_APPDIR+set}" = set || { cd "${0%[/\\]*}" 2>/dev/null || cd . || exit 1; _APPDIR="$PWD"; cd "$OLDPWD" || exit 1; }
-case "${1-}" in (_LIBDIR) cd "$2" || exit 1;; (*) cd "$_APPDIR" || exit 1;; esac; set -- "$OLDPWD" "$@";
+test "${_APPDIR+set}" = set || { cd "${0%[/\\]*}" 2>/dev/null || cd .; _APPDIR="$PWD"; cd "$OLDPWD" || exit; } 
+case "${1-}" in (_LIBDIR) cd "$2" || exit;; (*) cd "$_APPDIR" || exit;; esac; set -- "$OLDPWD" "$@";
 set -- _LIBDIR ./.lib "$@"
 . ./.lib/utils.sh
 shift 2
 set -- _LIBDIR . "$@"
 . ./rand7.sh 
 shift 2
-cd "$1" || exit 1; shift
+cd "$1" || exit; shift
 
 gen_header_49df118() { cat <<EOF
 #!/usr/bin/env sh
@@ -164,7 +164,7 @@ touchsh() {
   fi
 }
 
-_() { case "${0##*[/\\]}" in ("$1"|"$1".*) :;; (*) ! :;; esac; }; if _ touchsh
+_() { case "${0##*[/\\]}" in ("$1"|"$1".*) ;; (*) false;; esac; }; if _ touchsh
 then
   set -o nounset -o errexit
   touchsh "$@"
