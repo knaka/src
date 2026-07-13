@@ -16,13 +16,11 @@ test_script_embed() {
     echo Python is not found on path. >&2
     skip
   fi
-  is_windows && skip
-  if is_windows && python.exe --help 2>&1 | grep -q 'Error 0x2331'
+  if is_windows && ! is_mise
   then
-    echo Python Installation Manager has not installed Python yet. >&2
+    echo Not in Mise env. >&2
     skip
   fi
-  echo 80261b6
   init_temp
   if sh ./testdata/original.sh | grep -q "BEGINNING"
   then
@@ -39,7 +37,6 @@ test_script_embed() {
 
   local temp_sh3="./testdata/temp-$$"
   embed_minified_sub ./testdata/original3.sh >"$temp_sh3"
-  sh "$temp_sh3"
   sh "$temp_sh3" | grep -q "hello"
   rm -f "$temp_sh3"
 }
