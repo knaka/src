@@ -26,7 +26,7 @@ set_result() {
 
 toupper_() {
   # shellcheck disable=SC3059
-  is_bash4_bin && set_result "${1^^}" && return
+  is_bash_bin 4 && set_result "${1^^}" && return
   local result=
   local s="$*"
   local c
@@ -69,7 +69,7 @@ toupper_() {
 
 tolower_() {
   # shellcheck disable=SC3059
-  is_bash4_bin && set_result "${1,,}" && return
+  is_bash_bin 4 && set_result "${1,,}" && return
   local result=
   local s="$*"
   local c
@@ -115,6 +115,8 @@ substr_() {
   local s="$1"
   local start="$2"
   local length="${3-${#s}}"
+  # shellcheck disable=SC3057
+  is_bash_bin && set_result "${s:$((start-1)):$length}" && return
   local end=$((start+length))
   local c
   local i=1

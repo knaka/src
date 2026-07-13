@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-_() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ LIB_UTILS_SH && return 0
+_() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ LIB_UTILS_SH && return
 
 # ==========================================================================
 #region Environment variables.
@@ -278,27 +278,20 @@ is_alpine() {
 }
 
 is_bash_bin() {
-  test "${BASH_VERSION+set}" = set
-}
-
-is_bash4_bin() {
-  # shellcheck disable=SC3028
-  # shellcheck disable=SC3054
-  is_bash_bin && test "${BASH_VERSINFO[0]}" -ge 4
-}
-
-is_bash5_bin() {
-  # shellcheck disable=SC3028
-  # shellcheck disable=SC3054
-  is_bash_bin && test "${BASH_VERSINFO[0]}" -ge 5
+  if test $# -eq 0
+  then
+    test "${BASH_VERSION+set}" = set
+  else
+    # shellcheck disable=SC3028
+    # shellcheck disable=SC3054
+    is_bash_bin && test "${BASH_VERSINFO[0]}" -ge "$1"
+  fi
 }
 
 is_bash_posix() {
-  is_bash_bin && test "${POSIXLY_CORRECT+set}" = set
-}
-
-is_bash_native() {
-  is_bash_bin && test "${POSIXLY_CORRECT+set}" != set
+  # shellcheck disable=SC3010
+  # shellcheck disable=SC3028
+  is_bash_bin && [[ ":$SHELLOPTS:" = *:posix:* ]]
 }
 
 # Executable file extension.
