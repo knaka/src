@@ -14,7 +14,7 @@ cd "$1" || exit 1; shift
 
 test_47fd512() {
   push_dir "$INITIAL_DIR"/.lib-test || exit 1
-  ./run-tests "$@"
+  ./run-tests.sh "$@"
   pop_dir || exit 1
 }
 

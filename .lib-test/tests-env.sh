@@ -11,6 +11,10 @@ shift 2
 cd "$1" || exit 1; shift
 
 test_env() {
+  if is_mise
+  then
+    echo Under Mise. >&2
+  fi
   if is_bash_bin
   then
     bash --version
