@@ -16,7 +16,9 @@ test_abs2rel() {
   if is_bbwin
   then
     relpath="$(abs2rel "$PWD/sh" "$PWD/go")"
-    assert_eq "$relpath" "C:../sh"
+    local current_drive_letter
+    current_drive_letter="$(pwd | sed -Ee 's/^(.).*/\1/')"
+    assert_eq "$relpath" "${current_drive_letter}:../sh"
     relpath="$(abs2rel C:/Windows/System32)"
     assert_match -m "bf12b50" '^[A-Z]:\.\.' "$relpath"
     assert test -d "$relpath"
