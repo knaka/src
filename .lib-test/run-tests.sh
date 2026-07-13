@@ -140,7 +140,7 @@ run_tests() {
     fi
   fi
 
-  $some_failed && return 1
+  "$some_failed" && return 1
   return 0
 }
 

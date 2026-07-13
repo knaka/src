@@ -1,7 +1,7 @@
 # vim: set filetype=bash tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=bash
 
-if test "${BASH_VERSION+set}" != set || test "${POSIXLY_CORRECT+set}" = set
+if test "${BASH_VERSION+set}" != set || [[ ":$SHELLOPTS:" = *:posix:* ]]
 then
   echo This test runner is for BASH. >&2
   # shellcheck disable=SC2317
