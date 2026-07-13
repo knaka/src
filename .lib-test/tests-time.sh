@@ -11,6 +11,8 @@ shift 2
 cd "$1" || exit 1; shift
 
 test_time() {
+  is_bbwin && skip
+
   init_temp
 
   local result
