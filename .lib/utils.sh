@@ -9,25 +9,16 @@ _() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ LIB_UTILS_SH
 # The initial working directory when the command was started.
 : "${INITIAL_DIR:=${MISE_ORIGINAL_CWD-}}" # https://mise.jdx.dev/tasks/toml-tasks.html
 : "${INITIAL_DIR:=${INIT_CWD-}}" # https://docs.npmjs.com/cli/v8/using-npm/scripts
-test "${1-}" = _LIBDIR && : "${INITIAL_DIR:=$3}"
-: "${INITIAL_DIR:=$PWD}"
-# Aliases
-: "${ORIGINAL_CWD:=${INITIAL_DIR}}"
-: "${ORIGINAL_PWD:=${INITIAL_DIR}}"
-: "${INITIAL_PWD:=${INITIAL_DIR}}"
+test -z "$INITIAL_DIR" && unset INITIAL_DIR
 
 # Current project directory.
-: "${PROJECT_DIR=}"
 : "${PROJECT_DIR:=${MISE_PROJECT_ROOT-}}"
-test "${1-}" = _LIBDIR && : "${PROJECT_DIR:=$3}"
-: "${PROJECT_DIR:=$PWD}"
+test -z "$PROJECT_DIR" && unset PROJECT_DIR
 
 # The project directory where the task is defined.
-: "${TASK_PROJECT_DIR=}"
 : "${TASK_PROJECT_DIR:=${MISE_CONFIG_ROOT-}}"
 : "${TASK_PROJECT_DIR:=${_APPDIR-}}"
-test "${1-}" = _LIBDIR && : "${TASK_PROJECT_DIR:=$3}"
-: "${TASK_PROJECT_DIR:=$PWD}"
+test -z "$TASK_PROJECT_DIR" && unset TASK_PROJECT_DIR
 
 # Verbosity.
 : "${VERBOSE:=false}"
