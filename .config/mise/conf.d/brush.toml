@@ -1,0 +1,6 @@
+[tools."http:brush"]
+os = []
+# Releases · reubeno/brush https://github.com/reubeno/brush/releases
+version = "0.4.0"
+url = 'https://github.com/reubeno/brush/releases/download/brush-shell-v{{ version }}/brush-{{ arch(x64="x86_64",arm64="aarch64") }}-{{ os(macos="apple-darwin") }}.tar.gz'
+rename_exe = 'bash'

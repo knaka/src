@@ -56,7 +56,8 @@ run_tests() {
     while read -r
     do
       tests="$tests${REPLY#test_} "
-    done < <(compgen -A function test_ | sort -n)
+    # Brush's output contain not-related entries.
+    done < <(compgen -A function test_ | grep ^test_ | sort -n)
   fi
 
   local log_file_path="$TEMP_DIR"/485d347
