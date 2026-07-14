@@ -198,7 +198,6 @@ register_temp_cleanup() {
 
 cleanup_child_processes() {
   "${VERBOSE-false}" && echo Cleaning up child processes >&2
-  trap : TERM
   if is_bbwin
   then
     # After catching TERM, doing something seems to fail.
@@ -212,7 +211,7 @@ cleanup_child_processes() {
 register_child_cleanup() {
   first_call 5f719a3 || return 0
   add_cleanup_5fbc8c7 --append cleanup_child_processes
-  trap : TERM
+  # trap : TERM
 }
 
 # Call the finalization function before `exec` which does not call trap function.
