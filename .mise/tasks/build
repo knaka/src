@@ -1,19 +1,18 @@
 #!/usr/bin/env sh
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-"${sourced_ed7ed88-false}" && return 0; sourced_ed7ed88=true
+_() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ TASKS_BUILD && return
 
 #MISE description="Build stuff."
-# #MISE depends=["tasks:expand"]
 
-test "${_APPDIR+set}" = set || { cd "${0%/*}" || cd "${0%\\*}" || cd . || exit 1; _APPDIR="$PWD"; cd "$OLDPWD" || exit 1; } 2>/dev/null
-if test "${1:+$1}" = _LIBDIR; then cd "$2" || exit 1; else cd "$_APPDIR" || exit 1; fi; set -- "$OLDPWD" "$@"
+test "${_APPDIR+set}" = set || { cd "${0%[/\\]*}" 2>/dev/null || cd .; _APPDIR="$PWD"; cd "$OLDPWD" || exit; }
+case "${1-}" in (_LIBDIR) cd "$2" || exit;; (*) cd "$_APPDIR" || exit;; esac; set -- "$OLDPWD" "$@";
 set -- _LIBDIR ../../.lib "$@"
 . ../../.lib/utils.sh
 . ../../.lib/embed-script.sh
 . ../../.lib/embed-heredoc.sh
 shift 2
-cd "$1" || exit 1; shift
+cd "$1" || exit; shift
 
 : "${LSV_EMBED_SCRIPT_TARGETS=}"
 : "${LSV_EMBED_HEREDOC_TARGETS=}"
@@ -26,9 +25,8 @@ build() {
   embed_heredoc $LSV_EMBED_HEREDOC_TARGETS
 }
 
-case "${0##*/}" in
-  (build)
-    set -o nounset -o errexit
-    build "$@"
-    ;;
-esac
+_() { case "${0##*[/\\]}" in ("$1"|"$1".*) ;; (*) false;; esac; }; if _ build
+then
+  set -o nounset -o errexit
+  build "$@"
+fi

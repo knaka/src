@@ -97,10 +97,9 @@ is_mise_project_dir() {
 }
 
 expand() {
-  cd "${ORIGINAL_DIR-}" \
-  || cd "${MISE_ORIGINAL_CWD-}" \
-  || cd "${INIT_CWD-}" \
-  return
+  cd "${INIT_CWD-}"
+  cd "${MISE_ORIGINAL_CWD-}"
+  cd "${INITIAL_DIR-}"
   while :
   do
     if is_mise_project_dir "$PWD"
@@ -138,9 +137,8 @@ expand() {
   } >./.config/mise/conf.d/expanded-tasks.toml
 }
 
-case ",${0##*/},${0##*\\}," in
-  (*,expand,*)
-    set -o nounset -o errexit
-    expand "$@"
-    ;;
-esac
+_() { case "${0##*[/\\]}" in ("$1"|"$1".*) ;; (*) false;; esac; }; if _ expand
+then
+  set -o nounset -o errexit
+  expand "$@"
+fi
