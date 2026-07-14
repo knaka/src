@@ -3,7 +3,7 @@
 "${sourced_f7e0683-false}" && return 0; sourced_f7e0683=true
 
 set -- "$PWD" "${0%/*}" "$@"; test -z "${_APPDIR-}" && { test "$2" = "$0" && _APPDIR=. || _APPDIR="$2"; cd "$_APPDIR" || exit 1; }
-set -- _LIBDIR .lib "$@"
+set -- _LIBDIR ../.lib "$@"
 shift 2
 . ./set-terminal-title.sh
 cd "$1" || exit 1; shift 2

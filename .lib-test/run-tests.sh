@@ -7,8 +7,8 @@ _() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ 1d
 
 test "${_APPDIR+set}" = set || { cd "${0%[/\\]*}" || cd . || exit 1; _APPDIR="$PWD"; cd "$OLDPWD" || exit 1; } 2>/dev/null
 case "${1:+$1}" in (_LIBDIR) cd "$2" || exit 1;; (*) cd "$_APPDIR" || exit 1;; esac; set -- "$OLDPWD" "$@";
-set -- _LIBDIR ./.lib "$@"
-. ./.lib/utils.sh
+set -- _LIBDIR ../.lib "$@"
+. ../.lib/utils.sh
 shift 2
 . ./test.sh
 cd "$1" || exit 1; shift

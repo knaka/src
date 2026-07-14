@@ -4,9 +4,9 @@
 _() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ 2ce0894 && return 0
 
 { pushd "${BASH_SOURCE[0]%/*}" || pushd "${BASH_SOURCE[0]%\\*}" || pushd .; } >/dev/null 2>&1
-set -- _LIBDIR .lib "$@"
+set -- _LIBDIR ../.lib "$@"
 shift 2
-. ./.lib/worker.bash
+. ../.lib/worker.bash
 popd >/dev/null || exit 1
 
 test_worker() {

@@ -3,7 +3,7 @@
 _() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ 7afb210 && return 0
 
 # pushd "${BASH_SOURCE[0]%/*}" >/dev/null 2>&1 || pushd . >/dev/null
-# . ./.lib/utils.bash
+# . ../.lib/utils.bash
 # popd >/dev/null || exit 1
 
 mygit() {

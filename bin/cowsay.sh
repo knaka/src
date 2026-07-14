@@ -5,9 +5,9 @@ _() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ BIN_COWSAY_S
 
 test "${_APPDIR+set}" = set || { cd "${0%[/\\]*}" 2>/dev/null || cd .; _APPDIR="$PWD"; cd "$OLDPWD" || exit; }
 case "${1-}" in (_LIBDIR) cd "$2" || exit;; (*) cd "$_APPDIR" || exit;; esac; set -- "$OLDPWD" "$@";
-set -- _LIBDIR ./.lib "$@"
-. ./.lib/utils.sh
-. ./.lib/commands.sh
+set -- _LIBDIR ../.lib "$@"
+. ../.lib/utils.sh
+. ../.lib/commands.sh
 shift 2
 cd "$1" || exit; shift
 

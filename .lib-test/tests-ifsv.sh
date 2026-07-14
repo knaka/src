@@ -3,10 +3,10 @@
 test "${sourced_78b9c2d-}" = true && return 0; sourced_78b9c2d=true
 
 set -- "$PWD" "$@"; if test "${2:+$2}" = _LIBDIR; then cd "$3" || exit 1; fi
-set -- _LIBDIR .lib "$@"
-. ./.lib/utils.sh
-. ./.lib/ifsv.sh
-. ./.lib/ifsm.sh
+set -- _LIBDIR ../.lib "$@"
+. ../.lib/utils.sh
+. ../.lib/ifsv.sh
+. ../.lib/ifsm.sh
 shift 2
 cd "$1" || exit 1; shift
 

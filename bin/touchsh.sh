@@ -7,8 +7,8 @@ _() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ BIN_TOUCHSH_
 
 test "${_APPDIR+set}" = set || { cd "${0%[/\\]*}" 2>/dev/null || cd .; _APPDIR="$PWD"; cd "$OLDPWD" || exit; } 
 case "${1-}" in (_LIBDIR) cd "$2" || exit;; (*) cd "$_APPDIR" || exit;; esac; set -- "$OLDPWD" "$@";
-set -- _LIBDIR ./.lib "$@"
-. ./.lib/utils.sh
+set -- _LIBDIR ../.lib "$@"
+. ../.lib/utils.sh
 shift 2
 set -- _LIBDIR . "$@"
 . ./rand7.sh 
@@ -26,8 +26,8 @@ EOF
 gen_source_block_8d319a6() { cat <<'EOF'
 # test "${_APPDIR+set}" = set || { cd "${0%[/\\]*}" 2>/dev/null || cd .; _APPDIR="$PWD"; cd "$OLDPWD" || exit; }
 # case "${1-}" in (_LIBDIR) cd "$2" || exit;; (*) cd "$_APPDIR" || exit;; esac; set -- "$OLDPWD" "$@";
-# set -- _LIBDIR ./.lib "$@"
-# . ./.lib/utils.sh
+# set -- _LIBDIR ../.lib "$@"
+# . ../.lib/utils.sh
 # shift 2
 # cd "$1" || exit; shift
 EOF

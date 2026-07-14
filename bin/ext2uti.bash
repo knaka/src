@@ -3,8 +3,8 @@
 _() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ c4b2b54 && return 0
 
 { pushd "${BASH_SOURCE[0]%/*}" || pushd "${BASH_SOURCE[0]%\\*}" || pushd .; } >/dev/null 2>&1
-set -- _LIBDIR ./.lib "$@"
-. ./.lib/utils.sh
+set -- _LIBDIR ../.lib "$@"
+. ../.lib/utils.sh
 shift 2
 popd >/dev/null || exit 1
 

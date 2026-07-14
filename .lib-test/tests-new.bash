@@ -3,13 +3,13 @@
 _() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ 375eadd && return 0
 
 set -- "$PWD" "$@"; if test "${2:+$2}" = _LIBDIR; then cd "$3" || exit 1; fi
-set -- _LIBDIR .lib "$@"
-. ./.lib/assert.sh
+set -- _LIBDIR ../.lib "$@"
+. ../.lib/assert.sh
 shift 2
 cd "$1" || exit 1; shift
 
 # pushd "${BASH_SOURCE[0]%/*}" >/dev/null 2>&1 || pushd . >/dev/null
-# . ./.lib/utils.bash
+# . ../.lib/utils.bash
 # popd >/dev/null || exit 1
 
 test_new_success() {
