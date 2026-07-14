@@ -1,11 +1,15 @@
+#!/usr/bin/env sh
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-"${sourced_fcf3fb2-false}" && return 0; sourced_fcf3fb2=true
+_() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ 0648daa && return
 
-. ./utils.lib.sh
-. ./yq.lib.sh
-. ./yj.lib.sh
-. ./chezmoi.lib.sh
+test "${_APPDIR+set}" = set || { cd "${0%[/\\]*}" 2>/dev/null || cd .; _APPDIR="$PWD"; cd "$OLDPWD" || exit; }
+case "${1-}" in (_LIBDIR) cd "$2" || exit;; (*) cd "$_APPDIR" || exit;; esac; set -- "$OLDPWD" "$@";
+set -- _LIBDIR ../../.lib "$@"
+. ../../.lib/utils.sh
+. ../../.lib/commands.sh
+shift 2
+cd "$1" || exit; shift
 
 chezmoi_source_dir="$PROJECT_DIR"/chezmoi-source
 
