@@ -22,6 +22,7 @@ run_tests() {
     case "$OPT" in
       (full) should_run_fulltest_80e79eb=true;;
       (sh) sh="$OPTARG";;
+      (verbose) VERBOSE=true;;
       (?) exit 1;;
       (*) echo "$0: illegal option -- $OPT" >&2; exit 1;;
     esac
@@ -105,12 +106,13 @@ run_tests() {
     local rc=0
     local dir="${file%[/\\]*}"
     local base="${file##*[/\\]}"
+    local stmts="cd '$dir'; _APPDIR=\"\$PWD\"; . ./'$base'; test_$test" >"$log_file_path"
     case "$file" in
       (*.sh)
-        $sh -o nounset -o errexit -c "cd '$dir'; . '$base'; test_$test" >"$log_file_path" 2>&1 || rc=$?
+        $sh -o nounset -o errexit -c "$stmts" >"$log_file_path" 2>&1 || rc=$?
         ;;
       (*.bash)
-        bash -o nounset -o errexit -o pipefail -c "cd '$dir'; . '$base'; test_$test" >"$log_file_path" 2>&1 || rc=$?
+        bash -o nounset -o errexit -o pipefail -c "$stmts" >"$log_file_path" 2>&1 || rc=$?
         ;;
     esac
     local base="${file##*[/\\]}"
@@ -130,6 +132,7 @@ run_tests() {
       some_failed=true
     fi
   done
+  unset IFS
 
   "$some_failed" && return 1
   return 0
