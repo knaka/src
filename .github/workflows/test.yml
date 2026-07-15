@@ -48,7 +48,7 @@ jobs:
       - name: Bash Version
         run: bash --version
       - name: Run Dash Tests
-        run: sh ./.mise/tasks-test.sh --sh="dash"
+        run: mise run test --sh="dash"
       - name: Run Tests
         if: ${{ github.event_name == 'push' }}
         run: mise run test
