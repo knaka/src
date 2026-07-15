@@ -112,7 +112,7 @@ run_tests() {
     local rc=0
     local dir="${file%[/\\]*}"
     local base="${file##*[/\\]}"
-    local stmts="cd '$dir'; _APPDIR=\"\$PWD\"; . ./'$base'; test_$test" >"$log_file_path"
+    local stmts="cd '$dir'; _APPDIR=\"\$PWD\"; . ./'$base'; test_$test"
     case "$file" in
       (*.sh)
         $sh -o nounset -o errexit -c "$stmts" >"$log_file_path" 2>&1 || rc=$?

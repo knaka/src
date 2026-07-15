@@ -83,7 +83,7 @@ test_trap_p() {
 }
 
 test_cleanup_child_processes() {
-  skip_unless is_bash_bin
+  skip_unless test -t 0
 
   init_temp
   local child_pid_file="$TEMP_DIR/child_pid"
