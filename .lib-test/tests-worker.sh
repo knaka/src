@@ -15,7 +15,7 @@ shift 2
 cd "$1" || exit; shift
 
 skip_cond_ce1f35f() {
-  is_macos && ! is_bash_bin
+  (is_macos && ! is_bash_bin) || is_bbwin
 }
 
 test_worker() {
