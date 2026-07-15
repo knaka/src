@@ -8,10 +8,13 @@ set -- _LIBDIR ../.lib "$@"
 . ../.lib/time.sh
 . ../.lib/assert.sh
 shift 2
+set -- _LIBDIR . "$@"
+. ./test.sh
+shift 2
 cd "$1" || exit 1; shift
 
 test_time() {
-  is_bbwin && skip
+  skip_if is_bbwin
 
   init_temp
 
