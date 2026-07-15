@@ -7,6 +7,7 @@ task_output = "interleave"
 
 [env]
 MISE_PID = "{{ mise_pid }}"
+MISE_BIN = "{{ mise_bin }}"
 LSV_EMBED_SCRIPT_TARGETS = """
 {{ config_root }}/.lib/json2sh.sh
 {{ config_root }}/.mise/tasks/tasks/expand
