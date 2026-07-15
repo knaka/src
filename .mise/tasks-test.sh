@@ -85,6 +85,7 @@ run_tests() {
     tests_to_run="$tests"
   else
     set_resultf "%s$ch_us" "$@"
+    test "$RESULT" = "$ch_us" && RESULT=
     tests_to_run="$RESULT"
   fi
   test "$tests_to_run"
