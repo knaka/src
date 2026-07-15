@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-_() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ LIB_MAP_SH && return
+_() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ LIB_COLLECTION_SH && return
 
 test "${_APPDIR+set}" = set || { cd "${0%[/\\]*}" 2>/dev/null || cd .; _APPDIR="$PWD"; cd "$OLDPWD" || exit; }
 case "${1-}" in (_LIBDIR) cd "$2" || exit;; (*) cd "$_APPDIR" || exit;; esac; set -- "$OLDPWD" "$@";
@@ -9,6 +9,41 @@ set -- _LIBDIR ../.lib "$@"
 . ../.lib/utils.sh
 shift 2
 cd "$1" || exit; shift
+
+hoge() {
+  _
+}
+
+vec_() {
+  if test "$#" -eq 0
+  then
+    set_result ""
+    return
+  fi
+  set_resultf "%s${ch_us}" "$@"
+}
+
+vempty() {
+  test -z "$1"
+}
+
+vsort_() {
+  set_result "$(printf "%s" "$1" | tr "$ch_us" '\0' | sort -z | tr '\0' "$ch_us")"
+}
+
+map_() {
+  vec_ "$@"
+}
+
+veach() {
+  local func="${2-_}"
+  local IFS="$ch_us"
+  local item
+  for item in $1
+  do
+    "$func" "$item"
+  done
+}
 
 # Put a value in an associative array.
 mput_() {

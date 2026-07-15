@@ -7,5 +7,8 @@ disable=SC2119
 # ShellCheck: SC2120 – foo references arguments, but none are ever passed. https://www.shellcheck.net/wiki/SC2120
 disable=SC2120
 
+# ShellCheck: SC2329 – This function is never invoked. Check usage (or ignored if invoked indirectly). https://www.shellcheck.net/wiki/SC2329
+disable=SC2329
+
 # ShellCheck: SC3043 – In POSIX sh, `local` is undefined. https://www.shellcheck.net/wiki/SC3043
 disable=SC3043

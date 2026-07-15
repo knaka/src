@@ -7,7 +7,7 @@ test "${_APPDIR+set}" = set || { cd "${0%[/\\]*}" 2>/dev/null || cd .; _APPDIR="
 case "${1-}" in (_LIBDIR) cd "$2" || exit;; (*) cd "$_APPDIR" || exit;; esac; set -- "$OLDPWD" "$@";
 set -- _LIBDIR ../.lib "$@"
 . ../.lib/utils.sh
-. ../.lib/map.sh
+. ../.lib/collection.sh
 shift 2
 set -- _LIBDIR ../.lib-test "$@"
 . ../.lib-test/test.sh
@@ -45,9 +45,10 @@ run_tests() {
 
   local test_path="$PWD"/.lib-test
   local lib_path="$PWD"/.lib
+
   local RESULT
-  local test_file_map=
-  set_result "$test_file_map"
+  
+  map_
   local file
   for file in \
     "$test_path"/*-test.shlib \
@@ -68,7 +69,7 @@ run_tests() {
       mput_ "$RESULT" "$test" "$file"
     done
   done
-  test_file_map="$RESULT"
+  local test_file_map="$RESULT"
   if test -z "$test_file_map"
   then
     echo No test available. >&2
@@ -84,8 +85,7 @@ run_tests() {
   then
     tests_to_run="$tests"
   else
-    set_resultf "%s$ch_us" "$@"
-    test "$RESULT" = "$ch_us" && RESULT=
+    vec_ "$@"
     tests_to_run="$RESULT"
   fi
   test "$tests_to_run"
