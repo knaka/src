@@ -9,7 +9,7 @@ shift 2
 . ../.lib/worker.bash
 popd >/dev/null || exit 1
 
-test_worker() {
+test_worker_bash() {
   init_worker_queue
   local wid
   wid="$(run_worker sleep 1234)"

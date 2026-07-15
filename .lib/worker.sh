@@ -1,35 +1,55 @@
-# vim: set filetype=bash tabstop=2 shiftwidth=2 expandtab :
-# shellcheck shell=bash
-_() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ 1419b3b && return 0
+#!/usr/bin/env sh
+# vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
+# shellcheck shell=sh
+_() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ LIB_WORKER_SH && return
 
-# Worker queue.
-
-{ pushd "${BASH_SOURCE[0]%/*}" || pushd "${BASH_SOURCE[0]%\\*}" || pushd .; } >/dev/null 2>&1
+test "${_APPDIR+set}" = set || { cd "${0%[/\\]*}" 2>/dev/null || cd .; _APPDIR="$PWD"; cd "$OLDPWD" || exit; }
+case "${1-}" in (_LIBDIR) cd "$2" || exit;; (*) cd "$_APPDIR" || exit;; esac; set -- "$OLDPWD" "$@";
 set -- _LIBDIR . "$@"
 . ./utils.sh
 shift 2
-popd >/dev/null || exit 1
+cd "$1" || exit; shift
 
-: "${worker_queue_dir_24f4ecb-}"
+: "${worker_queue_dir_60742ac-}"
 
 run_worker() {
   local base log_file
   base="$(echo "$*" | sed -Ee 's/[^[:alnum:]]/_/g')"
-  log_file="$(mktemp "$worker_queue_dir_24f4ecb"/"$base.log.XXXXX")"
+  log_file="$(mktemp "$worker_queue_dir_60742ac"/"$base.log.XXXXX")"
   touch "$log_file"
-  local disable_monitor=false
-  [[ $- != *m* ]] && set -m && disable_monitor=true
-  # Bash disables monitor mode inside a subshell, so any nested sub-subshell
-  # shares the same PGID. Note, however, that `$-` and `set -o` output inside
-  # a subshell still reflect the parent shell's state.
-  "$@" </dev/null >"$log_file" 2>&1 &
-  local pid="$!"
-  # `disown` is Bash specific.
-  disown %+
-  "$disable_monitor" && set +m
-  echo "$pid" >>"$worker_queue_dir_24f4ecb"/wids
+  local pid
+  if is_bash_bin
+  then
+    local disable_monitor=false
+    case "$-" in
+      (*m*) ;;
+      (*)
+        set -m
+        disable_monitor=true
+        ;;
+    esac
+    "$@" </dev/null >"$log_file" 2>&1 &
+    pid="$!"
+    # Detach from the shell's job table so this worker (though in its own
+    # process group via `set -m`) isn't reaped/awaited by an unrelated bare
+    # `wait`/`jobs` the caller (who sourced this library) might run later.
+    # shellcheck disable=SC3044
+    disown %+
+    "$disable_monitor" && set +m
+  elif is_linux
+  then
+    # Run the backgrounding itself inside a subshell (rather than plain
+    # `setsid ... &` here) so the worker's direct parent is this subshell,
+    # which exits immediately after echoing its pid. That orphans the worker
+    # right away, regardless of how the caller happens to invoke
+    # `run_worker` (e.g. even without wrapping the call in `$(...)`), so it
+    # can never be swept up by an unrelated bare `wait`/`jobs` in the
+    # caller's shell. (POSIX sh has no `disown` to do this explicitly.)
+    pid="$(setsid "$@" </dev/null >"$log_file" 2>&1 & echo $!)"
+  fi
+  echo "$pid" >>"$worker_queue_dir_60742ac"/wids
   echo "$pid"
-  echo "$log_file" >"$worker_queue_dir_24f4ecb"/"log-file.$pid"
+  echo "$log_file" >"$worker_queue_dir_60742ac"/"log-file.$pid"
   echo "$@" >"$TEMP_DIR"/args."$pid"
 }
 
@@ -37,32 +57,35 @@ tail_worker() (
   if test $# -eq 0
   then
     # shellcheck disable=SC2046
-    set -- $(cat "$worker_queue_dir_24f4ecb"/wids)
+    set -- $(cat "$worker_queue_dir_60742ac"/wids)
   fi
-  declare -a log_files
+  local wid
+  local log_file
   for wid in "$@"
   do
-    # shellcheck disable=SC2030
-    log_files+=("$(cat "$worker_queue_dir_24f4ecb"/"log-file.$wid")")
+    set -- "$@" "$(cat "$worker_queue_dir_60742ac"/"log-file.$wid")"
+    shift
   done
   trap : INT
-  set -m
-  tail -f "${log_files[@]}" || :
+  tail -f "$@" || :
 )
 
 log_worker() {
   if test $# -eq 0
   then
     # shellcheck disable=SC2046
-    set -- $(cat "$worker_queue_dir_24f4ecb"/wids)
+    set -- $(cat "$worker_queue_dir_60742ac"/wids)
   fi
-  declare -a log_files
+  local wid
+  local log_file
   for wid in "$@"
   do
-    # shellcheck disable=SC2031
-    log_files+=("$(cat "$worker_queue_dir_24f4ecb"/"log-file.$wid")")
+    set -- "$@" "$(cat "$worker_queue_dir_60742ac"/"log-file.$wid")"
+    shift
   done
-  cat "${log_files[@]}" || :
+  trap : INT
+  tail -f "$@" || :
+  cat "$@"
 }
 
 stop_worker() {
@@ -82,8 +105,8 @@ stop_worker() {
   for wid in "$@"
   do
     # Signal the whole process group (run_worker starts each job in its own
-    # group via `set -m`), so any children the worker itself backgrounded
-    # get terminated too, not just the worker's top-level process.
+    # group via `set -m` or setsid(1)), so any children the worker itself
+    # backgrounded get terminated too, not just the worker's top-level process.
     kill -TERM -"$wid" >/dev/null 2>&1 || :
   done
   sleep 0.1
@@ -179,15 +202,20 @@ wait_worker() {
 
 cleanup_worker_queue() {
   # shellcheck disable=SC2046
-  stop_worker --timeout-sec=10 $(cat "$worker_queue_dir_24f4ecb"/wids)
-  rm -fr "$worker_queue_dir_24f4ecb"
+  stop_worker --timeout-sec=10 $(cat "$worker_queue_dir_60742ac"/wids)
+  rm -fr "$worker_queue_dir_60742ac"
 }
 
 init_worker_queue() {
   first_call b03ec06 || return 0
+  if ! is_bash_bin && ! is_linux
+  then
+    echo "Not supported (df631f1)." >&2
+    return 1
+  fi
   init_temp
-  worker_queue_dir_24f4ecb="$TEMP_DIR/worker-queue"
-  mkdir -p "$worker_queue_dir_24f4ecb"
-  touch "$worker_queue_dir_24f4ecb"/wids
+  worker_queue_dir_60742ac="$TEMP_DIR/worker-queue"
+  mkdir -p "$worker_queue_dir_60742ac"
+  touch "$worker_queue_dir_60742ac"/wids
   prepend_cleanup cleanup_worker_queue
 }

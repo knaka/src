@@ -77,7 +77,11 @@ assert_true() {
   return 1
 }
 
-assert_false() {
+assert_success() {
+  assert_true "$@"
+}
+
+assert_failure() {
   local message=
   OPTIND=1; while getopts _-:m: OPT
   do
@@ -92,6 +96,10 @@ assert_false() {
   "$@" || return 0
   printf "Failed: \"%s\" is not false%s\n" "$*" "${message:+ ($message)}"
   return 1
+}
+
+assert_false() {
+  assert_failure "$@"
 }
 
 # assert_match <expected> <actual>
