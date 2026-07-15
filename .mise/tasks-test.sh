@@ -77,7 +77,7 @@ run_tests() {
   fi
   
   mkeys_ "$test_file_map"
-  vshuf_ "$RESULT"
+  # vshuf_ "$RESULT"
   local all_tests="$RESULT"
   
   local tests_to_run
