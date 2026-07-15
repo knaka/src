@@ -82,8 +82,12 @@ test_trap_p() {
   trap -p EXIT
 }
 
+job_control_available() {
+  is_bash_bin || test -t 0
+}
+
 test_cleanup_child_processes() {
-  skip_unless test -t 0
+  skip_unless job_control_available
 
   init_temp
   local child_pid_file="$TEMP_DIR/child_pid"

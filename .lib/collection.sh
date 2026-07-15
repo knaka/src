@@ -55,10 +55,11 @@ map_() {
 
 veach() {
   local func="${2-_}"
-  local IFS="$ch_us"
   local item
+  local IFS="$ch_us"
   for item in $1
   do
+    unset IFS
     "$func" "$item"
   done
 }
