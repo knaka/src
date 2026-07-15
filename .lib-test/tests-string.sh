@@ -35,11 +35,11 @@ test_string_sub() {
 }
 
 test_string_gsub() {
-  set_result_name RESULT_XYZ
+  local RESULT
   gsub_ "foo bar baz bar 123" "bar" "xyz"
-  assert_eq "$RESULT_XYZ" "foo xyz baz xyz 123"
+  assert_eq "$RESULT" "foo xyz baz xyz 123"
   gsub_ "foo" "" "bar"
-  assert_eq "$RESULT_XYZ" "foo"
+  assert_eq "$RESULT" "foo"
 }
 
 test_string_index() {
@@ -71,13 +71,6 @@ test_string_split() {
     echo c80fd85 "$arg"
   done
   IFS="$saved_ifs"
-}
-
-test_result_name() {
-  set_result_name "RESULT_X"
-  local x="it's a \$test * [glob] \"quote\""
-  set_result "$x"
-  assert_eq "$x" "$RESULT_X"
 }
 
 test_cmdbase_snake() {

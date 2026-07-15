@@ -48,7 +48,7 @@ jobs:
       - name: Bash Version
         run: bash --version
       - name: Run Dash Tests
-        run: dash ./.lib-test/run-tests.sh
+        run: sh ./.mise/tasks-test.sh --sh="dash"
       - name: Run Tests
         if: ${{ github.event_name == 'push' }}
         run: mise run test
@@ -72,7 +72,7 @@ jobs:
         shell: cmd
       - name: BusyBox Ash Tests
         if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' && github.event.schedule == '0 0 * * 6' }}
-        run: .\task.cmd ./.lib-test/run-tests.sh
+        run: .\task.cmd ./.mise/tasks-test.sh
       - name: Run Tests
         if: ${{ github.event_name == 'push' }}
         run: mise run test

@@ -35,6 +35,7 @@ readonly ch_lf="
 # shellcheck disable=SC2034
 {
   readonly ch_tab="	"
+  readonly ch_esc=""
 
   # Unit separator (US), Information Separator 1
   readonly ch_us=""
@@ -326,6 +327,56 @@ pop_dir() {
 
 # ==========================================================================
 #region Misc utilities.
+
+: "${RESULT-}"
+
+set_result() {
+  RESULT="$1"
+}
+
+: "${fifo_path_88b5b27-}"
+
+set_resultf() {
+  if is_bash_bin
+  then
+    # shellcheck disable=SC2059
+    # shellcheck disable=SC3045
+    printf -v RESULT "$@"
+  elif is_bbwin
+  then
+    RESULT="$(printf "$@")"
+  else
+    register_temp_cleanup
+    if test "${fifo_path_88b5b27+set}" != set
+    then
+      fifo_path_88b5b27="$TEMP_DIR/dd77392"
+      rm -f "$TEMP_DIR/dd77392"
+      mkfifo "$fifo_path_88b5b27"
+    fi
+    exec 9<>"$fifo_path_88b5b27"
+    {
+      # shellcheck disable=SC2059
+      printf "$@"
+      printf "\n%s\n" "_51821ba_"
+    } >&9
+    RESULT=
+    local REPLY
+    local first=true
+    # `read -d` is Bash extension.
+    while read -r REPLY <&9
+    do
+      test "$REPLY" = "_51821ba_" && break
+      if "$first"
+      then
+        RESULT="$REPLY"
+        first=false
+      else
+        RESULT="$RESULT$ch_lf$REPLY"
+      fi
+    done
+    exec 9>&- 9<&-
+  fi
+}
 
 # Canonicalize path
 canon_path() {

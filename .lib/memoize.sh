@@ -15,6 +15,7 @@ cd "$1" || exit 1; shift
 # The exit status of "$@" is returned; on failure the cache entry is dropped
 # so the next call retries instead of replaying the failed output.
 memoize() {
+  register_temp_cleanup
   local cache_file_path
   cache_file_path="$TEMP_DIR"/memoize-"$(echo "$@" | sha256sum | cut -d' ' -f1)"
   test -r "$cache_file_path" && cat "$cache_file_path" && return 0

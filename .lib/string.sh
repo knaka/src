@@ -12,18 +12,6 @@ cd "$1" || exit; shift
 
 # AWK-like string functions not using subshell.
 
-: "${RESULT-}"
-
-result_name_9a2b2db=RESULT
-
-set_result_name() {
-  result_name_9a2b2db="$1"
-}
-
-set_result() {
-  eval "$result_name_9a2b2db=\$1"
-}
-
 toupper_() {
   # shellcheck disable=SC3059
   is_bash_bin 4 && set_result "${*^^}" && return
