@@ -9,9 +9,18 @@ set -- _LIBDIR ../.lib "$@"
 . ../.lib/worker.sh
 . ../.lib/assert.sh
 shift 2
+set -- _LIBDIR . "$@"
+. ./test.sh
+shift 2
 cd "$1" || exit; shift
 
+skip_cond_ce1f35f() {
+  is_macos && ! is_bash_bin
+}
+
 test_worker() {
+  skip_if skip_cond_ce1f35f
+
   init_worker_queue
   local wid
   wid="$(run_worker sleep 1234)"
