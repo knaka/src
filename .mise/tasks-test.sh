@@ -61,6 +61,11 @@ run_tests() {
     #nop
   do
     test -r "$file" || continue
+    case "$file" in
+      (*.bash)
+        is_bbwin && continue
+        ;;
+    esac
     "$VERBOSE" && echo "Reading test file \"$file\" in $PWD." >&2
     local test
     # shellcheck disable=SC2013
@@ -114,7 +119,7 @@ run_tests() {
     local base="${file##*[/\\]}"
     local stmts="cd '$dir'; _APPDIR=\"\$PWD\"; . ./'$base'; test_$test"
     case "$file" in
-      (*.sh)
+      (*.sh|*.shlib)
         $sh -o nounset -o errexit -c "$stmts" >"$log_file_path" 2>&1 || rc=$?
         ;;
       (*.bash)
