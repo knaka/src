@@ -8,6 +8,9 @@ set -- _LIBDIR ../.lib "$@"
 . ../.lib/embed-script.sh
 . ../.lib/assert.sh
 shift 2
+set -- _LIBDIR . "$@"
+. ./test.sh
+shift 2
 cd "$1" || exit 1; shift
 
 test_script_embed() {
