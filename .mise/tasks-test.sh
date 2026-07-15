@@ -55,6 +55,7 @@ run_tests() {
     "$test_path"/test-*.shlib \
     "$test_path"/tests-*.bash \
     "$lib_path"/*.sh \
+    "$lib_path"/*.bash \
     #nop
   do
     test -r "$file" || continue
