@@ -180,21 +180,31 @@ split_() {
   gsub_ "$1" "$2" "$delim"
 }
 
+test_lib_string_sh() {
+  case "${1-}" in (_LIBDIR) cd "$2" || exit;; (*) cd "$_APPDIR" || exit;; esac; set -- "$OLDPWD" "$@";
+  set -- _LIBDIR . "$@"
+  . ./assert.sh
+  shift 2
+  cd "$1" || exit; shift
+
+  toupper_ "aBc"
+  assert_eq "$RESULT" "ABC"
+  tolower_ "AbC"
+  assert_eq "$RESULT" "abc"
+  substr_ "123456789" 4 3
+  assert_eq "$RESULT" "456"
+  sub_ "foo bar baz bar" "bar" "xyz"
+  assert_eq "$RESULT" "foo xyz baz bar"
+  gsub_ "foo bar baz bar 123" "bar" "xyz"
+  assert_eq "$RESULT" "foo xyz baz xyz 123"
+  index_ "peanut" "an"
+  assert_eq "$RESULT" 3
+
+  echo OK. >&2
+}
+
 _() { case "${0##*[/\\]}" in ("$1"|"$1".*) ;; (*) false;; esac; }; if _ string
 then
   set -o nounset -o errexit
-  toupper_ "aBc"
-  test "$RESULT" = "ABC"
-  tolower_ "AbC"
-  test "$RESULT" = "abc"
-  substr_ "123456789" 4 3
-  test "$RESULT" = "456"
-  sub_ "foo bar baz bar" "bar" "xyz"
-  test "$RESULT" = "foo xyz baz bar"
-  gsub_ "foo bar baz bar 123" "bar" "xyz"
-  test "$RESULT" = "foo xyz baz xyz 123"
-  index_ "peanut" "an"
-  test "$RESULT" -eq 3
-
-  echo Done >&2
+  test_lib_string_sh "$@"
 fi

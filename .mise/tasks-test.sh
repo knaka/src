@@ -21,7 +21,7 @@ run_tests() {
     test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
     case "$OPT" in
       (full) should_run_fulltest_80e79eb=true;;
-      (shell) sh=$OPTARG;;
+      (sh) sh="$OPTARG";;
       (?) exit 1;;
       (*) echo "$0: illegal option -- $OPT" >&2; exit 1;;
     esac
@@ -29,7 +29,6 @@ run_tests() {
   shift $((OPTIND-1))
 
   cd "${INITIAL_DIR-}" || return
-  cd ./.lib-test || return
 
   local RED=""
   local GREEN=""
@@ -43,16 +42,19 @@ run_tests() {
     NORMAL="${ch_esc}[00m"
   fi
 
+  local test_path="$PWD"/.lib-test
+  local lib_path="$PWD"/.lib
   local RESULT
   local test_file_map=
   set_result "$test_file_map"
   local file
   for file in \
-    "$PWD"/*-test.shlib \
-    "$PWD"/test-*.sh \
-    "$PWD"/tests-*.sh \
-    "$PWD"/test-*.shlib \
-    "$PWD"/tests-*.bash \
+    "$test_path"/*-test.shlib \
+    "$test_path"/test-*.sh \
+    "$test_path"/tests-*.sh \
+    "$test_path"/test-*.shlib \
+    "$test_path"/tests-*.bash \
+    "$lib_path"/*.sh \
     #nop
   do
     test -r "$file" || continue
@@ -65,6 +67,11 @@ run_tests() {
     done
   done
   test_file_map="$RESULT"
+  if test -z "$test_file_map"
+  then
+    echo No test available. >&2
+    return 0
+  fi
   
   mkeys_ "$test_file_map"
   local tests="$RESULT"
@@ -78,6 +85,7 @@ run_tests() {
     set_resultf "%s$ch_us" "$@"
     tests_to_run="$RESULT"
   fi
+  test "$tests_to_run"
 
   local some_failed=false
   register_temp_cleanup
@@ -85,6 +93,7 @@ run_tests() {
   local IFS="$ch_us"
   for test in $tests_to_run
   do
+    unset IFS
     if ! mget_ "$test_file_map" "$test"
     then
       printf "%sTest \"%s\" is not defined\n" "$RED" "$test" >&2
@@ -93,12 +102,14 @@ run_tests() {
     fi
     local file="$RESULT"
     local rc=0
+    local dir="${file%[/\\]*}"
+    local base="${file##*[/\\]}"
     case "$file" in
       (*.sh)
-        "$sh" -o nounset -o errexit -c ". $file; test_$test" >"$log_file_path" 2>&1 || rc=$?
+        $sh -o nounset -o errexit -c "cd '$dir'; . '$base'; test_$test" >"$log_file_path" 2>&1 || rc=$?
         ;;
       (*.bash)
-        bash -o nounset -o errexit -o pipefail -c ". $file; test_$test" >"$log_file_path" 2>&1 || rc=$?
+        bash -o nounset -o errexit -o pipefail -c "cd '$dir'; . '$base'; test_$test" >"$log_file_path" 2>&1 || rc=$?
         ;;
     esac
     local base="${file##*[/\\]}"

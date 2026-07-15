@@ -212,7 +212,7 @@ cleanup_child_processes() {
 register_child_cleanup() {
   first_call 5f719a3 || return 0
   add_cleanup_5fbc8c7 --append cleanup_child_processes
-  # trap : TERM
+  trap : TERM
 }
 
 # Call the finalization function before `exec` which does not call trap function.
@@ -344,6 +344,7 @@ set_resultf() {
     printf -v RESULT "$@"
   elif is_bbwin
   then
+    # shellcheck disable=SC2059
     RESULT="$(printf "$@")"
   else
     register_temp_cleanup

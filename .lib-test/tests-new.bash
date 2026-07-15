@@ -50,8 +50,7 @@ test_cleanup_child_processes_bash() {
   set -m
   (
     register_child_cleanup
-    trap : TERM
-    sleep 100 &
+    sleep 1234 &
     echo "$!" >"$child_pid_file"
     wait || :
     echo Done. >&2
@@ -74,6 +73,6 @@ test_cleanup_child_processes_bash() {
   kill -TERM "$harness_pid"
   sleep 0.5
 
-  assert_false -m 8147d97 kill -0 "$child_pid" 2>/dev/null
-  assert_false -m 0e61473 kill -0 "$harness_pid" 2>/dev/null
+  assert_false -m 8147d97 kill -0 "$child_pid"
+  assert_false -m 0e61473 kill -0 "$harness_pid"
 }
