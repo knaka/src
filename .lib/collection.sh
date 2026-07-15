@@ -10,10 +10,6 @@ set -- _LIBDIR ../.lib "$@"
 shift 2
 cd "$1" || exit; shift
 
-hoge() {
-  _
-}
-
 vec_() {
   if test "$#" -eq 0
   then
@@ -27,8 +23,30 @@ vempty() {
   test -z "$1"
 }
 
+vsort_nul_() {
+  set_result "$(
+    printf "%s" "$1" \
+    | tr "$ch_us" '\0' \
+    | "$2" \
+    | tr '\0' "$ch_us" \
+    #nop
+  )"
+}
+
+sort_9835641() {
+  sort -z
+}
+
 vsort_() {
-  set_result "$(printf "%s" "$1" | tr "$ch_us" '\0' | sort -z | tr '\0' "$ch_us")"
+  vsort_nul_ "$1" sort_9835641
+}
+
+shuf_28cd8b4() {
+  sort -z -R
+}
+
+vshuf_() {
+  vsort_nul_ "$1" shuf_28cd8b4
 }
 
 map_() {

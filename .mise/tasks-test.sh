@@ -77,31 +77,36 @@ run_tests() {
   fi
   
   mkeys_ "$test_file_map"
-  local tests="$RESULT"
-  local test
+  vshuf_ "$RESULT"
+  local all_tests="$RESULT"
   
   local tests_to_run
-  if test $# -eq 0
+  if test $# -gt 0
   then
-    tests_to_run="$tests"
-  else
     vec_ "$@"
     tests_to_run="$RESULT"
+  else
+    tests_to_run="$all_tests"
   fi
-  test "$tests_to_run"
 
-  local some_failed=false
   register_temp_cleanup
   local log_file_path="$TEMP_DIR/296ef1c"
-  local IFS="$ch_us"
-  for test in $tests_to_run
-  do
-    unset IFS
+  local some_failed=false
+  _() {
+    local test="$1"
     if ! mget_ "$test_file_map" "$test"
     then
-      printf "%sTest \"%s\" is not defined\n" "$RED" "$test" >&2
-      some_failed=true
-      continue
+      case "$test" in
+        (test_*)
+          test="${test#test_}"
+          ;;
+      esac
+      if ! mget_ "$test_file_map" "$test"
+      then
+        printf "%sTest \"%s\" is not defined\n" "$RED" "$test" >&2
+        some_failed=true
+        return
+      fi
     fi
     local file="$RESULT"
     local rc=0
@@ -132,9 +137,7 @@ run_tests() {
       test -r "$log_file_path" && sed -e 's/^/  /' <"$log_file_path" >&2
       some_failed=true
     fi
-  done
-  unset IFS
-
+  }; veach "$tests_to_run"
   "$some_failed" && return 1
   return 0
 }

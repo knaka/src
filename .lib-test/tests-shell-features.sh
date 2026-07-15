@@ -65,7 +65,7 @@ test_pos_params() {
   assert_eq "xccc" "$2"
 
   # shellcheck disable=SC2046
-  set -- $(printf '%s' '["foo   bar", "baz"]' | jq -r '.[]')
+  set -- $(printf '%s' '["foo   bar", "baz"]' | jq --binary -r '.[]')
   assert_eq -m "b0dafd8" 2 $#
   assert_eq "foo   bar" "$1"
   assert_eq "baz" "$2"

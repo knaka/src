@@ -17,7 +17,7 @@ LSV_EMBED_HEREDOC_TARGETS = """
 # _.path = ["{{ config_root }}/.mise/preferred-sh"]
 
 [tools]
-"node" = "24"
+# "node" = "24"
 "python" = "3.14"
 "jq" = "1.8.1"
 "yj" = "5.1.0"
