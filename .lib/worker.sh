@@ -99,7 +99,7 @@ log_worker() {
 }
 
 stop_worker() {
-  local timeout_sec=0
+  local timeout_sec=1
   OPTIND=1; while getopts _-: OPT
   do
     test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
