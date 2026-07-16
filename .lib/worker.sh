@@ -73,7 +73,7 @@ run_worker() {
     # Block here until the worker has actually become its own process-group
     # leader (pgid == pid) so callers never observe that race.
     local i=0
-    while test "$(ps -o pgid= -p "$pid" 2>/dev/null | tr -d '[:space:]')" != "$pid"
+    while ! kill -0 -"$pid" >/dev/null 2>&1
     do
       i=$((i + 1))
       test "$i" -ge 50 && break
