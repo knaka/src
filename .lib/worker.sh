@@ -99,7 +99,7 @@ log_worker() {
 }
 
 stop_worker() {
-  local timeout_sec=1
+  local timeout_sec=0
   OPTIND=1; while getopts _-: OPT
   do
     test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
@@ -119,6 +119,10 @@ stop_worker() {
     # backgrounded get terminated too, not just the worker's top-level process.
     kill -TERM -"$wid" >/dev/null 2>&1 || :
   done
+  if test "$timeout_sec" -eq 0
+  then
+    return 0
+  fi
   sleep 0.1
   for wid in "$@"
   do
