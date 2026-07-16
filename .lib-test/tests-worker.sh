@@ -37,7 +37,7 @@ test_worker() {
   wid2="$(run_worker sleep 2345)"
   wait_worker_start --timeout-sec=10 "$wid" "$wid2"
   is_worker_alive "$wid" "$wid2"
-  run_worker sleep 3456 >/dev/null 2>&1
+  run_worker --group sleep 3456 >/dev/null 2>&1
   wait
   stop_worker "$wid"
   wait_worker --timeout-sec=10 "$wid"

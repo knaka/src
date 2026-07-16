@@ -12,6 +12,51 @@ cd "$1" || exit; shift
 
 : "${worker_queue_dir_60742ac-}"
 
+# Stop every worker still in the queue and remove the queue's temp
+# directory. Registered by `init_worker_queue` to run automatically on
+# EXIT, not meant to be called directly.
+cleanup_worker_queue_f63891f() {
+  # shellcheck disable=SC2046
+  stop_worker --timeout-sec=10 $(cat "$worker_queue_dir_60742ac"/wids)
+  rm -fr "$worker_queue_dir_60742ac"
+}
+
+# Set up the worker queue (temp directory + an EXIT-time cleanup that stops
+# any workers still running). Call once before using any other function in
+# this file; a no-op on repeat calls.
+init_worker_queue() {
+  first_call 6a52c6c || return 0
+  if is_bash_bin || is_linux || is_macos
+  then
+    :
+  else
+    echo "Not supported (df631f1)." >&2
+    return 1
+  fi
+  init_temp
+  worker_queue_dir_60742ac="$TEMP_DIR/worker-queue"
+  mkdir -p "$worker_queue_dir_60742ac"
+  touch "$worker_queue_dir_60742ac"/wids
+  prepend_cleanup cleanup_worker_queue_f63891f
+}
+
+# Start "$@" in the background and register it in the worker queue. Echoes
+# a worker ID (wid) that identifies it to every other function below.
+#
+# By default the worker is just a plain backgrounded process: `stop_worker`
+# only signals that one process, so a well-behaved command that terminates
+# its own children on SIGTERM needs nothing more. Pass `--group` to instead
+# run the worker in its own process group (`stop_worker` then signals the
+# whole group), for commands that don't propagate SIGTERM to children they
+# spawn themselves.
+#
+# Caveat: on non-bash (see the `is_linux`/`is_macos` branches below),
+# `--group` execs "$@" directly via `setsid`/Perl, so it must be a real
+# executable on PATH, not a shell function defined in the caller — only the
+# `is_bash_bin` branch backgrounds "$@" through the shell itself, so it can
+# take a function. In practice this isn't a real limitation: a shell
+# function is code you control, so just make it exit gracefully instead of
+# reaching for `--group`.
 run_worker() {
   local group=false
   OPTIND=1; while getopts _-: OPT
@@ -115,6 +160,8 @@ run_worker() {
   echo "$@" >"$TEMP_DIR"/args."$wid"
 }
 
+# Stream the log output of the given workers (or all queued workers if none
+# given) via `tail -f`.
 tail_worker() (
   if test $# -eq 0
   then
@@ -131,6 +178,8 @@ tail_worker() (
   tail -f "$@" || :
 )
 
+# Print the accumulated log output of the given workers (or all queued
+# workers if none given).
 log_worker() {
   if test $# -eq 0
   then
@@ -146,6 +195,11 @@ log_worker() {
   cat "$@"
 }
 
+# Send SIGTERM to each given worker: the whole process group for a
+# `--group` worker, just the process itself otherwise. With
+# `--timeout-sec=N` (default: don't wait at all), also blocks up to N
+# seconds per worker for it to actually exit, printing progress/failure to
+# stderr.
 stop_worker() {
   local timeout_sec=0
   OPTIND=1; while getopts _-: OPT
@@ -165,9 +219,10 @@ stop_worker() {
     local pid="${wid#?}"
     case "$wid" in
       (g*)
-        # Signal the whole process group (run_worker starts each job in its own
-        # group via `set -m` or setsid(1)), so any children the worker itself
-        # backgrounded get terminated too, not just the worker's top-level process.
+        # Signal the whole process group (`run_worker --group ...` starts each
+        # job in its own group via `set -m` or setsid(1)), so any children the
+        # worker itself backgrounded get terminated too, not just the worker's
+        # top-level process.
         kill -TERM -"$pid" >/dev/null 2>&1 || :
         ;;
       (p*)
@@ -200,14 +255,18 @@ stop_worker() {
   return 0
 }
 
+# Extract the underlying process ID from a wid.
 pid_of_worker() {
   local wid="$1"
   local pid="${wid#?}"
   echo "$pid"
 }
 
+# Block until every given worker is alive, or until `--timeout-sec=N`
+# (default: 10) elapses for any one of them, in which case it prints a
+# failure message to stderr and returns non-zero.
 wait_worker_start() {
-  local timeout_sec=3
+  local timeout_sec=10
   OPTIND=1; while getopts _-: OPT
   do
     test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
@@ -236,6 +295,7 @@ wait_worker_start() {
   done
 }
 
+# Return success only if every given worker is still running.
 is_worker_alive() {
   local wid
   for wid in "$@"
@@ -245,8 +305,11 @@ is_worker_alive() {
   done
 }
 
+# Block until every given worker has exited, or until `--timeout-sec=N`
+# (default: 10) elapses for any one of them, in which case it prints a
+# failure message to stderr and returns non-zero.
 wait_worker() {
-  local timeout_sec=3
+  local timeout_sec=10
   OPTIND=1; while getopts _-: OPT
   do
     test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
@@ -273,26 +336,4 @@ wait_worker() {
       timeout_sec=$((timeout_sec - 1))
     done
   done
-}
-
-cleanup_worker_queue() {
-  # shellcheck disable=SC2046
-  stop_worker --timeout-sec=10 $(cat "$worker_queue_dir_60742ac"/wids)
-  rm -fr "$worker_queue_dir_60742ac"
-}
-
-init_worker_queue() {
-  first_call b03ec06 || return 0
-  if is_bash_bin || is_linux || is_macos
-  then
-    :
-  else
-    echo "Not supported (df631f1)." >&2
-    return 1
-  fi
-  init_temp
-  worker_queue_dir_60742ac="$TEMP_DIR/worker-queue"
-  mkdir -p "$worker_queue_dir_60742ac"
-  touch "$worker_queue_dir_60742ac"/wids
-  prepend_cleanup cleanup_worker_queue
 }
