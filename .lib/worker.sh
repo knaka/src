@@ -71,7 +71,7 @@ run_worker() {
     # window, `kill -TERM -"$pid"` targets a process group that doesn't
     # exist yet, so it silently hits nothing and the worker survives.
     # Block here until the worker has actually become its own process-group
-    # leader (pgid == pid) so callers never observe that race.
+    # leader so callers never observe that race.
     local i=0
     while ! kill -0 -"$pid" >/dev/null 2>&1
     do
