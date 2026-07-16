@@ -147,7 +147,7 @@ pid_of_worker() {
 }
 
 wait_worker_start() {
-  local timeout_sec=0
+  local timeout_sec=3
   OPTIND=1; while getopts _-: OPT
   do
     test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
@@ -185,7 +185,7 @@ is_worker_alive() {
 }
 
 wait_worker() {
-  local timeout_sec=0
+  local timeout_sec=3
   OPTIND=1; while getopts _-: OPT
   do
     test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
