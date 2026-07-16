@@ -56,6 +56,29 @@ run_worker() {
     # stays the worker's pid). Wrapped in the same detaching subshell as the
     # Linux branch above, for the same reason.
     pid="$(perl -e 'use POSIX "setsid"; setsid(); exec @ARGV' "$@" </dev/null >"$log_file" 2>&1 & echo $!)"
+  else
+    echo "Unexpected environment (a0002c4)." >&2
+    return 1
+  fi
+  if ! is_bash_bin
+  then
+    # Both the `setsid(1)` and Perl branches above start a separate process
+    # that calls setsid() itself, some time after it forks (Perl in
+    # particular has to load the POSIX module first, which can be slow on a
+    # cold filesystem cache, e.g. a fresh CI runner). Until that setsid()
+    # call actually happens, the worker still belongs to *our* process
+    # group, not group "$pid" yet. If a caller calls `stop_worker` in that
+    # window, `kill -TERM -"$pid"` targets a process group that doesn't
+    # exist yet, so it silently hits nothing and the worker survives.
+    # Block here until the worker has actually become its own process-group
+    # leader (pgid == pid) so callers never observe that race.
+    local i=0
+    while test "$(ps -o pgid= -p "$pid" 2>/dev/null | tr -d '[:space:]')" != "$pid"
+    do
+      i=$((i + 1))
+      test "$i" -ge 50 && break
+      sleep 0.1
+    done
   fi
   echo "$pid" >>"$worker_queue_dir_60742ac"/wids
   echo "$pid"
