@@ -48,6 +48,10 @@ test_worker() {
     path_3da3ab4="$TEMP_DIR/b39f0df"
     local wid3
     wid3="$(run_worker --group fn_not_to_clean_901f64b)"
+    while ! test -r "$path_3da3ab4"
+    do
+      sleep 0.1
+    done
     wait_worker_start "$wid3"
     stop_worker --timeout-sec=10 "$wid3"
     assert_failure kill -0 "$(cat "$path_3da3ab4")"
