@@ -12,34 +12,6 @@ cd "$1" || exit; shift
 
 : "${worker_queue_dir_60742ac-}"
 
-# Stop every worker still in the queue and remove the queue's temp
-# directory. Registered by `init_worker_queue` to run automatically on
-# EXIT, not meant to be called directly.
-cleanup_worker_queue_f63891f() {
-  # shellcheck disable=SC2046
-  stop_worker --timeout-sec=10 $(cat "$worker_queue_dir_60742ac"/wids)
-  rm -fr "$worker_queue_dir_60742ac"
-}
-
-# Set up the worker queue (temp directory + an EXIT-time cleanup that stops
-# any workers still running). Call once before using any other function in
-# this file; a no-op on repeat calls.
-init_worker_queue() {
-  first_call 6a52c6c || return 0
-  if is_bash_bin || is_linux || is_macos
-  then
-    :
-  else
-    echo "Not supported (df631f1)." >&2
-    return 1
-  fi
-  init_temp
-  worker_queue_dir_60742ac="$TEMP_DIR/worker-queue"
-  mkdir -p "$worker_queue_dir_60742ac"
-  touch "$worker_queue_dir_60742ac"/wids
-  prepend_cleanup cleanup_worker_queue_f63891f
-}
-
 # Start "$@" in the background and register it in the worker queue. Echoes
 # a worker ID (wid) that identifies it to every other function below.
 #
@@ -336,4 +308,32 @@ wait_worker() {
       timeout_sec=$((timeout_sec - 1))
     done
   done
+}
+
+# Stop every worker still in the queue and remove the queue's temp
+# directory. Registered by `init_worker_queue` to run automatically on
+# EXIT, not meant to be called directly.
+cleanup_worker_queue_f63891f() {
+  # shellcheck disable=SC2046
+  stop_worker --timeout-sec=10 $(cat "$worker_queue_dir_60742ac"/wids)
+  rm -fr "$worker_queue_dir_60742ac"
+}
+
+# Set up the worker queue (temp directory + an EXIT-time cleanup that stops
+# any workers still running). Call once before using any other function in
+# this file; a no-op on repeat calls.
+init_worker_queue() {
+  first_call 6a52c6c || return 0
+  if is_bash_bin || is_linux || is_macos
+  then
+    :
+  else
+    echo "Not supported (df631f1)." >&2
+    return 1
+  fi
+  init_temp
+  worker_queue_dir_60742ac="$TEMP_DIR/worker-queue"
+  mkdir -p "$worker_queue_dir_60742ac"
+  touch "$worker_queue_dir_60742ac"/wids
+  prepend_cleanup cleanup_worker_queue_f63891f
 }
