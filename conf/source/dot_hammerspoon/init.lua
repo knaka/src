@@ -20,11 +20,11 @@ hs.hotkey.bind({"option"}, "c", function()
   hs.eventtap.keyStroke({}, "left", 0)
 end)
 
-hs.hotkey.bind({"option"}, "z", function()
-  hs.eventtap.keyStrokes("hello")
-  hs.timer.usleep(1000)
-  hs.eventtap.keyStroke({}, "return", 0)
-end)
+-- hs.hotkey.bind({"option"}, "z", function()
+--   hs.eventtap.keyStrokes("hello")
+--   hs.timer.usleep(1000)
+--   hs.eventtap.keyStroke({}, "return", 0)
+-- end)
 
 -- ファンクションキーの内で、キーボード上に実際にあるのは F1～F12 で、HammerSpoon としては F20 まで認識する。なので、Shift + F13～F20 に機能を定義して、それへ KarabinerElements でキーを bind する。
 -- — Available keys — Hammerspoon docs: hs.keycodes https://www.hammerspoon.org/docs/hs.keycodes.html#map
