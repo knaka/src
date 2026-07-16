@@ -169,9 +169,9 @@ log_worker() {
 
 # Send SIGTERM to each given worker: the whole process group for a
 # `--group` worker, just the process itself otherwise. With
-# `--timeout-sec=N` (default: don't wait at all), also blocks up to N
-# seconds per worker for it to actually exit, printing progress/failure to
-# stderr.
+# `--timeout-sec=N` (default: don't wait at all), also blocks for the
+# workers to actually exit, printing progress/failure to stderr — N is a
+# combined budget shared across all given workers, not N seconds each.
 stop_worker() {
   local timeout_sec=0
   OPTIND=1; while getopts _-: OPT
@@ -235,8 +235,9 @@ pid_of_worker() {
 }
 
 # Block until every given worker is alive, or until `--timeout-sec=N`
-# (default: 10) elapses for any one of them, in which case it prints a
-# failure message to stderr and returns non-zero.
+# (default: 10) elapses, in which case it prints a failure message to
+# stderr and returns non-zero. N is a combined budget shared across all
+# given workers, not N seconds each.
 wait_worker_start() {
   local timeout_sec=10
   OPTIND=1; while getopts _-: OPT
@@ -278,8 +279,9 @@ is_worker_alive() {
 }
 
 # Block until every given worker has exited, or until `--timeout-sec=N`
-# (default: 10) elapses for any one of them, in which case it prints a
-# failure message to stderr and returns non-zero.
+# (default: 10) elapses, in which case it prints a failure message to
+# stderr and returns non-zero. N is a combined budget shared across all
+# given workers, not N seconds each.
 wait_worker() {
   local timeout_sec=10
   OPTIND=1; while getopts _-: OPT
