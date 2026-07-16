@@ -13,77 +13,106 @@ cd "$1" || exit; shift
 : "${worker_queue_dir_60742ac-}"
 
 run_worker() {
+  local group=false
+  OPTIND=1; while getopts _-: OPT
+  do
+    test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
+    case "$OPT" in
+      (group) group=true;;
+      (?) return 1;;
+      (*) echo "$0: illegal option -- $OPT" >&2; return 1;;
+    esac
+  done
+  shift $((OPTIND-1))
+
   local base log_file
   base="$(echo "$*" | sed -Ee 's/[^[:alnum:]]/_/g')"
   log_file="$(mktemp "$worker_queue_dir_60742ac"/"$base.log.XXXXX")"
   touch "$log_file"
-  local pid
-  if is_bash_bin
+  local wid
+  if "$group"
   then
-    # Bash provides rich job control feature even on MSYS2.
-    local disable_monitor=false
-    case "$-" in
-      (*m*) ;;
-      (*)
-        set -m
-        disable_monitor=true
-        ;;
-    esac
-    # Run the background job and detach from the shell's job table so this
-    # worker (though in its own process group via `set -m`) isn't reaped/awaited
-    # by an unrelated bare `wait`/`jobs` the caller (who sourced this library)
-    # might run later.
-    "$@" </dev/null >"$log_file" 2>&1 &
-    pid="$!"
-    # shellcheck disable=SC3044
-    disown %+
-    "$disable_monitor" && set +m
-  elif is_linux
-  then
-    # Run the backgrounding itself inside a subshell (rather than plain `setsid
-    # ... &` here) so the worker's direct parent is this subshell, which exits
-    # immediately after echoing its pid. That orphans the worker right away,
-    # regardless of how the caller happens to invoke `run_worker` (e.g. even
-    # without wrapping the call in `$(...)`), so it can never be swept up by an
-    # unrelated bare `wait`/`jobs` in the caller's shell. (POSIX sh has no
-    # `disown` to do this explicitly.)
-    pid="$(setsid "$@" </dev/null >"$log_file" 2>&1 & echo $!)"
-  elif is_macos
-  then
-    # No `setsid(1)` command on macOS, so call POSIX::setsid() from Perl
-    # instead, right before exec'ing into "$@" (no extra fork: like `setsid(1)`
-    # on Linux, the Perl process itself becomes the worker via exec, so its pid
-    # stays the worker's pid). Wrapped in the same detaching subshell as the
-    # Linux branch above, for the same reason.
-    pid="$(perl -e 'use POSIX "setsid"; setsid(); exec @ARGV' "$@" </dev/null >"$log_file" 2>&1 & echo $!)"
+    local pid
+    if is_bash_bin
+    then
+      # Bash provides rich job control feature even on MSYS2.
+      local disable_monitor=false
+      case "$-" in
+        (*m*) ;;
+        (*)
+          set -m
+          disable_monitor=true
+          ;;
+      esac
+      # Run the background job and detach from the shell's job table so this
+      # worker (though in its own process group via `set -m`) isn't reaped/awaited
+      # by an unrelated bare `wait`/`jobs` the caller (who sourced this library)
+      # might run later.
+      "$@" </dev/null >"$log_file" 2>&1 &
+      pid="$!"
+      # shellcheck disable=SC3044
+      disown %+
+      "$disable_monitor" && set +m
+    elif is_linux
+    then
+      # Run the backgrounding itself inside a subshell (rather than plain `setsid
+      # ... &` here) so the worker's direct parent is this subshell, which exits
+      # immediately after echoing its pid. That orphans the worker right away,
+      # regardless of how the caller happens to invoke `run_worker` (e.g. even
+      # without wrapping the call in `$(...)`), so it can never be swept up by an
+      # unrelated bare `wait`/`jobs` in the caller's shell. (POSIX sh has no
+      # `disown` to do this explicitly.)
+      pid="$(setsid "$@" </dev/null >"$log_file" 2>&1 & echo $!)"
+    elif is_macos
+    then
+      # No `setsid(1)` command on macOS, so call POSIX::setsid() from Perl
+      # instead, right before exec'ing into "$@" (no extra fork: like `setsid(1)`
+      # on Linux, the Perl process itself becomes the worker via exec, so its pid
+      # stays the worker's pid). Wrapped in the same detaching subshell as the
+      # Linux branch above, for the same reason.
+      pid="$(perl -e 'use POSIX "setsid"; setsid(); exec @ARGV' "$@" </dev/null >"$log_file" 2>&1 & echo $!)"
+    else
+      echo "Unexpected environment (a0002c4)." >&2
+      return 1
+    fi
+    if ! is_bash_bin
+    then
+      # Both the `setsid(1)` and Perl branches above start a separate process
+      # that calls setsid() itself, some time after it forks (Perl in
+      # particular has to load the POSIX module first, which can be slow on a
+      # cold filesystem cache, e.g. a fresh CI runner). Until that setsid()
+      # call actually happens, the worker still belongs to *our* process
+      # group, not group "$pid" yet. If a caller calls `stop_worker` in that
+      # window, `kill -TERM -"$pid"` targets a process group that doesn't
+      # exist yet, so it silently hits nothing and the worker survives.
+      # Block here until the worker has actually become its own process-group
+      # leader so callers never observe that race.
+      local i=0
+      while ! kill -0 -"$pid" >/dev/null 2>&1
+      do
+        i=$((i + 1))
+        test "$i" -ge 50 && break
+        sleep 0.1
+      done
+    fi
+    wid="g$pid"
   else
-    echo "Unexpected environment (a0002c4)." >&2
-    return 1
+    local pid
+    if is_bash_bin
+    then
+      "$@" </dev/null >"$log_file" 2>&1 &
+      pid="$!"
+      # shellcheck disable=SC3044
+      disown %+
+    else
+      pid="$("$@" </dev/null >"$log_file" 2>&1 & echo $!)"
+    fi
+    wid="p$pid"
   fi
-  if ! is_bash_bin
-  then
-    # Both the `setsid(1)` and Perl branches above start a separate process
-    # that calls setsid() itself, some time after it forks (Perl in
-    # particular has to load the POSIX module first, which can be slow on a
-    # cold filesystem cache, e.g. a fresh CI runner). Until that setsid()
-    # call actually happens, the worker still belongs to *our* process
-    # group, not group "$pid" yet. If a caller calls `stop_worker` in that
-    # window, `kill -TERM -"$pid"` targets a process group that doesn't
-    # exist yet, so it silently hits nothing and the worker survives.
-    # Block here until the worker has actually become its own process-group
-    # leader so callers never observe that race.
-    local i=0
-    while ! kill -0 -"$pid" >/dev/null 2>&1
-    do
-      i=$((i + 1))
-      test "$i" -ge 50 && break
-      sleep 0.1
-    done
-  fi
-  echo "$pid" >>"$worker_queue_dir_60742ac"/wids
-  echo "$pid"
-  echo "$log_file" >"$worker_queue_dir_60742ac"/"log-file.$pid"
-  echo "$@" >"$TEMP_DIR"/args."$pid"
+  echo "$wid" >>"$worker_queue_dir_60742ac"/wids
+  echo "$wid"
+  echo "$log_file" >"$worker_queue_dir_60742ac/log-file.$wid"
+  echo "$@" >"$TEMP_DIR"/args."$wid"
 }
 
 tail_worker() (
@@ -93,7 +122,6 @@ tail_worker() (
     set -- $(cat "$worker_queue_dir_60742ac"/wids)
   fi
   local wid
-  local log_file
   for wid in "$@"
   do
     set -- "$@" "$(cat "$worker_queue_dir_60742ac"/"log-file.$wid")"
@@ -110,14 +138,11 @@ log_worker() {
     set -- $(cat "$worker_queue_dir_60742ac"/wids)
   fi
   local wid
-  local log_file
   for wid in "$@"
   do
     set -- "$@" "$(cat "$worker_queue_dir_60742ac"/"log-file.$wid")"
     shift
   done
-  trap : INT
-  tail -f "$@" || :
   cat "$@"
 }
 
@@ -137,10 +162,21 @@ stop_worker() {
   local wid
   for wid in "$@"
   do
-    # Signal the whole process group (run_worker starts each job in its own
-    # group via `set -m` or setsid(1)), so any children the worker itself
-    # backgrounded get terminated too, not just the worker's top-level process.
-    kill -TERM -"$wid" >/dev/null 2>&1 || :
+    local pid="${wid#?}"
+    case "$wid" in
+      (g*)
+        # Signal the whole process group (run_worker starts each job in its own
+        # group via `set -m` or setsid(1)), so any children the worker itself
+        # backgrounded get terminated too, not just the worker's top-level process.
+        kill -TERM -"$pid" >/dev/null 2>&1 || :
+        ;;
+      (p*)
+        kill -TERM "$pid" >/dev/null 2>&1 || :
+        ;;
+      (*)
+        return 1
+        ;;
+    esac
   done
   if test "$timeout_sec" -eq 0
   then
@@ -166,7 +202,8 @@ stop_worker() {
 
 pid_of_worker() {
   local wid="$1"
-  echo "$wid"
+  local pid="${wid#?}"
+  echo "$pid"
 }
 
 wait_worker_start() {
@@ -203,7 +240,8 @@ is_worker_alive() {
   local wid
   for wid in "$@"
   do
-    kill -0 "$wid" >/dev/null 2>&1 || return 1
+    local pid="${wid#?}"
+    kill -0 "$pid" >/dev/null 2>&1 || return 1
   done
 }
 

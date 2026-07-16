@@ -18,6 +18,14 @@ skip_cond_ce1f35f() {
   is_bbwin
 }
 
+: "${path_3da3ab4-}"
+
+fn_not_to_clean_901f64b() {
+  sleep 4567 &
+  echo "$!" >"$path_3da3ab4"
+  wait
+}
+
 test_worker() {
   skip_if skip_cond_ce1f35f
 
@@ -34,4 +42,14 @@ test_worker() {
   stop_worker "$wid"
   wait_worker --timeout-sec=10 "$wid"
   assert_failure kill -0 "$(pid_of_worker "$wid")" >/dev/null 2>&1
+
+  if is_bash_bin
+  then
+    path_3da3ab4="$TEMP_DIR/b39f0df"
+    local wid3
+    wid3="$(run_worker --group fn_not_to_clean_901f64b)"
+    wait_worker_start "$wid3"
+    stop_worker --timeout-sec=10 "$wid3"
+    assert_failure kill -0 "$(cat "$path_3da3ab4")"
+  fi
 }
