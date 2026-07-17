@@ -114,8 +114,6 @@ cmdbase_snake_() {
 # ==========================================================================
 #region Temporary directory and cleaning up
 
-: "${TEMP_DIR-}"
-
 # Traps are reset in subshells, so "${signal}_cmds" must be reset too.
 # — Command Execution Environment (Bash Reference Manual) https://doc.guix.gnu.org/bash/latest/en/html_node/Command-Execution-Environment.html
 # shellcheck disable=SC3028
@@ -127,9 +125,9 @@ reset_cmds_if_new_subshell_f2fb3bc() {
   then
     # Note that `trap -p ...` output inside a Bash subshell reflects the parent
     # shell's state, so it cannot be relied on for this check.
-    if test -n "$EXIT_prev_bashpid_73b382c" # Bash >= 4
+    if eval "test -n \"\$$bashpid_var_name\"" # Bash >= 4
     then
-      if test "$EXIT_prev_bashpid_73b382c" != "$BASHPID"
+      if eval test "\$$cmds_var_name" != "$BASHPID"
       then
         eval "$cmds_var_name=:"
       fi
@@ -157,7 +155,7 @@ add_signal_handler_15858e9() {
   local cmds_var_name="${signal}_cmds_054cf7c"
   reset_cmds_if_new_subshell_f2fb3bc "$signal"
   local haystack=
-  eval haystack="\";$cmds_var_name;\""
+  eval "haystack=\";\$$cmds_var_name;\""
   case "$haystack" in
     (*";${signal_handler};"*) return 0;;
   esac
@@ -174,7 +172,7 @@ remove_signal_handler_6b58050() {
   local cmds_var_name="${signal}_cmds_054cf7c"
   reset_cmds_if_new_subshell_f2fb3bc "$signal"
   local haystack=
-  eval haystack="\";$cmds_var_name;\""
+  eval haystack="\";\$$cmds_var_name;\""
   local cmds
   cmds="$(echo "$haystack" | sed -e "s/;$signal_handler;//" -e 's/^;//' -e 's/;$//')"
   eval "$cmds_var_name=\"$cmds\""
@@ -182,7 +180,9 @@ remove_signal_handler_6b58050() {
   trap "$cmds" "$signal"
 }
 
+# shellcheck disable=SC2034
 EXIT_cmds_054cf7c=:
+# shellcheck disable=SC2034
 EXIT_prev_bashpid_73b382c=
 
 add_exit_handler() {
@@ -193,6 +193,8 @@ remove_exit_handler() {
   remove_signal_handler_6b58050 "$1" EXIT
 }
 
+: "${TEMP_DIR-}"
+
 cleanup_temp_dir_a395082() {
   rm -fr "$TEMP_DIR"
   unset TEMP_DIR
@@ -202,7 +204,6 @@ cleanup_temp_dir_a395082() {
 init_temp_dir() {
   test "${TEMP_DIR+set}" && return 0
   TEMP_DIR="$(mktemp -d)"
-  # shellcheck disable=SC2016
   add_exit_handler cleanup_temp_dir_a395082
 }
 
