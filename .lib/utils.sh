@@ -127,7 +127,7 @@ reset_cmds_if_new_subshell_f2fb3bc() {
     # shell's state, so it cannot be relied on for this check.
     if eval "test -n \"\$$bashpid_var_name\"" # Bash >= 4
     then
-      if eval test "\$$cmds_var_name" != "$BASHPID"
+      if eval test "\$$bashpid_var_name" != "$BASHPID"
       then
         eval "$cmds_var_name=:"
       fi
@@ -159,7 +159,7 @@ add_signal_handler_15858e9() {
   case "$haystack" in
     (*";${signal_handler};"*) return 0;;
   esac
-  local cmds
+  local cmds=
   eval "cmds=\"$signal_handler;\$$cmds_var_name\""
   eval "$cmds_var_name=\"$cmds\""
   # shellcheck disable=SC2064

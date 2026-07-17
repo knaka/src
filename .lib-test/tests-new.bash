@@ -35,11 +35,12 @@ test_register_exit_handler_bash() {
   add_exit_handler cleanup1bash
   (
     add_exit_handler cleanup2bash
+    add_exit_handler cleanup2bash
     add_exit_handler cleanup3bash
   ) >"$temp_file"
-  grep -q cleanup1bash "$temp_file" && false
-  grep -q cleanup2bash "$temp_file" || false
-  grep -q cleanup3bash "$temp_file" || false
+  assert_failure grep -q cleanup1bash "$temp_file"
+  assert_success grep -q cleanup2bash "$temp_file"
+  assert_success grep -q cleanup3bash "$temp_file"
   rm -f "$temp_file"
 }
 
