@@ -134,7 +134,7 @@ run_worker() {
 
 # Stream the log output of the given workers (or all queued workers if none
 # given) via `tail -f`.
-tail_worker() (
+tail_worker() {
   if test $# -eq 0
   then
     # shellcheck disable=SC2046
@@ -146,9 +146,11 @@ tail_worker() (
     set -- "$@" "$(cat "$worker_queue_dir_60742ac"/"log-file.$wid")"
     shift
   done
-  trap : INT
-  tail -f "$@" || :
-)
+  (
+    set -m
+    tail -f "$@" || :
+  )
+}
 
 # Print the accumulated log output of the given workers (or all queued
 # workers if none given).
