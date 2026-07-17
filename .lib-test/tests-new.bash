@@ -29,13 +29,13 @@ cleanup1bash() { echo cleanup1bash; };
 cleanup2bash() { echo cleanup2bash; };
 cleanup3bash() { echo cleanup3bash; };
 
-test_prepend_cleanup_bash() {
+test_register_exit_handler_bash() {
   local temp_file
   temp_file="$(mktemp)"
-  prepend_cleanup cleanup1bash
+  add_exit_handler cleanup1bash
   (
-    prepend_cleanup cleanup2bash
-    prepend_cleanup cleanup3bash
+    add_exit_handler cleanup2bash
+    add_exit_handler cleanup3bash
   ) >"$temp_file"
   grep -q cleanup1bash "$temp_file" && false
   grep -q cleanup2bash "$temp_file" || false

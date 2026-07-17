@@ -9,7 +9,7 @@ set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test 
 . ./clipper.sh
 cd "$1"; shift 2
 
-init_temp_dir
+init_temp
 
 urls2md() {
   local temp_file="$TEMP_DIR"/temp.md

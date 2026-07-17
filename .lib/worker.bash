@@ -189,5 +189,5 @@ init_worker_queue() {
   worker_queue_dir_24f4ecb="$TEMP_DIR/worker-queue"
   mkdir -p "$worker_queue_dir_24f4ecb"
   touch "$worker_queue_dir_24f4ecb"/wids
-  prepend_cleanup cleanup_worker_queue
+  add_exit_handler cleanup_worker_queue
 }

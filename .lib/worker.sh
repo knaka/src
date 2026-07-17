@@ -339,5 +339,5 @@ init_worker_queue() {
   worker_queue_dir_60742ac="$TEMP_DIR/worker-queue"
   mkdir -p "$worker_queue_dir_60742ac"
   touch "$worker_queue_dir_60742ac"/wids
-  prepend_cleanup cleanup_worker_queue_f63891f
+  add_exit_handler cleanup_worker_queue_f63891f
 }

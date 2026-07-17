@@ -55,6 +55,10 @@ readonly SIGPIPE=13
 # shellcheck disable=SC2034
 readonly rc_sigpipe=$((128 + SIGPIPE))
 
+readonly SIGTERM=15
+# shellcheck disable=SC2034
+readonly rc_sigterm=$((128 + SIGTERM))
+
 # Guard against multiple calls. $1 is a unique ID
 first_call() {
   eval "\${_CALLED_$1-false}" && return 1
@@ -112,22 +116,22 @@ cmdbase_snake_() {
 
 : "${TEMP_DIR-}"
 
-cleanup_cmds_054cf7c=:
-prev_bashpid_73b382c=
-
-# Traps are reset in subshells, so "cleanup_cmds" must be reset too.
+# Traps are reset in subshells, so "${signal}_cmds" must be reset too.
 # — Command Execution Environment (Bash Reference Manual) https://doc.guix.gnu.org/bash/latest/en/html_node/Command-Execution-Environment.html
 # shellcheck disable=SC3028
-reset_cleanup_cmds_if_new_subshell() {
-  if test "$cleanup_cmds_054cf7c" != :
+reset_cmds_if_new_subshell_f2fb3bc() {
+  local signal="$1"
+  local cmds_var_name="${signal}_cmds_054cf7c"
+  local bashpid_var_name="${signal}_prev_bashpid_73b382c"
+  if eval test \$"$cmds_var_name" != :
   then
     # Note that `trap -p ...` output inside a Bash subshell reflects the parent
     # shell's state, so it cannot be relied on for this check.
-    if test -n "$prev_bashpid_73b382c" # Bash >= 4
+    if test -n "$EXIT_prev_bashpid_73b382c" # Bash >= 4
     then
-      if test "$prev_bashpid_73b382c" != "$BASHPID"
+      if test "$EXIT_prev_bashpid_73b382c" != "$BASHPID"
       then
-        cleanup_cmds_054cf7c=:
+        eval "$cmds_var_name=:"
       fi
     else # Others
       # Piping directly into grep would check the subshell's own trap (since a
@@ -136,65 +140,60 @@ reset_cleanup_cmds_if_new_subshell() {
       local temp_file
       temp_file="$(mktemp)"
       trap >"$temp_file"
-      if ! grep EXIT "$temp_file" >/dev/null 2>&1
+      if ! grep "$signal" "$temp_file" >/dev/null 2>&1
       then
-        cleanup_cmds_054cf7c=:
+        eval "$cmds_var_name=:"
       fi
       rm -f "$temp_file"
     fi
   fi
-  test "${BASHPID+set}" = set && prev_bashpid_73b382c="$BASHPID"
+  test "${BASHPID+set}" = set && eval "$bashpid_var_name=$BASHPID"
   :
 }
 
-add_cleanup_5fbc8c7() {
-  local should_append=false
-  OPTIND=1; while getopts _-: OPT
-  do
-    test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
-    case "$OPT" in
-      (append) should_append=true;;
-      (?) return 1;;
-      (*) echo "$0: illegal option -- $OPT" >&2; return 1;;
-    esac
-  done
-  shift $((OPTIND-1))
-
-  if test $# -ne 1
-  then
-    echo "prepend_cleanup takes one argument."
-    return 1
-  fi
-  reset_cleanup_cmds_if_new_subshell
-  if "$should_append"
-  then
-    cleanup_cmds_054cf7c="$cleanup_cmds_054cf7c; ${1}"
-  else
-    cleanup_cmds_054cf7c="${1}; $cleanup_cmds_054cf7c"
-  fi
+add_signal_handler_15858e9() {
+  local signal_handler="$1"
+  local signal="$2"
+  local cmds_var_name="${signal}_cmds_054cf7c"
+  reset_cmds_if_new_subshell_f2fb3bc "$signal"
+  local haystack
+  eval haystack="\";$cmds_var_name;\""
+  case "$haystack" in
+    (*";${signal_handler};"*) return 0;;
+  esac
+  local cmds
+  eval "cmds=\"$signal_handler;\$$cmds_var_name\""
+  eval "$cmds_var_name=\"$cmds\""
   # shellcheck disable=SC2064
-  trap "$cleanup_cmds_054cf7c" EXIT
+  trap "$cmds" "$signal"
 }
 
-prepend_cleanup() {
-  add_cleanup_5fbc8c7 "$@"
+EXIT_cmds_054cf7c=:
+EXIT_prev_bashpid_73b382c=
+
+add_exit_handler() {
+  add_signal_handler_15858e9 "$1" EXIT
 }
 
-cleanup_temp() {
+cleanup_temp_dir_a395082() {
   rm -fr "$TEMP_DIR"
   unset TEMP_DIR
 }
 
 # Create a temporary directory and assign $TEMP_DIR env var
-init_temp() {
+init_temp_dir() {
   test "${TEMP_DIR+set}" && return 0
   TEMP_DIR="$(mktemp -d)"
   # shellcheck disable=SC2016
-  prepend_cleanup cleanup_temp
+  add_exit_handler cleanup_temp_dir_a395082
 }
 
 register_temp_cleanup() {
-  init_temp
+  init_temp_dir
+}
+
+init_temp() {
+  init_temp_dir
 }
 
 cleanup_child_processes() {
@@ -211,15 +210,25 @@ cleanup_child_processes() {
 # Register child-proceses cleanup trap handler.
 register_child_cleanup() {
   first_call 5f719a3 || return 0
-  add_cleanup_5fbc8c7 --append cleanup_child_processes
+  add_exit_handler cleanup_child_processes
   trap : TERM
 }
 
 # Call the finalization function before `exec` which does not call trap function.
 finalize() {
-  reset_cleanup_cmds_if_new_subshell
-  $cleanup_cmds_054cf7c
-  cleanup_cmds_054cf7c=:
+  reset_exit_cmds_if_new_subshell
+  $EXIT_cmds_054cf7c
+  EXIT_cmds_054cf7c=:
+}
+
+# shellcheck disable=SC2034
+{
+  TERM_cmds_054cf7c=:
+  TERM_prev_bashpid_73b382c=
+}
+
+add_term_handler() {
+  add_signal_handler_15858e9 "$1" TERM
 }
 
 #endregion

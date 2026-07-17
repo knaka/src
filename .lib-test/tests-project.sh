@@ -100,13 +100,13 @@ cleanup1sh() { echo cleanup1sh; };
 cleanup2sh() { echo cleanup2sh; };
 cleanup3sh() { echo cleanup3sh; };
 
-test_prepend_cleanup_sh() {
+test_register_exit_handler_sh() {
   local temp_file
   temp_file="$(mktemp)"
-  prepend_cleanup cleanup1sh
+  add_exit_handler cleanup1sh
   (
-    prepend_cleanup cleanup2sh
-    prepend_cleanup cleanup3sh
+    add_exit_handler cleanup2sh
+    add_exit_handler cleanup3sh
   ) >"$temp_file"
   grep -q cleanup1sh "$temp_file" && false
   grep -q cleanup2sh "$temp_file" || false
