@@ -156,7 +156,7 @@ add_signal_handler_15858e9() {
   local signal="$2"
   local cmds_var_name="${signal}_cmds_054cf7c"
   reset_cmds_if_new_subshell_f2fb3bc "$signal"
-  local haystack
+  local haystack=
   eval haystack="\";$cmds_var_name;\""
   case "$haystack" in
     (*";${signal_handler};"*) return 0;;
@@ -168,11 +168,29 @@ add_signal_handler_15858e9() {
   trap "$cmds" "$signal"
 }
 
+remove_signal_handler_6b58050() {
+  local signal_handler="$1"
+  local signal="$2"
+  local cmds_var_name="${signal}_cmds_054cf7c"
+  reset_cmds_if_new_subshell_f2fb3bc "$signal"
+  local haystack=
+  eval haystack="\";$cmds_var_name;\""
+  local cmds
+  cmds="$(echo "$haystack" | sed -e "s/;$signal_handler;//" -e 's/^;//' -e 's/;$//')"
+  eval "$cmds_var_name=\"$cmds\""
+  # shellcheck disable=SC2064
+  trap "$cmds" "$signal"
+}
+
 EXIT_cmds_054cf7c=:
 EXIT_prev_bashpid_73b382c=
 
 add_exit_handler() {
   add_signal_handler_15858e9 "$1" EXIT
+}
+
+remove_exit_handler() {
+  remove_signal_handler_6b58050 "$1" EXIT
 }
 
 cleanup_temp_dir_a395082() {
@@ -222,13 +240,16 @@ finalize() {
 }
 
 # shellcheck disable=SC2034
-{
-  TERM_cmds_054cf7c=:
-  TERM_prev_bashpid_73b382c=
-}
+TERM_cmds_054cf7c=:
+# shellcheck disable=SC2034
+TERM_prev_bashpid_73b382c=
 
 add_term_handler() {
   add_signal_handler_15858e9 "$1" TERM
+}
+
+remove_term_handler() {
+  remove_signal_handler_6b58050 "$1" TERM
 }
 
 #endregion
