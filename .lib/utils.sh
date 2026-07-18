@@ -339,6 +339,11 @@ pop_dir() {
 
 # Print call stack if available.
 print_call_stack() {
+  if test $# -gt 0
+  then
+    # shellcheck disable=SC2059
+    echo "$@"
+  fi
   # shellcheck disable=SC3018
   # shellcheck disable=SC3044
   if is_bash_bin
