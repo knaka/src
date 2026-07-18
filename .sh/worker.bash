@@ -52,7 +52,7 @@ workers-stop() {
 }
 
 worker() {
-  register_temp_cleanup
+  init_temp_dir
   local wid1 wid2
   wid1="$(worker-run bash ./loop.bash 1)"
   wid2="$(worker-run bash ./loop.bash 2)"

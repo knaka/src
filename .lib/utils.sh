@@ -65,9 +65,9 @@ first_call() {
   eval "_CALLED_$1=true"
 }
 
-# Check if stdout is tty.
+# Check if stdio is tty.
 is_terminal() {
-  test -t 1
+  test -t 0 -a -t 1
 }
 
 usv_called_6b2a1df=
@@ -83,36 +83,12 @@ run_once() {
   "$@"
 }
 
-# Check if external command exists in $PATH.
-has_external_command() {
-  # test -x "$(command -v "$1" 2>/dev/null)"
-  # command which "$1" >/dev/null # `command` does not ignore builtins
-  # env which "$1" >/dev/null
-  which "$1" >/dev/null
-}
-
-: "${RESULT-}"
-
-cmdbase_snake_() {
-  RESULT=
-  local s="$1"
-  s="${s##*[/\\]}"
-  s="${s%.sh}"
-  s="${s%.bash}"
-  local left
-  while test -n "$s"
-  do
-    left=${s%%-*}
-    test "$left" = "$s" && RESULT="$RESULT$s" && return
-    RESULT="$RESULT$left"_
-    s="${s#*-}"
-  done
-}
-
 #endregion
 
 # ==========================================================================
 #region Temporary directory and cleaning up
+
+: "${TEMP_DIR-}"
 
 # Traps are reset in subshells, so "${signal}_cmds" must be reset too.
 # — Command Execution Environment (Bash Reference Manual) https://doc.guix.gnu.org/bash/latest/en/html_node/Command-Execution-Environment.html
@@ -123,30 +99,35 @@ reset_cmds_if_new_subshell_f2fb3bc() {
   local bashpid_var_name="${signal}_prev_bashpid_73b382c"
   if eval test \$"$cmds_var_name" != :
   then
-    # Note that `trap -p ...` output inside a Bash subshell reflects the parent
-    # shell's state, so it cannot be relied on for this check.
+    # Note that `trap -p ...` of Bash >= 4 output inside a Bash subshell
+    # reflects the parent shell's state, so it cannot be relied on for this
+    # check.
     if eval "test -n \"\$$bashpid_var_name\"" # Bash >= 4
     then
       if eval test "\$$bashpid_var_name" != "$BASHPID"
       then
         eval "$cmds_var_name=:"
       fi
-    else # Others
+    else # The others
       # Piping directly into grep would check the subshell's own trap (since a
       # pipeline stage runs in a subshell), so write the parent shell's trap
       # state to a temp file first and grep that instead.
       local temp_file
-      temp_file="$(mktemp)"
+      if test "${TEMP_DIR+set}" = set
+      then
+        temp_file="$TEMP_DIR"/16979dd
+      else
+        temp_file="$(mktemp)"
+      fi
       trap >"$temp_file"
-      if ! grep "$signal" "$temp_file" >/dev/null 2>&1
+      if ! grep -E -e "[[:space:]]$signal\$" "$temp_file" >/dev/null 2>&1
       then
         eval "$cmds_var_name=:"
       fi
       rm -f "$temp_file"
     fi
   fi
-  test "${BASHPID+set}" = set && eval "$bashpid_var_name=$BASHPID"
-  :
+  test "${BASHPID+set}" && eval "$bashpid_var_name=$BASHPID" || :
 }
 
 add_signal_handler_15858e9() {
@@ -193,8 +174,6 @@ remove_exit_handler() {
   remove_signal_handler_6b58050 "$1" EXIT
 }
 
-: "${TEMP_DIR-}"
-
 cleanup_temp_dir_a395082() {
   rm -fr "$TEMP_DIR"
   unset TEMP_DIR
@@ -207,26 +186,17 @@ init_temp_dir() {
   add_exit_handler cleanup_temp_dir_a395082
 }
 
-register_temp_cleanup() {
-  init_temp_dir
-}
-
-init_temp() {
-  init_temp_dir
-}
-
 cleanup_child_processes() {
   "${VERBOSE-false}" && echo Cleaning up child processes >&2
   if is_bbwin
   then
-    # After catching TERM, doing something seems to fail.
-    kill -TERM -$$
-    return $?
+    kill -TERM -$$ || return $?
+    return
   fi
   kill -TERM 0
 }
 
-# Register child-proceses cleanup trap handler.
+# Register the child-processes cleanup trap handler. Note that, as a result, a TERM signal is sent to the entire process group.
 register_child_cleanup() {
   first_call 5f719a3 || return 0
   add_exit_handler cleanup_child_processes
@@ -234,11 +204,13 @@ register_child_cleanup() {
 }
 
 # Call the finalization function before `exec` which does not call trap function.
-finalize() {
+run_exit_handlers() {
   reset_exit_cmds_if_new_subshell
   $EXIT_cmds_054cf7c
   EXIT_cmds_054cf7c=:
 }
+
+# SIGTERM handler stack.
 
 # shellcheck disable=SC2034
 TERM_cmds_054cf7c=:
@@ -316,7 +288,13 @@ is_bash_bin() {
 is_bash_posix() {
   # shellcheck disable=SC3010
   # shellcheck disable=SC3028
-  is_bash_bin && [[ ":$SHELLOPTS:" = *:posix:* ]]
+  is_bash_bin "$@" && [[ ":$SHELLOPTS:" = *:posix:* ]]
+}
+
+is_bash_native() {
+  # shellcheck disable=SC3010
+  # shellcheck disable=SC3028
+  is_bash_bin "$@" && [[ ":$SHELLOPTS:" != *:posix:* ]]
 }
 
 # Executable file extension.
@@ -359,7 +337,47 @@ pop_dir() {
 # ==========================================================================
 #region Misc utilities.
 
+# Print call stack if available.
+print_call_stack() {
+  # shellcheck disable=SC3006
+  # shellcheck disable=SC3018
+  # shellcheck disable=SC3044
+  if is_bash_bin
+  then
+    local i=0
+    while caller $i
+    do
+      ((i++))
+    done
+  fi
+  :
+}
+
+# Check if external command exists in $PATH.
+has_external_command() {
+  # test -x "$(command -v "$1" 2>/dev/null)"
+  # command which "$1" >/dev/null # `command` does not ignore builtins
+  # env which "$1" >/dev/null
+  which "$1" >/dev/null
+}
+
 : "${RESULT-}"
+
+cmdbase_snake_() {
+  RESULT=
+  local s="$1"
+  s="${s##*[/\\]}"
+  s="${s%.sh}"
+  s="${s%.bash}"
+  local left
+  while test -n "$s"
+  do
+    left=${s%%-*}
+    test "$left" = "$s" && RESULT="$RESULT$s" && return
+    RESULT="$RESULT$left"_
+    s="${s#*-}"
+  done
+}
 
 set_result() {
   RESULT="$1"
@@ -378,11 +396,11 @@ set_resultf() {
     # shellcheck disable=SC2059
     RESULT="$(printf "$@")"
   else
-    register_temp_cleanup
-    if test "${fifo_path_88b5b27+set}" != set
+    init_temp_dir
+    if ! test "${fifo_path_88b5b27+set}"
     then
       fifo_path_88b5b27="$TEMP_DIR/dd77392"
-      rm -f "$TEMP_DIR/dd77392"
+      rm -f "$fifo_path_88b5b27"
       mkfifo "$fifo_path_88b5b27"
     fi
     exec 9<>"$fifo_path_88b5b27"

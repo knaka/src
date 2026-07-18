@@ -9,7 +9,7 @@ set -- _LIBDIR ../.lib "$@"
 shift 2
 cd "$1" || exit 1; shift 2
 
-register_temp_cleanup
+init_temp_dir
 
 urlrec() {
   local excluded_directories=

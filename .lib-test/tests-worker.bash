@@ -24,6 +24,6 @@ test_worker_bash() {
 }
 
 test_zzz() {
-  init_temp 
+  init_temp_dir
   ls -l "$TEMP_DIR"
 }

@@ -12,7 +12,7 @@ popd >/dev/null || exit 1
 ext2uti() {
   is_macos || return 1
   test $# -eq 0 && return 1
-  init_temp
+  init_temp_dir
   local ext
   ext="$1"
   test -z "$ext" && return 1

@@ -94,7 +94,7 @@ run_tests() {
     tests_to_run="$all_tests"
   fi
 
-  register_temp_cleanup
+  init_temp_dir
   local log_file_path="$TEMP_DIR/296ef1c"
   local some_failed=false
   _() {

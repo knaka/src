@@ -53,6 +53,10 @@ test_local_ifs() (
 )
 
 test_pos_params() {
+  if true
+  then
+    assert_fail
+  fi
   set -- "aaa  bbb" "ccc"
   assert_eq 2 $#
 
@@ -89,7 +93,7 @@ job_control_available() {
 test_cleanup_child_processes() {
   skip_unless job_control_available
 
-  init_temp
+  init_temp_dir
   local child_pid_file="$TEMP_DIR/child_pid"
 
   set -m

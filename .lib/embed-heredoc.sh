@@ -18,7 +18,7 @@ embed_heredoc_sub() {
 embed_heredoc() {
   test $# = 0 && return 0
 
-  register_temp_cleanup
+  init_temp_dir
   local path
   local temp_path="$TEMP_DIR/14a4092"
   for path in "$@"

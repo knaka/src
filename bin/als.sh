@@ -16,7 +16,7 @@ als() {
   do
     case "$file" in
       (ftp:*|http:*|https:*)
-        init_temp
+        init_temp_dir
         local temp_file
         temp_file="$TEMP_DIR"/"$(basename "$file")"
         curl "$file" --output "$temp_file" >&2

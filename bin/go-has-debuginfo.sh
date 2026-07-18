@@ -24,7 +24,7 @@ EOF
 
 go_has_debuginfo() {
   test "$#" -lt 1 && show_help_2269cee && return 1
-  register_temp_cleanup
+  init_temp_dir
   file="$TEMP_DIR/06454c6"
   go tool objdump -s main.main "$1" | tee "$file" >&2
   if test -s "$file"

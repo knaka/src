@@ -15,7 +15,7 @@ cd "$1" || exit 1; shift
 
 # Run tests in test files (test-*) in current directory. If no test names are provided, all tests are run.
 run_tests() {
-  register_temp_cleanup
+  init_temp_dir
 
   OPTIND=1; while getopts _-: OPT
   do

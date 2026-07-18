@@ -30,7 +30,7 @@ four_to_two() {
 
   if "$shows_diff"
   then
-    init_temp
+    init_temp_dir
     local source_file="$TEMP_DIR/source-$$.tmp"
     local dest_file="$TEMP_DIR/dest-$$.tmp"
     cat >"$source_file"

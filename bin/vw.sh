@@ -9,7 +9,7 @@ shift 2
 cd "$1" || exit 1; shift 2
 
 vw() {
-  register_temp_cleanup
+  init_temp_dir
   local title="(stdin)"
   if test $# -ge 1
   then

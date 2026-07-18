@@ -11,19 +11,20 @@ set -- _LIBDIR ../.lib "$@"
 shift 2
 cd "$1" || exit; shift
 
-handler_d92d23a() {
-  :
-}
-
-handler_e9f2923() {
-  :
-}
+handler_d92d23a() { :; }
+handler_e9f2923() { :; }
+handler_39181ea() { :; }
 
 test_term_signal() {
   add_term_handler handler_d92d23a
   add_term_handler handler_e9f2923
   add_term_handler handler_e9f2923
   assert_eq "$TERM_cmds_054cf7c" "handler_e9f2923;handler_d92d23a;:"
+  (
+    # Trap handler and handler statements are reset in subshell.
+    add_term_handler handler_39181ea
+    assert_eq "$TERM_cmds_054cf7c" "handler_39181ea;:"
+  )
   remove_term_handler handler_e9f2923
   assert_eq "$TERM_cmds_054cf7c" "handler_d92d23a;:"
   remove_term_handler handler_d92d23a

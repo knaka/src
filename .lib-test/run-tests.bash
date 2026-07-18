@@ -11,7 +11,7 @@ fi
 { pushd "${BASH_SOURCE[0]%/*}" || pushd "${BASH_SOURCE[0]%\\*}" || pushd .; } >/dev/null 2>&1
 set -- _LIBDIR ../.lib "$@"
 . ../.lib/utils.sh
-  init_temp
+  init_temp_dir
 shift 2
 popd >/dev/null || exit 1
 . ./test.sh

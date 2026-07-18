@@ -16,7 +16,7 @@ cd "$1" || exit 1; shift
 test_time() {
   skip_if is_bbwin
 
-  init_temp
+  init_temp_dir
 
   local result
 

@@ -335,7 +335,7 @@ init_worker_queue() {
     echo "Not supported (df631f1)." >&2
     return 1
   fi
-  init_temp
+  init_temp_dir
   worker_queue_dir_60742ac="$TEMP_DIR/worker-queue"
   mkdir -p "$worker_queue_dir_60742ac"
   touch "$worker_queue_dir_60742ac"/wids

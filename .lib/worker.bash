@@ -185,7 +185,7 @@ cleanup_worker_queue() {
 
 init_worker_queue() {
   first_call b03ec06 || return 0
-  init_temp
+  init_temp_dir
   worker_queue_dir_24f4ecb="$TEMP_DIR/worker-queue"
   mkdir -p "$worker_queue_dir_24f4ecb"
   touch "$worker_queue_dir_24f4ecb"/wids

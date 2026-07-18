@@ -48,7 +48,7 @@ ip_ports_in_use() {
 
 # List free IP ports.
 ip_free_ports() {
-  register_temp_cleanup
+  init_temp_dir
   local port="$1"
   local end="$2"
   local priv_ports_path="$TEMP_DIR"/f5c41b5

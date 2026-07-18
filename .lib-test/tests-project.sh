@@ -117,7 +117,7 @@ test_register_exit_handler_sh() {
 counter_path_df088c2=
 
 init_counter_00c8d2f() {
-  register_temp_cleanup
+  init_temp_dir
   counter_path_df088c2="$TEMP_DIR"/counter_34b7258
   echo 0 >"$counter_path_df088c2"
 }

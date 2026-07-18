@@ -25,7 +25,7 @@ embed_minified_sub() {
 embed_minified() {
   test $# = 0 && return 0
 
-  register_temp_cleanup
+  init_temp_dir
   local path
   local temp_path="$TEMP_DIR/2163b17"
   for path in "$@"

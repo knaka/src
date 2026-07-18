@@ -1,6 +1,14 @@
+#!/usr/bin/env sh
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-"${sourced_8f5a035-false}" && return 0; sourced_8f5a035=true
+_() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ LIB_ASSERT_SH && return
+
+test "${_APPDIR+set}" = set || { cd "${0%[/\\]*}" 2>/dev/null || cd .; _APPDIR="$PWD"; cd "$OLDPWD" || exit; }
+case "${1-}" in (_LIBDIR) cd "$2" || exit;; (*) cd "$_APPDIR" || exit;; esac; set -- "$OLDPWD" "$@";
+set -- _LIBDIR . "$@"
+. ./utils.sh
+shift 2
+cd "$1" || exit; shift
 
 # Assertion functions
 
@@ -19,6 +27,7 @@ assert_eq() {
   test "$1" = "$2" 2>/dev/null && return 0
   test "$1" -eq "$2" 2>/dev/null && return 0
   printf "Equality assertion failed%s\n" "${message:+ ($message)}"
+  print_call_stack
   printf "  LHS: %s\n" "$1"
   printf "  RHS: %s\n" "$2"
   return 1
@@ -38,6 +47,7 @@ assert_neq() {
 
   test "$1" = "$2" || return 0
   printf "Inequality assertion failed%s\n" "${message:+ ($message)}"
+  print_call_stack
   printf "  LHS: %s\n" "$1"
   printf "  RHS: %s\n" "$2"
   return 1
@@ -57,6 +67,7 @@ assert() {
 
   "$@" && return 0
   printf "Failed: \"%s\" is not true%s\n" "$*" "${message:+ ($message)}"
+  print_call_stack
   return 1
 }
 
@@ -74,6 +85,7 @@ assert_true() {
 
   "$@" && return 0
   printf "Failed: \"%s\" is not true%s\n" "$*" "${message:+ ($message)}"
+  print_call_stack
   return 1
 }
 
@@ -95,6 +107,7 @@ assert_failure() {
 
   "$@" || return 0
   printf "Failed: \"%s\" is not false%s\n" "$*" "${message:+ ($message)}"
+  print_call_stack
   return 1
 }
 
@@ -117,5 +130,24 @@ assert_match() {
 
   echo "$2" | grep -E -q "$1" && return 0
   printf "Failed: \"%s\" does not match \"%s\"%s\n" "$2" "$1" "${message:+ ($message)}"
+  print_call_stack
+  return 1
+}
+
+# Unconditionally fail, e.g. for code paths that should never be reached.
+assert_fail() {
+  local message=
+  OPTIND=1; while getopts _-:m: OPT
+  do
+    test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
+    case "$OPT" in
+      (m|message) message="$OPTARG";;
+      (*) echo "Unexpected option: $OPT" >&2; exit 1;;
+    esac
+  done
+  shift $((OPTIND-1))
+
+  printf "Failed%s\n" "${message:+ ($message)}"
+  print_call_stack
   return 1
 }

@@ -13,7 +13,7 @@ shift 2
 cd "$1" || exit 1; shift 2
 
 update_version_string() {
-  register_temp_cleanup
+  init_temp_dir
   local bb_ver="$(yj -tj <"$TASK_PROJECT_DIR"/mise.toml | jq -r '.tools."http:busybox".version')"
   local file="$TEMP_DIR"/temp-$$.cmd
   sed -E -e "s/(@set bb_ver=).*/\1${bb_ver}/" <"$TASK_PROJECT_DIR"/task.cmd >"$file"

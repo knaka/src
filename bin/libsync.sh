@@ -321,7 +321,7 @@ ensure_config() {
 }
 
 libsync() {
-  init_temp
+  init_temp_dir
   case "$1" in
     (add|clone) shift; ensure_config; cmd_clone "$@";;
     (update|pull) shift; ensure_config; cmd_clone --pull "$@";;

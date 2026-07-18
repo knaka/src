@@ -45,7 +45,7 @@ test_register_exit_handler_bash() {
 }
 
 test_cleanup_child_processes_bash() {
-  init_temp
+  init_temp_dir
   local child_pid_file="$TEMP_DIR/child_pid"
 
   set -m

@@ -24,7 +24,7 @@ test_script_embed() {
     echo Not in Mise env. >&2
     skip
   fi
-  init_temp
+  init_temp_dir
   if sh ./testdata/original.sh | grep -q "BEGINNING"
   then
     echo 38a0c65 >&2

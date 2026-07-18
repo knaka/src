@@ -14,7 +14,7 @@ shift 2
 cd "$1" || exit 1; shift 2
 
 urlrec() {
-  register_temp_cleanup
+  init_temp_dir
   local html="$TEMP_DIR"/18a7cf8.html
   local urls="$TEMP_DIR"/4606904.txt
   local url
