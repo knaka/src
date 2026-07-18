@@ -53,10 +53,6 @@ test_local_ifs() (
 )
 
 test_pos_params() {
-  if true
-  then
-    assert_fail
-  fi
   set -- "aaa  bbb" "ccc"
   assert_eq 2 $#
 

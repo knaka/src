@@ -339,16 +339,29 @@ pop_dir() {
 
 # Print call stack if available.
 print_call_stack() {
-  # shellcheck disable=SC3006
   # shellcheck disable=SC3018
   # shellcheck disable=SC3044
   if is_bash_bin
   then
-    local i=0
-    while caller $i
+    local i=0 frame line sub file
+    while frame="$(caller $i)"
     do
-      ((i++))
+      # shellcheck disable=SC2086
+      set -- $frame
+      line="$1" sub="$2" file="$3"
+      printf "  at %s (%s:%s)\n" "$sub" "$(realpath -q "$file" || echo "$file")" "$line"
+      i=$((i + 1))
     done
+  else
+    # POSIX sh (dash/ash) has no `caller` equivalent, and $LINENO can't
+    # stand in for one either: unlike Bash, dash resets it relative to the
+    # start of the enclosing function body rather than tracking the
+    # absolute file line, so it can't point at the actual call site without
+    # every function along the way cooperating (e.g. pushing its own
+    # name/line onto a stack, as push_dir/pop_dir do for directories).
+    # $0 is the best hint available without that: at least which script is
+    # currently running.
+    echo "  at $0"
   fi
   :
 }
