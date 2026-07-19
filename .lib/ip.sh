@@ -1,4 +1,4 @@
-# vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
+ # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
 test "${sourced_a642529-}" = true && return 0; sourced_a642529=true
 
@@ -74,4 +74,34 @@ ip_random_free_port() {
   done
   shift $((OPTIND-1))
   ip_free_ports "$start" "$end" | shuf | head -n "$number" || test $? -eq "$rc_sigpipe"
+}
+
+# Wait for one or more servers to respond with HTTP 200. Checks each URL sequentially with a 60-second timeout per URL.
+wait_for_http() {
+  local url
+  local max_attempts=60
+  for url in "$@"
+  do
+    echo "Waiting for server at $url to be ready ..." >&2
+    local attempts=0
+    while :
+    do
+      # -s: silent mode (suppress progress/error output)
+      # -o /dev/null: discard response body
+      # -w "%{http_code}": print HTTP status code after transfers
+      # 2>/dev/null: suppress stderr
+      if curl -s -o /dev/null -w "%{http_code}" "$url" 2>/dev/null | grep -q "200"
+      then
+        echo "✓ Server is ready at $url" >&2
+        break
+      fi
+      attempts=$((attempts + 1))
+      if test $attempts -ge $max_attempts
+      then
+        echo "✗ Server at $url did not respond with 200 after $max_attempts seconds" >&2
+        return 1
+      fi
+      sleep 1
+    done
+  done
 }

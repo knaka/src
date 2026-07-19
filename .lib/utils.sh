@@ -381,22 +381,6 @@ has_external_command() {
 
 : "${RESULT-}"
 
-cmdbase_snake_() {
-  RESULT=
-  local s="$1"
-  s="${s##*[/\\]}"
-  s="${s%.sh}"
-  s="${s%.bash}"
-  local left
-  while test -n "$s"
-  do
-    left=${s%%-*}
-    test "$left" = "$s" && RESULT="$RESULT$s" && return
-    RESULT="$RESULT$left"_
-    s="${s#*-}"
-  done
-}
-
 set_result() {
   RESULT="$1"
 }
@@ -462,42 +446,6 @@ is_root_dir() {
   test "$dir" = "$parent_dir"
 }
 
-# Check if a directory is empty.
-is_dir_empty() {
-  test -d "$1" || return 1
-  ! test -e "$1"/* 2>/dev/null
-}
-
-# Wait for one or more servers to respond with HTTP 200. Checks each URL sequentially with a 60-second timeout per URL.
-wait_for_http() {
-  local url
-  local max_attempts=60
-  for url in "$@"
-  do
-    echo "Waiting for server at $url to be ready ..." >&2
-    local attempts=0
-    while :
-    do
-      # -s: silent mode (suppress progress/error output)
-      # -o /dev/null: discard response body
-      # -w "%{http_code}": print HTTP status code after transfers
-      # 2>/dev/null: suppress stderr
-      if curl -s -o /dev/null -w "%{http_code}" "$url" 2>/dev/null | grep -q "200"
-      then
-        echo "✓ Server is ready at $url" >&2
-        break
-      fi
-      attempts=$((attempts + 1))
-      if test $attempts -ge $max_attempts
-      then
-        echo "✗ Server at $url did not respond with 200 after $max_attempts seconds" >&2
-        return 1
-      fi
-      sleep 1
-    done
-  done
-}
-
 if is_macos
 then
   shuf() {
@@ -507,6 +455,17 @@ then
   tac() {
     tail -r
   }
+fi
+
+# Left/Right-Word-Boundary regex is incompatible with BSD sed // re_format(7) https://man.freebsd.org/cgi/man.cgi?query=re_format&sektion=7
+lwb='\<'
+rwb='\>'
+
+# shellcheck disable=SC2034
+if is_bsd
+then
+  lwb='[[:<:]]'
+  rwb='[[:>:]]'
 fi
 
 # Get the space-separated nth (1-based) field.
@@ -585,62 +544,6 @@ browse() {
     return $?
   fi
   xdg-open "$1"
-}
-
-# Create a file from the standard input if it does not exist.
-ensure_file() {
-  local file_path="$1"
-  if test -f "$file_path"
-  then
-    echo "File $file_path already exists. Skipping creation." >&2
-    return 0
-  fi
-  echo "Creating file $file_path." >&2
-  mkdir -p "$(dirname "$file_path")"
-  cat >"$file_path"
-}
-
-# Left/Right-Word-Boundary regex is incompatible with BSD sed // re_format(7) https://man.freebsd.org/cgi/man.cgi?query=re_format&sektion=7
-lwb='\<'
-rwb='\>'
-
-# shellcheck disable=SC2034
-if is_bsd
-then
-  lwb='[[:<:]]'
-  rwb='[[:>:]]'
-fi
-
-# [<file>] Read the file and print substituting environment variables. Unlike envsubst(1), this tries to expand undefined environment variables and fails for that.
-env_subst() {
-  if test "$#" -gt 0
-  then
-    local template_file="$1"
-    eval "cat <<EOF
-$(cat "$template_file")
-EOF"
-  else
-    eval "cat <<EOF
-$(cat)
-EOF"
-  fi
-}
-
-# [regex replacement ...] Substitute text that matches regex patterns in stdin input. Takes pairs of regex/replacement arguments and applies them via sed(1).
-resubst() {
-  local step=2
-  local i=0 n=$(($# / step))
-  while test "$i" -lt "$n"
-  do
-    set -- "$@" -e "s${ch_us}$1${ch_us}$2${ch_us}g"
-    shift $step
-    i=$((i + 1))
-  done
-  sed "$@"
-}
-
-filter_log() {
-  awk '{printf "\r%s\n", $0}'
 }
 
 #endregion
