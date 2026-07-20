@@ -364,3 +364,42 @@ init_worker_queue() {
   touch "$worker_queue_dir_60742ac"/wids
   add_exit_handler cleanup_worker_queue_f63891f
 }
+
+pid_6848910=
+
+cleanup_1e01b3a() {
+  if test -n "$pid_6848910"
+  then
+    kill -TERM "$pid_6848910" || :
+    pid_6848910=
+  fi
+}
+
+run_periodically() {
+  local interval_sec=10
+  OPTIND=1; while getopts _-: OPT
+  do
+    test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
+    case "$OPT" in
+      (interval-sec) interval_sec="$OPTARG";;
+      (?) return 1;;
+      (*) echo "$0: illegal option -- $OPT" >&2; return 1;;
+    esac
+  done
+  shift $((OPTIND-1))
+
+  add_signal_handler cleanup_1e01b3a TERM EXIT
+  while :
+  do
+    "$@"
+    sleep "$interval_sec" &
+    pid_6848910=$!
+    local rc=0
+    wait || rc=$?
+    if test "$rc" -ne 0
+    then
+      test "$rc" -eq "$rc_sigterm" && break
+      return "$rc"
+    fi
+  done
+}
