@@ -10,6 +10,9 @@ set -- _LIBDIR . "$@"
 shift 2
 cd "$1" || exit; shift
 
+# ==========================================================================
+#region Workers
+
 : "${worker_queue_dir_60742ac-}"
 
 # Start "$@" in the background and register it in the worker queue. Echoes
@@ -365,6 +368,11 @@ init_worker_queue() {
   add_exit_handler cleanup_worker_queue_f63891f
 }
 
+#endregion
+
+# ==========================================================================
+#region Misc
+
 pid_6848910=
 
 cleanup_1e01b3a() {
@@ -375,6 +383,8 @@ cleanup_1e01b3a() {
   fi
 }
 
+# Run "$@", then keep re-running it every `--interval-sec=N` (default: 10)
+# seconds, forever, until a SIGTERM (or EXIT) arrives.
 run_periodically() {
   local interval_sec=10
   OPTIND=1; while getopts _-: OPT
@@ -403,3 +413,5 @@ run_periodically() {
     fi
   done
 }
+
+#endregion
