@@ -121,3 +121,50 @@ test_cleanup_child_processes() {
   assert_false -m 3e0485f kill -0 "$child_pid"
   assert_false -m 4a65d72 kill -0 "$harness_pid"
 }
+
+temp_path_a4f366e=
+
+exit_handler_6cff844() {
+  local rc=$?
+  echo exit_handler_6cff844 "$?" >&2
+  test -z "$temp_path_a4f366e" && exit 1
+  echo true >"$temp_path_a4f366e"
+  exit "$rc"
+}
+
+test_exit_behavior() {
+  skip_if is_bbwin
+
+  temp_path_a4f366e="$(mktemp)"
+  local signal
+  local sighup=1
+  local sigint=2
+  local sigterm=15
+  trap - INT
+  for signal in "$sighup" "$sigterm" # "$sigint"
+  # for signal in "$sigint"
+  # for signal in "$sighup"
+  # for signal in "$sigterm"
+  do
+    (
+      rm -f "$temp_path_a4f366e"
+      echo false >"$temp_path_a4f366e"
+      if ! is_bash_bin
+      then
+        trap exit "$signal"
+      fi
+      trap exit_handler_6cff844 EXIT
+      sleep 100 &
+      wait "$!"
+      exit 123
+    ) &
+    local pid="$!"
+    sleep 0.1
+    kill -"$signal" "$pid"
+    local rc=0
+    wait "$pid" 2>/dev/null || rc=$?
+    assert_eq "$rc" $((128 + signal))
+    assert_eq "$(cat "$temp_path_a4f366e")" true
+  done
+  rm -f "$temp_path_a4f366e"
+}
