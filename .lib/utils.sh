@@ -130,35 +130,57 @@ reset_cmds_if_new_subshell_f2fb3bc() {
   test "${BASHPID+set}" && eval "$bashpid_var_name=$BASHPID" || :
 }
 
-add_signal_handler_15858e9() {
+signal_valid_6fbb8c5() {
+  local signal
+  for signal in "$@"
+  do
+    # shellcheck disable=SC2194
+    case ',EXIT,TERM,' in
+      (*,$signal,*) ;;
+      (*) return 1;;
+    esac
+  done
+}
+
+add_signal_handler() {
   local signal_handler="$1"
-  local signal="$2"
-  local cmds_var_name="${signal}_cmds_054cf7c"
-  reset_cmds_if_new_subshell_f2fb3bc "$signal"
-  local haystack=
-  eval "haystack=\";\$$cmds_var_name;\""
-  case "$haystack" in
-    (*";${signal_handler};"*) return 0;;
-  esac
-  local cmds=
-  eval "cmds=\"$signal_handler;\$$cmds_var_name\""
-  eval "$cmds_var_name=\"$cmds\""
-  # shellcheck disable=SC2064
-  trap "$cmds" "$signal"
+  shift
+  signal_valid_6fbb8c5 "$@" || return
+  local signal
+  for signal in "$@"
+  do
+    reset_cmds_if_new_subshell_f2fb3bc "$signal"
+    local cmds_var_name="${signal}_cmds_054cf7c"
+    local haystack=
+    eval "haystack=\";\$$cmds_var_name;\""
+    case "$haystack" in
+      (*";${signal_handler};"*) return 0;;
+    esac
+    local cmds=
+    eval "cmds=\"$signal_handler;\$$cmds_var_name\""
+    eval "$cmds_var_name=\"$cmds\""
+    # shellcheck disable=SC2064
+    trap "$cmds" "$signal"
+  done
 }
 
 remove_signal_handler_6b58050() {
   local signal_handler="$1"
-  local signal="$2"
-  local cmds_var_name="${signal}_cmds_054cf7c"
-  reset_cmds_if_new_subshell_f2fb3bc "$signal"
-  local haystack=
-  eval haystack="\";\$$cmds_var_name;\""
-  local cmds
-  cmds="$(echo "$haystack" | sed -e "s/;$signal_handler;//" -e 's/^;//' -e 's/;$//')"
-  eval "$cmds_var_name=\"$cmds\""
-  # shellcheck disable=SC2064
-  trap "$cmds" "$signal"
+  shift
+  signal_valid_6fbb8c5 "$@" || return
+  local signal
+  for signal in "$@"
+  do
+    local cmds_var_name="${signal}_cmds_054cf7c"
+    reset_cmds_if_new_subshell_f2fb3bc "$signal"
+    local haystack=
+    eval haystack="\";\$$cmds_var_name;\""
+    local cmds
+    cmds="$(echo "$haystack" | sed -e "s/;$signal_handler;//" -e 's/^;//' -e 's/;$//')"
+    eval "$cmds_var_name=\"$cmds\""
+    # shellcheck disable=SC2064
+    trap "$cmds" "$signal"
+  done
 }
 
 # shellcheck disable=SC2034
@@ -167,7 +189,7 @@ EXIT_cmds_054cf7c=:
 EXIT_prev_bashpid_73b382c=
 
 add_exit_handler() {
-  add_signal_handler_15858e9 "$1" EXIT
+  add_signal_handler "$1" EXIT
 }
 
 remove_exit_handler() {
@@ -221,7 +243,7 @@ TERM_cmds_054cf7c=:
 TERM_prev_bashpid_73b382c=
 
 add_term_handler() {
-  add_signal_handler_15858e9 "$1" TERM
+  add_signal_handler "$1" TERM
 }
 
 remove_term_handler() {

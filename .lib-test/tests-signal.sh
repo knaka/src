@@ -17,7 +17,8 @@ handler_39181ea() { :; }
 
 test_term_signal() {
   add_term_handler handler_d92d23a
-  add_term_handler handler_e9f2923
+  assert_failure add_signal_handler handler_e9f2923 TERM HOGE
+  add_signal_handler handler_e9f2923 TERM EXIT
   add_term_handler handler_e9f2923
   assert_eq "$TERM_cmds_054cf7c" "handler_e9f2923;handler_d92d23a;:"
   (
