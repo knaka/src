@@ -37,10 +37,10 @@ run_tests() {
   local NORMAL=""
   if is_terminal
   then
-    RED="${ch_esc}[31m"
-    GREEN="${ch_esc}[32m"
-    YELLOW="${ch_esc}[33m"
-    NORMAL="${ch_esc}[00m"
+    RED="${CH_ESC}[31m"
+    GREEN="${CH_ESC}[32m"
+    YELLOW="${CH_ESC}[33m"
+    NORMAL="${CH_ESC}[00m"
   fi
 
   local test_path="$PWD"/.lib-test

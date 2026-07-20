@@ -73,7 +73,7 @@ ip_random_free_port() {
     esac
   done
   shift $((OPTIND-1))
-  ip_free_ports "$start" "$end" | shuf | head -n "$number" || test $? -eq "$rc_sigpipe"
+  ip_free_ports "$start" "$end" | shuf | head -n "$number" || test $? -eq "$RC_SIGPIPE"
 }
 
 # Wait for one or more servers to respond with HTTP 200. Checks each URL sequentially with a 60-second timeout per URL.

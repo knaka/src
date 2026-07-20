@@ -376,11 +376,14 @@ init_worker_queue() {
 pid_6848910=
 
 cleanup_1e01b3a() {
-  if test -n "$pid_6848910"
-  then
+  local rc=$?
+  test "$rc" = "$RC_SIGTERM" && rc=0
+  test -n "$pid_6848910" && {
     kill -TERM "$pid_6848910" || :
+    wait "$pid_6848910" || :
     pid_6848910=
-  fi
+  } 2>/dev/null
+  exit "$rc"
 }
 
 # Run "$@", then keep re-running it every `--interval-sec=N` (default: 10)
@@ -398,7 +401,7 @@ run_periodically() {
   done
   shift $((OPTIND-1))
 
-  add_signal_handler cleanup_1e01b3a TERM EXIT
+  add_signal_handler cleanup_1e01b3a EXIT
   while :
   do
     "$@"
@@ -408,7 +411,7 @@ run_periodically() {
     wait || rc=$?
     if test "$rc" -ne 0
     then
-      test "$rc" -eq "$rc_sigterm" && break
+      test "$rc" -eq "$RC_SIGTERM" && break
       return "$rc"
     fi
   done

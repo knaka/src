@@ -169,7 +169,7 @@ ifsv_sort() {
         "$@"
       fi
   )"
-  local saved_ifs="$IFS"; IFS="$ch_lf"
+  local saved_ifs="$IFS"; IFS="$CH_LF"
   # shellcheck disable=SC2086
   set -- $lines
   IFS="$saved_ifs"

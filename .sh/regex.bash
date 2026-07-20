@@ -16,7 +16,7 @@ regex() {
   ! [[ "$haystack" =~ ${lwb}ba${rwb} ]] || return 1
     [[ "$haystack" =~ ${lwb}bar${rwb} ]] || return 1
   ! [[ "$haystack" =~ ${lwb}barr${rwb} ]] || return 1
-    [[ "$haystack" =~ $lwb$needle$rwb ]] || return 1
+    [[ "$haystack" =~ $LWB$needle$RWB ]] || return 1
   :
 
   local lwb2="(^|[^[:alnum:]_])"

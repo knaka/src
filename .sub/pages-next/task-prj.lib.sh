@@ -107,12 +107,12 @@ task_db__gen() { # Generate the database access layer (./sqlcgen/*).
   file_path=sqlcgen/querier.ts
   temp_path="$(get_temp_dir_path)"/f695a83
   sed -E \
-    -e "s/^([[:blank:]]*[_[:alnum:]]+)(: .* \| null;)$/rewrite_null_def${ch_us}\1${ch_us}\2${ch_us}/" -e t \
-    -e "s/^(.*\.${lwb}bind\()([^)]*)(\).*)$/rewrite_bind${ch_us}\1${ch_us}\2${ch_us}\3${ch_us}/" -e t \
-    -e "s/^(.*)$/nop${ch_us}\1${ch_us}/" <"$file_path" \
+    -e "s/^([[:blank:]]*[_[:alnum:]]+)(: .* \| null;)$/rewrite_null_def${CH_US}\1${CH_US}\2${CH_US}/" -e t \
+    -e "s/^(.*\.${LWB}bind\()([^)]*)(\).*)$/rewrite_bind${CH_US}\1${CH_US}\2${CH_US}\3${CH_US}/" -e t \
+    -e "s/^(.*)$/nop${CH_US}\1${CH_US}/" <"$file_path" \
   | while IFS= read -r line
   do
-    IFS="$ch_us"
+    IFS="$CH_US"
     # shellcheck disable=SC2086
     set -- $line
     unset IFS

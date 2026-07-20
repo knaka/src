@@ -143,10 +143,10 @@ test_plist() (
   assert_eq "key1,val1,key2,val2,,empty," "$(ifsm_put "$csvpl" "" "empty")"
   assert_eq "empty" "$(ifsm_get "key1,val1,key2,val2,,empty" "")"
 
-  IFS="$ch_us"
+  IFS="$CH_US"
   usvpl=
   usvpl=$(ifsm_put "$usvpl" "foo bar" "FOO BAR")
   usvpl=$(ifsm_put "$usvpl" "baz qux" "BAZ QUX")
-  assert_eq "foo bar${ch_us}FOO BAR${ch_us}baz qux${ch_us}BAZ QUX${ch_us}" "$usvpl"
+  assert_eq "foo bar${CH_US}FOO BAR${CH_US}baz qux${CH_US}BAZ QUX${CH_US}" "$usvpl"
   assert_eq "BAZ QUX" "$(ifsm_get "$usvpl" "baz qux")"
 )

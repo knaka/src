@@ -63,9 +63,9 @@ test_string_split() {
   split_ "cul-de-sac" "-"
   assert_eq "$RESULT" "cul de sac"
 
-  split_ --result-delimiter="${ch_us}" "foo bar baz|hoge fuga |hare" "|"
-  assert_eq "$RESULT" "foo bar baz${ch_us}hoge fuga ${ch_us}hare"
-  local saved_ifs="$IFS"; local IFS="$ch_us"
+  split_ --result-delimiter="${CH_US}" "foo bar baz|hoge fuga |hare" "|"
+  assert_eq "$RESULT" "foo bar baz${CH_US}hoge fuga ${CH_US}hare"
+  local saved_ifs="$IFS"; local IFS="$CH_US"
   local arg
   for arg in $RESULT
   do

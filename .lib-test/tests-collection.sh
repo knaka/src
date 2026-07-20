@@ -16,13 +16,13 @@ test_vec() {
   local RESULT
   vec_
   assert_eq "$RESULT" ""
-  vec_ bar foo baz "aaa${ch_lf}aaa"
-  assert_eq -m 2de7562 "$RESULT" "bar${ch_us}foo${ch_us}baz${ch_us}aaa${ch_lf}aaa${ch_us}"
+  vec_ bar foo baz "aaa${CH_LF}aaa"
+  assert_eq -m 2de7562 "$RESULT" "bar${CH_US}foo${CH_US}baz${CH_US}aaa${CH_LF}aaa${CH_US}"
   vsort_ "$RESULT"
-  assert_eq -m a10ae3a "$RESULT" "aaa${ch_lf}aaa${ch_us}bar${ch_us}baz${ch_us}foo${ch_us}"
+  assert_eq -m a10ae3a "$RESULT" "aaa${CH_LF}aaa${CH_US}bar${CH_US}baz${CH_US}foo${CH_US}"
   local s=  
   _() {
     s="$s$1"
   }; veach "$RESULT"
-  assert_eq -m c327416 "$s" "aaa${ch_lf}aaabarbazfoo"
+  assert_eq -m c327416 "$s" "aaa${CH_LF}aaabarbazfoo"
 }

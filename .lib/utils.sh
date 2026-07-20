@@ -29,35 +29,35 @@ test -z "$TASK_PROJECT_DIR" && unset TASK_PROJECT_DIR
 #region Basic utilities.
 
 # shellcheck disable=SC2034
-readonly ch_lf="
+readonly CH_LF="
 "
 
 # shellcheck disable=SC2034
 {
-  readonly ch_tab="	"
-  readonly ch_esc=""
+  readonly CH_TAB="	"
+  readonly CH_ESC=""
 
   # Unit separator (US), Information Separator 1
-  readonly ch_us=""
-  readonly ch_is1="$ch_us"
+  readonly CH_US=""
+  readonly CH_IS1="$CH_US"
   # Record separator (RS), Information Separator 2
-  readonly ch_rs=""
-  readonly ch_is2="$ch_rs"
+  readonly CH_RS=""
+  readonly CH_IS2="$CH_RS"
   # Group separator (GS), Information Separator 3
-  readonly ch_gs=""
-  readonly ch_is3="$ch_gs"
+  readonly CH_GS=""
+  readonly CH_IS3="$CH_GS"
   # File separator (FS), Information Separator 4
-  readonly ch_fs=""
-  readonly ch_is4="$ch_fs"
+  readonly CH_FS=""
+  readonly CH_IS4="$CH_FS"
 }
 
 readonly SIGPIPE=13
 # shellcheck disable=SC2034
-readonly rc_sigpipe=$((128 + SIGPIPE))
+readonly RC_SIGPIPE=$((128 + SIGPIPE))
 
 readonly SIGTERM=15
 # shellcheck disable=SC2034
-readonly rc_sigterm=$((128 + SIGTERM))
+readonly RC_SIGTERM=$((128 + SIGTERM))
 
 # Guard against multiple calls. $1 is a unique ID
 first_call() {
@@ -74,12 +74,12 @@ usv_called_6b2a1df=
 
 # Run only once
 run_once() {
-  case "$ch_us$usv_called_6b2a1df" in
-    (*"$ch_us$*$ch_us"*)
+  case "$CH_US$usv_called_6b2a1df" in
+    (*"$CH_US$*$CH_US"*)
       return 0
       ;;
   esac
-  usv_called_6b2a1df="$usv_called_6b2a1df$*$ch_us"
+  usv_called_6b2a1df="$usv_called_6b2a1df$*$CH_US"
   "$@"
 }
 
@@ -230,9 +230,14 @@ register_child_cleanup() {
 
 # Call the finalization function before `exec` which does not call trap function.
 run_exit_handlers() {
-  reset_exit_cmds_if_new_subshell
+  reset_cmds_if_new_subshell_f2fb3bc EXIT
   $EXIT_cmds_054cf7c
   EXIT_cmds_054cf7c=:
+}
+
+clean_exec() {
+  run_exit_handlers
+  exec "$@"
 }
 
 # SIGTERM handler stack.
@@ -326,6 +331,16 @@ is_bash_native() {
 exe_ext=
 # shellcheck disable=SC2034
 is_windows && exe_ext=".exe"
+
+EXE_EXT=
+if is_windows
+then
+  EXE_EXT=.exe
+fi
+readonly EXE_EXT
+
+# shellcheck disable=SC2034
+readonly exe_ext="$EXE_EXT"
 
 #endregion
 
@@ -448,7 +463,7 @@ set_resultf() {
         RESULT="$REPLY"
         first=false
       else
-        RESULT="$RESULT$ch_lf$REPLY"
+        RESULT="$RESULT$CH_LF$REPLY"
       fi
     done
     exec 9>&- 9<&-
@@ -483,15 +498,17 @@ then
 fi
 
 # Left/Right-Word-Boundary regex is incompatible with BSD sed // re_format(7) https://man.freebsd.org/cgi/man.cgi?query=re_format&sektion=7
-lwb='\<'
-rwb='\>'
+LWB='\<'
+RWB='\>'
 
-# shellcheck disable=SC2034
 if is_bsd
 then
-  lwb='[[:<:]]'
-  rwb='[[:>:]]'
+  LWB='[[:<:]]'
+  RWB='[[:>:]]'
 fi
+
+# shellcheck disable=SC2034
+readonly LWB RWB
 
 # Get the space-separated nth (1-based) field.
 field() {

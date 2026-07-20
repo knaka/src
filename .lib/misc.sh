@@ -53,7 +53,7 @@ resubst() {
   local i=0 n=$(($# / step))
   while test "$i" -lt "$n"
   do
-    set -- "$@" -e "s${ch_us}$1${ch_us}$2${ch_us}g"
+    set -- "$@" -e "s${CH_US}$1${CH_US}$2${CH_US}g"
     shift $step
     i=$((i + 1))
   done

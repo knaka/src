@@ -11,12 +11,12 @@ cd "$1" || exit 1; shift 2
 
 sh_ifsv_loop() {
   local usv=
-  usv="${usv}foo bar$ch_us"
-  usv="${usv}  bar  baz$ch_us"
-  usv="${usv}   qux   qux$ch_us"
+  usv="${usv}foo bar$CH_US"
+  usv="${usv}  bar  baz$CH_US"
+  usv="${usv}   qux   qux$CH_US"
 
   local item
-  local IFS="$ch_us"
+  local IFS="$CH_US"
   for item in $usv
   do
     echo "item: $item"

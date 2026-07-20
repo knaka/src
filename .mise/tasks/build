@@ -18,7 +18,7 @@ cd "$1" || exit; shift
 : "${LSV_EMBED_HEREDOC_TARGETS=}"
 
 build() {
-  local IFS="$ch_lf"
+  local IFS="$CH_LF"
   # shellcheck disable=SC2086
   embed_minified $LSV_EMBED_SCRIPT_TARGETS
   # shellcheck disable=SC2086

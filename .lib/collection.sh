@@ -16,7 +16,7 @@ vec_() {
     set_result ""
     return
   fi
-  set_resultf "%s${ch_us}" "$@"
+  set_resultf "%s${CH_US}" "$@"
 }
 
 vempty() {
@@ -26,9 +26,9 @@ vempty() {
 vsort_nul_() {
   set_result "$(
     printf "%s" "$1" \
-    | tr "$ch_us" '\0' \
+    | tr "$CH_US" '\0' \
     | "$2" \
-    | tr '\0' "$ch_us" \
+    | tr '\0' "$CH_US" \
     #nop
   )"
 }
@@ -56,7 +56,7 @@ map_() {
 veach() {
   local func="${2-_}"
   local item
-  local IFS="$ch_us"
+  local IFS="$CH_US"
   for item in $1
   do
     unset IFS
@@ -66,7 +66,7 @@ veach() {
 
 # Put a value in an associative array.
 mput_() {
-  local sep="$ch_us"
+  local sep="$CH_US"
   OPTIND=1; while getopts _-:s: OPT
   do
     test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
@@ -97,7 +97,7 @@ mput_() {
 
 # Get a value from an associative array.
 mget_() {
-  local sep="$ch_us"
+  local sep="$CH_US"
   OPTIND=1; while getopts _-:s: OPT
   do
     test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
@@ -126,7 +126,7 @@ mget_() {
 
 # Keys of an associative array implemented as a property list.
 mkeys_() {
-  local sep="$ch_us"
+  local sep="$CH_US"
   OPTIND=1; while getopts _-:s: OPT
   do
     test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
@@ -152,15 +152,13 @@ mkeys_() {
   set_resultf "%s$sep" "$@"
 }
 
-# map_put_
-
-map() {
+collection() {
   local sep="#"
   local RESULT=
   set_result ""
   mput_ -s"$sep" "$RESULT" "key" "value"
   echo "$RESULT"
-  mput_ -s"$sep" "$RESULT" "key" "value  x  y${ch_lf}value${ch_tab}z"
+  mput_ -s"$sep" "$RESULT" "key" "value  x  y${CH_LF}value${CH_TAB}z"
   echo "$RESULT"
   mget_ -s"$sep" "$RESULT" "key"
   echo "80745a9 $RESULT"
@@ -176,8 +174,8 @@ map() {
   unset IFS
 }
 
-_() { case "${0##*[/\\]}" in ("$1"|"$1".*) ;; (*) false;; esac; }; if _ map
+_() { case "${0##*[/\\]}" in ("$1"|"$1".*) ;; (*) false;; esac; }; if _ collection
 then
   set -o nounset -o errexit
-  map "$@"
+  collection "$@"
 fi

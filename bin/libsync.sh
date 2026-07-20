@@ -98,7 +98,7 @@ cmd_clone() {
     # Pull mode: read config from JSON
     get_lib_info "$name"
     # Convert JSON array to positional parameters
-    local IFS="$ch_lf"
+    local IFS="$CH_LF"
     # shellcheck disable=SC2046
     set -- $(printf '%s' "$paths_json" | jq -r '.[]')
   else
@@ -126,7 +126,7 @@ cmd_clone() {
   push_dir "$work_dir"
 
   # Set sparse-checkout patterns
-  local IFS="$ch_lf"
+  local IFS="$CH_LF"
   # shellcheck disable=SC2046
   git sparse-checkout set --no-cone $(printf "/%s\n" "$@")
 
@@ -211,7 +211,7 @@ cmd_diff() {
   get_lib_info "$name"
 
   # Convert JSON array to positional parameters
-  local IFS="$ch_lf"
+  local IFS="$CH_LF"
   # shellcheck disable=SC2046
   set -- $(printf '%s' "$paths_json" | jq -r '.[]')
 
@@ -236,7 +236,7 @@ cmd_diff() {
   git clone --filter=blob:none --sparse "$repo" "$orig_dir"
   push_dir "$orig_dir"
   git checkout "$commit"
-  local IFS="$ch_lf"
+  local IFS="$CH_LF"
   # shellcheck disable=SC2046
   git sparse-checkout set --no-cone $(printf "/%s\n" "$@")
   pop_dir
