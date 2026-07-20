@@ -200,6 +200,9 @@ cleanup_child_processes() {
 register_child_cleanup() {
   first_call 5f719a3 || return 0
   add_exit_handler cleanup_child_processes
+  # Deliberately `trap : TERM` (a no-op command), not `trap "" TERM`: the
+  # latter sets SIG_IGN, which — unlike a trap with an actual command — is
+  # inherited by subshells and exec'd children, which we don't want here.
   trap : TERM
 }
 

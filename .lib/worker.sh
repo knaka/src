@@ -173,24 +173,31 @@ log_worker() {
 # `--group` worker, just the process itself otherwise. With
 # `--timeout-sec=N` (default: don't wait at all), also blocks for the
 # workers to actually exit, printing progress/failure to stderr — N is a
-# combined budget shared across all given workers, not N seconds each.
+# combined budget shared across all given workers, not N seconds each. If
+# that budget runs out and a worker is still alive, it is force-killed
+# (SIGKILL) by default; pass `--no-kill` to instead just report it as a
+# failure and leave it running. `--no-kill` has no effect when
+# `--timeout-sec` is left at its default of 0, since there's no waiting (and
+# so no timeout to run out) in that case.
 stop_worker() {
   local timeout_sec=0
+  local no_kill=false
   OPTIND=1; while getopts _-: OPT
   do
     test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
     case "$OPT" in
       (timeout-sec) timeout_sec="$OPTARG";;
+      (no-kill) no_kill=true;;
       (?) return 1;;
       (*) echo "$0: illegal option -- $OPT" >&2; return 1;;
     esac
   done
   shift $((OPTIND-1))
 
-  local wid
+  local wid pid
   for wid in "$@"
   do
-    local pid="${wid#?}"
+    pid="${wid#?}"
     case "$wid" in
       (g*)
         # Signal the whole process group (`run_worker --group ...` starts each
@@ -218,8 +225,23 @@ stop_worker() {
     do
       if test "$timeout_sec" -eq 0
       then
-        echo "Failed to stop worker: \"$(cat "$TEMP_DIR"/args."$wid")\"" >&2
-        return 1
+        if "$no_kill"
+        then
+          echo "Failed to stop worker: \"$(cat "$TEMP_DIR"/args."$wid")\"" >&2
+          return 1
+        fi
+        pid="${wid#?}"
+        case "$wid" in
+          (g*) kill -KILL -"$pid" >/dev/null 2>&1 || :;;
+          (p*) kill -KILL "$pid" >/dev/null 2>&1 || :;;
+        esac
+        sleep 0.1
+        if is_worker_alive "$wid"
+        then
+          echo "Failed to stop worker after SIGKILL: \"$(cat "$TEMP_DIR"/args."$wid")\"" >&2
+          return 1
+        fi
+        break
       fi
       sleep 1
       timeout_sec=$((timeout_sec - 1))
@@ -318,6 +340,7 @@ wait_worker() {
 # directory. Registered by `init_worker_queue` to run automatically on
 # EXIT, not meant to be called directly.
 cleanup_worker_queue_f63891f() {
+  trap "" TERM INT HUP
   # shellcheck disable=SC2046
   stop_worker --timeout-sec=10 $(cat "$worker_queue_dir_60742ac"/wids)
   rm -fr "$worker_queue_dir_60742ac"
