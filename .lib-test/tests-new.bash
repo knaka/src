@@ -87,9 +87,9 @@ test_rc_variables() {
     local rc_sig_value=
     eval "rc_sig_value=\"\$$rc_sig_name\""
     local sig_name="${rc_sig_name#RC_}"
-    local sig_value
-    sig_value="$(kill -l "$sig_name")"
-    assert_eq -m fccf24f "$rc_sig_value" $((128 + sig_value))
+    local sig_num
+    sig_num="$(kill -l "$sig_name")"
+    assert_eq -m fccf24f "$rc_sig_value" $((128 + sig_num))
     echo OK: "$rc_sig_name"
   done
 }
