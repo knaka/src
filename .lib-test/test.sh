@@ -2,33 +2,22 @@
 # shellcheck shell=sh
 _() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ 9eabbaf && return 0
 
-rc_test_skipped=10
-
-should_run_fulltest_80e79eb=false
-
-# Skip this test unless full test is being run.
-skip_unless_full() {
-  if $should_run_fulltest_80e79eb
-  then
-    return 0
-  fi
-  return "$rc_test_skipped"
-}
+readonly RC_TEST_SKIPPED=10
 
 skip() {
-  return "$rc_test_skipped"
+  return "$RC_TEST_SKIPPED"
 }
 
 skip_if() {
   if "$@"
   then
-    return "$rc_test_skipped"
+    return "$RC_TEST_SKIPPED"
   fi
 }
 
 skip_unless() {
   if ! "$@"
   then
-    return "$rc_test_skipped"
+    return "$RC_TEST_SKIPPED"
   fi
 }

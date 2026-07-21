@@ -9,9 +9,7 @@ set -- _LIBDIR ../.lib "$@"
 . ../.lib/utils.sh
 . ../.lib/assert.sh
 shift 2
-set -- _LIBDIR . "$@"
 . ./test.sh
-shift 2
 cd "$1" || exit; shift
 
 temp_path_a4f366e=

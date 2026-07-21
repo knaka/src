@@ -21,7 +21,6 @@ run_tests() {
   do
     test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
     case "$OPT" in
-      (full) should_run_fulltest_80e79eb=true;;
       (sh) sh="$OPTARG";;
       (verbose) VERBOSE=true;;
       (?) exit 1;;
@@ -155,7 +154,7 @@ run_tests() {
       then
         test -r "$log_file_path" && sed -e 's/^/  /' <"$log_file_path" >&2
       fi
-    elif test "$rc" -eq "$rc_test_skipped"
+    elif test "$rc" -eq "$RC_TEST_SKIPPED"
     then
       printf "%sTest \"%s\"@%s Skipped%s\n" "$YELLOW" "$test" "$base" "$NORMAL" >&2
     else
