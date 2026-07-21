@@ -145,12 +145,17 @@ readonly CH_LF="
   readonly SIGPIPE=13
   readonly SIGTERM=15
   readonly SIGALRM=14
-  SIGUSR1=30
-  SIGUSR2=31
-  if is_linux
+  if is_msys2 || is_macos
+  then
+    SIGUSR1=30
+    SIGUSR2=31
+  elif is_linux
   then
     SIGUSR1=10
     SIGUSR2=12
+  else
+    SIGUSR1=-1
+    SIGUSR2=-1
   fi
   readonly SIGUSR1
   readonly SIGUSR2

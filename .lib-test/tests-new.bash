@@ -77,3 +77,19 @@ test_cleanup_child_processes_bash() {
   assert_false -m 8147d97 kill -0 "$child_pid"
   assert_false -m 0e61473 kill -0 "$harness_pid"
 }
+
+test_rc_variables() {
+  local rc_sig_names
+  rc_sig_names="$(compgen -A variable RC_SIG)"
+  local rc_sig_name
+  for rc_sig_name in $rc_sig_names
+  do
+    local rc_sig_value=
+    eval "rc_sig_value=\"\$$rc_sig_name\""
+    local sig_name="${rc_sig_name#RC_}"
+    local sig_value
+    sig_value="$(kill -l "$sig_name")"
+    assert_eq -m fccf24f "$rc_sig_value" $((128 + sig_value))
+    echo OK: "$rc_sig_name"
+  done
+}
