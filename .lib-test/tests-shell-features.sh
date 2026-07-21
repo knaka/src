@@ -126,7 +126,7 @@ temp_path_a4f366e=
 
 exit_handler_6cff844() {
   local rc=$?
-  echo exit_handler_6cff844 "$?" >&2
+  echo 279b600 "$rc"
   test -z "$temp_path_a4f366e" && exit 1
   echo true >"$temp_path_a4f366e"
   exit "$rc"
@@ -137,33 +137,31 @@ test_exit_behavior() {
 
   temp_path_a4f366e="$(mktemp)"
   local signal
-  local sighup=1
-  local sigint=2
-  local sigterm=15
-  trap - INT
-  for signal in "$sighup" "$sigterm" # "$sigint"
-  # for signal in "$sigint"
-  # for signal in "$sighup"
-  # for signal in "$sigterm"
+  # “When job control is not in effect, asynchronous commands ignore SIGINT and SIGQUIT in addition to these inherited handlers.”
+  # — Signals (Bash Reference Manual) https://doc.guix.gnu.org/bash/latest/en/html_node/Signals.html
+  # for signal in HUP INT TERM PIPE ALRM USR1 USR2
+  for signal in HUP TERM PIPE ALRM USR1 USR2
   do
     (
       rm -f "$temp_path_a4f366e"
       echo false >"$temp_path_a4f366e"
-      if ! is_bash_bin
-      then
-        trap exit "$signal"
-      fi
+      # “In a strictly POSIX shell, the EXIT trap is evaluated before the shell exits due to executing exit or due to executing the last command in a script. It is not executed if the shell exits due to a signal.”
+      # — shell - EXIT Trap with POSIX - Unix & Linux Stack Exchange https://unix.stackexchange.com/questions/520035/exit-trap-with-posix
+      is_bash_bin || trap exit HUP INT TERM PIPE ALRM USR1 USR2
       trap exit_handler_6cff844 EXIT
       sleep 100 &
-      wait "$!"
+      wait $!
       exit 123
     ) &
-    local pid="$!"
-    sleep 0.1
+    local pid=$!
+    sleep 0.5
     kill -"$signal" "$pid"
     local rc=0
-    wait "$pid" 2>/dev/null || rc=$?
-    assert_eq "$rc" $((128 + signal))
+    wait "$pid" || rc=$?
+    echo "RC: $rc" >&2
+    local sig_rc=
+    eval sig_rc=\$RC_SIG$signal
+    assert_eq -m"SIG$signal" "$rc" "$sig_rc"
     assert_eq "$(cat "$temp_path_a4f366e")" true
   done
   rm -f "$temp_path_a4f366e"

@@ -66,7 +66,7 @@ run_tests() {
         is_bbwin && continue
         ;;
     esac
-    "$VERBOSE" && echo "Reading test file \"$file\" in $PWD." >&2
+    "${VERBOSE-false}" && echo "Reading test file \"$file\" in $PWD." >&2
     local test
     # shellcheck disable=SC2013
     for test in $(sed -n -e 's/^test_\([_a-zA-Z0-9]*\)[[:space:]]*()[[:space:]]*{[[:space:]]*$/\1/p' "$file")
@@ -130,7 +130,7 @@ run_tests() {
     if test "$rc" -eq 0
     then
       printf "%sTest \"%s\"@%s Passed%s\n" "$GREEN" "$test" "$base" "$NORMAL" >&2
-      if "$VERBOSE"
+      if "${VERBOSE-false}"
       then
         test -r "$log_file_path" && sed -e 's/^/  /' <"$log_file_path" >&2
       fi

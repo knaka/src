@@ -21,7 +21,94 @@ test -z "$PROJECT_DIR" && unset PROJECT_DIR
 test -z "$TASK_PROJECT_DIR" && unset TASK_PROJECT_DIR
 
 # Verbosity.
-: "${VERBOSE:=false}"
+: "${VERBOSE-}"
+
+#endregion
+
+# ==========================================================================
+#region Platform detection. Detect platform without using subprocesses whenever possible, since subprocess creation is expensive and these functions are called frequently.
+
+# Windows
+is_windows() {
+  test -d \\
+}
+
+# MSYS2 on Windows
+is_msys2() {
+  test -d \\ -a -d /proc
+}
+
+# BusyBox for Windows ash
+is_bbwin() {
+  test -d \\ -a ! -d /proc -a "${BB_GLOBBING+set}" = set
+}
+
+is_macos() {
+  test -f /System/Library/CoreServices/SystemVersion.plist
+}
+
+is_bsd() {
+  is_macos || test -r /etc/rc.subr
+}
+
+is_mise() {
+  test "${MISE_CONFIG_ROOT+set}" = set
+}
+
+is_linux() {
+  # MSYS2 has /proc dir.
+  test -d /proc -a -d /sys/kernel
+  # Strict check
+  # test -r /proc/sys/kernel/ostype \
+  #   && read -r RESULT </proc/sys/kernel/ostype \
+  #   && test "$RESULT" = Linux
+}
+
+is_debian() {
+  test -f /etc/debian_version
+}
+
+is_alpine() {
+  test -f /etc/alpine-release
+}
+
+is_bash_bin() {
+  if test $# -eq 0
+  then
+    test "${BASH_VERSION+set}" = set
+  else
+    # shellcheck disable=SC3028
+    # shellcheck disable=SC3054
+    is_bash_bin && test "${BASH_VERSINFO[0]}" -ge "$1"
+  fi
+}
+
+is_bash_posix() {
+  # shellcheck disable=SC3010
+  # shellcheck disable=SC3028
+  is_bash_bin "$@" && [[ ":$SHELLOPTS:" = *:posix:* ]]
+}
+
+is_bash_native() {
+  # shellcheck disable=SC3010
+  # shellcheck disable=SC3028
+  is_bash_bin "$@" && [[ ":$SHELLOPTS:" != *:posix:* ]]
+}
+
+# Executable file extension.
+exe_ext=
+# shellcheck disable=SC2034
+is_windows && exe_ext=".exe"
+
+EXE_EXT=
+if is_windows
+then
+  EXE_EXT=.exe
+fi
+readonly EXE_EXT
+
+# shellcheck disable=SC2034
+readonly exe_ext="$EXE_EXT"
 
 #endregion
 
@@ -51,13 +138,31 @@ readonly CH_LF="
   readonly CH_IS4="$CH_FS"
 }
 
-readonly SIGPIPE=13
 # shellcheck disable=SC2034
-readonly RC_SIGPIPE=$((128 + SIGPIPE))
+{
+  readonly SIGHUP=1
+  readonly SIGINT=2
+  readonly SIGPIPE=13
+  readonly SIGTERM=15
+  readonly SIGALRM=14
+  SIGUSR1=10
+  SIGUSR2=12
+  if is_macos
+  then
+    SIGUSR1=30
+    SIGUSR2=31
+  fi
+  readonly SIGUSR1
+  readonly SIGUSR2
 
-readonly SIGTERM=15
-# shellcheck disable=SC2034
-readonly RC_SIGTERM=$((128 + SIGTERM))
+  readonly RC_SIGHUP=$((128 + SIGHUP))
+  readonly RC_SIGINT=$((128 + SIGINT))
+  readonly RC_SIGPIPE=$((128 + SIGPIPE))
+  readonly RC_SIGTERM=$((128 + SIGTERM))
+  readonly RC_SIGALRM=$((128 + SIGALRM))
+  readonly RC_SIGUSR1=$((128 + SIGUSR1))
+  readonly RC_SIGUSR2=$((128 + SIGUSR2))
+}
 
 # Guard against multiple calls. $1 is a unique ID
 first_call() {
@@ -254,93 +359,6 @@ add_term_handler() {
 remove_term_handler() {
   remove_signal_handler_6b58050 "$1" TERM
 }
-
-#endregion
-
-# ==========================================================================
-#region Platform detection. Detect platform without using subprocesses whenever possible, since subprocess creation is expensive and these functions are called frequently.
-
-# Windows
-is_windows() {
-  test -d \\
-}
-
-# MSYS2 on Windows
-is_msys2() {
-  test -d \\ -a -d /proc
-}
-
-# BusyBox for Windows ash
-is_bbwin() {
-  test -d \\ -a ! -d /proc -a "${BB_GLOBBING+set}" = set
-}
-
-is_macos() {
-  test -f /System/Library/CoreServices/SystemVersion.plist
-}
-
-is_bsd() {
-  is_macos || test -r /etc/rc.subr
-}
-
-is_mise() {
-  test "${MISE_CONFIG_ROOT+set}" = set
-}
-
-is_linux() {
-  # MSYS2 has /proc dir.
-  test -d /proc -a -d /sys/kernel
-  # Strict check
-  # test -r /proc/sys/kernel/ostype \
-  #   && read -r RESULT </proc/sys/kernel/ostype \
-  #   && test "$RESULT" = Linux
-}
-
-is_debian() {
-  test -f /etc/debian_version
-}
-
-is_alpine() {
-  test -f /etc/alpine-release
-}
-
-is_bash_bin() {
-  if test $# -eq 0
-  then
-    test "${BASH_VERSION+set}" = set
-  else
-    # shellcheck disable=SC3028
-    # shellcheck disable=SC3054
-    is_bash_bin && test "${BASH_VERSINFO[0]}" -ge "$1"
-  fi
-}
-
-is_bash_posix() {
-  # shellcheck disable=SC3010
-  # shellcheck disable=SC3028
-  is_bash_bin "$@" && [[ ":$SHELLOPTS:" = *:posix:* ]]
-}
-
-is_bash_native() {
-  # shellcheck disable=SC3010
-  # shellcheck disable=SC3028
-  is_bash_bin "$@" && [[ ":$SHELLOPTS:" != *:posix:* ]]
-}
-
-# Executable file extension.
-exe_ext=
-# shellcheck disable=SC2034
-is_windows && exe_ext=".exe"
-
-EXE_EXT=
-if is_windows
-then
-  EXE_EXT=.exe
-fi
-readonly EXE_EXT
-
-# shellcheck disable=SC2034
-readonly exe_ext="$EXE_EXT"
 
 #endregion
 
