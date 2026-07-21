@@ -9,6 +9,8 @@ set -- _LIBDIR . "$@"
 shift 2
 cd "$1" || exit 1; shift
 
+# https://ijmacd.github.io/rfc3339-iso8601/
+
 iso_date_format_590c473='%Y-%m-%dT%H:%M:%S%z'
 iso_date_format_utc_590c473='%Y-%m-%dT%H:%M:%SZ'
 

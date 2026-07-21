@@ -38,9 +38,9 @@ is_msys2() {
   test -d \\ -a -d /proc
 }
 
-# BusyBox for Windows ash
+# BusyBox for Windows Ash
 is_bbwin() {
-  test -d \\ -a ! -d /proc -a "${BB_GLOBBING+set}" = set
+  test -d \\ -a ! -d /proc -a "${BB_GLOBBING+set}"
 }
 
 is_macos() {
@@ -52,7 +52,7 @@ is_bsd() {
 }
 
 is_mise() {
-  test "${MISE_CONFIG_ROOT+set}" = set
+  test "${MISE_CONFIG_ROOT+set}"
 }
 
 is_linux() {
@@ -75,7 +75,7 @@ is_alpine() {
 is_bash_bin() {
   if test $# -eq 0
   then
-    test "${BASH_VERSION+set}" = set
+    test "${BASH_VERSION+set}"
   else
     # shellcheck disable=SC3028
     # shellcheck disable=SC3054
@@ -143,8 +143,10 @@ readonly CH_LF="
   readonly SIGHUP=1
   readonly SIGINT=2
   readonly SIGPIPE=13
-  readonly SIGTERM=15
   readonly SIGALRM=14
+  readonly SIGTERM=15
+  SIGUSR1=
+  SIGUSR2=
   if is_msys2 || is_macos
   then
     SIGUSR1=30
@@ -153,9 +155,6 @@ readonly CH_LF="
   then
     SIGUSR1=10
     SIGUSR2=12
-  else
-    SIGUSR1=-1
-    SIGUSR2=-1
   fi
   readonly SIGUSR1
   readonly SIGUSR2
@@ -163,16 +162,19 @@ readonly CH_LF="
   readonly RC_SIGHUP=$((128 + SIGHUP))
   readonly RC_SIGINT=$((128 + SIGINT))
   readonly RC_SIGPIPE=$((128 + SIGPIPE))
-  readonly RC_SIGTERM=$((128 + SIGTERM))
   readonly RC_SIGALRM=$((128 + SIGALRM))
-  readonly RC_SIGUSR1=$((128 + SIGUSR1))
-  readonly RC_SIGUSR2=$((128 + SIGUSR2))
+  readonly RC_SIGTERM=$((128 + SIGTERM))
+  if test -n "SIGUSR1"
+  then
+    readonly RC_SIGUSR1=$((128 + SIGUSR1))
+    readonly RC_SIGUSR2=$((128 + SIGUSR2))
+  fi
 }
 
 # The EXIT handler runs when the script runs to the end, or when the `exit`
 # builtin is called. In Bash, it also runs on receiving a terminating signal.
 trap_terminating_signals() {
-  trap exit HUP INT TERM PIPE ALRM USR1 USR2 "$@"
+  trap exit HUP INT PIPE ALRM TERM "$@"
 }
 
 # Guard against multiple calls. $1 is a unique ID
@@ -229,7 +231,7 @@ reset_cmds_if_new_subshell_f2fb3bc() {
       # pipeline stage runs in a subshell), so write the parent shell's trap
       # state to a temp file first and grep that instead.
       local temp_file
-      if test "${TEMP_DIR+set}" = set
+      if test "${TEMP_DIR+set}"
       then
         temp_file="$TEMP_DIR"/16979dd
       else
@@ -247,11 +249,11 @@ reset_cmds_if_new_subshell_f2fb3bc() {
 }
 
 signal_valid_6fbb8c5() {
+  local haystack=",EXIT,TERM,"
   local signal
   for signal in "$@"
   do
-    # shellcheck disable=SC2194
-    case ',EXIT,TERM,' in
+    case "$haystack" in
       (*,$signal,*) ;;
       (*) return 1;;
     esac
@@ -334,7 +336,8 @@ cleanup_child_processes() {
   kill -TERM 0
 }
 
-# Register the child-processes cleanup trap handler. Note that, as a result, a TERM signal is sent to the entire process group.
+# Register the child-processes cleanup trap handler. Note that, as a result, a
+# TERM signal is sent to the entire process group.
 register_child_cleanup() {
   first_call 5f719a3 || return 0
   add_exit_handler cleanup_child_processes
@@ -411,31 +414,25 @@ print_call_stack() {
   if test $# -gt 0
   then
     # shellcheck disable=SC2059
-    echo "$@"
+    echo "$@" >&2
   fi
   # shellcheck disable=SC3018
   # shellcheck disable=SC3044
   if is_bash_bin
   then
-    local i=0 frame line sub file
+    local i=0 frame
     while frame="$(caller $i)"
     do
       # shellcheck disable=SC2086
       set -- $frame
-      line="$1" sub="$2" file="$3"
-      printf "  at %s (%s:%s)\n" "$sub" "$(realpath -q "$file" || echo "$file")" "$line"
+      local line="$1"
+      local sub="$2"
+      local file="$3"
+      printf "  at %s (%s:%s)\n" "$sub" "$(realpath -q "$file" || echo "$file")" "$line" >&2
       i=$((i + 1))
     done
   else
-    # POSIX sh (dash/ash) has no `caller` equivalent, and $LINENO can't
-    # stand in for one either: unlike Bash, dash resets it relative to the
-    # start of the enclosing function body rather than tracking the
-    # absolute file line, so it can't point at the actual call site without
-    # every function along the way cooperating (e.g. pushing its own
-    # name/line onto a stack, as push_dir/pop_dir do for directories).
-    # $0 is the best hint available without that: at least which script is
-    # currently running.
-    echo "  at $0"
+    echo "  at $0" >&2
   fi
   :
 }
@@ -529,13 +526,11 @@ fi
 # Left/Right-Word-Boundary regex is incompatible with BSD sed // re_format(7) https://man.freebsd.org/cgi/man.cgi?query=re_format&sektion=7
 LWB='\<'
 RWB='\>'
-
 if is_bsd
 then
   LWB='[[:<:]]'
   RWB='[[:>:]]'
 fi
-
 # shellcheck disable=SC2034
 readonly LWB RWB
 
