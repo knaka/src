@@ -125,11 +125,8 @@ test_cleanup_child_processes() {
 temp_path_a4f366e=
 
 exit_handler_6cff844() {
-  local rc=$?
-  echo 279b600 "$rc"
   test -z "$temp_path_a4f366e" && exit 1
   echo true >"$temp_path_a4f366e"
-  exit "$rc"
 }
 
 test_exit_behavior() {
