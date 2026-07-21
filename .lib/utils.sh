@@ -1,6 +1,7 @@
 #!/usr/bin/env sh
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
+# shellcheck disable=SC2034
 _() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ LIB_UTILS_SH && return
 
 # ==========================================================================
@@ -115,61 +116,60 @@ readonly exe_ext="$EXE_EXT"
 # ==========================================================================
 #region Basic utilities.
 
-# shellcheck disable=SC2034
 readonly CH_LF="
 "
+readonly CH_TAB="	"
+readonly CH_ESC=""
 
-# shellcheck disable=SC2034
-{
-  readonly CH_TAB="	"
-  readonly CH_ESC=""
+# Unit separator (US), Information Separator 1
+readonly CH_US=""
+readonly CH_IS1="$CH_US"
+# Record separator (RS), Information Separator 2
+readonly CH_RS=""
+readonly CH_IS2="$CH_RS"
+# Group separator (GS), Information Separator 3
+readonly CH_GS=""
+readonly CH_IS3="$CH_GS"
+# File separator (FS), Information Separator 4
+readonly CH_FS=""
+readonly CH_IS4="$CH_FS"
 
-  # Unit separator (US), Information Separator 1
-  readonly CH_US=""
-  readonly CH_IS1="$CH_US"
-  # Record separator (RS), Information Separator 2
-  readonly CH_RS=""
-  readonly CH_IS2="$CH_RS"
-  # Group separator (GS), Information Separator 3
-  readonly CH_GS=""
-  readonly CH_IS3="$CH_GS"
-  # File separator (FS), Information Separator 4
-  readonly CH_FS=""
-  readonly CH_IS4="$CH_FS"
-}
+readonly SIGHUP=1
+readonly SIGINT=2
+readonly SIGPIPE=13
+readonly SIGALRM=14
+readonly SIGTERM=15
 
-# shellcheck disable=SC2034
-{
-  readonly SIGHUP=1
-  readonly SIGINT=2
-  readonly SIGPIPE=13
-  readonly SIGALRM=14
-  readonly SIGTERM=15
-  SIGUSR1=
-  SIGUSR2=
-  if is_msys2 || is_macos
-  then
-    SIGUSR1=30
-    SIGUSR2=31
-  elif is_linux
-  then
-    SIGUSR1=10
-    SIGUSR2=12
-  fi
+: "${SIGUSR1-}"
+: "${SIGUSR2-}"
+if is_msys2 || is_macos
+then
+  SIGUSR1=30
+  SIGUSR2=31
+elif is_linux
+then
+  SIGUSR1=10
+  SIGUSR2=12
+fi
+if test -n "${SIGUSR1-}"
+then
   readonly SIGUSR1
   readonly SIGUSR2
+fi
 
-  readonly RC_SIGHUP=$((128 + SIGHUP))
-  readonly RC_SIGINT=$((128 + SIGINT))
-  readonly RC_SIGPIPE=$((128 + SIGPIPE))
-  readonly RC_SIGALRM=$((128 + SIGALRM))
-  readonly RC_SIGTERM=$((128 + SIGTERM))
-  if test -n "SIGUSR1"
-  then
-    readonly RC_SIGUSR1=$((128 + SIGUSR1))
-    readonly RC_SIGUSR2=$((128 + SIGUSR2))
-  fi
-}
+readonly RC_SIGHUP=$((128 + SIGHUP))
+readonly RC_SIGINT=$((128 + SIGINT))
+readonly RC_SIGPIPE=$((128 + SIGPIPE))
+readonly RC_SIGALRM=$((128 + SIGALRM))
+readonly RC_SIGTERM=$((128 + SIGTERM))
+
+: "${RC_SIGUSR1-}"
+: "${RC_SIGUSR2-}"
+if test -n "${SIGUSR1-}"
+then
+  readonly RC_SIGUSR1=$((128 + SIGUSR1))
+  readonly RC_SIGUSR2=$((128 + SIGUSR2))
+fi
 
 # The EXIT handler runs when the script runs to the end, or when the `exit`
 # builtin is called. In Bash, it also runs on receiving a terminating signal.

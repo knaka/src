@@ -16,7 +16,8 @@ httpd_mini() {
   test $# -gt 0 && dir="$1"
   dir="$(realpath "$dir")"
   local host=127.0.0.1
-  local port="$(ip_random_free_port)"
+  local port
+  port="$(ip_random_free_port)"
   local url="http://$host:$port"
   echo "HTTP Server running at $url , providing the content of the directory $dir ."
   # -b, --browse: Enable directory browsing
