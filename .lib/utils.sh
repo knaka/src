@@ -169,6 +169,12 @@ readonly CH_LF="
   readonly RC_SIGUSR2=$((128 + SIGUSR2))
 }
 
+# The EXIT handler runs when the script runs to the end, or when the `exit`
+# builtin is called. In Bash, it also runs on receiving a terminating signal.
+trap_terminating_signals() {
+  trap exit HUP INT TERM PIPE ALRM USR1 USR2 "$@"
+}
+
 # Guard against multiple calls. $1 is a unique ID
 first_call() {
   eval "\${_CALLED_$1-false}" && return 1
