@@ -8,6 +8,7 @@ case "${1-}" in (_LIBDIR) cd "$2" || exit;; (*) cd "$_APPDIR" || exit;; esac; se
 set -- _LIBDIR ../.lib "$@"
 . ../.lib/utils.sh
 . ../.lib/collection.sh
+. ../.lib/string.sh
 shift 2
 set -- _LIBDIR ../.lib-test "$@"
 . ../.lib-test/test.sh
@@ -46,18 +47,18 @@ run_tests() {
   local test_path="$PWD"/.lib-test
   local lib_path="$PWD"/.lib
 
-  local RESULT
+  local RESULT=
   
   map_
   local file
   for file in \
     "$test_path"/*-test.shlib \
-    "$test_path"/test-*.sh \
     "$test_path"/tests-*.sh \
-    "$test_path"/test-*.shlib \
     "$test_path"/tests-*.bash \
     "$lib_path"/*.sh \
     "$lib_path"/*.bash \
+    "$test_path"/test_*.sh \
+    "$test_path"/test_*.bash \
     #nop
   do
     test -r "$file" || continue
@@ -66,8 +67,18 @@ run_tests() {
         is_bbwin && continue
         ;;
     esac
-    "${VERBOSE-false}" && echo "Reading test file \"$file\" in $PWD." >&2
     local test
+    local base
+    base="${file##*[/\\}"
+    case "$base" in
+      (test_*)
+        test="${base#test_}"
+        test="${test%.*}"
+        mput_ "$RESULT" "$test" "$file"
+        continue
+        ;;
+    esac
+    "${VERBOSE-false}" && echo "Reading test file \"$file\" in $PWD." >&2
     # shellcheck disable=SC2013
     for test in $(sed -n -e 's/^test_\([_a-zA-Z0-9]*\)[[:space:]]*()[[:space:]]*{[[:space:]]*$/\1/p' "$file")
     do
@@ -105,6 +116,10 @@ run_tests() {
         (test_*)
           test="${test#test_}"
           ;;
+        (*[/\\]test_*)
+          test="${test##*[/\\]test_}"
+          test="${test%.*}"
+          ;;
       esac
       if ! mget_ "$test_file_map" "$test"
       then
@@ -118,8 +133,14 @@ run_tests() {
     local dir="${file%[/\\]*}"
     local base="${file##*[/\\]}"
     local stmts="cd '$dir'; _APPDIR=\"\$PWD\"; . ./'$base'; test_$test"
-    case "$file" in
-      (*.sh|*.shlib)
+    case "$base" in
+      (test-*.sh)
+        $sh -o nounset -o errexit "$file" >"$log_file_path" 2>&1 || rc=$?
+        ;;
+      (test-*.bash)
+        bash -o nounset -o errexit -o pipefail "$file" >"$log_file_path" 2>&1 || rc=$?
+        ;;
+      (*.sh)
         $sh -o nounset -o errexit -c "$stmts" >"$log_file_path" 2>&1 || rc=$?
         ;;
       (*.bash)
