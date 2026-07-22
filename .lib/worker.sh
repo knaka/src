@@ -146,7 +146,10 @@ tail_worker() {
   local wid
   for wid in "$@"
   do
-    set -- "$@" "$(cat "$worker_queue_dir_60742ac"/"log-file.$wid")"
+    if test -r "$worker_queue_dir_60742ac"/"log-file.$wid"
+    then
+      set -- "$@" "$(cat "$worker_queue_dir_60742ac"/"log-file.$wid")"
+    fi
     shift
   done
   (
@@ -166,7 +169,10 @@ log_worker() {
   local wid
   for wid in "$@"
   do
-    set -- "$@" "$(cat "$worker_queue_dir_60742ac"/"log-file.$wid")"
+    if test -r "$worker_queue_dir_60742ac"/"log-file.$wid"
+    then
+      set -- "$@" "$(cat "$worker_queue_dir_60742ac"/"log-file.$wid")"
+    fi
     shift
   done
   cat "$@"

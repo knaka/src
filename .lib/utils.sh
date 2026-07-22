@@ -528,24 +528,25 @@ field() {
   awk "{ print \$${1}} "
 }
 
-# Check if the file(s) are newer than the destination(s). Meant for
-# build-dependency checks: `newer sources... --than destinations...` tells you
-# whether the sources have changed since the destinations were last built. Like
-# a Makefile's implicit rule, a missing destination alone is enough to report
-# "needs rebuild" (true), without even checking the other destinations. A
-# destination directory that exists but is empty is treated the same way:
-# there's no file left inside it to compare against, and an empty output
-# directory more often means a failed/incomplete build than a legitimate
-# zero-file one, so it's safer to report "needs rebuild" than to risk
-# leaving a stale or missing build in place.
-newer() {
+# Check if the file(s) were updated after the destination(s). Meant for
+# build-dependency checks: `updated sources... --after destinations...` tells
+# you whether the sources have changed since the destinations were last built
+# (also available as `newer sources... --than destinations...`, an alias
+# below). Like a Makefile's implicit rule, a missing destination alone is
+# enough to report "needs rebuild" (true), without even checking the other
+# destinations. A destination directory that exists but is empty is treated
+# the same way: there's no file left inside it to compare against, and an
+# empty output directory more often means a failed/incomplete build than a
+# legitimate zero-file one, so it's safer to report "needs rebuild" than to
+# risk leaving a stale or missing build in place.
+updated() {
   local found_than=false
   local psv_dests=
   local arg
   for arg in "$@"
   do
     shift
-    if test "$arg" = "--than"
+    if test "$arg" = "--after" -o "$arg" = "--than"
     then
       found_than=true
     elif $found_than
@@ -557,7 +558,7 @@ newer() {
   done
   if test -z "$psv_dests"
   then
-    echo "Missing --than option" >&2
+    echo "Missing --after (or --than) option" >&2
     exit 1
   fi
   if test "$#" -eq 0
@@ -601,6 +602,10 @@ newer() {
   unset IFS
   "$older_found" && return 1
   return 0
+}
+
+newer() {
+  updated "$@"
 }
 
 # Returns true if no source file is newer than the destination file.
