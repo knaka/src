@@ -15,8 +15,10 @@ cd "$1" || exit; shift
 
 : "${worker_queue_dir_60742ac-}"
 
-# Start "$@" in the background and register it in the worker queue. Echoes
-# a worker ID (wid) that identifies it to every other function below.
+: "${WID-}"
+
+# Start "$@" in the background and register it in the worker queue. $WID returns
+# a worker ID that identifies it to every other function below.
 #
 # By default the worker is just a plain backgrounded process: `stop_worker`
 # only signals that one process, so a well-behaved command that terminates
@@ -33,12 +35,14 @@ cd "$1" || exit; shift
 # function is code you control, so just make it exit gracefully instead of
 # reaching for `--group`.
 run_worker() {
+  local record_log=false
   local group=false
   OPTIND=1; while getopts _-: OPT
   do
     test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
     case "$OPT" in
       (group) group=true;;
+      (record-log) record_log=true;;
       (?) return 1;;
       (*) echo "$0: illegal option -- $OPT" >&2; return 1;;
     esac
@@ -68,7 +72,12 @@ run_worker() {
       # worker (though in its own process group via `set -m`) isn't reaped/awaited
       # by an unrelated bare `wait`/`jobs` the caller (who sourced this library)
       # might run later.
-      "$@" </dev/null >"$log_file" 2>&1 &
+      if "$record_log"
+      then
+        "$@" </dev/null >"$log_file" 2>&1 &
+      else
+        "$@" </dev/null &
+      fi
       pid="$!"
       # shellcheck disable=SC3044
       disown %+
@@ -82,7 +91,12 @@ run_worker() {
       # without wrapping the call in `$(...)`), so it can never be swept up by an
       # unrelated bare `wait`/`jobs` in the caller's shell. (POSIX sh has no
       # `disown` to do this explicitly.)
-      pid="$(setsid "$@" </dev/null >"$log_file" 2>&1 & echo $!)"
+      if "$record_log"
+      then
+        pid="$(setsid "$@" </dev/null >"$log_file" 2>&1 & echo $!)"
+      else
+        pid="$(setsid "$@" </dev/null & echo $!)"
+      fi
     elif is_macos
     then
       # No `setsid(1)` command on macOS, so call POSIX::setsid() from Perl
@@ -90,7 +104,12 @@ run_worker() {
       # on Linux, the Perl process itself becomes the worker via exec, so its pid
       # stays the worker's pid). Wrapped in the same detaching subshell as the
       # Linux branch above, for the same reason.
-      pid="$(perl -e 'use POSIX "setsid"; setsid(); exec @ARGV' "$@" </dev/null >"$log_file" 2>&1 & echo $!)"
+      if "$record_log"
+      then
+        pid="$(perl -e 'use POSIX "setsid"; setsid(); exec @ARGV' "$@" </dev/null >"$log_file" 2>&1 & echo $!)"
+      else
+        pid="$(perl -e 'use POSIX "setsid"; setsid(); exec @ARGV' "$@" </dev/null & echo $!)"
+      fi
     else
       echo "Unexpected environment (a0002c4)." >&2
       return 1
@@ -130,8 +149,11 @@ run_worker() {
     wid="p$pid"
   fi
   echo "$wid" >>"$worker_queue_dir_60742ac"/wids
-  echo "$wid"
-  echo "$log_file" >"$worker_queue_dir_60742ac/log-file.$wid"
+  WID="$wid"
+  if "$record_log"
+  then
+    echo "$log_file" >"$worker_queue_dir_60742ac/log-file.$wid"
+  fi
   echo "$@" >"$TEMP_DIR"/args."$wid"
 }
 
@@ -156,6 +178,10 @@ tail_worker() {
     set -m
     tail -f "$@" || :
   )
+}
+
+run_rec_worker() {
+  run_worker --record-log "$@"
 }
 
 # Print the accumulated log output of the given workers (or all queued

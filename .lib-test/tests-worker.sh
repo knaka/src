@@ -21,6 +21,7 @@ skip_cond_ce1f35f() {
 : "${path_3da3ab4-}"
 
 fn_not_to_clean_901f64b() {
+  echo 7029f65
   sleep 4567 &
   echo "$!" >"$path_3da3ab4"
   wait
@@ -30,11 +31,12 @@ test_worker() {
   skip_if skip_cond_ce1f35f
 
   init_worker_queue
-  local wid
-  wid="$(run_worker sleep 1234)"
+  run_rec_worker sleep 1234
+  local wid="$WID"
   wait_worker_start --timeout-sec=10 "$wid"
   kill -0 "$(pid_of_worker "$wid")"
-  wid2="$(run_worker sleep 2345)"
+  run_worker sleep 2345
+  local wid2="$WID"
   wait_worker_start --timeout-sec=10 "$wid" "$wid2"
   is_worker_alive "$wid" "$wid2"
   run_worker --group sleep 3456 >/dev/null 2>&1
@@ -46,13 +48,14 @@ test_worker() {
   if is_bash_bin
   then
     path_3da3ab4="$TEMP_DIR/b39f0df"
-    local wid3
-    wid3="$(run_worker --group fn_not_to_clean_901f64b)"
+    run_rec_worker --group fn_not_to_clean_901f64b
+    local wid3="$WID"
     while ! test -r "$path_3da3ab4"
     do
       sleep 0.1
     done
     wait_worker_start "$wid3"
+    log_worker "$wid3" | grep 7029f65
     stop_worker --timeout-sec=10 "$wid3"
     assert_failure kill -0 "$(cat "$path_3da3ab4")"
   fi
