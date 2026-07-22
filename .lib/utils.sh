@@ -532,7 +532,12 @@ field() {
 # build-dependency checks: `newer sources... --than destinations...` tells you
 # whether the sources have changed since the destinations were last built. Like
 # a Makefile's implicit rule, a missing destination alone is enough to report
-# "needs rebuild" (true), without even checking the other destinations.
+# "needs rebuild" (true), without even checking the other destinations. A
+# destination directory that exists but is empty is treated the same way:
+# there's no file left inside it to compare against, and an empty output
+# directory more often means a failed/incomplete build than a legitimate
+# zero-file one, so it's safer to report "needs rebuild" than to risk
+# leaving a stale or missing build in place.
 newer() {
   local found_than=false
   local psv_dests=
