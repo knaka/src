@@ -22,7 +22,7 @@ EOF
 
 go_run() {
   test "$#" -lt 1 && show_help_b83799b && return 1
-  local a_out="$TEMP_DIR/a.out$exe_ext"
+  local a_out="$TEMP_DIR/a.out$EXE_EXT"
   local arg
   local separated=false
   local first=true

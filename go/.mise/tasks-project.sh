@@ -41,7 +41,7 @@ task_depbuild() {
     arg="${arg%.go}"
     if test -r "$arg.go"
     then
-      local target_cmd_path="$go_bin_dir_path/$arg$exe_ext"
+      local target_cmd_path="$go_bin_dir_path/$arg$EXE_EXT"
       if ! test -x "$target_cmd_path" || newer "$arg.go" --than "$target_cmd_path"
       then
         "$VERBOSE" && echo "Building $arg.go" >&2
@@ -49,7 +49,7 @@ task_depbuild() {
       fi
     elif test -d ./cmd/"$arg"
     then
-      local target_cmd_path="$go_bin_dir_path/$arg$exe_ext"
+      local target_cmd_path="$go_bin_dir_path/$arg$EXE_EXT"
       if ! test -x "$target_cmd_path" || newer ./cmd/"$arg" --than "$target_cmd_path"
       then
         "$VERBOSE" && echo "Building ./cmd/$arg" >&2

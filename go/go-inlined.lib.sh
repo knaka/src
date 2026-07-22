@@ -59,7 +59,7 @@ init_temp_dir
 gopath="${GOPATH:-$HOME/go}"
 mkdir -p "$gopath"/bin
 unique_name="$(sha256sum "$0" | sed -E -e 's/^(.......).*/\1/')"
-cmd_path="$gopath"/bin/inlined-"$unique_name$exe_ext"
+cmd_path="$gopath"/bin/inlined-"$unique_name$EXE_EXT"
 if newer "$0" --than "$cmd_path"
 then
   (

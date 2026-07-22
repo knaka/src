@@ -97,19 +97,12 @@ is_bash_native() {
 }
 
 # Executable file extension.
-exe_ext=
-# shellcheck disable=SC2034
-is_windows && exe_ext=".exe"
-
 EXE_EXT=
 if is_windows
 then
   EXE_EXT=.exe
 fi
 readonly EXE_EXT
-
-# shellcheck disable=SC2034
-readonly exe_ext="$EXE_EXT"
 
 #endregion
 
@@ -301,9 +294,7 @@ remove_signal_handler_6b58050() {
   done
 }
 
-# shellcheck disable=SC2034
 EXIT_cmds_054cf7c=:
-# shellcheck disable=SC2034
 EXIT_prev_bashpid_73b382c=
 
 add_exit_handler() {
@@ -361,9 +352,7 @@ clean_exec() {
 
 # SIGTERM handler stack.
 
-# shellcheck disable=SC2034
 TERM_cmds_054cf7c=:
-# shellcheck disable=SC2034
 TERM_prev_bashpid_73b382c=
 
 add_term_handler() {
@@ -531,7 +520,6 @@ then
   LWB='[[:<:]]'
   RWB='[[:>:]]'
 fi
-# shellcheck disable=SC2034
 readonly LWB RWB
 
 # Get the space-separated nth (1-based) field.
