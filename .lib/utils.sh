@@ -580,6 +580,7 @@ newer() {
     # If the destination is a directory, the newest file in the directory is used.
     if test -d "$dest"
     then
+      local dest_dir="$dest"
       if is_bsd
       then
         dest="$(find "$dest" -type f -exec stat -l -t "%F %T" {} \+ | cut -d' ' -f6- | sort -n | tail -1 | cut -d' ' -f3)"
@@ -589,7 +590,7 @@ newer() {
     fi
     if test -z "$dest"
     then
-      "${VERBOSE-false}" && echo "No destination directory is empty." >&2
+      echo "Destination directory is empty, needs rebuild: $dest_dir" >&2
       return 0
     fi
     if test -n "$(find "$@" -type f -a ! -newer "$dest" 2>/dev/null)"
