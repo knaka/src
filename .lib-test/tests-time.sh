@@ -32,12 +32,12 @@ test_time() {
   touch "$file"
 
   # Sets timestamp with UTC date.
-  set_last_mod_iso "$file" "2024-01-01T12:00:00Z"
+  touch_time_iso --mtime="2024-01-01T12:00:00Z" "$file"
   assert_eq "$(TZ=UTC0 last_mod_iso "$file")" "2024-01-01T12:00:00+0000"
   assert_eq "$(TZ=Asia/Tokyo last_mod_iso "$file")" "2024-01-01T21:00:00+0900"
 
   # Sets timestamp with a date with timezone offset.
-  set_last_mod_iso "$file" "2024-01-01T09:00:00+0900"
+  touch_time_iso --mtime="2024-01-01T09:00:00+0900" "$file"
   assert_eq "$(TZ=UTC0 last_mod_iso "$file")" "2024-01-01T00:00:00+0000"
   assert_eq "$(TZ=Asia/Tokyo last_mod_iso "$file")" "2024-01-01T09:00:00+0900"
 

@@ -528,10 +528,14 @@ field() {
   awk "{ print \$${1}} "
 }
 
-# Check if the file(s)/directories are newer than the destination.
+# Check if the file(s) are newer than the destination(s). Meant for
+# build-dependency checks: `newer sources... --than destinations...` tells you
+# whether the sources have changed since the destinations were last built. Like
+# a Makefile's implicit rule, a missing destination alone is enough to report
+# "needs rebuild" (true), without even checking the other destinations.
 newer() {
   local found_than=false
-  local dest=
+  local psv_dests=
   local arg
   for arg in "$@"
   do
@@ -541,12 +545,12 @@ newer() {
       found_than=true
     elif $found_than
     then
-      dest="$arg"
+      psv_dests="$psv_dests$arg|"
     else
       set -- "$@" "$arg"
     fi
   done
-  if test -z "$dest"
+  if test -z "$psv_dests"
   then
     echo "Missing --than option" >&2
     exit 1
@@ -556,28 +560,41 @@ newer() {
     echo "No source files specified" >&2
     exit 1
   fi
-  # If the destination does not exist, sources are considered newer than the destination.
-  if ! test -e "$dest"
-  then
-    echo "Destination does not exist: $dest" >&2
-    return 0
-  fi
-  # If the destination is a directory, the newest file in the directory is used.
-  if test -d "$dest"
-  then
-    if is_bsd
+  local older_found=false
+  local dest
+  local IFS="|"
+  for dest in $psv_dests
+  do
+    unset IFS
+    # If the destination does not exist, sources are considered newer than the destination.
+    if ! test -e "$dest"
     then
-      dest="$(find "$dest" -type f -exec stat -l -t "%F %T" {} \+ | cut -d' ' -f6- | sort -n | tail -1 | cut -d' ' -f3)"
-    else
-      dest="$(find "$dest" -type f -exec stat -Lc '%Y %n' {} \+ | sort -n | tail -1 | cut -d' ' -f2)"
+      "${VERBOSE-false}" && echo "Destination does not exist: $dest" >&2
+      return 0
     fi
-  fi
-  if test -z "$dest"
-  then
-    echo "No destination file found" >&2
-    return 0
-  fi
-  test -n "$(find "$@" -newer "$dest" 2>/dev/null)"
+    # If the destination is a directory, the newest file in the directory is used.
+    if test -d "$dest"
+    then
+      if is_bsd
+      then
+        dest="$(find "$dest" -type f -exec stat -l -t "%F %T" {} \+ | cut -d' ' -f6- | sort -n | tail -1 | cut -d' ' -f3)"
+      else
+        dest="$(find "$dest" -type f -exec stat -Lc '%Y %n' {} \+ | sort -n | tail -1 | cut -d' ' -f2)"
+      fi
+    fi
+    if test -z "$dest"
+    then
+      "${VERBOSE-false}" && echo "No destination directory is empty." >&2
+      return 0
+    fi
+    if test -n "$(find "$@" -type f -a ! -newer "$dest" 2>/dev/null)"
+    then
+      older_found=true
+    fi
+  done
+  unset IFS
+  "$older_found" && return 1
+  return 0
 }
 
 # Returns true if no source file is newer than the destination file.

@@ -13,6 +13,6 @@ cd "$1" || exit 1; shift 2
 case "${0##*/}" in
   (touch-time-iso.sh|touch-time-iso)
     set -o nounset -o errexit
-    set_last_mod_iso "$@"
+    touch_time_iso "$@"
     ;;
 esac

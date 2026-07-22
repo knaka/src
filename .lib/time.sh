@@ -65,16 +65,35 @@ epoch_to_iso() {
   fi
 }
 
-# Touch files with specified ISO-8601 time.
-# Usage: set_last_mod_iso <file> <ISO_time>
-# Example: set_last_mod_iso file.txt 2024-01-01T12:00:00Z
-set_last_mod_iso() {
-  local file="$1"
-  local time="$2"
+# Touch files, setting their modification time to the given ISO-8601 time.
+# Usage: touch_time_iso --mtime=<ISO_time> <file>...
+# Example: touch_time_iso --mtime=2024-01-01T12:00:00Z file.txt
+touch_time_iso() {
+  local time=
+  OPTIND=1; while getopts _-:d: OPT
+  do
+    test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
+    case "$OPT" in
+      (d|mtime) time="$OPTARG";;
+      (?) return 1;;
+      (*) echo "$0: illegal option -- $OPT" >&2; return 1;;
+    esac
+  done
+  shift $((OPTIND-1))
+
+  if test -z "$time"
+  then
+    touch "$@" || return $?
+    return
+  fi
   if is_bbwin
   then
     # BusyBox date(1) does not seem to handle "%z". Use PowerShell to do this.
-    pwsh.exe -NoProfile -Command "Set-ItemProperty \"$file\" -Name LastWriteTime -Value \"$time\""
+    local file
+    for file in "$@"
+    do
+      pwsh.exe -NoProfile -Command "Set-ItemProperty \"$file\" -Name LastWriteTime -Value \"$time\""
+    done
     return
   fi
   if is_macos
@@ -86,7 +105,7 @@ set_last_mod_iso() {
       time="${time_utc}"
     fi
   fi
-  touch -d "$time" "$file"
+  touch -d "$time" "$@"
 }
 
 # Output last modification time of a file in ISO-8601 format.
@@ -98,13 +117,13 @@ last_mod_iso() {
   then
     # S: String
     # a, m, c, B: Last accessed or modified, or when the inode was last changed, or the birth time of the inode
-    stat -f "%Sm" -t "$iso_date_format_590c473" "$1"
+    stat -f "%Sm" -t "$iso_date_format_590c473" "$file"
   elif is_bbwin
   then
     local epoch
-    epoch="$(stat -c "%Y" "$1")"
+    epoch="$(stat -c "%Y" "$file")"
     date -d @"$epoch" -Iseconds | sed -E -e 's/([[:digit:]]{2}):([[:digit:]]{2})$/\1\2/'
   else
-    date --date "$(stat --format "%y" "$1")" +"$iso_date_format_590c473"
+    date --date "$(stat --format "%y" "$file")" +"$iso_date_format_590c473"
   fi
 }
