@@ -145,6 +145,20 @@ task_hooks__log "$@"
 '''
 hide=true
 
+[tasks."gen"]
+description=''''''
+run='''
+#!/usr/bin/env sh
+# .mise/tasks-project.sh:task_gen
+_APPDIR="$MISE_PROJECT_ROOT"/".mise"
+saved_pwd_85053ae="$PWD"
+cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
+. ./"tasks-project.sh"
+cd "$saved_pwd_85053ae" || exit 1
+set -o nounset -o errexit
+task_gen "$@"
+'''
+
 [tasks."session:init"]
 description='''Clears the session environment.'''
 run='''
