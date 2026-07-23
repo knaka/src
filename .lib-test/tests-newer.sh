@@ -30,34 +30,18 @@ test_newer() {
   local newer_file="$TEMP_DIR"/575e73a
 
   init_0966cde
-  assert_true newer "$newer_dir" "$newer_file" --than "$older_dir" "$older_file"
+  assert_true updated "$newer_dir" "$newer_file" --after "$older_dir" "$older_file"
 
-  # Newer file in older dir.
   init_0966cde
-  touch_time_iso --mtime="2024-04-01T12:00:00Z" "$older_dir"/965a2d4
-  assert_false newer "$newer_dir" "$newer_file" --than "$older_dir" "$older_file"
-
-  # Older file is newer.
-  init_0966cde
-  touch_time_iso --mtime="2024-04-01T12:00:00+0900" "$older_file"
-  assert_false newer "$newer_dir" "$newer_file" --than "$older_dir" "$older_file"
-
-  # Older file in newer dir.
-  init_0966cde
-  touch_time_iso --mtime="2024-01-01T12:00:00Z" "$newer_dir"/575e73a
-  assert_false newer "$newer_dir" "$newer_file" --than "$older_dir" "$older_file"
-
-  # Newer file is older.
-  init_0966cde
-  touch_time_iso --mtime="2024-01-01T12:00:00Z" "$newer_file"
-  assert_false newer "$newer_dir" "$newer_file" --than "$older_dir" "$older_file"
+  touch_time_iso --mtime="2024-04-01T12:00:00Z" "$older_dir"/965a2d4 "$older_file"
+  assert_false updated "$newer_dir" "$newer_file" --after "$older_dir" "$older_file"
 
   # A missing destination alone means "needs rebuild": true even though the
   # other, existing destination is actually newer than the sources.
   init_0966cde
   touch_time_iso --mtime="2024-04-01T12:00:00Z" "$older_dir"/965a2d4
   touch_time_iso --mtime="2024-04-01T12:00:00Z" "$older_file"
-  assert_true -m 7b40b34 newer "$newer_dir" "$newer_file" --than "$older_dir" "$older_file" "$TEMP_DIR"/does_not_exist
+  assert_true -m 7b40b34 newer "$newer_dir" "$newer_file" --after "$older_dir" "$older_file" "$TEMP_DIR"/does_not_exist
 
   # Destination directory is empty.
   init_0966cde
@@ -65,5 +49,5 @@ test_newer() {
   rm -fr "$older_dir"/*
   assert_true is_dir_empty "$older_dir"
   touch_time_iso --mtime="2024-04-01T12:00:00Z" "$older_file"
-  assert_true -m 27c7921 newer "$newer_dir" "$newer_file" --than "$older_dir" "$older_file"
+  assert_true -m 27c7921 newer "$newer_dir" "$newer_file" --after "$older_dir" "$older_file"
 }

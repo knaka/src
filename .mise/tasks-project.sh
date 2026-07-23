@@ -20,6 +20,7 @@ on_exit_0e51f30() {
   fi
   exec 3<&- 2>/dev/null || :
   test -n "$fifo_path_4ec98eb" && rm -f "$fifo_path_4ec98eb"
+  fifo_path_4ec98eb=
 }
 
 # Block until a batch of changes to the given filter patterns is detected,
@@ -45,7 +46,8 @@ wait_for_change() {
     fifo_path_4ec98eb="$(mktemp "$TEMP_DIR"/XXXXXX)"
     rm -f "$fifo_path_4ec98eb"
     mkfifo "$fifo_path_4ec98eb"
-    watchexec --postpone --only-emit-events \
+    watchexec --no-discover-ignore --postpone \
+      --only-emit-events \
       --emit-events-to=stdio \
       "$@" >"$fifo_path_4ec98eb" 2>/dev/null &
     pid_4ec98eb=$!
@@ -60,19 +62,20 @@ wait_for_change() {
   return 1
 }
 
-gen() {
-  echo Building
-  touch README.md
+handler_f20525f() {
+  echo "Do nothing for: $*"
 }
 
-task_gen() {
+depbuild() {
   local force=false
   local watch=false
+  local handler=handler_f20525f
   OPTIND=1; while getopts _-: OPT
   do
     test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
     case "$OPT" in
       (force) force=true;;
+      (handler) handler="$OPTARG";;
       (watch) watch=true;;
       (?) return 1;;
       (*) echo "$0: illegal option -- $OPT" >&2; return 1;;
@@ -80,23 +83,41 @@ task_gen() {
   done
   shift $((OPTIND-1))
 
-  set -- "source/*.txt"
+  local target="$1"
+  shift
 
   if "$watch"
   then
     init_temp_dir
     local modified_file_list="$TEMP_DIR"/0ec5e8a
+    rm -f "$modified_file_list"
     touch "$modified_file_list"
     while :
     do
-      echo Do something for:
-      cat "$modified_file_list"
-      gen
+      local IFS="$CH_LF"
+      # shellcheck disable=SC2046
+      "$handler" $(cat "$modified_file_list")
+      unset IFS
       sleep 1
       wait_for_change "$@" >"$modified_file_list"
     done
-  elif "$force" || updated $@ --than README.md
-  then
-    gen
+    return 1
   fi
+
+  local IFS=
+  # shellcheck disable=SC2068
+  set -- $@
+  unset IFS
+  if "$force" || updated "$@" --after "$target"
+  then
+    "$handler" "$@"
+  fi
+}
+
+task_gen() {
+  build_16feed5() {
+    echo Do something for: "$*"
+    touch ./README.md
+  }
+  depbuild "$@" --handler=build_16feed5 ./README.md ".source/*.txt" ".source2/*.txt"
 }

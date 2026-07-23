@@ -566,7 +566,6 @@ updated() {
     echo "No source files specified" >&2
     exit 1
   fi
-  local older_found=false
   local dest
   local IFS="|"
   for dest in $psv_dests
@@ -594,14 +593,13 @@ updated() {
       echo "Destination directory is empty, needs rebuild: $dest_dir" >&2
       return 0
     fi
-    if test -n "$(find "$@" -type f -a ! -newer "$dest" 2>/dev/null)"
+    if test -n "$(find "$@" -type f -a -newer "$dest" 2>/dev/null)"
     then
-      older_found=true
+      return 0
     fi
   done
   unset IFS
-  "$older_found" && return 1
-  return 0
+  return 1
 }
 
 newer() {

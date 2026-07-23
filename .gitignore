@@ -14,8 +14,10 @@ node_modules
 /.devcontainer/devcontainer.json
 /.devcontainer/docker-compose.override.yml
 revive.log
-
 mise.local.toml
 /.claude/worktrees
 /temp.log
 /hooks.log
+/.source*
+/.dest
+/temp
