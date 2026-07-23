@@ -10,17 +10,20 @@ set -- _LIBDIR ../.lib "$@"
 shift 2
 cd "$1" || exit 1; shift 2
 
+task_sub__gen() {
+  _() {
+    echo Build for changed files: "$@"
+    touch ./README.md
+  }
+  depbuild "$@" ./README.md "./.source/**/*.txt" "./.source2/**/*.txt" -- _
+}
 
 task_gen() {
   trap_terminating_signals
   local wids=
   init_worker_queue
 
-  _() {
-    echo Do something for: "$*"
-    touch ./README.md
-  }
-  run_worker depbuild "$@" ./README.md ".source/*.txt" ".source2/*.txt"
+  run_worker task_sub__gen "$@"
   wids="$wids $WID"
 
   # shellcheck disable=SC2086

@@ -117,40 +117,59 @@ on_exit_0e51f30() {
 wait_for_change() {
   if test -z "$pid_4ec98eb"
   then
-    trap_terminating_signals
-    add_exit_handler on_exit_0e51f30
-    init_temp_dir
-
     local arg
     for arg in "$@"
     do
       shift
+      # Watchexec does not recognise preceding `./` in glob patterns.
+      # — Glob pattern syntax and issues - Watchexec https://watchexec.github.io/docs/glob-patterns.html
+      arg="${arg#.[/\\]}"
       set -- "$@" --filter="$arg"
     done
+
+    trap_terminating_signals
+    add_exit_handler on_exit_0e51f30
+    init_temp_dir
 
     fifo_path_4ec98eb="$(mktemp "$TEMP_DIR"/XXXXXX)"
     rm -f "$fifo_path_4ec98eb"
     mkfifo "$fifo_path_4ec98eb"
     watchexec --no-discover-ignore --postpone \
-      --only-emit-events \
-      --emit-events-to=stdio \
+      --only-emit-events --emit-events-to=stdio \
       "$@" >"$fifo_path_4ec98eb" 2>/dev/null &
     pid_4ec98eb=$!
     exec 3<"$fifo_path_4ec98eb"
   fi
   local line
+  local line_prev="|"
   while IFS= read -r line <&3
   do
     test -z "$line" && return 0
-    echo "$line"
+    line="${line#*:}"
+    if test "$line" != "$line_prev"
+    then
+      echo "$line"
+    fi
+    line_prev="$line"
   done
   return 1
 }
 
+# Run a handler against a target only when its sources have changed, or keep
+# doing so forever as they change. Usage:
+#   depbuild [--force] [--handler=cmd] target sources... [-- handler args...]
+# The handler can be given either via --handler=cmd or as trailing arguments
+# after a `--` delimiter; at least one of the two is required. Without
+# --watch, the handler runs once, and only if --force was given or `updated`
+# reports the sources are newer than target (see `updated` above). With
+# --watch, the handler instead runs every time `wait_for_change` (see above)
+# reports a batch of changes to the sources, with the paths of the changed
+# files appended to the handler's arguments; the first call runs immediately
+# with no changed-file arguments, so the handler always fires at least once.
 depbuild() {
   local force=false
   local watch=false
-  local handler=_
+  local handler=
   OPTIND=1; while getopts _-: OPT
   do
     test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
@@ -167,6 +186,39 @@ depbuild() {
   local target="$1"
   shift
 
+  local usv_handler=
+  local usv_sources=
+  local found_delimiter=false
+  local arg
+  for arg in "$@"
+  do
+    shift
+    if "$found_delimiter"
+    then
+      usv_handler="$usv_handler$arg$CH_US"
+    elif test "$arg" = --
+    then
+      found_delimiter=true
+    else
+      usv_sources="$usv_sources$arg$CH_US"
+    fi
+  done
+
+  if test -z "$usv_handler"
+  then
+    if test -n "$handler"
+    then
+      usv_handler="$handler$CH_US"
+    else
+      echo No handler specified. >&2
+      return 1
+    fi
+  fi
+
+  local IFS
+  # shellcheck disable=SC2046 # Quote this to prevent word splitting.
+  # shellcheck disable=SC2068 # Double quote array expansions to avoid re-splitting elements.
+  # shellcheck disable=SC2086 # Double quote to prevent globbing and word splitting.
   if "$watch"
   then
     init_temp_dir
@@ -175,22 +227,25 @@ depbuild() {
     touch "$modified_file_list"
     while :
     do
-      local IFS="$CH_LF"
-      # shellcheck disable=SC2046
-      "$handler" $(cat "$modified_file_list")
-      unset IFS
+      IFS="$CH_US"; set -- $usv_handler; unset IFS
+      IFS="$CH_LF"; "$@" $(cat "$modified_file_list"); unset IFS
       sleep 1
+      local disable_noglob=false
+      case "$-" in (*f*) ;; (*) set -o noglob; disable_noglob=true;; esac
+      IFS="$CH_US"; set -- $usv_sources; unset IFS
+      "$disable_noglob" && set +o noglob
       wait_for_change "$@" >"$modified_file_list"
     done
+    echo "Must be unreachable (a7a6f8e)." >&2
     return 1
-  fi
-
-  local IFS=
-  # shellcheck disable=SC2068
-  set -- $@
-  unset IFS
-  if "$force" || updated "$@" --after "$target"
-  then
-    "$handler" "$@"
+  else
+    IFS="$CH_US"; set -- $usv_sources; unset IFS
+    # IFS=; set -- $@; unset IFS # Normal glob
+    IFS="$CH_LF"; set -- $(extglob "$@"); unset IFS
+    if "$force" || updated "$@" --after "$target"
+    then
+      IFS="$CH_US"; set -- $usv_handler "$@"; unset IFS
+      "$@"
+    fi
   fi
 }

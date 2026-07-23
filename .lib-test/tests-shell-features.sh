@@ -121,3 +121,13 @@ test_cleanup_child_processes() {
   assert_false -m 3e0485f kill -0 "$child_pid"
   assert_false -m 4a65d72 kill -0 "$harness_pid"
 }
+
+# shellcheck disable=SC2046
+test_extglob() {
+  local IFS
+  IFS="$CH_LF"; set -- $(extglob "./foo bar/**/*.txt" "./bar baz/**/[h]*" | sort); unset IFS
+  assert_eq -m=39edbb5 "$1" "./bar baz/hello world.c"
+  assert_eq -m=ccbe8e7 "$2" "./bar baz/hello world.txt"
+  assert_eq -m=e390cdd "$3" "./foo bar/hello world.txt"
+  assert_eq -m=b98ff71 "$4" "./foo bar/hoge/hello.txt"
+}

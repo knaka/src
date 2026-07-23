@@ -528,4 +528,23 @@ field() {
   awk "{ print \$${1}} "
 }
 
+# Expand one or more extended glob patterns (globstar `**`, brace `{a,b}`,
+# ksh-style `!(...)`/`@(...)` etc.) into the matching file names, one per line.
+# /bin/sh itself has no such support, so this shells out to an interpreter that
+# does: zsh (`setopt extendedglob`) on macOS, or a modern bash (`shopt -s
+# extglob globstar`) on Linux/MSYS2. Returns failure if neither interpreter is
+# available.
+extglob() {
+  if is_macos # Zsh
+  then
+    zsh -c 'setopt extendedglob nullglob; printf "%s\n" $~*' "" "$@"
+  elif is_msys2 || is_linux # Bash >= 4
+  then
+    bash -O extglob -O globstar -c 'shopt -s nullglob; IFS=; printf "%s\n" $*' "" "$@"
+  else
+    echo "No shell interpreter available that can expand extended glob patterns." >&2
+    return 1
+  fi
+}
+
 #endregion

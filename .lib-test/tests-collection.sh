@@ -23,6 +23,6 @@ test_vec() {
   local s=  
   _() {
     s="$s$1"
-  }; veach "$RESULT"
+  }; veach "$RESULT" _
   assert_eq -m c327416 "$s" "aaa${CH_LF}aaabarbazfoo"
 }
