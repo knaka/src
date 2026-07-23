@@ -139,12 +139,22 @@ run_worker() {
     local pid
     if is_bash_bin
     then
-      "$@" </dev/null >"$log_file" 2>&1 &
+      if "$record_log"
+      then
+        "$@" </dev/null >"$log_file" 2>&1 &
+      else
+        "$@" </dev/null &
+      fi
       pid="$!"
       # shellcheck disable=SC3044
       disown %+
     else
-      pid="$("$@" </dev/null >"$log_file" 2>&1 & echo $!)"
+      if "$record_log"
+      then
+        pid="$("$@" </dev/null >"$log_file" 2>&1 & echo $!)"
+      else
+        pid="$("$@" </dev/null & echo $!)"
+      fi
     fi
     wid="p$pid"
   fi
@@ -342,7 +352,7 @@ is_worker_alive() {
 # stderr and returns non-zero. N is a combined budget shared across all
 # given workers, not N seconds each.
 wait_worker() {
-  local timeout_sec=10
+  local timeout_sec=-1
   OPTIND=1; while getopts _-: OPT
   do
     test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
