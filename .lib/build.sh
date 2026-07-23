@@ -10,6 +10,89 @@ set -- _LIBDIR . "$@"
 shift 2
 cd "$1" || exit; shift
 
+# Check if the file(s) were updated after the destination(s). Meant for
+# build-dependency checks: `updated sources... --after destinations...` tells
+# you whether the sources have changed since the destinations were last built
+# (also available as `newer sources... --than destinations...`, an alias
+# below). Like a Makefile's implicit rule, a missing destination alone is
+# enough to report "needs rebuild" (true), without even checking the other
+# destinations. A destination directory that exists but is empty is treated
+# the same way: there's no file left inside it to compare against, and an
+# empty output directory more often means a failed/incomplete build than a
+# legitimate zero-file one, so it's safer to report "needs rebuild" than to
+# risk leaving a stale or missing build in place.
+updated() {
+  local found_than=false
+  local psv_dests=
+  local arg
+  for arg in "$@"
+  do
+    shift
+    if test "$arg" = "--after" -o "$arg" = "--than"
+    then
+      found_than=true
+    elif $found_than
+    then
+      psv_dests="$psv_dests$arg|"
+    else
+      set -- "$@" "$arg"
+    fi
+  done
+  if test -z "$psv_dests"
+  then
+    echo "Missing --after (or --than) option" >&2
+    exit 1
+  fi
+  if test "$#" -eq 0
+  then
+    echo "No source files specified" >&2
+    exit 1
+  fi
+  local dest
+  local IFS="|"
+  for dest in $psv_dests
+  do
+    unset IFS
+    # If the destination does not exist, sources are considered newer than the destination.
+    if ! test -e "$dest"
+    then
+      "${VERBOSE-false}" && echo "Destination does not exist: $dest" >&2
+      return 0
+    fi
+    # If the destination is a directory, the newest file in the directory is used.
+    if test -d "$dest"
+    then
+      local dest_dir="$dest"
+      if is_bsd
+      then
+        dest="$(find "$dest" -type f -exec stat -l -t "%F %T" {} \+ | cut -d' ' -f6- | sort -n | tail -1 | cut -d' ' -f3)"
+      else
+        dest="$(find "$dest" -type f -exec stat -Lc '%Y %n' {} \+ | sort -n | tail -1 | cut -d' ' -f2)"
+      fi
+    fi
+    if test -z "$dest"
+    then
+      echo "Destination directory is empty, needs rebuild: $dest_dir" >&2
+      return 0
+    fi
+    if test -n "$(find "$@" -type f -a -newer "$dest" 2>/dev/null)"
+    then
+      return 0
+    fi
+  done
+  unset IFS
+  return 1
+}
+
+newer() {
+  updated "$@"
+}
+
+# Returns true if no source file is newer than the destination file.
+older() {
+  ! newer "$@"
+}
+
 pid_4ec98eb=
 fifo_path_4ec98eb=
 

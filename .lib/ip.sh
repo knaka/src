@@ -105,3 +105,18 @@ wait_for_http() {
     done
   done
 }
+
+# Open the URL in the browser.
+browse() {
+  if is_windows
+  then
+    PowerShell -NoProfile -Command "Start-Process '$1'"
+    return $?
+  fi
+  if is_macos
+  then
+    open "$1"
+    return $?
+  fi
+  xdg-open "$1"
+}
