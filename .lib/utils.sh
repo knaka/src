@@ -547,4 +547,9 @@ extglob() {
   fi
 }
 
+# Return success if the given FD number is currently open (any mode).
+is_fd_open() {
+  { : >&"$1"; } 2>/dev/null
+}
+
 #endregion
