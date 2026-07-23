@@ -136,8 +136,6 @@ run_worker() {
     wid="g$pid"
   else
     local pid
-    local pid_file
-    pid_file="$(mktemp "$TEMP_DIR"/XXXXXX)"
     if is_bash_bin
     then
       if "$record_log"
@@ -150,6 +148,8 @@ run_worker() {
       # shellcheck disable=SC3044
       disown %+
     else
+      local pid_file
+      pid_file="$(mktemp "$TEMP_DIR"/XXXXXX)"
       (
         "$record_log" && exec >"$log_file" 2>&1
         "$@" </dev/null &
@@ -160,6 +160,7 @@ run_worker() {
         test -s "$pid_file" && read -r pid <"$pid_file" && break
         sleep 0.1
       done
+      rm -f "$pid_file"
     fi
     wid="p$pid"
   fi
