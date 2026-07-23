@@ -10,6 +10,7 @@ set -- _LIBDIR ../.lib "$@"
 . ../.lib/assert.sh
 . ../.lib/time.sh
 . ../.lib/misc.sh
+. ../.lib/build.sh
 shift 2
 . ./test.sh
 cd "$1" || exit; shift
