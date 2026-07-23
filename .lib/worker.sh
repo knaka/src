@@ -60,7 +60,7 @@ run_worker() {
     then
       # Bash provides rich job control feature even on MSYS2.
       local disable_monitor=false
-      case "$-" in (*m*) ;; (*) set -m; disable_monitor=true;; esac
+      case $- in (*m*) ;; (*) set -m; disable_monitor=true;; esac
       # Run the background job and detach from the shell's job table so this
       # worker (though in its own process group via `set -m`) isn't reaped/awaited
       # by an unrelated bare `wait`/`jobs` the caller (who sourced this library)
@@ -72,9 +72,9 @@ run_worker() {
         "$@" </dev/null &
       fi
       pid=$!
+      "$disable_monitor" && set +m
       # shellcheck disable=SC3044
       disown %+
-      "$disable_monitor" && set +m
     elif is_linux || is_macos
     then
       local pid_file
@@ -391,7 +391,6 @@ wait_worker() {
 # directory. Registered by `init_worker_queue` to run automatically on
 # EXIT, not meant to be called directly.
 cleanup_worker_queue_f63891f() {
-  trap "" TERM INT HUP
   # shellcheck disable=SC2046
   stop_worker --timeout-sec=10 $(cat "$worker_queue_dir_60742ac"/wids)
   rm -fr "$worker_queue_dir_60742ac"

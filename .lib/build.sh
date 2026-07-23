@@ -231,7 +231,7 @@ depbuild() {
       IFS="$CH_LF"; "$@" $(cat "$modified_file_list"); unset IFS
       sleep 1
       local disable_noglob=false
-      case "$-" in (*f*) ;; (*) set -o noglob; disable_noglob=true;; esac
+      case $- in (*f*) ;; (*) set -o noglob; disable_noglob=true;; esac
       IFS="$CH_US"; set -- $usv_sources; unset IFS
       "$disable_noglob" && set +o noglob
       wait_for_change "$@" >"$modified_file_list"
