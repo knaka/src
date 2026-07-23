@@ -96,14 +96,20 @@ run_worker() {
         pid="$(setsid "$@" </dev/null >"$log_file" 2>&1 & echo $!)"
       else
         # Redirect the worker's stdout to a saved copy of our real stdout
-        # (fd 6), not the command substitution's own stdout (fd 1, which is
+        # (fd 8), not the command substitution's own stdout (fd 1, which is
         # actually the write end of the pipe `$(...)` reads from): if the
         # worker inherited that pipe's write end directly, the substitution
         # would never see EOF and `pid=$(...)` would hang for as long as the
-        # worker (backgrounded, so possibly forever) keeps it open.
-        exec 6>&1
-        pid="$(setsid "$@" </dev/null >&6 & echo $!)"
-        exec 6>&-
+        # worker (backgrounded, so possibly forever) keeps it open. The
+        # trailing `8>&-` closes fd 8 itself in the worker before it execs
+        # into "$@" (redirections apply left to right), so the fd doesn't
+        # leak into — and potentially collide with — "$@" for the worker's
+        # entire lifetime; only the parent's own copy would otherwise be
+        # closed by the `exec 8>&-` below. (By convention, library code
+        # claims fds counting down from 9, leaving 3-up for callers.)
+        exec 8>&1
+        pid="$(setsid "$@" </dev/null >&8 8>&- & echo $!)"
+        exec 8>&-
       fi
     elif is_macos
     then
@@ -117,9 +123,9 @@ run_worker() {
         pid="$(perl -e 'use POSIX "setsid"; setsid(); exec @ARGV' "$@" </dev/null >"$log_file" 2>&1 & echo $!)"
       else
         # See the matching comment in the is_linux branch above.
-        exec 6>&1
-        pid="$(perl -e 'use POSIX "setsid"; setsid(); exec @ARGV' "$@" </dev/null >&6 & echo $!)"
-        exec 6>&-
+        exec 8>&1
+        pid="$(perl -e 'use POSIX "setsid"; setsid(); exec @ARGV' "$@" </dev/null >&8 8>&- & echo $!)"
+        exec 8>&-
       fi
     else
       echo "Unexpected environment (a0002c4)." >&2
@@ -164,9 +170,11 @@ run_worker() {
       then
         pid="$("$@" </dev/null >"$log_file" 2>&1 & echo $!)"
       else
-        exec 6>&1
-        pid="$("$@" </dev/null >&6 & echo $!)"
-        exec 6>&-
+        # See the matching comment in the is_linux branch of the `--group`
+        # case above.
+        exec 8>&1
+        pid="$("$@" </dev/null >&8 8>&- & echo $!)"
+        exec 8>&-
       fi
     fi
     wid="p$pid"
