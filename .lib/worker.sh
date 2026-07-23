@@ -52,7 +52,6 @@ run_worker() {
   local base log_file
   base="$(echo "$*" | sed -Ee 's/[^[:alnum:]]/_/g')"
   log_file="$(mktemp "$worker_queue_dir_60742ac"/"$base.log.XXXXX")"
-  touch "$log_file"
   local wid
   if "$group"
   then
@@ -61,13 +60,7 @@ run_worker() {
     then
       # Bash provides rich job control feature even on MSYS2.
       local disable_monitor=false
-      case "$-" in
-        (*m*) ;;
-        (*)
-          set -m
-          disable_monitor=true
-          ;;
-      esac
+      case "$-" in (*m*) ;; (*) set -m; disable_monitor=true;; esac
       # Run the background job and detach from the shell's job table so this
       # worker (though in its own process group via `set -m`) isn't reaped/awaited
       # by an unrelated bare `wait`/`jobs` the caller (who sourced this library)
@@ -78,61 +71,47 @@ run_worker() {
       else
         "$@" </dev/null &
       fi
-      pid="$!"
+      pid=$!
       # shellcheck disable=SC3044
       disown %+
       "$disable_monitor" && set +m
-    elif is_linux
+    elif is_linux || is_macos
     then
-      # Run the backgrounding itself inside a subshell (rather than plain `setsid
-      # ... &` here) so the worker's direct parent is this subshell, which exits
-      # immediately after echoing its pid. That orphans the worker right away,
-      # regardless of how the caller happens to invoke `run_worker` (e.g. even
-      # without wrapping the call in `$(...)`), so it can never be swept up by an
-      # unrelated bare `wait`/`jobs` in the caller's shell. (POSIX sh has no
-      # `disown` to do this explicitly.)
-      if "$record_log"
+      local pid_file
+      pid_file="$(mktemp "$TEMP_DIR"/XXXXXX)"
+      if is_linux
       then
-        pid="$(setsid "$@" </dev/null >"$log_file" 2>&1 & echo $!)"
-      else
-        # Redirect the worker's stdout to a saved copy of our real stdout
-        # (fd 8), not the command substitution's own stdout (fd 1, which is
-        # actually the write end of the pipe `$(...)` reads from): if the
-        # worker inherited that pipe's write end directly, the substitution
-        # would never see EOF and `pid=$(...)` would hang for as long as the
-        # worker (backgrounded, so possibly forever) keeps it open. The
-        # trailing `8>&-` closes fd 8 itself in the worker before it execs
-        # into "$@" (redirections apply left to right), so the fd doesn't
-        # leak into — and potentially collide with — "$@" for the worker's
-        # entire lifetime; only the parent's own copy would otherwise be
-        # closed by the `exec 8>&-` below. (By convention, library code
-        # claims fds counting down from 9, leaving 3-up for callers.)
-        exec 8>&1
-        pid="$(setsid "$@" </dev/null >&8 8>&- & echo $!)"
-        exec 8>&-
-      fi
-    elif is_macos
-    then
-      # No `setsid(1)` command on macOS, so call POSIX::setsid() from Perl
-      # instead, right before exec'ing into "$@" (no extra fork: like `setsid(1)`
-      # on Linux, the Perl process itself becomes the worker via exec, so its pid
-      # stays the worker's pid). Wrapped in the same detaching subshell as the
-      # Linux branch above, for the same reason.
-      if "$record_log"
+        # Run the backgrounding itself inside a subshell (rather than plain `setsid
+        # ... &` here) so the worker's direct parent is this subshell, which exits
+        # immediately after echoing its pid. That orphans the worker right away,
+        # regardless of how the caller happens to invoke `run_worker` (e.g. even
+        # without wrapping the call in `$(...)`), so it can never be swept up by an
+        # unrelated bare `wait`/`jobs` in the caller's shell. (POSIX sh has no
+        # `disown` to do this explicitly.)
+        (
+          "$record_log" && exec >"$log_file" 2>&1
+          setsid "$@" </dev/null &
+          echo $! >"$pid_file"
+        )
+      elif is_macos
       then
-        pid="$(perl -e 'use POSIX "setsid"; setsid(); exec @ARGV' "$@" </dev/null >"$log_file" 2>&1 & echo $!)"
-      else
-        # See the matching comment in the is_linux branch above.
-        exec 8>&1
-        pid="$(perl -e 'use POSIX "setsid"; setsid(); exec @ARGV' "$@" </dev/null >&8 8>&- & echo $!)"
-        exec 8>&-
+        # No `setsid(1)` command on macOS, so call POSIX::setsid() from Perl
+        # instead, right before exec'ing into "$@" (no extra fork: like `setsid(1)`
+        # on Linux, the Perl process itself becomes the worker via exec, so its pid
+        # stays the worker's pid). Wrapped in the same detaching subshell as the
+        # Linux branch above, for the same reason.
+        (
+          "$record_log" && exec >"$log_file" 2>&1
+          perl -e 'use POSIX "setsid"; setsid(); exec @ARGV' "$@" </dev/null &
+          echo $! >"$pid_file"
+        )
       fi
-    else
-      echo "Unexpected environment (a0002c4)." >&2
-      return 1
-    fi
-    if ! is_bash_bin
-    then
+      while :
+      do
+        test -s "$pid_file" && read -r pid <"$pid_file" && break
+        sleep 0.1
+      done
+      rm -f "$pid_file"
       # Both the `setsid(1)` and Perl branches above start a separate process
       # that calls setsid() itself, some time after it forks (Perl in
       # particular has to load the POSIX module first, which can be slow on a
@@ -150,10 +129,15 @@ run_worker() {
         test "$i" -ge 50 && break
         sleep 0.1
       done
+    else
+      echo "Unexpected environment (a0002c4)." >&2
+      return 1
     fi
     wid="g$pid"
   else
     local pid
+    local pid_file
+    pid_file="$(mktemp "$TEMP_DIR"/XXXXXX)"
     if is_bash_bin
     then
       if "$record_log"
@@ -166,16 +150,16 @@ run_worker() {
       # shellcheck disable=SC3044
       disown %+
     else
-      if "$record_log"
-      then
-        pid="$("$@" </dev/null >"$log_file" 2>&1 & echo $!)"
-      else
-        # See the matching comment in the is_linux branch of the `--group`
-        # case above.
-        exec 8>&1
-        pid="$("$@" </dev/null >&8 8>&- & echo $!)"
-        exec 8>&-
-      fi
+      (
+        "$record_log" && exec >"$log_file" 2>&1
+        "$@" </dev/null &
+        echo $! >"$pid_file"
+      )
+      while :
+      do
+        test -s "$pid_file" && read -r pid <"$pid_file" && break
+        sleep 0.1
+      done
     fi
     wid="p$pid"
   fi

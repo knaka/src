@@ -39,7 +39,8 @@ test_worker() {
   local wid2="$WID"
   wait_worker_start --timeout-sec=10 "$wid" "$wid2"
   is_worker_alive "$wid" "$wid2"
-  run_worker --group sleep 3456 >/dev/null 2>&1
+  run_worker --group sleep 3456
+  # Nothing to `wait`.
   wait
   stop_worker "$wid"
   wait_worker --timeout-sec=10 "$wid"
@@ -60,3 +61,9 @@ test_worker() {
     assert_failure kill -0 "$(cat "$path_3da3ab4")"
   fi
 }
+
+_() { case "${0##*[/\\]}" in ("$1"|"$1".*) ;; (*) false;; esac; }; if _ tests-worker
+then
+  set -o nounset -o errexit
+  test_worker "$@"
+fi
