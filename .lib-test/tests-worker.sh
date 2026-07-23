@@ -21,7 +21,7 @@ skip_cond_ce1f35f() {
 : "${path_3da3ab4-}"
 
 fn_not_to_clean_901f64b() {
-  echo 7029f65
+  echo marker7029f65
   sleep 4567 &
   echo "$!" >"$path_3da3ab4"
   wait
@@ -55,7 +55,7 @@ test_worker() {
       sleep 0.1
     done
     wait_worker_start "$wid3"
-    log_worker "$wid3" | grep 7029f65
+    log_worker "$wid3" | grep marker7029f65
     stop_worker --timeout-sec=10 "$wid3"
     assert_failure kill -0 "$(cat "$path_3da3ab4")"
   fi
