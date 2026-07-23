@@ -348,7 +348,7 @@ is_worker_alive() {
 }
 
 # Block until every given worker has exited, or until `--timeout-sec=N`
-# (default: 10) elapses, in which case it prints a failure message to
+# (default: -1) elapses, in which case it prints a failure message to
 # stderr and returns non-zero. N is a combined budget shared across all
 # given workers, not N seconds each.
 wait_worker() {
@@ -376,7 +376,7 @@ wait_worker() {
         return 1
       fi
       sleep 1
-      timeout_sec=$((timeout_sec - 1))
+      test "$timeout_sec" -gt 0 && timeout_sec=$((timeout_sec - 1))
     done
   done
 }
