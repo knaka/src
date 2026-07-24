@@ -440,37 +440,25 @@ set_result() {
   RESULT="$1"
 }
 
-: "${fifo_path_88b5b27-}"
-
 set_resultf() {
   if is_bash_bin
   then
     # shellcheck disable=SC2059
     # shellcheck disable=SC3045
     printf -v RESULT "$@"
-  elif is_bbwin
-  then
-    # shellcheck disable=SC2059
-    RESULT="$(printf "$@")"
   else
-    init_temp_dir
-    if ! test "${fifo_path_88b5b27+set}"
-    then
-      fifo_path_88b5b27="$TEMP_DIR/dd77392"
-      rm -f "$fifo_path_88b5b27"
-      mkfifo "$fifo_path_88b5b27"
-    fi
-    exec 9<>"$fifo_path_88b5b27"
+    local file_path
+    file_path="$(mktemp)"
     {
       # shellcheck disable=SC2059
       printf "$@"
       printf "\n%s\n" "_51821ba_"
-    } >&9
+    } >"$file_path"
     RESULT=
     local REPLY
     local first=true
     # `read -d` is Bash extension.
-    while read -r REPLY <&9
+    while read -r REPLY
     do
       test "$REPLY" = "_51821ba_" && break
       if "$first"
@@ -480,8 +468,8 @@ set_resultf() {
       else
         RESULT="$RESULT$CH_LF$REPLY"
       fi
-    done
-    exec 9>&- 9<&-
+    done <"$file_path"
+    rm -f "$ file_path"
   fi
 }
 

@@ -26,3 +26,9 @@ test_vec() {
   }; veach "$RESULT" _
   assert_eq -m c327416 "$s" "aaa${CH_LF}aaabarbazfoo"
 }
+
+_() { case "${0##*[/\\]}" in ("$1"|"$1".*) ;; (*) false;; esac; }; if _ tests-collection
+then
+  set -o nounset -o errexit
+  "$@"
+fi

@@ -103,7 +103,7 @@ on_exit_0e51f30() {
     wait "$pid_4ec98eb" >/dev/null 2>&1 || :
     pid_4ec98eb=
   fi
-  exec 7<&- 2>/dev/null || :
+  exec 8<&- 2>/dev/null || :
   test -n "$fifo_path_4ec98eb" && rm -f "$fifo_path_4ec98eb"
   fifo_path_4ec98eb=
 }
@@ -138,11 +138,11 @@ wait_for_change() {
       --only-emit-events --emit-events-to=stdio \
       "$@" >"$fifo_path_4ec98eb" 2>/dev/null &
     pid_4ec98eb=$!
-    exec 7<"$fifo_path_4ec98eb"
+    exec 8<"$fifo_path_4ec98eb"
   fi
   local line
   local line_prev="|"
-  while IFS= read -r line <&7
+  while IFS= read -r line <&8
   do
     test -z "$line" && return 0
     line="${line#*:}"
