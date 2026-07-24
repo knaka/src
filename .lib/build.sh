@@ -121,6 +121,8 @@ wait_for_change() {
     for arg in "$@"
     do
       shift
+      # Watchexec accepts relative paths.
+      arg="${arg#"$INITIAL_DIR"}"
       # Watchexec does not recognise preceding `./` in glob patterns.
       # — Glob pattern syntax and issues - Watchexec https://watchexec.github.io/docs/glob-patterns.html
       arg="${arg#.[/\\]}"

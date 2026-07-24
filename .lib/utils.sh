@@ -166,8 +166,18 @@ fi
 
 # The EXIT handler runs when the script runs to the end, or when the `exit`
 # builtin is called. In Bash, it also runs on receiving a terminating signal.
+# shellcheck disable=SC2064
 trap_terminating_signals() {
-  trap exit HUP INT PIPE ALRM TERM "$@"
+  trap "exit $RC_SIGHUP" HUP
+  trap "exit $RC_SIGINT" INT
+  trap "exit $RC_SIGPIPE" PIPE
+  trap "exit $RC_SIGALRM" ALRM
+  trap "exit $RC_SIGTERM" TERM
+  local signal
+  for signal in "$@"
+  do
+    trap exit "$signal"
+  done
 }
 
 # Guard against multiple calls. $1 is a unique ID

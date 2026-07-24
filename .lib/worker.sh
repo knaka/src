@@ -192,6 +192,10 @@ run_rec_worker() {
   run_worker --record-log "$@"
 }
 
+run_log_worker() {
+  run_worker --record-log "$@"
+}
+
 # Print the accumulated log output of the given workers (or all queued
 # workers if none given).
 log_worker() {
