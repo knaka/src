@@ -85,7 +85,7 @@ run_worker() {
         # ... &` here) so the worker's direct parent is this subshell, which exits
         # immediately after echoing its pid. That orphans the worker right away,
         # regardless of how the caller happens to invoke `run_worker` (e.g. even
-        # without wrapping the call in `$(...)`), so it can never be swept up by an
+        # without wrapping the call in `(...)`), so it can never be swept up by an
         # unrelated bare `wait`/`jobs` in the caller's shell. (POSIX sh has no
         # `disown` to do this explicitly.)
         (
@@ -106,11 +106,7 @@ run_worker() {
           echo $! >"$pid_file"
         )
       fi
-      while :
-      do
-        test -s "$pid_file" && read -r pid <"$pid_file" && break
-        sleep 0.1
-      done
+      read -r pid <"$pid_file"
       rm -f "$pid_file"
       # Both the `setsid(1)` and Perl branches above start a separate process
       # that calls setsid() itself, some time after it forks (Perl in
@@ -155,11 +151,7 @@ run_worker() {
         "$@" </dev/null &
         echo $! >"$pid_file"
       )
-      while :
-      do
-        test -s "$pid_file" && read -r pid <"$pid_file" && break
-        sleep 0.1
-      done
+      read -r pid <"$pid_file"
       rm -f "$pid_file"
     fi
     wid="p$pid"
@@ -391,6 +383,7 @@ wait_worker() {
 # directory. Registered by `init_worker_queue` to run automatically on
 # EXIT, not meant to be called directly.
 cleanup_worker_queue_f63891f() {
+  trap "" TERM HUP INT
   # shellcheck disable=SC2046
   stop_worker --timeout-sec=10 $(cat "$worker_queue_dir_60742ac"/wids)
   rm -fr "$worker_queue_dir_60742ac"
@@ -455,7 +448,7 @@ run_periodically() {
     sleep "$interval_sec" &
     pid_6848910=$!
     local rc=0
-    wait || rc=$?
+    wait "$pid_6848910" || rc=$?
     if test "$rc" -ne 0
     then
       test "$rc" -eq "$RC_SIGTERM" && break
