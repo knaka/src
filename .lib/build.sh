@@ -251,3 +251,41 @@ depbuild() {
     fi
   fi
 }
+
+# Run depbuild functions sequentially or in background.
+run_depbuilds() {
+  local watch=false
+  local force=false
+  OPTIND=1; while getopts _-: OPT
+  do
+    test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
+    case "$OPT" in
+      (force) force=true;;
+      (watch) watch=true;;
+      (?) return 1;;
+      (*) echo "$0: illegal option -- $OPT" >&2; return 1;;
+    esac
+  done
+  shift $((OPTIND-1))
+
+  local wids=
+  if "$watch"
+  then
+    trap_terminating_signals
+    init_worker_queue
+  fi
+  for depbuild in "$@"
+  do
+    if "$watch"
+    then
+      set -- run_worker "$depbuild" --watch
+    else
+      set -- "$depbuild"
+    fi
+    "$force" && set -- "$@" --force
+    "$@"
+    "$watch" && wids="$wids $WID"
+  done
+  # shellcheck disable=SC2086
+  "$watch" && wait_worker $wids
+}
