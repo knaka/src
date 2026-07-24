@@ -7,6 +7,7 @@ test "${_APPDIR+set}" = set || { cd "${0%[/\\]*}" 2>/dev/null || cd .; _APPDIR="
 case "${1-}" in (_LIBDIR) cd "$2" || exit;; (*) cd "$_APPDIR" || exit;; esac; set -- "$OLDPWD" "$@";
 set -- _LIBDIR . "$@"
 . ./utils.sh
+. ./worker.sh
 shift 2
 cd "$1" || exit; shift
 
