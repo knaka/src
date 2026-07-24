@@ -103,7 +103,7 @@ on_exit_0e51f30() {
     wait "$pid_4ec98eb" >/dev/null 2>&1 || :
     pid_4ec98eb=
   fi
-  exec 8<&- 2>/dev/null || :
+  exec 8<&- || :
   test -n "$fifo_path_4ec98eb" && rm -f "$fifo_path_4ec98eb"
   fifo_path_4ec98eb=
 }
