@@ -3,13 +3,13 @@
 # shellcheck shell=sh
 _() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ 45e2d86 && return 0
 
-test "${_APPDIR+set}" = set || { cd "${0%/*}" || cd "${0%\\*}" || cd . || exit 1; _APPDIR="$PWD"; cd "$OLDPWD" || exit 1; } 2>/dev/null
-if test "${1:+$1}" = _LIBDIR; then cd "$2" || exit 1; else cd "$_APPDIR" || exit 1; fi; set -- "$OLDPWD" "$@"
-set -- _LIBDIR ./.lib "$@"
-. ./.lib/utils.sh
-. ./.lib/commands.sh
+test "${_APPDIR+set}" = set || { cd "${0%[/\\]*}" 2>/dev/null || cd .; _APPDIR="$PWD"; cd "$OLDPWD" || exit; }
+case "${1-}" in (_LIBDIR) cd "$2" || exit;; (*) cd "$_APPDIR" || exit;; esac; set -- "$OLDPWD" "$@";
+set -- _LIBDIR ../.lib "$@"
+. ../.lib/utils.sh
+. ../.lib/commands.sh
 shift 2
-cd "$1" || exit 1; shift
+cd "$1" || exit; shift
 
 # Generate Go-inlined sample scripts.
 task_hello_sh__gen() {
@@ -105,11 +105,11 @@ task_install() {
     esac
     name=$(basename "$go_main_path" .go)
     target_shim_path="$go_shim_dir_path/$name"
-    if is_windows
+    if is_msys2
     then
       local pwd_backslash
-      pwd_backslash="$(echo "$PWD" | sed 's|/|\\|g')"
-      go_build_dir_path_backslash=$(echo "$(realpath .)"/build | sed 's|/|\\|g')
+      pwd_backslash="$(cygpath -w "$PWD")"
+      go_build_dir_path_backslash="$pwd_backslash\\build"
       gen_win_shim_0d8d45c >"$target_shim_path".cmd
     else
       gen_unixy_shim_3b0072c >"$target_shim_path"

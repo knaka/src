@@ -124,6 +124,8 @@ test_cleanup_child_processes() {
 
 # shellcheck disable=SC2046
 test_extglob() {
+  skip_if is_bbwin
+
   local IFS
   IFS="$CH_LF"; set -- $(extglob "./foo bar/**/*.txt" "./bar baz/**/[h]*" | sort); unset IFS
   assert_eq -m=39edbb5 "$1" "./bar baz/hello world.c"

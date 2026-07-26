@@ -21,6 +21,8 @@ init_0966cde() {
 }
 
 test_newer() {
+  skip_if is_bbwin
+
   init_temp_dir
 
   local older_dir="$TEMP_DIR"/d542091

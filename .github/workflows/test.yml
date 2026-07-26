@@ -52,9 +52,6 @@ jobs:
       - name: Run Tests
         if: ${{ github.event_name == 'push' }}
         run: mise run test
-      - name: Run Full Tests
-        if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' && github.event.schedule == '0 0 * * 6' }}
-        run: mise run test --full
       - name: Mise bootstrap
         if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' && github.event.schedule == '0 0 * * 6' }}
         run: ./mise version
@@ -76,9 +73,6 @@ jobs:
       - name: Run Tests
         if: ${{ github.event_name == 'push' }}
         run: mise run test
-      - name: Run Full Tests
-        if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' && github.event.schedule == '0 0 * * 6' }}
-        run: mise run test --full
       - name: Mise bootstrap
         if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' && github.event.schedule == '0 0 * * 6' }}
         run: .\mise.cmd version

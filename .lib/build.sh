@@ -254,7 +254,7 @@ depbuild() {
 }
 
 # Run depbuild functions sequentially or in background.
-run_depbuilds() {
+depbuilds() {
   local watch=false
   local force=false
   OPTIND=1; while getopts _-: OPT
