@@ -54,7 +54,7 @@ task() {
           bash -c "source \"$file\"; \"$func\""
           ;;
         (*)
-          set -- _LIBDIR "$dir" "$@"
+          set -- SCRIPTDIR "$dir" "$PWD" "$@"
           # shellcheck disable=SC1090
           . ./"$file"
           shift 2
