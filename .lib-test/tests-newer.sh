@@ -3,17 +3,15 @@
 # shellcheck shell=sh
 _() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ 83b7b83 && return
 
-test "${_APPDIR+set}" = set || { cd "${0%[/\\]*}" 2>/dev/null || cd .; _APPDIR="$PWD"; cd "$OLDPWD" || exit; }
-case "${1-}" in (_LIBDIR) cd "$2" || exit;; (*) cd "$_APPDIR" || exit;; esac; set -- "$OLDPWD" "$@";
-set -- _LIBDIR ../.lib "$@"
+# shellcheck disable=SC3028,SC3054
+if test "${BASH_VERSION+set}"; then cd "${BASH_SOURCE[0]%[/\\]*}" || cd .; elif test "${1-}" = SCRIPTDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- SCRIPTDIR ../.lib "$OLDPWD" "$@"
 . ../.lib/utils.sh
 . ../.lib/assert.sh
 . ../.lib/time.sh
 . ../.lib/misc.sh
 . ../.lib/build.sh
-shift 2
-. ./test.sh
-cd "$1" || exit; shift
+. ../.lib/test.sh
+cd "$3" || exit; shift 3
 
 init_0966cde() {
   touch_time_iso --mtime="2024-02-01T12:00:00Z" "$older_dir"/965a2d4 "$older_file"

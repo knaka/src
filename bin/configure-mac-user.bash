@@ -3,12 +3,10 @@
 # shellcheck shell=bash
 _loaded() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _loaded 191d016 && return 0
 
-{ pushd "${BASH_SOURCE[0]%/*}" || pushd "${BASH_SOURCE[0]%\\*}" || pushd .; } >/dev/null 2>&1
-#set -- _LIBDIR ../.lib "$@"
+pushd "${BASH_SOURCE[0]%[/\\]*}" >/dev/null 2>&1 || pushd . >/dev/null
 . ../.lib/utils.sh
-# shift 2
 . ./ext2uti.bash
-popd >/dev/null || exit 1
+popd >/dev/null || exit
 
 exts_0c74d9e=(
   .txt

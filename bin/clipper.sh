@@ -8,24 +8,18 @@
 # @philschmid/clipper - npm https://www.npmjs.com/package/@philschmid/clipper
 clipper_version_2b8a94e=0.2.0
 
-set -- "$PWD" "${0%/*}" "$@"; test -z "${_APPDIR-}" && { test "$2" = "$0" && _APPDIR=. || _APPDIR="$2"; cd "$_APPDIR" || exit 1; }
-set -- _LIBDIR ../.lib "$@"
-. ../.lib/commands.sh
-shift 2
-cd "$1" || exit 1; shift 2
+# shellcheck disable=SC3028,SC3054
+if test "${BASH_VERSION+set}"; then cd "${BASH_SOURCE[0]%[/\\]*}" || cd .; elif test "${1-}" = SCRIPTDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- SCRIPTDIR ../.lib "$OLDPWD" "$@"
+. ../.lib/utils.sh
+is_mise || . ../.lib/commands.sh
+cd "$3" || exit; shift 3
 
 set_clipper_version() {
   clipper_version_2b8a94e="$1"
 }
 
-set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test "$2" != "$0"; then _APPDIR="$2"; fi; cd "$_APPDIR" || exit 1; fi
-set -- _LIBDIR ../.lib "$@"
-. ../.lib/utils.sh
-shift 2
-cd "$1" || exit 1; shift 2
-
 clipper() {
-  mise_exec npm:"@philschmid/clipper@$clipper_version_2b8a94e" -- clipper "$@"
+  mise exec npm:"@philschmid/clipper@$clipper_version_2b8a94e" -- clipper "$@"
 }
 
 case "${0##*/}" in

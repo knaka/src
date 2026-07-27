@@ -1,14 +1,13 @@
-# vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
-# shellcheck shell=sh
-"${sourced_a32832b-false}" && return 0; sourced_a32832b=true
+#!/usr/bin/env bash
+# vim: set filetype=bash tabstop=2 shiftwidth=2 expandtab :
+# shellcheck shell=bash
+_() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ 7fac086 && return
 
-set -- "$PWD" "${0%/*}" "$@"; test -z "${_APPDIR-}" && { test "$2" = "$0" && _APPDIR=. || _APPDIR="$2"; cd "$_APPDIR" || exit 1; }
-set -- _LIBDIR ../.lib "$@"
+pushd "${BASH_SOURCE[0]%[/\\]*}" >/dev/null 2>&1 || pushd . >/dev/null
 . ../.lib/utils.sh
 . ../.lib/worker.sh
 . ../.lib/build.sh
-shift 2
-cd "$1" || exit 1; shift 2
+popd || exit >/dev/null
 
 task_sub__gen() {
   _() {

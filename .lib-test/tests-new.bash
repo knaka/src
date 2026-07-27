@@ -2,19 +2,11 @@
 # shellcheck shell=bash
 _() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ 375eadd && return 0
 
-set -- "$PWD" "$@"; if test "${2:+$2}" = _LIBDIR; then cd "$3" || exit 1; fi
-set -- _LIBDIR ../.lib "$@"
+pushd "${BASH_SOURCE[0]%[/\\]*}" >/dev/null 2>&1 || pushd . >/dev/null
 . ../.lib/utils.sh
 . ../.lib/assert.sh
-shift 2
-. ./test.sh
-cd "$1" || exit 1; shift
-
-{ pushd "${BASH_SOURCE[0]%[/\\]*}" || pushd .; } >/dev/null 2>&1
-set -- _LIBDIR ../.lib "$@"
-. ../.lib/assert.sh
-shift 2
-popd >/dev/null || exit 1
+. ../.lib/test.sh
+popd || exit >/dev/null
 
 test_new_success() {
   local foo="FOO"

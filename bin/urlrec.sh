@@ -6,12 +6,11 @@
 # Fetches the given URL(s) and prints all linked URLs found on each page
 # that are under the same URL prefix (i.e. sub-paths of the given URL).
 
-set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test "$2" != "$0"; then _APPDIR="$2"; fi; cd "$_APPDIR" || exit 1; fi
-set -- _LIBDIR ../.lib "$@"
+# shellcheck disable=SC3028,SC3054
+if test "${BASH_VERSION+set}"; then cd "${BASH_SOURCE[0]%[/\\]*}" || cd .; elif test "${1-}" = SCRIPTDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- SCRIPTDIR ../.lib "$OLDPWD" "$@"
 . ../.lib/utils.sh
 . ../.lib/commands.sh
-shift 2
-cd "$1" || exit 1; shift 2
+cd "$3" || exit; shift 3
 
 urlrec() {
   init_temp_dir

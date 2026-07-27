@@ -2,13 +2,12 @@
 # shellcheck shell=sh
 "${sourced_c28ce41-false}" && return 0; sourced_c28ce41=true
 
-set -- "$PWD" "$@"; if test "${2:+$2}" = _LIBDIR; then cd "$3" || exit 1; fi
-set -- _LIBDIR ../.lib "$@"
+# shellcheck disable=SC3028,SC3054
+if test "${BASH_VERSION+set}"; then cd "${BASH_SOURCE[0]%[/\\]*}" || cd .; elif test "${1-}" = SCRIPTDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- SCRIPTDIR ../.lib "$OLDPWD" "$@"
 . ../.lib/utils.sh
 . ../.lib/edit.sh
 . ../.lib/assert.sh
-shift 2
-cd "$1" || exit 1; shift
+cd "$3" || exit; shift 3
 
 hello_sh_7dad95b=./testdata/hello.sh
 hello_txt_e48f9dc=./testdata/hello.txt

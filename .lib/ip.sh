@@ -2,12 +2,10 @@
 # shellcheck shell=sh
 test "${sourced_a642529-}" = true && return 0; sourced_a642529=true
 
-test "${_APPDIR+set}" = set || { cd "${0%/*}" || cd "${0%\\*}" || cd . || exit 1; _APPDIR="$PWD"; cd "$OLDPWD" || exit 1; } 2>/dev/null
-if test "${1:+$1}" = _LIBDIR; then cd "$2" || exit 1; else cd "$_APPDIR" || exit 1; fi; set -- "$OLDPWD" "$@"
-set -- _LIBDIR . "$@"
+# shellcheck disable=SC3028,SC3054
+if test "${BASH_VERSION+set}"; then cd "${BASH_SOURCE[0]%[/\\]*}" || cd .; elif test "${1-}" = SCRIPTDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- SCRIPTDIR . "$OLDPWD" "$@"
 . ./utils.sh
-shift 2
-cd "$1" || exit 1; shift
+cd "$3" || exit; shift 3
 
 # List IP ports in use.
 ip_ports_in_use() {

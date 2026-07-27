@@ -2,11 +2,10 @@
 # shellcheck shell=sh
 "${sourced_f7e0683-false}" && return 0; sourced_f7e0683=true
 
-set -- "$PWD" "${0%/*}" "$@"; test -z "${_APPDIR-}" && { test "$2" = "$0" && _APPDIR=. || _APPDIR="$2"; cd "$_APPDIR" || exit 1; }
-set -- _LIBDIR ../.lib "$@"
-shift 2
+# shellcheck disable=SC3028,SC3054
+if test "${BASH_VERSION+set}"; then cd "${BASH_SOURCE[0]%[/\\]*}" || cd .; elif test "${1-}" = SCRIPTDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- SCRIPTDIR ../.lib "$OLDPWD" "$@"
 . ./set-terminal-title.sh
-cd "$1" || exit 1; shift 2
+cd "$3" || exit; shift 3
 
 launch_claude() {
   if ! test -t 0

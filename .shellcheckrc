@@ -1,3 +1,10 @@
+# source-path=SCRIPTDIR
+# source-path=/Users/knaka/repos/github.com/knaka/src
+# source-path=/Users/knaka/repos/github.com/knaka/src/hoge
+# source-path=
+
+external-sources=true
+
 # ShellCheck: SC1091 – Not following: (error message here) https://www.shellcheck.net/wiki/SC1091
 external-sources=true
 

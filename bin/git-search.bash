@@ -4,11 +4,9 @@ _() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ 76
 
 # Git Log Grep
 
-{ pushd "${BASH_SOURCE[0]%/*}" || pushd "${BASH_SOURCE[0]%\\*}" || pushd .; } >/dev/null 2>&1
-set -- _LIBDIR ../.lib "$@"
+pushd "${BASH_SOURCE[0]%[/\\]*}" >/dev/null 2>&1 || pushd . >/dev/null
 . ../.lib/utils.sh
-shift 2
-popd >/dev/null || exit 1
+popd >/dev/null || exit
 
 git_search() {
   local all_opt=""

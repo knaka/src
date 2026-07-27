@@ -4,12 +4,10 @@ _loaded() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }
 
 # Generate Bash shell script scaffold.
 
-{ pushd "${BASH_SOURCE[0]%/*}" || pushd "${BASH_SOURCE[0]%\\*}" || pushd .; } >/dev/null 2>&1
-set -- _LIBDIR . "$@"
+pushd "${BASH_SOURCE[0]%[/\\]*}" >/dev/null 2>&1 || pushd . >/dev/null
 . ../.lib/utils.sh
 . ./rand7.sh
-shift 2
-popd >/dev/null || exit 1
+popd >/dev/null
 
 # gen_header_bf7ac7d() { cat <<EOF
 # # vim: set filetype=bash tabstop=2 shiftwidth=2 expandtab :
@@ -26,11 +24,9 @@ EOF
 }
 
 gen_source_block_67741b4() { cat <<'EOF'
-# { pushd "${BASH_SOURCE[0]%[/\\]*}" || pushd .; } >/dev/null 2>&1
-# . ../.lib/utils.bash
-# set -- _LIBDIR ../.lib "$@"
-# shift 2
-# popd >/dev/null || exit 1
+pushd "${BASH_SOURCE[0]%[/\\]*}" >/dev/null 2>&1 || pushd . >/dev/null
+. ../.lib/utils.sh
+popd >/dev/null || exit
 EOF
 }
 

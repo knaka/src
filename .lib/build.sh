@@ -3,13 +3,11 @@
 # shellcheck shell=sh
 _() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ 41b4cc6 && return
 
-test "${_APPDIR+set}" = set || { cd "${0%[/\\]*}" 2>/dev/null || cd .; _APPDIR="$PWD"; cd "$OLDPWD" || exit; }
-case "${1-}" in (_LIBDIR) cd "$2" || exit;; (*) cd "$_APPDIR" || exit;; esac; set -- "$OLDPWD" "$@";
-set -- _LIBDIR . "$@"
+# shellcheck disable=SC3028,SC3054
+if test "${BASH_VERSION+set}"; then cd "${BASH_SOURCE[0]%[/\\]*}" || cd .; elif test "${1-}" = SCRIPTDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- SCRIPTDIR . "$OLDPWD" "$@"
 . ./utils.sh
 . ./worker.sh
-shift 2
-cd "$1" || exit; shift
+cd "$3" || exit; shift 3
 
 # Check if the file(s) were updated after the destination(s). Meant for
 # build-dependency checks: `updated sources... --after destinations...` tells
