@@ -5,7 +5,6 @@ description='''[password] Create hash from password with bcrypt.'''
 run='''
 #!/usr/bin/env sh
 # .mise/tasks-bcrypt.sh:task_bcrypt__hash
-_APPDIR="$MISE_PROJECT_ROOT"/".mise"
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
 . ./"tasks-bcrypt.sh"
@@ -20,7 +19,6 @@ description='''[--password=<password> --hash=<hash>] Verify password against bcr
 run='''
 #!/usr/bin/env sh
 # .mise/tasks-bcrypt.sh:task_bcrypt__verify
-_APPDIR="$MISE_PROJECT_ROOT"/".mise"
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
 . ./"tasks-bcrypt.sh"
@@ -35,7 +33,6 @@ description='''Show the status of Docker.'''
 run='''
 #!/usr/bin/env sh
 # .mise/tasks-docker.sh:task_docker__status
-_APPDIR="$MISE_PROJECT_ROOT"/".mise"
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
 . ./"tasks-docker.sh"
@@ -49,7 +46,6 @@ description='''Start Docker.'''
 run='''
 #!/usr/bin/env sh
 # .mise/tasks-docker.sh:task_docker__start
-_APPDIR="$MISE_PROJECT_ROOT"/".mise"
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
 . ./"tasks-docker.sh"
@@ -63,7 +59,6 @@ description='''Stop Docker.'''
 run='''
 #!/usr/bin/env sh
 # .mise/tasks-docker.sh:task_docker__stop
-_APPDIR="$MISE_PROJECT_ROOT"/".mise"
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
 . ./"tasks-docker.sh"
@@ -77,7 +72,6 @@ description='''Start Docker service temporarily. If Docker is already running, d
 run='''
 #!/usr/bin/env sh
 # .mise/tasks-docker.sh:task_docker__start__temp
-_APPDIR="$MISE_PROJECT_ROOT"/".mise"
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
 . ./"tasks-docker.sh"
@@ -92,7 +86,6 @@ description='''Run Debian Docker container.'''
 run='''
 #!/usr/bin/env sh
 # .mise/tasks-docker.sh:task_docker__debian__run
-_APPDIR="$MISE_PROJECT_ROOT"/".mise"
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
 . ./"tasks-docker.sh"
@@ -106,7 +99,6 @@ description='''Run BusyBox Docker container.'''
 run='''
 #!/usr/bin/env sh
 # .mise/tasks-docker.sh:task_docker__busybox__run
-_APPDIR="$MISE_PROJECT_ROOT"/".mise"
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
 . ./"tasks-docker.sh"
@@ -120,7 +112,6 @@ description=''''''
 run='''
 #!/usr/bin/env sh
 # .mise/tasks-hooks.sh:task_hooks__log__test
-_APPDIR="$MISE_PROJECT_ROOT"/".mise"
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
 . ./"tasks-hooks.sh"
@@ -135,7 +126,6 @@ description=''''''
 run='''
 #!/usr/bin/env sh
 # .mise/tasks-hooks.sh:task_hooks__log
-_APPDIR="$MISE_PROJECT_ROOT"/".mise"
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
 . ./"tasks-hooks.sh"
@@ -150,7 +140,6 @@ description='''Clears the session environment.'''
 run='''
 #!/usr/bin/env sh
 # .mise/tasks-session.sh:task_session__init
-_APPDIR="$MISE_PROJECT_ROOT"/".mise"
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
 . ./"tasks-session.sh"
@@ -165,7 +154,6 @@ description='''Ensures the application environment variable $APP_ENV is set.'''
 run='''
 #!/usr/bin/env sh
 # .mise/tasks-session.sh:task_appenv__ensure
-_APPDIR="$MISE_PROJECT_ROOT"/".mise"
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
 . ./"tasks-session.sh"
@@ -182,7 +170,6 @@ description='''Confirms a critical operation.'''
 run='''
 #!/usr/bin/env sh
 # .mise/tasks-session.sh:task_critical__confirm
-_APPDIR="$MISE_PROJECT_ROOT"/".mise"
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
 . ./"tasks-session.sh"
@@ -198,7 +185,6 @@ description='''[names...] Run tests. If no test names are provided, all tests ar
 run='''
 #!/usr/bin/env sh
 # .mise/tasks-test.sh:task_test
-_APPDIR="$MISE_PROJECT_ROOT"/".mise"
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
 . ./"tasks-test.sh"
@@ -212,7 +198,6 @@ description='''Bash foo.'''
 run='''
 #!/usr/bin/env bash
 # .mise/tasks-new.bash:task_bash__foo
-_APPDIR="$MISE_PROJECT_ROOT"/".mise"
 pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
 . ./"tasks-new.bash"
 popd >/dev/null || exit 1
@@ -226,7 +211,6 @@ description='''Bash bar.'''
 run='''
 #!/usr/bin/env bash
 # .mise/tasks-new.bash:task-bash--bar
-_APPDIR="$MISE_PROJECT_ROOT"/".mise"
 pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
 . ./"tasks-new.bash"
 popd >/dev/null || exit 1
@@ -239,7 +223,6 @@ description='''Baz task.'''
 run='''
 #!/usr/bin/env bash
 # .mise/tasks-new.bash:baz
-_APPDIR="$MISE_PROJECT_ROOT"/".mise"
 pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
 . ./"tasks-new.bash"
 popd >/dev/null || exit 1
@@ -252,7 +235,6 @@ description='''Bash baz.'''
 run='''
 #!/usr/bin/env bash
 # .mise/tasks-new.bash:bash_baz
-_APPDIR="$MISE_PROJECT_ROOT"/".mise"
 pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
 . ./"tasks-new.bash"
 popd >/dev/null || exit 1
@@ -265,7 +247,6 @@ description=''''''
 run='''
 #!/usr/bin/env bash
 # .mise/tasks-project.bash:task_sub__gen
-_APPDIR="$MISE_PROJECT_ROOT"/".mise"
 pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
 . ./"tasks-project.bash"
 popd >/dev/null || exit 1
@@ -278,7 +259,6 @@ description=''''''
 run='''
 #!/usr/bin/env bash
 # .mise/tasks-project.bash:task_gen
-_APPDIR="$MISE_PROJECT_ROOT"/".mise"
 pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
 . ./"tasks-project.bash"
 popd >/dev/null || exit 1

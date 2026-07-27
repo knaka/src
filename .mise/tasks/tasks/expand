@@ -28,7 +28,6 @@ description='''$body'''
 run='''
 #!/usr/bin/env sh
 # $TASKS_REL_DIR/$base:$func_name
-_APPDIR="\$MISE_PROJECT_ROOT"/"$TASKS_REL_DIR"
 saved_pwd_85053ae="\$PWD"
 cd "\$MISE_PROJECT_ROOT"/"$TASKS_REL_DIR" || exit 1
 . ./"$base"
@@ -45,7 +44,6 @@ description='''$body'''
 run='''
 #!/usr/bin/env bash
 # $TASKS_REL_DIR/$base:$func_name
-_APPDIR="\$MISE_PROJECT_ROOT"/"$TASKS_REL_DIR"
 pushd "\$MISE_PROJECT_ROOT"/"$TASKS_REL_DIR" >/dev/null || exit 1
 . ./"$base"
 popd >/dev/null || exit 1
