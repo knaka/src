@@ -1,13 +1,15 @@
+#!/usr/bin/env sh
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-"${sourced_454d206-false}" && return 0; sourced_454d206=true
+_() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ c75cafd && return
 
-set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test "$2" != "$0"; then _APPDIR="$2"; fi; cd "$_APPDIR" || exit 1; fi
-set -- _LIBDIR ../.lib "$@"
-. ../.lib/utils.sh
-. ../.lib/edit.sh
+test "${_APPDIR+set}" = set || { cd "${0%[/\\]*}" 2>/dev/null || cd .; _APPDIR="$PWD"; cd "$OLDPWD" || exit; }
+case "${1-}" in (_LIBDIR) cd "$2" || exit;; (*) cd "$_APPDIR" || exit;; esac; set -- "$OLDPWD" "$@";
+set -- _LIBDIR ../../.lib "$@"
+. ../../.lib/utils.sh
+. ../../.lib/edit.sh
 shift 2
-cd "$1" || exit 1; shift 2
+cd "$1" || exit; shift
 
 # Generate a Sh-inlined batch script that embeds shell code for Windows
 #
@@ -104,3 +106,89 @@ task_hello_sourced_sh__gen() {
     --sh-file=./_sh-hello.sh \
     --output=./misc/expanded-hello.sh
 }
+
+# ==========================================================================
+#region Installation.
+
+gen_bash_script() { cat <<EOF
+#!/usr/bin/env sh
+cd "$PROJECT_DIR"
+exec ./mise exec -- bash _chdir.bash "\$OLDPWD" "$PROJECT_DIR"/"$file" "\$@"
+EOF
+}
+
+gen_sh_script() { cat <<EOF
+#!/usr/bin/env sh
+cd "$PROJECT_DIR"
+exec ./mise exec -- sh _chdir.sh "\$OLDPWD" "$PROJECT_DIR"/"$file" "\$@"
+EOF
+}
+
+gen_py_sh_script() { cat <<EOF
+#!/usr/bin/env sh
+cd "$PROJECT_DIR"
+exec ./mise exec -- python _chdir.py "\$OLDPWD" "$PROJECT_DIR"/"$file" "\$@"
+EOF
+}
+
+# Install shell scripts.
+task_install() {
+  push_dir "$PROJECT_DIR" || exit 1
+  local bin_dir_path="$HOME"/bin
+  mkdir -p "$bin_dir_path"
+  if test "${executed_thru_t_bb789ec+set}" = set
+  then
+    echo "In a Windows environment, $bin_dir_path/t.sh is not replaced because it is locked. Run ./task.cmd instead." >&2
+    return 1
+  fi
+  rm -fr "${bin_dir_path:?}"/*
+  local file
+  for file in *.sh
+  do
+    test -e "$file" || continue
+    case "$file" in
+      (_*) continue;;
+    esac
+    local name="${file%.sh}"
+    gen_sh_script >"$bin_dir_path"/"$name"
+    chmod +x "$bin_dir_path"/"$name"
+    if is_windows
+    then
+      # Create Busybox ash shim.
+      cat task.cmd >"$bin_dir_path"/"$name".cmd
+    fi
+  done
+  for file in *.bash
+  do
+    test -e "$file" || continue
+    case "$file" in
+      (_*) continue;;
+    esac
+    local name="${file%.bash}"
+    gen_bash_script >"$bin_dir_path"/"$name"
+    chmod +x "$bin_dir_path"/"$name"
+    if is_windows
+    then
+      # Create Busybox ash shim.
+      cat task.cmd >"$bin_dir_path"/"$name".cmd
+    fi
+  done
+  for file in *.py
+  do
+    test -e "$file" || continue
+    case "$file" in
+      (_*) continue;;
+    esac
+    local name="${file%.py}"
+    gen_py_sh_script >"$bin_dir_path"/"$name"
+    chmod +x "$bin_dir_path"/"$name"
+    if is_windows
+    then
+      # Create Busybox ash shim.
+      cat task.cmd >"$bin_dir_path"/"$name".cmd
+    fi
+  done
+  pop_dir
+}
+
+#endregion

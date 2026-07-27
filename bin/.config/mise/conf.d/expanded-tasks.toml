@@ -27,3 +27,17 @@ cd "$saved_pwd_85053ae" || exit 1
 set -o nounset -o errexit
 task_hello_sourced_sh__gen "$@"
 '''
+
+[tasks."install"]
+description='''Install shell scripts.'''
+run='''
+#!/usr/bin/env sh
+# .mise/tasks-project.sh:task_install
+_APPDIR="$MISE_PROJECT_ROOT"/".mise"
+saved_pwd_85053ae="$PWD"
+cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
+. ./"tasks-project.sh"
+cd "$saved_pwd_85053ae" || exit 1
+set -o nounset -o errexit
+task_install "$@"
+'''
