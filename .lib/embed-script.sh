@@ -11,9 +11,24 @@ cd "$3" || exit; shift 3
 
 # This function is tested, do not inlined.
 embed_minified_sub() {
+  local python_bin=
+  local arg
+  for arg in python python3
+  do
+    if has_external_command "$arg"
+    then
+      python_bin="$arg"
+      break
+    fi
+  done
+  if test -z "$python_bin"
+  then
+    echo Python is not found on path. >&2
+    skip
+  fi
   # -u     : force the stdout and stderr streams to be unbuffered;
   #          this option has no effect on stdin; also PYTHONUNBUFFERED=x
-  python -u "$script_902b082" "$1"
+  "$python_bin" -u "$script_902b082" "$1"
 }
 
 # Embeds minified file contents into shell script files in-place.
