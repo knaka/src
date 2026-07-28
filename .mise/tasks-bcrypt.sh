@@ -1,11 +1,10 @@
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-"${sourced_84cae10-false}" && return 0; sourced_84cae10=true
+_() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ _MISE_TASKS_BCRYPT_SH && return # shpp:source_guard
 
-# shellcheck disable=SC3028,SC3054
-if test "${BASH_VERSION+set}"; then cd "${BASH_SOURCE[0]%[/\\]*}" || cd .; elif test "${1-}" = SCRIPTDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- SCRIPTDIR ../../.lib "$OLDPWD" "$@"
+if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = SCRIPTDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- SCRIPTDIR ../.lib "$OLDPWD" "$@" # shpp:begin_source
 . ../.lib/utils.sh
-cd "$3" || exit; shift 3
+cd "$3" || exit; shift 3 # shpp:end_source
 
 # [password] Create hash from password with bcrypt.
 #MISE tools={"uv"="0.10"}
@@ -39,9 +38,8 @@ task_bcrypt__verify() {
   mise exec uv -- uv tool run --from "bcrypt" python3 -c 'import sys, bcrypt; sys.exit(0 if bcrypt.checkpw(sys.argv[1].encode(), sys.argv[2].encode()) else 1)' "$password" "$hash" >/dev/null 2>&1
 }
 
-case "${0##*/}" in
-  (tasks-*)
-    set -o nounset -o errexit
-    "$@"
-    ;;
-esac
+if eval test '"$0" = "${BASH_SOURCE-}"' || case ".${0##*[/\\]}." in (*.tasks-bcrypt.*) ;; (*) false;; esac # shpp:main_guard
+then
+  set -o nounset -o errexit
+  "$@"
+fi

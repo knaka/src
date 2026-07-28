@@ -1,13 +1,12 @@
 #!/usr/bin/env sh
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-_() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ b1dae46 && return 0
+_() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ BIN_T_SH && return # shpp:source_guard
 
-# shellcheck disable=SC3028,SC3054
-if test "${BASH_VERSION+set}"; then cd "${BASH_SOURCE[0]%[/\\]*}" || cd .; elif test "${1-}" = SCRIPTDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- SCRIPTDIR ../.lib "$OLDPWD" "$@"
+if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = SCRIPTDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- SCRIPTDIR ../.lib "$OLDPWD" "$@" # shpp:begin_source
 . ../.lib/utils.sh
 . ../.lib/commands.sh
-cd "$3" || exit; shift 3
+cd "$3" || exit; shift 3 # shpp:end_source
 
 is_mise_project_dir() {
   local dir=.
@@ -67,9 +66,8 @@ t() {
   done
 }
 
-case ",${0##*/},${0##*\\}," in
-  (*,t.sh,*|*,t,*)
-    set -o nounset -o errexit
-    t "$@"
-    ;;
-esac
+if eval test '"$0" = "${BASH_SOURCE-}"' || case ".${0##*[/\\]}." in (*.t.*) ;; (*) false;; esac # shpp:main_guard
+then
+  set -o nounset -o errexit
+  t "$@"
+fi

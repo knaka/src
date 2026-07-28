@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-_() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ d899d96 && return 0
+_() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ BIN_STRIP_ESCAPE_SEQUENCE_SH && return # shpp:source_guard
 
 # Convenient for cleaning logs.
 strip_escape_sequences() {
@@ -10,7 +10,7 @@ strip_escape_sequences() {
   sed -E -e 's/\[[0-9;]*[ABCDEFGHJKSTmin]//g'
 }
 
-_() { test "${0##*/}" = "$1" -o "${0##*\\}" = "$1" -o "${0##*/}" = "$1.sh" -o "${0##*\\}" = "$1.sh"; }; if _ strip_escape_sequence
+if eval test '"$0" = "${BASH_SOURCE-}"' || case ".${0##*[/\\]}." in (*.strip-escape-sequence.*) ;; (*) false;; esac # shpp:main_guard
 then
   set -o nounset -o errexit
   strip_escape_sequence "$@"

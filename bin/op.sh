@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-"${sourced_7c7a2c6-false}" && return 0; sourced_7c7a2c6=true
+_() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ BIN_OP_SH && return # shpp:source_guard
 
 op() {
   if command -v Powershell >/dev/null 2>&1
@@ -33,9 +33,8 @@ op() {
   exit 1
 }
 
-case "${0##*/}" in
-  (op|op.sh)
-    set -o nounset -o errexit
-    op "$@"
-    ;;
-esac
+if eval test '"$0" = "${BASH_SOURCE-}"' || case ".${0##*[/\\]}." in (*.op.*) ;; (*) false;; esac # shpp:main_guard
+then
+  set -o nounset -o errexit
+  op "$@"
+fi

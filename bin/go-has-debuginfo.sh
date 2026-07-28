@@ -1,16 +1,15 @@
 #!/usr/bin/env sh
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-"${sourced_b0b996c-false}" && return 0; sourced_b0b996c=true
+_() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ BIN_GO_HAS_DEBUGINFO_SH && return # shpp:source_guard
 
 # file(1) of MacOS does not show whether the executable contains Go debuginfo or not.
 # dwarfdump(1) shows nothing. I do not know why.
 
-# shellcheck disable=SC3028,SC3054
-if test "${BASH_VERSION+set}"; then cd "${BASH_SOURCE[0]%[/\\]*}" || cd .; elif test "${1-}" = SCRIPTDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- SCRIPTDIR ../.lib "$OLDPWD" "$@"
+if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = SCRIPTDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- SCRIPTDIR ../.lib "$OLDPWD" "$@" # shpp:begin_source
 . ../.lib/utils.sh
 . ../.lib/commands.sh
-cd "$3" || exit; shift 3
+cd "$3" || exit; shift 3 # shpp:end_source
 
 show_help_2269cee() {
   cat <<EOF
@@ -40,9 +39,8 @@ go_has_debuginfo() {
   return 1
 }
 
-case "${0##*/}" in
-  (go-has-debuginfo.sh|go-has-debuginfo)
-    set -o nounset -o errexit
-    go_has_debuginfo "$@"
-    ;;
-esac
+if eval test '"$0" = "${BASH_SOURCE-}"' || case ".${0##*[/\\]}." in (*.go-has-debuginfo.*) ;; (*) false;; esac # shpp:main_guard
+then
+  set -o nounset -o errexit
+  go_has_debuginfo "$@"
+fi

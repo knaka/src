@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-"${sourced_185ce30-false}" && return 0; sourced_185ce30=true
+_() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ BIN_URLS2MD_SH && return # shpp:source_guard
 
 # Read URLs from standard input, summarize the corresponding web page content with Readability, and output as a single concatenated Markdown document. Error handling is not implemented. Please notify the #discussion channel on Slack before making extensions or modifications.
 
@@ -19,13 +19,11 @@ urls2md() {
     clipper clip -u "$url" -o "$temp_file"
     sed -E -e "s@^# (.*)\$@# [\1]($url)@" "$temp_file"
     echo
-    echo
   done
 }
 
-case "${0##*/}" in
-  (urls2md.sh|urls2md)
-    set -o nounset -o errexit
-    urls2md "$@"
-    ;;
-esac
+if eval test '"$0" = "${BASH_SOURCE-}"' || case ".${0##*[/\\]}." in (*.urls2md.*) ;; (*) false;; esac # shpp:main_guard
+then
+  set -o nounset -o errexit
+  urls2md "$@"
+fi

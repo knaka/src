@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-_() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ a6afe8e && return 0
+_() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ BIN_GC_SH && return # shpp:source_guard
 
 gc() {
   if test "${SSH_CONNECTION+set}" = set # ?
@@ -33,7 +33,7 @@ gc() {
   fi
 }
 
-_() { test "${0##*/}" = "$1" -o "${0##*\\}" = "$1" -o "${0##*/}" = "$1.sh" -o "${0##*\\}" = "$1.sh"; }; if _ gc
+if eval test '"$0" = "${BASH_SOURCE-}"' || case ".${0##*[/\\]}." in (*.gc.*) ;; (*) false;; esac # shpp:main_guard
 then
   set -o nounset -o errexit
   gc "$@"

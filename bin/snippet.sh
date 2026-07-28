@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-"${sourced_39e61b5-false}" && return 0; sourced_39e61b5=true
+_() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ BIN_SNIPPET_SH && return # shpp:source_guard
 
 snippet() {
   # shellcheck disable=SC2016
@@ -22,9 +22,8 @@ snippet() {
     -e 's/^/\t\t\t/'
 }
 
-case "${0##*/}" in
-  (snippet.sh|snippet)
-    set -o nounset -o errexit
-    snippet "$@"
-    ;;
-esac
+if eval test '"$0" = "${BASH_SOURCE-}"' || case ".${0##*[/\\]}." in (*.snippet.*) ;; (*) false;; esac # shpp:main_guard
+then
+  set -o nounset -o errexit
+  snippet "$@"
+fi

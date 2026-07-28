@@ -1,15 +1,14 @@
 #!/usr/bin/env sh
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-"${sourced_f352301-false}" && return 0; sourced_f352301=true
+_() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ BIN_TAB_SH && return # shpp:source_guard
 
 tab() {
   printf "\t"
 }
 
-case "${0##*/}" in
-  (tab.sh|tab)
-    set -o nounset -o errexit
-    tab "$@"
-    ;;
-esac
+if eval test '"$0" = "${BASH_SOURCE-}"' || case ".${0##*[/\\]}." in (*.tab.*) ;; (*) false;; esac # shpp:main_guard
+then
+  set -o nounset -o errexit
+  tab "$@"
+fi

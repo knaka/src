@@ -26,9 +26,8 @@ sc() {
   fi
 }
 
-case "${0##*/}" in
-  (sc|sc.sh)
-    set -o nounset -o errexit
-    sc "$@"
-    ;;
-esac
+if eval test '"$0" = "${BASH_SOURCE-}"' || case ".${0##*[/\\]}." in (*.sc.*) ;; (*) false;; esac # shpp:main_guard
+then
+  set -o nounset -o errexit
+  sc "$@"
+fi

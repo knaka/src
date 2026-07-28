@@ -1,16 +1,15 @@
 #!/usr/bin/env sh
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-"${sourced_102a099-false}" && return 0; sourced_102a099=true
+_() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ BIN_URLREC_SH && return # shpp:source_guard
 
 # Fetches the given URL(s) and prints all linked URLs found on each page
 # that are under the same URL prefix (i.e. sub-paths of the given URL).
 
-# shellcheck disable=SC3028,SC3054
-if test "${BASH_VERSION+set}"; then cd "${BASH_SOURCE[0]%[/\\]*}" || cd .; elif test "${1-}" = SCRIPTDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- SCRIPTDIR ../.lib "$OLDPWD" "$@"
+if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = SCRIPTDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- SCRIPTDIR ../.lib "$OLDPWD" "$@" # shpp:begin_source
 . ../.lib/utils.sh
 . ../.lib/commands.sh
-cd "$3" || exit; shift 3
+cd "$3" || exit; shift 3 # shpp:end_source
 
 urlrec() {
   init_temp_dir
@@ -28,9 +27,8 @@ urlrec() {
   sort "$urls" | uniq
 }
 
-case "${0##*/}" in
-  (urlrec.sh|urlrec)
-    set -o nounset -o errexit
-    urlrec "$@"
-    ;;
-esac
+if eval test '"$0" = "${BASH_SOURCE-}"' || case ".${0##*[/\\]}." in (*.urlrec.*) ;; (*) false;; esac # shpp:main_guard
+then
+  set -o nounset -o errexit
+  urlrec "$@"
+fi

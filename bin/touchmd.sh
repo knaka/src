@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-"${sourced_71b8827-false}" && return 0; sourced_71b8827=true
+_() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ BIN_TOUCHMD_SH && return # shpp:source_guard
 set -o nounset -o errexit
 
 # Create Markdown file with front-matter attributes.

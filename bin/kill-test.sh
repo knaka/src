@@ -1,6 +1,6 @@
 # vim: set filetype=bash tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=bash
-_() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ f08a68b && return 0
+_() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ BIN_KILL_TEST_SH && return # shpp:source_guard
 
 on_exit() {
   echo 2bbea32 Killing

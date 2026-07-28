@@ -1,12 +1,11 @@
+#!/usr/bin/env sh
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-"${sourced_f8dde75-false}" && return 0; sourced_f8dde75=true
+_() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ _MISE_TASKS_SESSION_SH && return # shpp:source_guard
 
-# shellcheck disable=SC3028,SC3054
-if test "${BASH_VERSION+set}"; then cd "${BASH_SOURCE[0]%[/\\]*}" || cd .; elif test "${1-}" = SCRIPTDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- SCRIPTDIR ../../.lib "$OLDPWD" "$@"
-. ./.lib/utils.lib.sh
-shift 2
-cd "$3" || exit; shift 3
+if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = SCRIPTDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- SCRIPTDIR ../.lib "$OLDPWD" "$@" # shpp:begin_source
+. ../.lib/utils.sh
+cd "$3" || exit; shift 3 # shpp:end_source
 
 # Initializes the session by clearing any previously saved session variables.
 # This should be called at the start of a task chain to ensure a clean state.
@@ -121,9 +120,8 @@ task_critical__confirm() {
   done
 }
 
-case "${0##*/}" in
-  (tasks-session.sh)
-    set -o nounset -o errexit
-    "$@"
-    ;;
-esac
+if eval test '"$0" = "${BASH_SOURCE-}"' || case ".${0##*[/\\]}." in (*.tasks-session.*) ;; (*) false;; esac # shpp:main_guard
+then
+  set -o nounset -o errexit
+  "$@"
+fi
