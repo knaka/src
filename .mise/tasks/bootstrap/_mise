@@ -1,7 +1,5 @@
 #!/usr/bin/env sh
-# vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
-# shellcheck shell=sh
-_() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ d37a3cf && return 0
+_() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ d37a3cf && return # shpp:source_guard
 
 # Mise - Home | mise-en-place https://mise.jdx.dev/
 mise_ver_e8ccfbb=2026.7.5

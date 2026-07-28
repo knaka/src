@@ -1,6 +1,6 @@
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-"${sourced_737f6db-false}" && return 0; sourced_737f6db=true
+_() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ _LIB_BINDUMP_SH && return # shpp:source_guard
 
 # -A n: input address base - no address
 # -t o1: output format type - octal, 1 byte size

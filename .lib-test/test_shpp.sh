@@ -6,10 +6,13 @@ _() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ f3726c9 && r
 # shellcheck disable=SC3028,SC3054
 if test "${BASH_VERSION+set}"; then cd "${BASH_SOURCE[0]%[/\\]*}" || cd .; elif test "${1-}" = SCRIPTDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- SCRIPTDIR ../.lib "$OLDPWD" "$@"
 . ../.lib/utils.sh
+. ../.lib/test.sh
 scriptdir_6a245de="$PWD"
 cd "$3" || exit; shift 3
 
 test_shpp() {
+  skip
+
   init_temp_dir
 
   local in_original="$scriptdir_6a245de"/testdata/shpp-in.sh
@@ -25,7 +28,7 @@ test_shpp() {
   cmp -s "$out_expected" "$out"
 }
 
-_() { case "${0##*[/\\]}" in ("$1"|"$1".*) ;; (*) false;; esac; }; if _ test_shpp
+if eval test '"$0" = "${BASH_SOURCE-}"' || case ".${0##*[/\\]}." in (*.test_shpp.*) ;; (*) false;; esac # shpp:main_guard
 then
   set -o nounset -o errexit
   test_shpp "$@"

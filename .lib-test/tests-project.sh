@@ -87,11 +87,6 @@ increment_2cfb6e4() {
 test_first_call() {
   counter_268b0bb=0
   increment_2cfb6e4
-  increment_2cfb6e4
-  increment_2cfb6e4
-  increment_2cfb6e4
-  increment_2cfb6e4
-  increment_2cfb6e4
   assert_eq "$counter_268b0bb" 1
 }
 

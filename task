@@ -1,8 +1,6 @@
 #!/usr/bin/env sh
-# vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
-# shellcheck shell=sh
 
-test "${_APPDIR+set}" = set || { cd "${0%[/\\]*}" 2>/dev/null || cd .; _APPDIR="$PWD"; cd "$OLDPWD" || exit; }
+cd "${0%[/\\]*}" 2>/dev/null || cd .; _APPDIR="$PWD"; cd "$OLDPWD" || exit
 
 resolve_file() {
   test "${file+set}" = set || return 1
@@ -89,7 +87,7 @@ task() {
   esac
 }
 
-_() { case "${0##*[/\\]}" in ("$1"|"$1".*) ;; (*) false;; esac; }; if _ task
+if case ".${0##*[/\\]}." in (*.task.*) ;; (*) false;; esac
 then
   set -o nounset -o errexit
   task "$@"
