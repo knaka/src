@@ -7,7 +7,7 @@ _() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ 25
 if test "${BASH_VERSION+set}"; then cd "${BASH_SOURCE[0]%[/\\]*}" || cd .; elif test "${1-}" = SCRIPTDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- SCRIPTDIR ../.lib "$OLDPWD" "$@"
 . ../.lib/utils.sh
 shift 2
-cd "$1" || exit 1; shift
+cd "$3" || exit; shift 3
 
 # Show the status of Docker.
 task_docker__status() {

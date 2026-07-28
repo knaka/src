@@ -7,7 +7,7 @@ set -- _LIBDIR .lib "$@"
 . ./.lib/utils.lib.sh
 . ./.lib/cui.lib.sh
 shift 2
-cd "$1" || exit 1; shift 2
+cd "$3" || exit; shift 3
 
 _sh_choose() {
   local result="baz"

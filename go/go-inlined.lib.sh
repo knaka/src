@@ -6,7 +6,7 @@ set -- "$PWD" "$@"; if test "${2:+$2}" = _LIBDIR; then cd "$3" || exit 1; fi
 set -- _LIBDIR .lib "$@"
 . ./.lib/utils.sh
 shift 2
-cd "$1" || exit 1; shift
+cd "$3" || exit; shift 3
 
 # Generate a Go-inlined shell script that embeds and compiles Go code
 #

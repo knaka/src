@@ -8,7 +8,7 @@ if test "${1:+$1}" = _LIBDIR; then cd "$2" || exit 1; else cd "$_APPDIR" || exit
 set -- _LIBDIR ./.lib "$@"
 . ./.lib/utils.sh
 shift 2
-cd "$1" || exit 1; shift
+cd "$3" || exit; shift 3
 
 : "${my_temp-}"
 

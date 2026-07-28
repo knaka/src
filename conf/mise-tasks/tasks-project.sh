@@ -7,7 +7,7 @@ set -- _LIBDIR .lib "$@"
 . ./.lib/utils.lib.sh
 . ./.lib/commands.lib.sh
 shift 2
-cd "$1" || exit 1; shift 2
+cd "$3" || exit; shift 3
 
 chezmoi_source_dir="$PROJECT_DIR"/source
 
