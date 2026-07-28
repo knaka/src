@@ -1,14 +1,13 @@
 #!/usr/bin/env sh
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-# shpp:header
-_() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ BIN_COWSAY_SH && return
+_() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ BIN_COWSAY_SH && return # shpp:source_guard
 
 # shellcheck disable=SC3028,SC3054
-if test "${BASH_VERSION+set}"; then cd "${BASH_SOURCE[0]%[/\\]*}" || cd .; elif test "${1-}" = SCRIPTDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- SCRIPTDIR ../.lib "$OLDPWD" "$@" # shpp:source dir=../.lib
+if test "${BASH_VERSION+set}"; then cd "${BASH_SOURCE[0]%[/\\]*}" || cd .; elif test "${1-}" = SCRIPTDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- SCRIPTDIR ../.lib "$OLDPWD" "$@" # shpp:begin_source
 . ../.lib/utils.sh
 . ../.lib/commands.sh
-cd "$3" || exit; shift 3 # shpp:/source
+cd "$3" || exit; shift 3 # shpp:end_source
 
 # cowsay - npm https://www.npmjs.com/package/cowsay
 cowsay_version_14ac6ce=1.6.0
@@ -21,8 +20,7 @@ cowsay() {
   mise exec "npm:cowsay@$cowsay_version_14ac6ce" -- cowsay "$@"
 }
 
-# shpp:guard
-_() { case "${0##*[/\\]}" in ("$1"|"$1".*) ;; (*) false;; esac; }; if _ cowsay
+_() { case "${0##*[/\\]}" in ("$1"|"$1".*) ;; (*) false;; esac; }; if _ cowsay # shpp:main_guard
 then
   set -o nounset -o errexit
   cowsay "$@"
