@@ -35,8 +35,7 @@ test_script_embed() {
   embed_minified_sub ./testdata/original2.sh >"$temp_sh2"
   sh "$temp_sh2" | grep -q "Version: 123.45.6"
 
-  local temp_sh3="./testdata/temp-$$"
+  local temp_sh3="$TEMP_DIR/7998a1a.sh"
   embed_minified_sub ./testdata/original3.sh >"$temp_sh3"
   sh "$temp_sh3" | grep -q "hello"
-  rm -f "$temp_sh3"
 }

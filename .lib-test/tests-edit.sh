@@ -7,10 +7,9 @@ if test "${BASH_VERSION+set}"; then cd "${BASH_SOURCE[0]%[/\\]*}" || cd .; elif 
 . ../.lib/utils.sh
 . ../.lib/edit.sh
 . ../.lib/assert.sh
+hello_sh_7dad95b="$PWD"/testdata/hello.sh
+hello_txt_e48f9dc="$PWD"/testdata/hello.txt
 cd "$3" || exit; shift 3
-
-hello_sh_7dad95b=./testdata/hello.sh
-hello_txt_e48f9dc=./testdata/hello.txt
 
 test_edit() {
   local function_text
