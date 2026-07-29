@@ -1,14 +1,12 @@
 #!/usr/bin/env sh
-set -- _0a34688 "$@"; eval "shift; \${$1-false} || ! $1=true" && return || : # shpp:source_guard
+set -- __MISE_TASKS_BOOTSTRAP_GENERATE_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return || : # shpp:source_guard
 
 #MISE description="Generate Mise bootstrap scripts."
 
 #EMBED: ./_mise
 cat_sh_e52f026() { cat <<'EOF'
 #!/usr/bin/env sh
-# vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
-# shellcheck shell=sh
-_() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ d37a3cf && return 0
+set -- _83da9bf "$@"; eval "shift; \${$1-false} || ! $1=true" && return || :
 
 # Mise - Home | mise-en-place https://mise.jdx.dev/
 mise_ver_e8ccfbb=2026.7.5

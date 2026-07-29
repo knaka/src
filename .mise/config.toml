@@ -10,10 +10,10 @@ MISE_PID = "{{ mise_pid }}"
 MISE_BIN = "{{ mise_bin }}"
 LSV_EMBED_SCRIPT_TARGETS = """
 {{ config_root }}/.lib/json2sh.sh
-{{ config_root }}/.mise/tasks/tasks/expand
+{{ config_root }}/.mise/tasks/tasks/expand.sh
 """
 LSV_EMBED_HEREDOC_TARGETS = """
-{{ config_root }}/.mise/tasks/bootstrap/generate
+{{ config_root }}/.mise/tasks/bootstrap/generate.sh
 """
 LSV_SHPP_TARGETS = """
 {{ config_root }}/bin/**/*.sh
