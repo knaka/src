@@ -1,8 +1,7 @@
-# vim: set filetype=bash tabstop=2 shiftwidth=2 expandtab :
-# shellcheck shell=bash
-_() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ c4b2b54 && return 0
+#!/usr/bin/env bash
+set -- _BIN_EXT2UTI_BASH "$@"; eval "shift; \${$1-false} || ! $1=true" && return || : # shpp:source_guard
 
-pushd "${BASH_SOURCE[0]%[/\\]*}" >/dev/null 2>&1 || pushd . >/dev/null
+pushd "${BASH_SOURCE[0]%[/\\]*}" &>/dev/null || pushd . >/dev/null
 . ../.lib/utils.sh
 popd >/dev/null || exit
 

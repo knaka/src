@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-_() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ _LIB_STRING_SH && return # shpp:source_guard
+set -- __LIB_STRING_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return || : # shpp:source_guard
 
 if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = _SCRDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- _SCRDIR . "$OLDPWD" "$@" # shpp:sources
 . ./utils.sh
@@ -11,7 +11,7 @@ cd "$3" || exit; shift 3 # /shpp:sources
 
 toupper_() {
   # shellcheck disable=SC3059
-  is_bash_bin 4 && set_result "${*^^}" && return
+  is_bash_bin 4 && echo_ "${*^^}" && return
   local result=
   local s="$*"
   local c
@@ -49,12 +49,12 @@ toupper_() {
       (*) result="${result}$c";;
     esac
   done
-  set_result "$result"
+  echo_ "$result"
 }
 
 tolower_() {
   # shellcheck disable=SC3059
-  is_bash_bin 4 && set_result "${*,,}" && return
+  is_bash_bin 4 && echo_ "${*,,}" && return
   local result=
   local s="$*"
   local c
@@ -92,7 +92,7 @@ tolower_() {
       (*) result="${result}$c";;
     esac
   done
-  set_result "$result"
+  echo_ "$result"
 }
 
 substr_() {
@@ -101,7 +101,7 @@ substr_() {
   local start="$2"
   local length="${3-${#s}}"
   # shellcheck disable=SC3057
-  is_bash_bin && set_result "${s:$((start-1)):$length}" && return
+  is_bash_bin && echo_ "${s:$((start-1)):$length}" && return
   local end=$((start+length))
   local c
   local i=1
@@ -115,29 +115,29 @@ substr_() {
     fi
     i=$((i+1))
   done
-  set_result "$result"
+  echo_ "$result"
 }
 
 sub_() {
   local s="$1"
   local from="$2"
-  test -z "$from" && set_result "$s" && return
+  test -z "$from" && echo_ "$s" && return
   local to="$3"
   # shellcheck disable=SC3060
-  is_bash_bin && set_result "${s/$from/$to}" && return
+  is_bash_bin && echo_ "${s/$from/$to}" && return
   local left="${s%%"$from"*}"
-  test "$left" = "$s" && set_result "$s" && return
-  set_result "$left$to${s#*"$from"}"
+  test "$left" = "$s" && echo_ "$s" && return
+  echo_ "$left$to${s#*"$from"}"
 }
 
 gsub_() {
   local result=
   local s="$1"
   local from="$2"
-  test -z "$from" && set_result "$s" && return
+  test -z "$from" && echo_ "$s" && return
   local to="$3"
   # shellcheck disable=SC3060
-  is_bash_bin && set_result "${s//$from/$to}" && return
+  is_bash_bin && echo_ "${s//$from/$to}" && return
   while test -n "$s"
   do
     local left="${s%%"$from"*}"
@@ -145,20 +145,20 @@ gsub_() {
     result="$result$left$to"
     s="${s#*"$from"}"
   done
-  set_result "$result"
+  echo_ "$result"
 }
 
 index_() {
   local s="$1"
   local find="$2"
-  test -z "$find" && set_result 0 && return
+  test -z "$find" && echo_ 0 && return
   local left="${s%%"$find"*}"
-  test "$left" = "$s" && set_result 0 && return
-  set_result $((${#left}+1))
+  test "$left" = "$s" && echo_ 0 && return
+  echo_ $((${#left}+1))
 }
 
 length_() {
-  set_result ${#1}
+  echo_ ${#1}
 }
 
 split_() {

@@ -27,7 +27,6 @@ test_register_exit_handler_bash() {
   add_exit_handler cleanup1bash
   (
     add_exit_handler cleanup2bash
-    add_exit_handler cleanup2bash
     add_exit_handler cleanup3bash
   ) >"$temp_file"
   assert_failure grep -q cleanup1bash "$temp_file"

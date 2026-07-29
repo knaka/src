@@ -1,13 +1,11 @@
 #!/usr/bin/env bash
-# vim: set filetype=bash tabstop=2 shiftwidth=2 expandtab :
-# shellcheck shell=bash
-_() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ 7fac086 && return
+set -- __MISE_TASKS_PROJECT_BASH "$@"; eval "shift; \${$1-false} || ! $1=true" && return || : # shpp:source_guard
 
-pushd "${BASH_SOURCE[0]%[/\\]*}" >/dev/null 2>&1 || pushd . >/dev/null
+pushd "${BASH_SOURCE[0]%[/\\]*}" &>/dev/null || pushd . >/dev/null
 . ../.lib/utils.sh
 . ../.lib/worker.sh
 . ../.lib/build.sh
-popd || exit >/dev/null
+popd >/dev/null || exit
 
 task_sub__gen() {
   _() {

@@ -1,10 +1,9 @@
-# vim: set filetype=bash tabstop=2 shiftwidth=2 expandtab :
-# shellcheck shell=bash
-_() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ 43d0de4 && return 0
+#!/usr/bin/env bash
+set -- __MISE_TASKS_NEW_BASH "$@"; eval "shift; \${$1-false} || ! $1=true" && return || : # shpp:source_guard
 
-pushd "${BASH_SOURCE[0]%/*}" >/dev/null 2>&1 || pushd . >/dev/null
-. ./.lib/utils.bash
-popd >/dev/null || exit 1
+pushd "${BASH_SOURCE[0]%[/\\]*}" &>/dev/null || pushd . >/dev/null
+. ../.lib/utils.sh
+popd >/dev/null || exit
 
 # Bash foo.
 #MISE hide=true

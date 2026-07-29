@@ -17,12 +17,13 @@ shpp() {
     IFS="$CH_LF"
     # shellcheck disable=SC2086
     set -- $LSV_SHPP_TARGETS
+    "$disable_noglob" && set +o noglob
     # shellcheck disable=SC2046
     set -- $(extglob "$@")
     unset IFS
-    "$disable_noglob" && set +o noglob
     if is_terminal
     then
+      echo a36dc74 "$@"
       prompt_confirm "Process for $# files?" || return
     fi
   fi

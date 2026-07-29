@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-_() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ _LIB_COLLECTION_SH && return # shpp:source_guard
+set -- __LIB_COLLECTION_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return || : # shpp:source_guard
 
 if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = _SCRDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- _SCRDIR . "$OLDPWD" "$@" # shpp:sources
 . ./utils.sh
@@ -10,10 +10,10 @@ cd "$3" || exit; shift 3 # /shpp:sources
 vec_() {
   if test "$#" -eq 0
   then
-    set_result ""
+    echo_ ""
     return
   fi
-  set_resultf "%s${CH_US}" "$@"
+  printf_ "%s${CH_US}" "$@"
 }
 
 vempty() {
@@ -21,7 +21,7 @@ vempty() {
 }
 
 vsort_nul_() {
-  set_result "$(
+  echo_ "$(
     printf "%s" "$1" \
     | tr "$CH_US" '\0' \
     | "$2" \
@@ -89,7 +89,7 @@ mput_() {
     i=$((i+1))
   done
   set -- "$@" "$key" "$value"
-  set_resultf "%s$sep%s$sep" "$@"
+  printf_ "%s$sep%s$sep" "$@"
 }
 
 # Get a value from an associative array.
@@ -114,7 +114,7 @@ mget_() {
   local n=$(($#/2))
   while test "$i" -lt "$n"
   do
-    test "$1" = "$key" && set_result "$2" && return 0
+    test "$1" = "$key" && echo_ "$2" && return 0
     shift 2
     i=$((i+1))
   done
@@ -146,13 +146,13 @@ mkeys_() {
     shift 2
     i=$((i+1))
   done
-  set_resultf "%s$sep" "$@"
+  printf_ "%s$sep" "$@"
 }
 
 collection() {
   local sep="#"
   local RESULT=
-  set_result ""
+  echo_ ""
   mput_ -s"$sep" "$RESULT" "key" "value"
   echo "$RESULT"
   mput_ -s"$sep" "$RESULT" "key" "value  x  y${CH_LF}value${CH_TAB}z"

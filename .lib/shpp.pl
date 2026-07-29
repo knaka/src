@@ -54,7 +54,7 @@ sub shpp {
       when (/^\s*$/s) {
         puts $_;
       }
-      when (/^.*( #\s*shpp:source_guard.*)$/s) {
+      when (/^.*( #\s*shpp:source_guard\b.*)$/s) {
         my $trailing = $1;
         my $unique_id = "";
         $unique_id = ($ARGV =~ s/[^a-zA-Z0-9]/_/gr =~ y/[a-z]/[A-Z]/r);

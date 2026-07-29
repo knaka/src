@@ -1,10 +1,10 @@
 #!/usr/bin/env sh
-set -- _4573682 "$@"; eval "shift; \${$1-false} || ! $1=true" && return || : # shpp:source_guard
+set -- __LIB_EMBED_HEREDOC_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return || : # shpp:source_guard
 
-if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = _SCRDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null && set -- _SCRDIR ../.lib "$OLDPWD" "$@" # shpp:sources
+if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = _SCRDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- _SCRDIR ../.lib "$OLDPWD" "$@" # shpp:sources
 . ../.lib/utils.sh
 script_4f605d1="$PWD"/embed-heredoc.awk
-cd "$3" || exit && shift 3 # /shpp:sources
+cd "$3" || exit; shift 3 # /shpp:sources
 
 embed_heredoc_sub() {
   local file="$1"

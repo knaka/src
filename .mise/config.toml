@@ -17,10 +17,15 @@ LSV_EMBED_HEREDOC_TARGETS = """
 """
 LSV_SHPP_TARGETS = """
 {{ config_root }}/bin/**/*.sh
-{{ config_root }}/lib/**/*.sh
-{{ config_root }}/lib-test/**/*.sh
+{{ config_root }}/bin/**/*.bash
+{{ config_root }}/.lib/**/*.sh
+{{ config_root }}/.lib/**/*.bash
+{{ config_root }}/.lib-test/*.sh
+{{ config_root }}/.lib-test/*.bash
 {{ config_root }}/.mise/**/*.sh
+{{ config_root }}/.mise/**/*.bash
 {{ config_root }}/conf/.mise/**/*.sh
+{{ config_root }}/conf/.mise/**/*.bash
 """
 # _.path = ["{{ config_root }}/.mise/preferred-sh"]
 

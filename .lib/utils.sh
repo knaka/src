@@ -2,7 +2,7 @@
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
 # shellcheck disable=SC2034
-_() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ _LIB_UTILS_SH && return # shpp:source_guard
+set -- __LIB_UTILS_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return || : # shpp:source_guard
 
 # ==========================================================================
 #region Global variables.
@@ -446,11 +446,11 @@ has_external_command() {
 
 : "${RESULT-}"
 
-set_result() {
+echo_() {
   RESULT="$1"
 }
 
-set_resultf() {
+printf_() {
   if is_bash_bin
   then
     # shellcheck disable=SC2059
@@ -479,7 +479,7 @@ set_resultf() {
         RESULT="$RESULT$CH_LF$REPLY"
       fi
     done <"$file_path"
-    rm -f "$ file_path"
+    rm -f "$file_path"
   fi
 }
 
