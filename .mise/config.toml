@@ -15,6 +15,12 @@ LSV_EMBED_SCRIPT_TARGETS = """
 LSV_EMBED_HEREDOC_TARGETS = """
 {{ config_root }}/.mise/tasks/bootstrap/generate
 """
+LSV_SHPP_TARGETS = """
+{{ config_root }}/bin/**/*.sh
+{{ config_root }}/lib/**/*.sh
+{{ config_root }}/lib-test/**/*.sh
+{{ config_root }}/.mise/**/*.sh
+"""
 # _.path = ["{{ config_root }}/.mise/preferred-sh"]
 
 [tools]

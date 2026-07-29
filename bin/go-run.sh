@@ -6,6 +6,7 @@ _() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ BIN_GO_RUN_S
 if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = SCRIPTDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- SCRIPTDIR ../.lib "$OLDPWD" "$@" # shpp:begin_source
 . ../.lib/utils.sh
   init_temp_dir
+shift 2; set -- SCRIPTDIR . "$@" # shpp:else
 . ./go-build.sh
 cd "$3" || exit; shift 3 # shpp:end_source
 

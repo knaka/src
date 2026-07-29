@@ -9,7 +9,7 @@ use experimental qw{switch vlb};
 use File::Basename qw(basename);
 
 my $source_guard_tmpl = (<<'EOF' =~ s/\R$//r);
-_() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ _UNIQUE_ID_ && return
+set -- __UNIQUE_ID_ "$@"; eval "shift; \${$1-false} || ! $1=true" && return
 EOF
 
 my $begin_source_tmpl = (<<'EOF' =~ s/\R$//r);

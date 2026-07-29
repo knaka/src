@@ -6,10 +6,10 @@ set -o nounset -o errexit
 
 # Create Markdown file with front-matter attributes.
 
-set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test "$2" != "$0"; then _APPDIR="$2"; fi; cd "$_APPDIR" || exit 1; fi
+if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = SCRIPTDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- SCRIPTDIR . "$OLDPWD" "$@" # shpp:begin_source
 . ./rand7.sh
 . ./date-iso.sh
-cd "$1"; shift 2
+cd "$3" || exit; shift 3 # shpp:end_source
 
 force=false
 OPTIND=1; while getopts f-: OPT

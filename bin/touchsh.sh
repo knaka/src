@@ -7,16 +7,16 @@ _() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ BIN_TOUCHSH_
 
 if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = SCRIPTDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- SCRIPTDIR ../.lib "$OLDPWD" "$@" # shpp:begin_source
 . ../.lib/utils.sh
-shift 2
-set -- SCRIPTDIR . "$@"
+shift 2; set -- SCRIPTDIR . "$@" # shpp:else
 . ./rand7.sh 
 cd "$3" || exit; shift 3 # shpp:end_source
 
-gen_header_49df118() { cat <<EOF
+# # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
+# # shellcheck shell=sh
+
+gen_header_49df118() { cat <<'EOF'
 #!/usr/bin/env sh
-# vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
-# shellcheck shell=sh
-_() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ BIN_TOUCHSH_SH && return # shpp:source_guard
+_() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ _UNIQUE_ID_ && return
 EOF
 }
 
@@ -127,7 +127,7 @@ touchsh() {
     # then
     #   echo '#!/usr/bin/env sh'
     # fi
-    gen_header_49df118
+    gen_header_49df118 | sed -e "s/_UNIQUE_ID_/$unique_id/g"
     echo
     if "$is_lib"
     then

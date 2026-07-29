@@ -3,9 +3,6 @@
 # shellcheck shell=sh
 _() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ BIN_PM_SH && return # shpp:source_guard
 
-set -- "$PWD" "${0%/*}" "$@"; if test -z "${_APPDIR-}"; then _APPDIR=.; if test "$2" != "$0"; then _APPDIR="$2"; fi; cd "$_APPDIR" || exit 1; fi
-cd "$1"; shift 2
-
 pm() {
   if command -v dpkg >/dev/null 2>&1
   then

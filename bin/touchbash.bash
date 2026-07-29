@@ -16,15 +16,17 @@ popd >/dev/null
 # EOF
 # }
 
-gen_header_bf7ac7d() { cat <<EOF
 # vim: set filetype=bash tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=bash
-_() { case "\${_ids-}" in (*\$1*) ;; (*) _ids="\$1,\${_ids-}"; false;; esac; }; _ $unique_id && return 0
+
+gen_header_bf7ac7d() { cat <<'EOF'
+#!/usr/bin/env sh
+_() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ _UNIQUE_ID_ && return
 EOF
 }
 
 gen_source_block_67741b4() { cat <<'EOF'
-pushd "${BASH_SOURCE[0]%[/\\]*}" >/dev/null 2>&1 || pushd . >/dev/null
+pushd "${BASH_SOURCE[0]%[/\\]*}" &>/dev/null || pushd . >/dev/null
 . ../.lib/utils.sh
 popd >/dev/null || exit
 EOF
@@ -103,7 +105,7 @@ touchbash() {
     then
       echo '#!/usr/bin/env bash'
     fi
-    gen_header_bf7ac7d
+    gen_header_bf7ac7d | sed -e "s/_UNIQUE_ID_/$unique_id/g"
     echo
     if "$is_lib"
     then

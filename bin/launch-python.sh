@@ -4,11 +4,13 @@ _() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ BIN_LAUNCH_P
 
 if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = SCRIPTDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- SCRIPTDIR ../.lib "$OLDPWD" "$@" # shpp:begin_source
 . ../.lib/utils.sh
+pwd_1692d8b="$PWD"
+shift 2; set -- SCRIPTDIR . "$@" # shpp:else
 . ./mise
 cd "$3" || exit; shift 3 # shpp:end_source
 
 launch_python() {
-  cd "$_APPDIR" || exit 1
+  cd "$pwd_1692d8b" || exit 1
   local dir="$OLDPWD"
   mise exec --cd="$dir" -- python "$@"
   cd "$dir" || exit 1
