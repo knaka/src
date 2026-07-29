@@ -4,7 +4,10 @@
 set -- __MISE_TASKS_TEST_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return || : # shpp:source_guard
 
 if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = _SCRDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- _SCRDIR ../.lib "$OLDPWD" "$@" # shpp:sources
+echo b182e31 >&2
+pwd
 . ../.lib/utils.sh
+echo bf9087d >&2
 . ../.lib/collection.sh
 . ../.lib/string.sh
 . ../.lib/test.sh

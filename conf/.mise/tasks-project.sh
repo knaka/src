@@ -7,7 +7,6 @@ _() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ 0648daa && r
 if test "${BASH_VERSION+set}"; then cd "${BASH_SOURCE[0]%[/\\]*}" || cd .; elif test "${1-}" = _SCRDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- _SCRDIR ../../.lib "$OLDPWD" "$@"
 . ../../.lib/utils.sh
 . ../../.lib/commands.sh
-shift 2
 cd "$1" || exit; shift
 
 # Update karabiner.json
