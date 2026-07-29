@@ -10,7 +10,7 @@ dateserial() {
   date -u '+%Y%m%d'"$day_progress"
 }
 
-if eval test '"$0" = "${BASH_SOURCE-}"' || case ".${0##*[/\\]}." in (*.dateserial.*) ;; (*) false;; esac # shpp:main_guard
+if eval test '"$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (dateserial.*) ;; (*) false;; esac # shpp:main_guard
 then
   set -o nounset -o errexit
   dateserial "$@"

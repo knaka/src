@@ -51,7 +51,7 @@ conf() {
   chezmoi "$@"
 }
 
-if eval test '"$0" = "${BASH_SOURCE-}"' || case ".${0##*[/\\]}." in (*.conf.*) ;; (*) false;; esac # shpp:main_guard
+if eval test '"$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (conf.*) ;; (*) false;; esac # shpp:main_guard
 then
   set -o nounset -o errexit
   set -- --source="$HOME/repos/github.com/knaka/src/conf/source" "$@"

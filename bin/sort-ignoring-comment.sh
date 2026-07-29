@@ -10,7 +10,7 @@ sort_ignoring_comment() {
   #nop
 }
 
-if eval test '"$0" = "${BASH_SOURCE-}"' || case ".${0##*[/\\]}." in (*.sort-ignoring-comment.*) ;; (*) false;; esac # shpp:main_guard
+if eval test '"$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (sort-ignoring-comment.*) ;; (*) false;; esac # shpp:main_guard
 then
   set -o nounset -o errexit
   sort_ignoring_comment "$@"

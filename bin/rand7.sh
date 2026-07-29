@@ -27,7 +27,7 @@ rand7() {
   awk -v seed="$seed" 'BEGIN { srand(seed); printf "%07x\n", int(rand() * 268435456) }'
 }
 
-if eval test '"$0" = "${BASH_SOURCE-}"' || case ".${0##*[/\\]}." in (*.rand7.*) ;; (*) false;; esac # shpp:main_guard
+if eval test '"$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (rand7.*) ;; (*) false;; esac # shpp:main_guard
 then
   set -o nounset -o errexit
   rand7 "$@"

@@ -11,7 +11,7 @@ t2m() {
   mlr --pass-comments --t2m cat "$@"
 }
 
-if eval test '"$0" = "${BASH_SOURCE-}"' || case ".${0##*[/\\]}." in (*.t2m.*) ;; (*) false;; esac # shpp:main_guard
+if eval test '"$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (t2m.*) ;; (*) false;; esac # shpp:main_guard
 then
   set -o nounset -o errexit
   t2m "$@"

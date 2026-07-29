@@ -21,7 +21,7 @@ clipper() {
   mise exec npm:"@philschmid/clipper@$clipper_version_2b8a94e" -- clipper "$@"
 }
 
-if eval test '"$0" = "${BASH_SOURCE-}"' || case ".${0##*[/\\]}." in (*.clipper.*) ;; (*) false;; esac # shpp:main_guard
+if eval test '"$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (clipper.*) ;; (*) false;; esac # shpp:main_guard
 then
   set -o nounset -o errexit
   clipper "$@"

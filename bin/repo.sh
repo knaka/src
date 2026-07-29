@@ -78,7 +78,7 @@ repo() {
   echo "$GHQ_ROOT"/"$1"
 }
 
-if eval test '"$0" = "${BASH_SOURCE-}"' || case ".${0##*[/\\]}." in (*.repo.*) ;; (*) false;; esac # shpp:main_guard
+if eval test '"$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (repo.*) ;; (*) false;; esac # shpp:main_guard
 then
   set -o nounset -o errexit
   repo "$@"

@@ -8,7 +8,7 @@ if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; e
 . ../.lib/time.sh
 cd "$3" || exit; shift 3 # /shpp:sources
 
-if eval test '"$0" = "${BASH_SOURCE-}"' || case ".${0##*[/\\]}." in (*.touch-time-iso.*) ;; (*) false;; esac # shpp:main_guard
+if eval test '"$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (touch-time-iso.*) ;; (*) false;; esac # shpp:main_guard
 then
   set -o nounset -o errexit
   touch_time_iso "$@"

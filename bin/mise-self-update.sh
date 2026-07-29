@@ -7,7 +7,7 @@ mise_self_update() {
   mise self-update "$@"
 }
 
-if eval test '"$0" = "${BASH_SOURCE-}"' || case ".${0##*[/\\]}." in (*.mise-self-update.*) ;; (*) false;; esac # shpp:main_guard
+if eval test '"$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (mise-self-update.*) ;; (*) false;; esac # shpp:main_guard
 then
   set -o nounset -o errexit
   mise_self_update "$@"

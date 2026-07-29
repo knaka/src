@@ -11,7 +11,7 @@ m2c() {
   mlr --pass-comments --m2c cat "$@"
 }
 
-if eval test '"$0" = "${BASH_SOURCE-}"' || case ".${0##*[/\\]}." in (*.m2c.*) ;; (*) false;; esac # shpp:main_guard
+if eval test '"$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (m2c.*) ;; (*) false;; esac # shpp:main_guard
 then
   set -o nounset -o errexit
   m2c "$@"

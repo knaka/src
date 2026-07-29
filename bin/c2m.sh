@@ -11,7 +11,7 @@ c2m() {
   mlr --pass-comments --c2m cat "$@"
 }
 
-if eval test '"$0" = "${BASH_SOURCE-}"' || case ".${0##*[/\\]}." in (*.c2m.*) ;; (*) false;; esac # shpp:main_guard
+if eval test '"$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (c2m.*) ;; (*) false;; esac # shpp:main_guard
 then
   set -o nounset -o errexit
   c2m "$@"

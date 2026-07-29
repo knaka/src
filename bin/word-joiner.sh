@@ -8,7 +8,7 @@ word_joiner() {
   printf "⁠" 
 }
 
-if eval test '"$0" = "${BASH_SOURCE-}"' || case ".${0##*[/\\]}." in (*.word-joiner.*) ;; (*) false;; esac # shpp:main_guard
+if eval test '"$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (word-joiner.*) ;; (*) false;; esac # shpp:main_guard
 then
   set -o nounset -o errexit
   word_joiner "$@"

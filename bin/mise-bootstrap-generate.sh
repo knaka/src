@@ -11,7 +11,7 @@ mise_bootstrap_generate() {
   generate "$@"
 }
 
-if eval test '"$0" = "${BASH_SOURCE-}"' || case ".${0##*[/\\]}." in (*.mise-bootstrap-generate.*) ;; (*) false;; esac # shpp:main_guard
+if eval test '"$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (mise-bootstrap-generate.*) ;; (*) false;; esac # shpp:main_guard
 then
   set -o nounset -o errexit
   mise_bootstrap_generate "$@"

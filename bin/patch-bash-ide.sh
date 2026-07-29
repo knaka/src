@@ -52,7 +52,7 @@ EOF
   pop_dir
 }
 
-if eval test '"$0" = "${BASH_SOURCE-}"' || case ".${0##*[/\\]}." in (*.patch-bash-ide.*) ;; (*) false;; esac # shpp:main_guard
+if eval test '"$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (patch-bash-ide.*) ;; (*) false;; esac # shpp:main_guard
 then
   set -o nounset -o errexit
   patch_bash_ide "$@"

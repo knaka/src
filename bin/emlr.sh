@@ -147,7 +147,7 @@ emlr() {
   done
 }
 
-if eval test '"$0" = "${BASH_SOURCE-}"' || case ".${0##*[/\\]}." in (*.emlr.*) ;; (*) false;; esac # shpp:main_guard
+if eval test '"$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (emlr.*) ;; (*) false;; esac # shpp:main_guard
 then
   set -o nounset -o errexit
   emlr "$@"
