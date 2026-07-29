@@ -1,11 +1,11 @@
 #!/usr/bin/env sh
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-_() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ BIN_URLS2MD_SH && return # shpp:source_guard
+set -- _BIN_URLS2MD_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return || : # shpp:source_guard
 
 # Read URLs from standard input, summarize the corresponding web page content with Readability, and output as a single concatenated Markdown document. Error handling is not implemented. Please notify the #discussion channel on Slack before making extensions or modifications.
 
-if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = SCRIPTDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- SCRIPTDIR . "$OLDPWD" "$@" # shpp:sources
+if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = _SCRDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- _SCRDIR . "$OLDPWD" "$@" # shpp:sources
 . ./clipper.sh
 cd "$3" || exit; shift 3 # /shpp:sources
 

@@ -1,6 +1,5 @@
-# vim: set filetype=bash tabstop=2 shiftwidth=2 expandtab :
-# shellcheck shell=bash
-_loaded() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _loaded 72ce282 && return 0
+#!/usr/bin/env bash
+set -- _BIN_TOUCHBASH_BASH "$@"; eval "shift; \${$1-false} || ! $1=true" && return || : # shpp:source_guard
 
 # Generate Bash shell script scaffold.
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-_() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ BIN_OP_SH && return # shpp:source_guard
+set -- _BIN_OP_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return || : # shpp:source_guard
 
 op() {
   if command -v Powershell >/dev/null 2>&1

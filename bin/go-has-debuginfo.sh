@@ -1,12 +1,12 @@
 #!/usr/bin/env sh
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-_() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ BIN_GO_HAS_DEBUGINFO_SH && return # shpp:source_guard
+set -- _BIN_GO_HAS_DEBUGINFO_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return || : # shpp:source_guard
 
 # file(1) of MacOS does not show whether the executable contains Go debuginfo or not.
 # dwarfdump(1) shows nothing. I do not know why.
 
-if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = SCRIPTDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- SCRIPTDIR ../.lib "$OLDPWD" "$@" # shpp:sources
+if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = _SCRDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- _SCRDIR ../.lib "$OLDPWD" "$@" # shpp:sources
 . ../.lib/utils.sh
 . ../.lib/commands.sh
 cd "$3" || exit; shift 3 # /shpp:sources

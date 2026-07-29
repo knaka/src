@@ -1,10 +1,10 @@
 #!/usr/bin/env sh
 set -- _BIN_COWSAY_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return || : # shpp:source_guard
 
-if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = SCRIPTDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null && set -- SCRIPTDIR ../.lib "$OLDPWD" "$@" # shpp:sources
+if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = _SCRDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- _SCRDIR ../.lib "$OLDPWD" "$@" # shpp:sources
 . ../.lib/utils.sh
 . ../.lib/commands.sh
-cd "$3" || exit && shift 3 # /shpp:sources
+cd "$3" || exit; shift 3 # /shpp:sources
 
 # cowsay - npm https://www.npmjs.com/package/cowsay
 cowsay_version_14ac6ce=1.6.0

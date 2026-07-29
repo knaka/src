@@ -9,11 +9,11 @@ use experimental qw{switch vlb};
 use File::Basename qw(basename);
 
 my $source_guard_tmpl = (<<'EOF' =~ s/\R$//r);
-set -- _@UNIQUE_ID@ "$@"; eval "shift; \${$1-false} || ! $1=true" && return || :
+set -- __UNIQUE_ID_ "$@"; eval "shift; \${$1-false} || ! $1=true" && return || :
 EOF
 
 my $begin_source_tmpl = (<<'EOF' =~ s/\R$//r);
-if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = SCRIPTDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- SCRIPTDIR _DIR_ "$OLDPWD" "$@"
+if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = _SCRDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- _SCRDIR _DIR_ "$OLDPWD" "$@"
 EOF
 
 my $end_source_tmpl = (<<'EOF' =~ s/\R$//r);
@@ -58,7 +58,7 @@ sub shpp {
         my $trailing = $1;
         my $unique_id = "";
         $unique_id = ($ARGV =~ s/[^a-zA-Z0-9]/_/gr =~ y/[a-z]/[A-Z]/r);
-        my $source_guard = $source_guard_tmpl =~ s/@UNIQUE_ID@/$unique_id/gr;
+        my $source_guard = $source_guard_tmpl =~ s/_UNIQUE_ID_/$unique_id/gr;
         puts "$source_guard$trailing";
       }
       when (/^.*( #\s*shpp:sources\b.*)/s) {

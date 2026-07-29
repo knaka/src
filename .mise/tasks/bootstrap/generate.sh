@@ -1,7 +1,5 @@
 #!/usr/bin/env sh
-# vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
-# shellcheck shell=sh
-_() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ 6f4986e && return 0
+set -- _0a34688 "$@"; eval "shift; \${$1-false} || ! $1=true" && return || : # shpp:source_guard
 
 #MISE description="Generate Mise bootstrap scripts."
 
@@ -114,7 +112,7 @@ generate() {
   cd "$OLDPWD" || exit 1
 }
 
-_() { test "${0##*/}" = "$1" -o "${0##*\\}" = "$1" -o "${0##*/}" = "$1.sh" -o "${0##*\\}" = "$1.sh"; }; if _ generate
+if eval test '"$0" = "${BASH_SOURCE-}"' || case ".${0##*[/\\]}." in (*.generate.*) ;; (*) false;; esac # shpp:main_guard
 then
   set -o nounset -o errexit
   generate "$@"

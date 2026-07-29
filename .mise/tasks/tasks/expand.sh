@@ -1,7 +1,5 @@
 #!/usr/bin/env sh
-# vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
-# shellcheck shell=sh
-_() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ TASKS_TASKS_EXPAND && return
+set -- __MISE_TASKS_TASKS_EXPAND_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return || : # shpp:source_guard
 
 #MISE description="Generate Mise TOML tasks to call shell functions defined in monolithic shell files."
 
@@ -135,7 +133,7 @@ expand() {
   } >./.config/mise/conf.d/expanded-tasks.toml
 }
 
-_() { case "${0##*[/\\]}" in ("$1"|"$1".*) ;; (*) false;; esac; }; if _ expand
+if eval test '"$0" = "${BASH_SOURCE-}"' || case ".${0##*[/\\]}." in (*.expand.*) ;; (*) false;; esac # shpp:main_guard
 then
   set -o nounset -o errexit
   expand "$@"

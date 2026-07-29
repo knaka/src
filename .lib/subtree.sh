@@ -4,7 +4,7 @@ _() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ _LIB_SUBTREE
 
 # TODO: Not adjusted to current style. Fix me.
 
-if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = SCRIPTDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- SCRIPTDIR . "$OLDPWD" "$@" # shpp:sources
+if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = _SCRDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- _SCRDIR . "$OLDPWD" "$@" # shpp:sources
 . ./utils.sh
 is_mise || ./commands.sh
 cd "$3" || exit; shift 3 # /shpp:sources
@@ -14,7 +14,7 @@ before_subtree() {
   local git_top
   git_top="$(git rev-parse --show-toplevel)"
   test "$(realpath "$git_top")" = "$(realpath "$PWD")" && return 0
-  cd "$git_top"
+  cd "$git_top" || exit
   # shellcheck disable=SC2209
   INVOCATION_MODE=exec invoke ./task "$@"
   # Not reached

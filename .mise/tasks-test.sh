@@ -1,9 +1,9 @@
 #!/usr/bin/env sh
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-_() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ _MISE_TASKS_TEST_SH && return # shpp:source_guard
+set -- __MISE_TASKS_TEST_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return || : # shpp:source_guard
 
-if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = SCRIPTDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- SCRIPTDIR ../.lib "$OLDPWD" "$@" # shpp:sources
+if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = _SCRDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- _SCRDIR ../.lib "$OLDPWD" "$@" # shpp:sources
 . ../.lib/utils.sh
 . ../.lib/collection.sh
 . ../.lib/string.sh
@@ -126,7 +126,7 @@ run_tests() {
     local rc=0
     local dir="${file%[/\\]*}"
     local base="${file##*[/\\]}"
-    local stmts="cd '$dir'; set -- SCRIPTDIR \"\$PWD\" \"\$@\"; . ./'$base'; test_$test"
+    local stmts="cd '$dir'; set -- _SCRDIR \"\$PWD\" \"\$@\"; . ./'$base'; test_$test"
     case "$base" in
       (test-*.sh)
         $sh -o nounset -o errexit "$file" >"$log_file_path" 2>&1 || rc=$?
