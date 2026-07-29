@@ -21,7 +21,7 @@ cd "$3" || exit; shift 3
 EOF
 
 my $main_guard_tmpl = (<<'EOF' =~ s/\R$//r);
-if eval test '"$0" = "${BASH_SOURCE-}"' || case ".${0##*[/\\]}." in (*._BASE_.*) ;; (*) false;; esac
+if eval test '"$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (_BASE_.*) ;; (*) false;; esac
 EOF
 
 our $last = "_c4e448e_";

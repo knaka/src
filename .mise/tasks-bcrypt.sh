@@ -38,7 +38,7 @@ task_bcrypt__verify() {
   mise exec uv -- uv tool run --from "bcrypt" python3 -c 'import sys, bcrypt; sys.exit(0 if bcrypt.checkpw(sys.argv[1].encode(), sys.argv[2].encode()) else 1)' "$password" "$hash" >/dev/null 2>&1
 }
 
-if eval test '"$0" = "${BASH_SOURCE-}"' || case ".${0##*[/\\]}." in (*.tasks-bcrypt.*) ;; (*) false;; esac # shpp:main_guard
+if eval test '"$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (tasks-bcrypt.*) ;; (*) false;; esac # shpp:main_guard
 then
   set -o nounset -o errexit
   "$@"

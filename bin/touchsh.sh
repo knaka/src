@@ -39,7 +39,7 @@ then
   name="$call_name"
 fi
 cat <<EOF
-if eval test '"\$0" = "\${BASH_SOURCE-}"' || case ".\${0##*[/\\]}." in (*.${name}.*) ;; (*) false;; esac
+if eval test '"\$0" = "\${BASH_SOURCE-}"' || case "\${0##*[/\\]}." in (${name}.*) ;; (*) false;; esac
 then
   set -o nounset -o errexit
   ${func_name} "\$@"
