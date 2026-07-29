@@ -6,10 +6,10 @@ _() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ BIN_GO_HAS_D
 # file(1) of MacOS does not show whether the executable contains Go debuginfo or not.
 # dwarfdump(1) shows nothing. I do not know why.
 
-if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = SCRIPTDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- SCRIPTDIR ../.lib "$OLDPWD" "$@" # shpp:begin_source
+if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = SCRIPTDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- SCRIPTDIR ../.lib "$OLDPWD" "$@" # shpp:sources
 . ../.lib/utils.sh
 . ../.lib/commands.sh
-cd "$3" || exit; shift 3 # shpp:end_source
+cd "$3" || exit; shift 3 # /shpp:sources
 
 show_help_2269cee() {
   cat <<EOF

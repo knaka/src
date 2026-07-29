@@ -3,10 +3,10 @@
 # shellcheck shell=sh
 _() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ _LIB_BUILD_SH && return # shpp:source_guard
 
-if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = SCRIPTDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- SCRIPTDIR . "$OLDPWD" "$@" # shpp:begin_source
+if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = SCRIPTDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- SCRIPTDIR . "$OLDPWD" "$@" # shpp:sources
 . ./utils.sh
 . ./worker.sh
-cd "$3" || exit; shift 3 # shpp:end_source
+cd "$3" || exit; shift 3 # /shpp:sources
 
 # Check if the file(s) were updated after the destination(s). Meant for
 # build-dependency checks: `updated sources... --after destinations...` tells

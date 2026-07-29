@@ -9,7 +9,7 @@ use experimental qw{switch vlb};
 use File::Basename qw(basename);
 
 my $source_guard_tmpl = (<<'EOF' =~ s/\R$//r);
-set -- __UNIQUE_ID_ "$@"; eval "shift; \${$1-false} || ! $1=true" && return
+set -- _@UNIQUE_ID@ "$@"; eval "shift; \${$1-false} || ! $1=true" && return || :
 EOF
 
 my $begin_source_tmpl = (<<'EOF' =~ s/\R$//r);
@@ -58,16 +58,16 @@ sub shpp {
         my $trailing = $1;
         my $unique_id = "";
         $unique_id = ($ARGV =~ s/[^a-zA-Z0-9]/_/gr =~ y/[a-z]/[A-Z]/r);
-        my $source_guard = $source_guard_tmpl =~ s/_UNIQUE_ID_/$unique_id/gr;
+        my $source_guard = $source_guard_tmpl =~ s/@UNIQUE_ID@/$unique_id/gr;
         puts "$source_guard$trailing";
       }
-      when (/^.*( #\s*shpp:begin_source.*)/s) {
+      when (/^.*( #\s*shpp:sources\b.*)/s) {
         my $trailing = $1;
         # my $begin_source = ($begin_source_tmpl =~ s/_DIR_/???/gr);
         # puts "$begin_source$trailing";
         $finding_dir = "$begin_source_tmpl$trailing";
       }
-      when (/^.*( #\s*shpp:end_source.*)/s) {
+      when (m@^.*( #\s*/shpp:sources\b.*)@s) {
         my $trailing = $1;
         my $stms = $end_source_tmpl;
         puts "$stms$trailing";

@@ -32,6 +32,14 @@ shpp() {
   for file in "$@"
   do
     test -r "$file" || continue
+    local base="${file%[/\\]*}"
+    case "$base" in
+      (\
+        "touchsh.sh"|\
+        "touchbash.bash"|\
+        "_28c2f64_"\
+      ) continue;;
+    esac
     file="$(realpath "$file")"
     file="${file#"$PWD/"}"
     .lib/shpp.pl "$file" >"$out"

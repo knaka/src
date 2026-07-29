@@ -4,10 +4,10 @@ _loaded() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }
 
 # Generate Bash shell script scaffold.
 
-pushd "${BASH_SOURCE[0]%[/\\]*}" >/dev/null 2>&1 || pushd . >/dev/null
+pushd "${BASH_SOURCE[0]%[/\\]*}" &>/dev/null || pushd . >/dev/null
 . ../.lib/utils.sh
 . ./rand7.sh
-popd >/dev/null
+popd >/dev/null || exit
 
 # gen_header_bf7ac7d() { cat <<EOF
 # # vim: set filetype=bash tabstop=2 shiftwidth=2 expandtab :
@@ -21,7 +21,7 @@ popd >/dev/null
 
 gen_header_bf7ac7d() { cat <<'EOF'
 #!/usr/bin/env sh
-_() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ _UNIQUE_ID_ && return
+set -- _@UNIQUE_ID@ "$@" && eval "shift; \${$1-false} || ! $1=true" && return || : # shpp:source_guard
 EOF
 }
 
@@ -105,7 +105,7 @@ touchbash() {
     then
       echo '#!/usr/bin/env bash'
     fi
-    gen_header_bf7ac7d | sed -e "s/_UNIQUE_ID_/$unique_id/g"
+    gen_header_bf7ac7d | sed -e "s/@UNIQUE_ID@/$unique_id/g"
     echo
     if "$is_lib"
     then
@@ -123,7 +123,8 @@ touchbash() {
     else
       cat >"$path"
     fi
-  if ! "$is_stdout" && ! "$is_lib" && ! "$has_ext"
+  # if ! "$is_stdout" && ! "$is_lib" && ! "$has_ext"
+  if ! "$is_stdout"
   then
     chmod +x "$path"
   fi

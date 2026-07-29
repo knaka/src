@@ -1,4 +1,0 @@
-# nushell/nushell: A new type of shell https://github.com/nushell/nushell
-[tools."github:nushell/nushell"]
-# Releases · nushell/nushell https://github.com/nushell/nushell/releases
-version = "0.110.0"

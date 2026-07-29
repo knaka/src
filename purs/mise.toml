@@ -1,4 +1,0 @@
-[tools]
-"purescript" = "0.15.15"
-"npm:spago" = "1.0.3"
-"npm:esbuild" = "0.27.3"

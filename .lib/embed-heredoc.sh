@@ -4,7 +4,7 @@
 _() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ _LIB_EMBED_HEREDOC_SH && return # shpp:source_guard
 
 script_4f605d1="$PWD"/embed-heredoc.awk
-cd "$3" || exit; shift 3 # shpp:end_source
+cd "$3" || exit; shift 3 # /shpp:sources
 
 embed_heredoc_sub() {
   local file="$1"

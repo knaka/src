@@ -1,9 +1,9 @@
 #!/usr/bin/env sh
 echo original line # shpp:source_guard
 
-echo aaa # shpp:begin_source
+echo aaa # shpp:sources
 . ../.lib/utils.sh
-echo bbb # shpp:end_source
+echo bbb # /shpp:sources
 
 
 echo hello

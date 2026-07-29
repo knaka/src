@@ -6,10 +6,10 @@ _() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ BIN_URLREC_S
 # Fetches the given URL(s) and prints all linked URLs found on each page
 # that are under the same URL prefix (i.e. sub-paths of the given URL).
 
-if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = SCRIPTDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- SCRIPTDIR ../.lib "$OLDPWD" "$@" # shpp:begin_source
+if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = SCRIPTDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- SCRIPTDIR ../.lib "$OLDPWD" "$@" # shpp:sources
 . ../.lib/utils.sh
 . ../.lib/commands.sh
-cd "$3" || exit; shift 3 # shpp:end_source
+cd "$3" || exit; shift 3 # /shpp:sources
 
 urlrec() {
   init_temp_dir

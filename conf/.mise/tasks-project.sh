@@ -10,13 +10,6 @@ if test "${BASH_VERSION+set}"; then cd "${BASH_SOURCE[0]%[/\\]*}" || cd .; elif 
 shift 2
 cd "$1" || exit; shift
 
-chezmoi_source_dir="$PROJECT_DIR"/chezmoi-source
-
-# Install dotfiles to $HOME/
-task_dotfiles__install() {
-  chezmoi --source="$chezmoi_source_dir" apply
-}
-
 # Update karabiner.json
 task_karabiner_json__update() {
   newer karabiner.yaml --than karabiner.json || return 0
@@ -51,7 +44,6 @@ task_ps1__install() {
 
 # Install configuration files.
 task_install() {
-  call_task task_dotfiles__install
   call_task task_karabiner_json__install
   call_task task_ps1__install
 }

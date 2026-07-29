@@ -1,33 +1,27 @@
 #!/usr/bin/env sh
-# vim: set filetype=sh :
-# shellcheck shell=sh
-_() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ BIN_TOUCHSH_SH && return # shpp:source_guard
+set -- _BIN_TOUCHSH_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
 # Generate Bourne shell script scaffold.
 
-if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = SCRIPTDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- SCRIPTDIR ../.lib "$OLDPWD" "$@" # shpp:begin_source
+if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = SCRIPTDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- SCRIPTDIR ../.lib "$OLDPWD" "$@" # shpp:sources
 . ../.lib/utils.sh
-shift 2; set -- SCRIPTDIR . "$@" # shpp:else
+shift 2; set -- SCRIPTDIR . "$@" # shpp:sources_chdir
 . ./rand7.sh 
-cd "$3" || exit; shift 3 # shpp:end_source
+cd "$3" || exit; shift 3 # /shpp:sources
 
 # # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # # shellcheck shell=sh
 
 gen_header_49df118() { cat <<'EOF'
 #!/usr/bin/env sh
-_() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ _UNIQUE_ID_ && return
+set -- _BIN_TOUCHSH_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return || : # shpp:source_guard
 EOF
 }
 
-if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = SCRIPTDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- SCRIPTDIR ../.lib "$OLDPWD" "$@" # shpp:begin_source
-. ../.lib/utils.sh
-cd "$3" || exit; shift 3 # shpp:end_source
-
 gen_source_block_8d319a6() { cat <<'EOF'
-if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = SCRIPTDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- SCRIPTDIR ../.lib "$OLDPWD" "$@" # shpp:begin_source
+if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = SCRIPTDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- SCRIPTDIR ../.lib "$OLDPWD" "$@" # shpp:sources
 . ../.lib/utils.sh
-cd "$3" || exit; shift 3 # shpp:end_source
+cd "$3" || exit; shift 3 # /shpp:sources
 EOF
 }
 
@@ -45,7 +39,7 @@ then
   name="$call_name"
 fi
 cat <<EOF
-_() { case "\${0##*[/\\\\]}" in ("\$1"|"\$1".*) ;; (*) false;; esac; }; if _ ${name}
+if eval test '"\$0" = "\${BASH_SOURCE-}"' || case ".\${0##*[/\\]}." in (*.${name}.*) ;; (*) false;; esac
 then
   set -o nounset -o errexit
   ${func_name} "\$@"
@@ -127,7 +121,7 @@ touchsh() {
     # then
     #   echo '#!/usr/bin/env sh'
     # fi
-    gen_header_49df118 | sed -e "s/_UNIQUE_ID_/$unique_id/g"
+    gen_header_49df118 | sed -e "s/@UNIQUE_ID@/$unique_id/g"
     echo
     if "$is_lib"
     then
@@ -156,7 +150,8 @@ touchsh() {
     else
       cat >"$path"
     fi
-  if ! "$is_stdout" && ! "$is_lib" && ! "$has_ext"
+  # if ! "$is_stdout" && ! "$is_lib" && ! "$has_ext"
+  if ! "$is_stdout"
   then
     chmod +x "$path"
   fi
