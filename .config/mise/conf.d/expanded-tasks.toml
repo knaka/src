@@ -7,7 +7,9 @@ run='''
 # .mise/tasks-bcrypt.sh:task_bcrypt__hash
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
+set -- _SCRDIR "$PWD"
 . ./"tasks-bcrypt.sh"
+shift 2
 cd "$saved_pwd_85053ae" || exit 1
 set -o nounset -o errexit
 task_bcrypt__hash "$@"
@@ -21,7 +23,9 @@ run='''
 # .mise/tasks-bcrypt.sh:task_bcrypt__verify
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
+set -- _SCRDIR "$PWD"
 . ./"tasks-bcrypt.sh"
+shift 2
 cd "$saved_pwd_85053ae" || exit 1
 set -o nounset -o errexit
 task_bcrypt__verify "$@"
@@ -35,7 +39,9 @@ run='''
 # .mise/tasks-docker.sh:task_docker__status
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
+set -- _SCRDIR "$PWD"
 . ./"tasks-docker.sh"
+shift 2
 cd "$saved_pwd_85053ae" || exit 1
 set -o nounset -o errexit
 task_docker__status "$@"
@@ -48,7 +54,9 @@ run='''
 # .mise/tasks-docker.sh:task_docker__start
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
+set -- _SCRDIR "$PWD"
 . ./"tasks-docker.sh"
+shift 2
 cd "$saved_pwd_85053ae" || exit 1
 set -o nounset -o errexit
 task_docker__start "$@"
@@ -61,7 +69,9 @@ run='''
 # .mise/tasks-docker.sh:task_docker__stop
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
+set -- _SCRDIR "$PWD"
 . ./"tasks-docker.sh"
+shift 2
 cd "$saved_pwd_85053ae" || exit 1
 set -o nounset -o errexit
 task_docker__stop "$@"
@@ -74,7 +84,9 @@ run='''
 # .mise/tasks-docker.sh:task_docker__start__temp
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
+set -- _SCRDIR "$PWD"
 . ./"tasks-docker.sh"
+shift 2
 cd "$saved_pwd_85053ae" || exit 1
 set -o nounset -o errexit
 task_docker__start__temp "$@"
@@ -88,7 +100,9 @@ run='''
 # .mise/tasks-docker.sh:task_docker__debian__run
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
+set -- _SCRDIR "$PWD"
 . ./"tasks-docker.sh"
+shift 2
 cd "$saved_pwd_85053ae" || exit 1
 set -o nounset -o errexit
 task_docker__debian__run "$@"
@@ -101,7 +115,9 @@ run='''
 # .mise/tasks-docker.sh:task_docker__busybox__run
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
+set -- _SCRDIR "$PWD"
 . ./"tasks-docker.sh"
+shift 2
 cd "$saved_pwd_85053ae" || exit 1
 set -o nounset -o errexit
 task_docker__busybox__run "$@"
@@ -114,7 +130,9 @@ run='''
 # .mise/tasks-session.sh:task_session__init
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
+set -- _SCRDIR "$PWD"
 . ./"tasks-session.sh"
+shift 2
 cd "$saved_pwd_85053ae" || exit 1
 set -o nounset -o errexit
 task_session__init "$@"
@@ -128,7 +146,9 @@ run='''
 # .mise/tasks-session.sh:task_appenv__ensure
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
+set -- _SCRDIR "$PWD"
 . ./"tasks-session.sh"
+shift 2
 cd "$saved_pwd_85053ae" || exit 1
 set -o nounset -o errexit
 task_appenv__ensure "$@"
@@ -144,7 +164,9 @@ run='''
 # .mise/tasks-session.sh:task_critical__confirm
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
+set -- _SCRDIR "$PWD"
 . ./"tasks-session.sh"
+shift 2
 cd "$saved_pwd_85053ae" || exit 1
 set -o nounset -o errexit
 task_critical__confirm "$@"
@@ -159,7 +181,9 @@ run='''
 # .mise/tasks-test.sh:task_test
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
+set -- _SCRDIR "$PWD"
 . ./"tasks-test.sh"
+shift 2
 cd "$saved_pwd_85053ae" || exit 1
 set -o nounset -o errexit
 task_test "$@"
