@@ -15,8 +15,9 @@ conf() {
   do
     test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
     case "$OPT" in
-      (source) source_path="$OPTARG";;
+      (help) chezmoi --help; return;;
       (mode) mode="$OPTARG";;
+      (source) source_path="$OPTARG";;
       (?) return 1;;
       (*) echo "$0: illegal option -- $OPT" >&2; exit 1;;
     esac
