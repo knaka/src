@@ -12,16 +12,16 @@ cd "$3" || exit; shift 3 # /shpp:sources
 # # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # # shellcheck shell=sh
 
-gen_header_49df118() { cat <<'EOF'
-#!/usr/bin/env sh
-set -- _@UNIQUE_ID@ "$@"; eval "shift; \${$1-false} || ! $1=true" && return || : # shpp:source_guard
+gen_header_49df118() { cat <<-'EOF'
+	#!/usr/bin/env sh
+	set -- _@UNIQUE_ID@ "$@"; eval "shift; \${$1-false} || ! $1=true" && return || : # shpp:source_guard
 EOF
 }
 
-gen_source_block_8d319a6() { cat <<'EOF'
-if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = _SCRDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- _SCRDIR ../.lib "$OLDPWD" "$@" # shpp:sources
-. ../.lib/utils.sh
-cd "$3" || exit; shift 3 # /shpp:sources
+gen_source_block_8d319a6() { cat <<-'EOF'
+	if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = _SCRDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- _SCRDIR ../.lib "$OLDPWD" "$@" # shpp:sources
+	. ../.lib/utils.sh
+	cd "$3" || exit; shift 3 # /shpp:sources
 EOF
 }
 
@@ -38,12 +38,12 @@ if test "$func_name" != "$call_name"
 then
   name="$call_name"
 fi
-cat <<EOF
-if eval 'test "\$0" = "\${BASH_SOURCE-}"' || case "\${0##*[/\\]}." in (${name}.*) ;; (*) false;; esac
-then
-  set -o nounset -o errexit
-  ${func_name} "\$@"
-fi
+cat <<-EOF
+	if eval 'test "\$0" = "\${BASH_SOURCE-}"' || case "\${0##*[/\\]}." in (${name}.*) ;; (*) false;; esac # shpp:main_guard
+	then
+	  set -o nounset -o errexit
+	  ${func_name} "\$@"
+	fi
 EOF
 }
 
@@ -157,7 +157,7 @@ touchsh() {
   fi
 }
 
-if eval test '"$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (touchsh.*) ;; (*) false;; esac # shpp:main_guard
+if eval 'test "$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (touchsh.*) ;; (*) false;; esac # shpp:main_guard
 then
   set -o nounset -o errexit
   touchsh "$@"

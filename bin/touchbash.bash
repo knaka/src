@@ -18,9 +18,9 @@ popd >/dev/null || exit
 # vim: set filetype=bash tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=bash
 
-gen_header_bf7ac7d() { cat <<'EOF'
-#!/usr/bin/env sh
-set -- _@UNIQUE_ID@ "$@"; eval "shift; \${$1-false} || ! $1=true" && return || : # shpp:source_guard
+gen_header_bf7ac7d() { cat <<-'EOF'
+	#!/usr/bin/env sh
+	set -- _@UNIQUE_ID@ "$@"; eval "shift; \${$1-false} || ! $1=true" && return || : # shpp:source_guard
 EOF
 }
 

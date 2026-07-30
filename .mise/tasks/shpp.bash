@@ -25,6 +25,7 @@ shpp() {
     unset IFS
     if is_terminal
     then
+      echo "$@"
       prompt_confirm "Process for $# files?" || return
     fi
   fi
@@ -34,14 +35,17 @@ shpp() {
   for file in "$@"
   do
     test -r "$file" || continue
-    local base="${file##*[/\\]}"
-    case "$base" in
-      (touchsh.sh|touchbash.bash) continue;;
-    esac
+    # local base="${file##*[/\\]}"
+    # case "$base" in
+    #   (touchsh.sh|touchbash.bash) continue;;
+    # esac
     file="$(realpath "$file")"
     file="${file#"$PWD/"}"
     .lib/shpp.pl "$file" >"$out"
-    cat "$out" >"$file"
+    if test -s "$out" && ! cmp -s "$out" "$file"
+    then
+      cat "$out" >"$file"
+    fi
   done
 }
 
