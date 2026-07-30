@@ -5,7 +5,7 @@ commit_with_message() {
   local temp_file
   temp_file="$(mktemp)"
   printf "%s" "$1" >"$temp_file"
-  code --wait "$temp_file"
+  sh "$HOME"/bin/ed --wait "$temp_file"
   if test -s "$temp_file"
   then
     git commit --file="$temp_file"
