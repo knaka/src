@@ -20,7 +20,7 @@ popd >/dev/null || exit
 
 gen_header_bf7ac7d() { cat <<'EOF'
 #!/usr/bin/env sh
-set -- _BIN_TOUCHBASH_BASH "$@"; eval "shift; \${$1-false} || ! $1=true" && return || : # shpp:source_guard
+set -- _@UNIQUE_ID@ "$@"; eval "shift; \${$1-false} || ! $1=true" && return || : # shpp:source_guard
 EOF
 }
 
