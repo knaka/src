@@ -15,4 +15,4 @@ Make a git commit for the staged changes with an appropriate message. If nothing
 
 IMPORTANT: You must analyze ONLY the git diff output. Do not use any memory from the conversation. Treat each commit as if you're seeing these changes for the first time with no context about how or why they were made.
 
-Then call the command with the message as an argument, like `${CLAUDE_SKILL_DIR}/commit-with-message "$message"`.
+Then call the command with the message as an argument, like `${CLAUDE_SKILL_DIR}/commit-with-message.bash "$message"`.

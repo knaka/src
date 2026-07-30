@@ -6,6 +6,7 @@ set -- __LIB_COMMANDS_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return
 
 if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = _SCRDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- _SCRDIR . "$OLDPWD" "$@" # shpp:sources
 . ./utils.sh
+shift 2; set -- _SCRDIR ./.. "$@" # shpp:sources_chdir
 if ! has_external_command mise >/dev/null 2>&1
 then
   . ./../mise
@@ -14,18 +15,8 @@ cd "$3" || exit; shift 3 # /shpp:sources
 
 export MISE_ACTIVATE_AGGRESSIVE=true
 
-jq() {
-  set -- --binary "$@"
-  if which jq >/dev/null 2>&1
-  then
-    command jq "$@"
-    return "$?"
-  fi
-  mise exec jq@latest -- jq "$@"
-}
-
 # Mise tasks do not require this script.
-test "${MISE_CONFIG_ROOT+set}" = set && return 0
+is_mise && return
 
 caddy() { mise exec caddy@latest -- caddy "$@"; } 
 chezmoi() { mise exec chezmoi@latest -- chezmoi "$@"; }
@@ -37,6 +28,7 @@ gofmt() { mise exec go@latest -- gofmt "$@"; }
 gum() { mise exec gum@latest -- gum "$@"; }
 htmlq() { mise exec htmlq@latest -- htmlq "$@"; }
 jmespath() { mise exec jmespath@latest -- jp "$@"; }
+jq() { mise exec jq@latest -- jq "$@"; }
 lua() { mise exec lua@latest -- lua "$@"; }
 mdpp() { mise exec github:knaka/mdpp@latest -- mdpp "$@"; }
 mlr() { mise exec miller@latest -- mlr "$@"; }

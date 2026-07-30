@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-# shellcheck disable=SC2034
+# shellcheck disable=SC2034 # ShellCheck: SC2034 – foo appears unused. Verify it or export it. https://www.shellcheck.net/wiki/SC2034
 set -- __LIB_UTILS_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return || : # shpp:source_guard
 
 # ==========================================================================

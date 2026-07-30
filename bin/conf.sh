@@ -55,6 +55,7 @@ if eval test '"$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (conf.*) ;; (
 then
   set -o nounset -o errexit
   set -- --source="$HOME/repos/github.com/knaka/src/conf/source" "$@"
-  set -- --mode="symlink" "$@"
+  # set -- --mode="symlink" "$@"
+  set -- --mode="file" "$@"
   conf "$@"
 fi
