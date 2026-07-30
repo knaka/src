@@ -38,7 +38,7 @@ reduce
 '
 }
 
-if eval test '"$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (git-config-list-to-json.*) ;; (*) false;; esac # shpp:main_guard
+if eval 'test "$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (git-config-list-to-json.*) ;; (*) false;; esac # shpp:main_guard
 then
   set -o nounset -o errexit
   git_config_list_to_json "$@"

@@ -162,12 +162,12 @@ run_tests() {
   return 0
 }
 
-# [names...] Run tests. If no test names are provided, all tests are run.
+# [tests...] Run tests. If no test names are provided, all tests are run.
 task_test() {
   run_tests "$@"
 }
 
-if eval test '"$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (tasks-test.*) ;; (*) false;; esac # shpp:main_guard
+if eval 'test "$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (tasks-test.*) ;; (*) false;; esac # shpp:main_guard
 then
   set -o nounset -o errexit
   run_tests "$@"

@@ -110,7 +110,7 @@ generate() {
   cd "$OLDPWD" || exit 1
 }
 
-if eval test '"$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (generate.*) ;; (*) false;; esac # shpp:main_guard
+if eval 'test "$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (generate.*) ;; (*) false;; esac # shpp:main_guard
 then
   set -o nounset -o errexit
   generate "$@"

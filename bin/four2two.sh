@@ -42,7 +42,7 @@ four_to_two() {
   fi
 }
 
-if eval test '"$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (four2two.*) ;; (*) false;; esac # shpp:main_guard
+if eval 'test "$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (four2two.*) ;; (*) false;; esac # shpp:main_guard
 then
   set -o nounset -o errexit
   four_to_two "$@"

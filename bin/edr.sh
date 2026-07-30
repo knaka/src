@@ -12,7 +12,7 @@ edr() {
   ed --raw "$@"
 }
 
-if eval test '"$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (edr.*) ;; (*) false;; esac # shpp:main_guard
+if eval 'test "$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (edr.*) ;; (*) false;; esac # shpp:main_guard
 then
   set -o nounset -o errexit
   edr "$@"

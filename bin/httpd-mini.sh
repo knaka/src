@@ -22,7 +22,7 @@ httpd_mini() {
   caddy file-server --listen="$host":"$port" --browse --root="$dir"
 }
 
-if eval test '"$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (httpd-mini.*) ;; (*) false;; esac # shpp:main_guard
+if eval 'test "$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (httpd-mini.*) ;; (*) false;; esac # shpp:main_guard
 then
   set -o nounset -o errexit
   httpd_mini "$@"

@@ -14,7 +14,7 @@ ed() {
   cd "$OLDPWD" || return 1
 }
 
-if eval test '"$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (ed.*) ;; (*) false;; esac # shpp:main_guard
+if eval 'test "$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (ed.*) ;; (*) false;; esac # shpp:main_guard
 then
   set -o nounset -o errexit
   ed "$@"

@@ -9,7 +9,7 @@ set_terminal_title() {
   printf "\033]0;%s\007" "$1"
 }
 
-if eval test '"$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (set-terminal-title.*) ;; (*) false;; esac # shpp:main_guard
+if eval 'test "$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (set-terminal-title.*) ;; (*) false;; esac # shpp:main_guard
 then
   set -o nounset -o errexit
   set_terminal_title "$@"

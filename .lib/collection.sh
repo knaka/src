@@ -150,6 +150,7 @@ mkeys_() {
 }
 
 collection() {
+  local IFS
   local sep="#"
   local RESULT=
   echo_ ""
@@ -162,7 +163,7 @@ collection() {
   mput_ -s"$sep" "$RESULT" "bar" "BAR"
   mkeys_ -s"$sep" "$RESULT"
   echo 759f2ba "$RESULT"
-  local IFS="$sep"
+  IFS="$sep"
   local arg
   for arg in $RESULT
   do
@@ -171,7 +172,7 @@ collection() {
   unset IFS
 }
 
-_() { case "${0##*[/\\]}" in ("$1"|"$1".*) ;; (*) false;; esac; }; if _ collection
+if eval 'test "$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (collection.*) ;; (*) false;; esac # shpp:main_guard
 then
   set -o nounset -o errexit
   collection "$@"

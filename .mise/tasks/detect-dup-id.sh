@@ -66,7 +66,7 @@ detect_dup_id() {
   | uniq -d
 }
 
-if eval test '"$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (detect-dup-id.*) ;; (*) false;; esac # shpp:main_guard
+if eval 'test "$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (detect-dup-id.*) ;; (*) false;; esac # shpp:main_guard
 then
   set -o nounset -o errexit
   detect_dup_id "$@"

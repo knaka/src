@@ -25,7 +25,7 @@ oci_switch_profile() {
   echo "$profile"
 }
 
-if eval test '"$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (oci_switch_profile.*) ;; (*) false;; esac # shpp:main_guard
+if eval 'test "$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (oci_switch_profile.*) ;; (*) false;; esac # shpp:main_guard
 then
   set -o nounset -o errexit
   oci_switch_profile "$@"

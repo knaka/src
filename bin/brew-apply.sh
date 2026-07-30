@@ -8,7 +8,7 @@ brew_apply() {
   brew bundle --global --cleanup install "$@"
 }
 
-if eval test '"$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (brew-apply.*) ;; (*) false;; esac # shpp:main_guard
+if eval 'test "$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (brew-apply.*) ;; (*) false;; esac # shpp:main_guard
 then
   set -o nounset -o errexit
   brew_apply "$@"

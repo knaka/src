@@ -8,7 +8,7 @@ git_rm_untracked() {
   git clean -d --force
 }
 
-if eval test '"$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (git-rm-untracked.*) ;; (*) false;; esac # shpp:main_guard
+if eval 'test "$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (git-rm-untracked.*) ;; (*) false;; esac # shpp:main_guard
 then
   set -o nounset -o errexit
   git_rm_untracked "$@"

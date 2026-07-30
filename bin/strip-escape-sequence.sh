@@ -10,7 +10,7 @@ strip_escape_sequences() {
   sed -E -e 's/\[[0-9;]*[ABCDEFGHJKSTmin]//g'
 }
 
-if eval test '"$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (strip-escape-sequence.*) ;; (*) false;; esac # shpp:main_guard
+if eval 'test "$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (strip-escape-sequence.*) ;; (*) false;; esac # shpp:main_guard
 then
   set -o nounset -o errexit
   strip_escape_sequence "$@"

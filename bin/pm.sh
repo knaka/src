@@ -51,7 +51,7 @@ pm_brew() {
   esac
 }
 
-if eval test '"$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (pm.*) ;; (*) false;; esac # shpp:main_guard
+if eval 'test "$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (pm.*) ;; (*) false;; esac # shpp:main_guard
 then
   set -o nounset -o errexit
   pm "$@"

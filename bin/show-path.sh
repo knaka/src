@@ -18,7 +18,7 @@ show_path() {
   printf "%s\n" $PATH
 }
 
-if eval test '"$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (show-path.*) ;; (*) false;; esac # shpp:main_guard
+if eval 'test "$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (show-path.*) ;; (*) false;; esac # shpp:main_guard
 then
   set -o nounset -o errexit
   show_path "$@"

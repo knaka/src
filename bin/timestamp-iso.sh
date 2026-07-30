@@ -27,7 +27,7 @@ timestamp_iso() {
   fi
 }
 
-if eval test '"$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (timestamp-iso.*) ;; (*) false;; esac # shpp:main_guard
+if eval 'test "$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (timestamp-iso.*) ;; (*) false;; esac # shpp:main_guard
 then
   set -o nounset -o errexit
   timestamp_iso "$@"

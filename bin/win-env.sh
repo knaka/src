@@ -35,7 +35,7 @@ win_env() {
   printf "%s\n" "$@"
  }
 
-if eval test '"$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (win-env.*) ;; (*) false;; esac # shpp:main_guard
+if eval 'test "$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (win-env.*) ;; (*) false;; esac # shpp:main_guard
 then
   set -o nounset -o errexit
   win_env "$@"

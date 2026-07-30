@@ -2,9 +2,10 @@
 # vim: set tabstop=2 shiftwidth=2 et:
 # -*- mode: perl; tab-width: 2; indent-tabs-mode: nil; -*-
 
-use strict;
 use warnings;
-use v5.10;
+# Version declaration of v5.12 or higher (such as `use v5.12;`` or `use 5.036;``) automatically implies and enables `use strict`` along with matching features for that release.
+use v5.12;
+# use strict;
 use experimental qw{switch vlb};
 use File::Basename qw(basename);
 
@@ -21,9 +22,10 @@ cd "$3" || exit; shift 3
 EOF
 
 my $main_guard_tmpl = (<<'EOF' =~ s/\R$//r);
-if eval test '"$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (_BASE_.*) ;; (*) false;; esac
+if eval 'test "$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (_BASE_.*) ;; (*) false;; esac
 EOF
 
+# our - Perldoc Browser https://perldoc.perl.org/functions/our
 our $last = "_c4e448e_";
 
 sub puts {

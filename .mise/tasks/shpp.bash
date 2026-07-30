@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -- _00270f2 "$@"; eval "shift; \${$1-false} || ! $1=true" && return
 
+#MISE description="[files...] SHell PreProcessor. If no filenames are provided, all files listed in $LSV_SHPP_TARGETS are processed."
+
 pushd "${BASH_SOURCE[0]%[/\\]*}" >/dev/null 2>&1 || pushd . >/dev/null
 . ../../.lib/utils.sh
 . ../../.lib/cui.sh
@@ -23,7 +25,6 @@ shpp() {
     unset IFS
     if is_terminal
     then
-      echo a36dc74 "$@"
       prompt_confirm "Process for $# files?" || return
     fi
   fi
@@ -33,13 +34,9 @@ shpp() {
   for file in "$@"
   do
     test -r "$file" || continue
-    local base="${file%[/\\]*}"
+    local base="${file##*[/\\]}"
     case "$base" in
-      (\
-        "touchsh.sh"|\
-        "touchbash.bash"|\
-        "_28c2f64_"\
-      ) continue;;
+      (touchsh.sh|touchbash.bash) continue;;
     esac
     file="$(realpath "$file")"
     file="${file#"$PWD/"}"
