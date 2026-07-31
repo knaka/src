@@ -1,6 +1,6 @@
 # vim: set filetype=bash tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=bash
-set -- _BIN_KILL_TEST_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return || : # shpp:source_guard
+set -- _BIN_KILL_TEST_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
 on_exit() {
   echo 2bbea32 Killing

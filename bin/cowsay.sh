@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-set -- _BIN_COWSAY_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return || : # shpp:source_guard
+set -- _BIN_COWSAY_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
 if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = _SCRDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- _SCRDIR ../.lib "$OLDPWD" "$@" # shpp:sources
 . ../.lib/utils.sh

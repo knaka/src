@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-set -- _BIN_CLIPPER_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return || : # shpp:source_guard
+set -- _BIN_CLIPPER_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
 # Run Clipper, a command-line tool to summarize web pages into Markdown format. // philschmid/clipper.js: HTML to Markdown converter and crawler. https://github.com/philschmid/clipper.js
 

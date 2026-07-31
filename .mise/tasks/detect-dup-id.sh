@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-set -- __MISE_TASKS_DETECT_DUP_ID_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return || : # shpp:source_guard
+set -- __MISE_TASKS_DETECT_DUP_ID_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
 #MISE description="Detect ID duplication among files."
 

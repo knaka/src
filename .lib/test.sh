@@ -1,6 +1,6 @@
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-set -- __LIB_TEST_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return || : # shpp:source_guard
+set -- __LIB_TEST_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
 readonly RC_TEST_SKIPPED=10
 

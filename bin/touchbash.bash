@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -- _BIN_TOUCHBASH_BASH "$@"; eval "shift; \${$1-false} || ! $1=true" && return || : # shpp:source_guard
+set -- _BIN_TOUCHBASH_BASH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
 # Generate Bash shell script scaffold.
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-set -- _BIN_URLS2MD_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return || : # shpp:source_guard
+set -- _BIN_URLS2MD_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
 # Read URLs from standard input, summarize the corresponding web page content with Readability, and output as a single concatenated Markdown document. Error handling is not implemented. Please notify the #discussion channel on Slack before making extensions or modifications.
 

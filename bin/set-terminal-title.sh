@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-set -- _BIN_SET_TERMINAL_TITLE_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return || : # shpp:source_guard
+set -- _BIN_SET_TERMINAL_TITLE_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
 # XTERM – Terminal emulator for the X Window System https://invisible-island.net/xterm/xterm.html
 # How to change the title of an xterm https://tldp.org/HOWTO/Xterm-Title.html
