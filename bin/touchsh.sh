@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-set -- _BIN_TOUCHSH_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return || : # shpp:source_guard
+set -- _BIN_TOUCHSH_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
 # Generate Bourne shell script scaffold.
 
@@ -14,7 +14,7 @@ cd "$3" || exit; shift 3 # /shpp:sources
 
 gen_header_49df118() { cat <<-'EOF'
 	#!/usr/bin/env sh
-	set -- _@UNIQUE_ID@ "$@"; eval "shift; \${$1-false} || ! $1=true" && return || : # shpp:source_guard
+	set -- _@UNIQUE_ID@ "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 EOF
 }
 
