@@ -11,7 +11,7 @@ cd "$3" || exit; shift 3 # /shpp:sources
 
 toupper_() {
   # shellcheck disable=SC3059
-  is_bash_bin 4 && echo_ "${*^^}" && return
+  is_bash_bin 4 && set_ "${*^^}" && return
   local result=
   local s="$*"
   local c
@@ -49,12 +49,12 @@ toupper_() {
       (*) result="${result}$c";;
     esac
   done
-  echo_ "$result"
+  set_ "$result"
 }
 
 tolower_() {
   # shellcheck disable=SC3059
-  is_bash_bin 4 && echo_ "${*,,}" && return
+  is_bash_bin 4 && set_ "${*,,}" && return
   local result=
   local s="$*"
   local c
@@ -92,7 +92,7 @@ tolower_() {
       (*) result="${result}$c";;
     esac
   done
-  echo_ "$result"
+  set_ "$result"
 }
 
 substr_() {
@@ -101,7 +101,7 @@ substr_() {
   local start="$2"
   local length="${3-${#s}}"
   # shellcheck disable=SC3057
-  is_bash_bin && echo_ "${s:$((start-1)):$length}" && return
+  is_bash_bin && set_ "${s:$((start-1)):$length}" && return
   local end=$((start+length))
   local c
   local i=1
@@ -115,29 +115,29 @@ substr_() {
     fi
     i=$((i+1))
   done
-  echo_ "$result"
+  set_ "$result"
 }
 
 sub_() {
   local s="$1"
   local from="$2"
-  test -z "$from" && echo_ "$s" && return
+  test -z "$from" && set_ "$s" && return
   local to="$3"
   # shellcheck disable=SC3060
-  is_bash_bin && echo_ "${s/$from/$to}" && return
+  is_bash_bin && set_ "${s/$from/$to}" && return
   local left="${s%%"$from"*}"
-  test "$left" = "$s" && echo_ "$s" && return
-  echo_ "$left$to${s#*"$from"}"
+  test "$left" = "$s" && set_ "$s" && return
+  set_ "$left$to${s#*"$from"}"
 }
 
 gsub_() {
   local result=
   local s="$1"
   local from="$2"
-  test -z "$from" && echo_ "$s" && return
+  test -z "$from" && set_ "$s" && return
   local to="$3"
   # shellcheck disable=SC3060
-  is_bash_bin && echo_ "${s//$from/$to}" && return
+  is_bash_bin && set_ "${s//$from/$to}" && return
   while test -n "$s"
   do
     local left="${s%%"$from"*}"
@@ -145,20 +145,20 @@ gsub_() {
     result="$result$left$to"
     s="${s#*"$from"}"
   done
-  echo_ "$result"
+  set_ "$result"
 }
 
 index_() {
   local s="$1"
   local find="$2"
-  test -z "$find" && echo_ 0 && return
+  test -z "$find" && set_ 0 && return
   local left="${s%%"$find"*}"
-  test "$left" = "$s" && echo_ 0 && return
-  echo_ $((${#left}+1))
+  test "$left" = "$s" && set_ 0 && return
+  set_ $((${#left}+1))
 }
 
 length_() {
-  echo_ ${#1}
+  set_ ${#1}
 }
 
 split_() {

@@ -10,7 +10,7 @@ cd "$3" || exit; shift 3 # /shpp:sources
 vec_() {
   if test "$#" -eq 0
   then
-    echo_ ""
+    set_ ""
     return
   fi
   printf_ "%s${CH_US}" "$@"
@@ -21,7 +21,7 @@ vempty() {
 }
 
 vsort_nul_() {
-  echo_ "$(
+  set_ "$(
     printf "%s" "$1" \
     | tr "$CH_US" '\0' \
     | "$2" \
@@ -46,10 +46,6 @@ vshuf_() {
   vsort_nul_ "$1" shuf_28cd8b4
 }
 
-map_() {
-  vec_ "$@"
-}
-
 veach() {
   local func="${2-_}"
   local item
@@ -59,6 +55,10 @@ veach() {
     unset IFS
     "$func" "$item"
   done
+}
+
+map_() {
+  vec_ "$@"
 }
 
 # Put a value in an associative array.
@@ -114,7 +114,7 @@ mget_() {
   local n=$(($#/2))
   while test "$i" -lt "$n"
   do
-    test "$1" = "$key" && echo_ "$2" && return 0
+    test "$1" = "$key" && set_ "$2" && return 0
     shift 2
     i=$((i+1))
   done
@@ -153,7 +153,7 @@ collection() {
   local IFS
   local sep="#"
   local RESULT=
-  echo_ ""
+  set_ ""
   mput_ -s"$sep" "$RESULT" "key" "value"
   echo "$RESULT"
   mput_ -s"$sep" "$RESULT" "key" "value  x  y${CH_LF}value${CH_TAB}z"

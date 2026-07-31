@@ -446,7 +446,7 @@ has_external_command() {
 
 : "${RESULT-}"
 
-echo_() {
+set_() {
   RESULT="$1"
 }
 
