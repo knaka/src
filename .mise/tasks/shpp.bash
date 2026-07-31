@@ -6,7 +6,7 @@ set -- _00270f2 "$@"; eval "shift; \${$1-false} || ! $1=true" && return
 pushd "${BASH_SOURCE[0]%[/\\]*}" >/dev/null 2>&1 || pushd . >/dev/null
 . ../../.lib/utils.sh
 . ../../.lib/cui.sh
-path_c3e24bd="$PWD"/../../.lib/shpp.pl
+path_c3e24bd="$PWD"/.assets/shpp.pl
 popd >/dev/null || exit
 
 : "${LSV_SHPP_TARGETS=}"

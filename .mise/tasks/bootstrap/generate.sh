@@ -3,7 +3,7 @@ set -- __MISE_TASKS_BOOTSTRAP_GENERATE_SH "$@"; eval "shift; \${$1-false} || ! $
 
 #MISE description="Generate Mise bootstrap scripts."
 
-#EMBED: ./_mise
+#EMBED: ./.assets/_mise
 cat_sh_e52f026() { cat <<'EOF'
 #!/usr/bin/env sh
 set -- _83da9bf "$@"; eval "shift; \${$1-false} || ! $1=true" && return || :
@@ -66,7 +66,7 @@ fi
 EOF
 }
 
-#EMBED: ./_mise.cmd
+#EMBED: ./.assets/_mise.cmd
 cat_cmd_7825e46() { cat <<'EOF'
 @REM Home | mise-en-place https://mise.jdx.dev/
 @REM Releases · jdx/mise https://github.com/jdx/mise/releases

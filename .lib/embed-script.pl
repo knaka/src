@@ -20,6 +20,20 @@
 #           (works only for one-liner-friendly Python: no multi-line control
 #           structures, one statement per line)
 #   other - Lines are joined verbatim
+#
+# Known limitations:
+#   - No escaping is done, so the embedded content must not contain the
+#     quote character it's wrapped in ('...' or "..."), or the resulting
+#     line will be cut short / become invalid.
+#   - All lines are joined onto a single line with no separator, so this
+#     only works for content where newlines carry no meaning. Here-documents,
+#     multi-line strings, indentation-sensitive blocks, and backslash line
+#     continuations can't be embedded this way.
+#   - Files with an unrecognized extension get no minification at all (no
+#     comment stripping, no statement separators inserted), so any '#'
+#     comment or missing statement terminator will corrupt the joined line.
+#   - Embedded files are not themselves scanned for #EMBED directives, so
+#     nested embedding isn't resolved.
 
 use v5.11;
 use strict;
