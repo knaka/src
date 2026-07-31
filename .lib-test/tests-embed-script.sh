@@ -12,11 +12,6 @@ _SCRDIR_0602a18="$PWD"
 cd "$3" || exit; shift 3
 
 test_script_embed() {
-  if ! has_external_command python && ! has_external_command python3
-  then
-    echo Python is not found on path. >&2
-    skip
-  fi
   if is_windows && ! is_mise
   then
     echo Not in Mise env. >&2

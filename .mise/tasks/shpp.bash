@@ -6,6 +6,7 @@ set -- _00270f2 "$@"; eval "shift; \${$1-false} || ! $1=true" && return
 pushd "${BASH_SOURCE[0]%[/\\]*}" >/dev/null 2>&1 || pushd . >/dev/null
 . ../../.lib/utils.sh
 . ../../.lib/cui.sh
+path_c3e24bd="$PWD"/../../.lib/shpp.pl
 popd >/dev/null || exit
 
 : "${LSV_SHPP_TARGETS=}"
@@ -41,7 +42,7 @@ shpp() {
     # esac
     file="$(realpath "$file")"
     file="${file#"$PWD/"}"
-    .lib/shpp.pl "$file" >"$out"
+    perl "$path_c3e24bd" "$file" >"$out"
     if test -s "$out" && ! cmp -s "$out" "$file"
     then
       cat "$out" >"$file"

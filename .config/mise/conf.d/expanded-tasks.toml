@@ -7,7 +7,7 @@ run='''
 # .mise/tasks-bcrypt.sh:task_bcrypt__hash
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
-set -- _SCRDIR "$PWD"
+set -- _SCRDIR "$PWD" "$@"
 . ./"tasks-bcrypt.sh"
 shift 2
 cd "$saved_pwd_85053ae" || exit 1
@@ -23,7 +23,7 @@ run='''
 # .mise/tasks-bcrypt.sh:task_bcrypt__verify
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
-set -- _SCRDIR "$PWD"
+set -- _SCRDIR "$PWD" "$@"
 . ./"tasks-bcrypt.sh"
 shift 2
 cd "$saved_pwd_85053ae" || exit 1
@@ -39,7 +39,7 @@ run='''
 # .mise/tasks-docker.sh:task_docker__status
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
-set -- _SCRDIR "$PWD"
+set -- _SCRDIR "$PWD" "$@"
 . ./"tasks-docker.sh"
 shift 2
 cd "$saved_pwd_85053ae" || exit 1
@@ -54,7 +54,7 @@ run='''
 # .mise/tasks-docker.sh:task_docker__start
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
-set -- _SCRDIR "$PWD"
+set -- _SCRDIR "$PWD" "$@"
 . ./"tasks-docker.sh"
 shift 2
 cd "$saved_pwd_85053ae" || exit 1
@@ -69,7 +69,7 @@ run='''
 # .mise/tasks-docker.sh:task_docker__stop
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
-set -- _SCRDIR "$PWD"
+set -- _SCRDIR "$PWD" "$@"
 . ./"tasks-docker.sh"
 shift 2
 cd "$saved_pwd_85053ae" || exit 1
@@ -84,7 +84,7 @@ run='''
 # .mise/tasks-docker.sh:task_docker__start__temp
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
-set -- _SCRDIR "$PWD"
+set -- _SCRDIR "$PWD" "$@"
 . ./"tasks-docker.sh"
 shift 2
 cd "$saved_pwd_85053ae" || exit 1
@@ -100,7 +100,7 @@ run='''
 # .mise/tasks-docker.sh:task_docker__debian__run
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
-set -- _SCRDIR "$PWD"
+set -- _SCRDIR "$PWD" "$@"
 . ./"tasks-docker.sh"
 shift 2
 cd "$saved_pwd_85053ae" || exit 1
@@ -115,7 +115,7 @@ run='''
 # .mise/tasks-docker.sh:task_docker__busybox__run
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
-set -- _SCRDIR "$PWD"
+set -- _SCRDIR "$PWD" "$@"
 . ./"tasks-docker.sh"
 shift 2
 cd "$saved_pwd_85053ae" || exit 1
@@ -130,7 +130,7 @@ run='''
 # .mise/tasks-session.sh:task_session__init
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
-set -- _SCRDIR "$PWD"
+set -- _SCRDIR "$PWD" "$@"
 . ./"tasks-session.sh"
 shift 2
 cd "$saved_pwd_85053ae" || exit 1
@@ -146,7 +146,7 @@ run='''
 # .mise/tasks-session.sh:task_appenv__ensure
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
-set -- _SCRDIR "$PWD"
+set -- _SCRDIR "$PWD" "$@"
 . ./"tasks-session.sh"
 shift 2
 cd "$saved_pwd_85053ae" || exit 1
@@ -164,7 +164,7 @@ run='''
 # .mise/tasks-session.sh:task_critical__confirm
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
-set -- _SCRDIR "$PWD"
+set -- _SCRDIR "$PWD" "$@"
 . ./"tasks-session.sh"
 shift 2
 cd "$saved_pwd_85053ae" || exit 1
@@ -175,13 +175,13 @@ hide=true
 depends=["appenv:ensure"]
 
 [tasks."test"]
-description='''[names...] Run tests. If no test names are provided, all tests are run.'''
+description='''[tests...] Run tests. If no test names are provided, all tests are run.'''
 run='''
 #!/usr/bin/env sh
 # .mise/tasks-test.sh:task_test
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
-set -- _SCRDIR "$PWD"
+set -- _SCRDIR "$PWD" "$@"
 . ./"tasks-test.sh"
 shift 2
 cd "$saved_pwd_85053ae" || exit 1

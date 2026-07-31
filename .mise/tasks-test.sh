@@ -42,7 +42,7 @@ run_tests() {
   local lib_path="$PWD"/.lib
 
   local RESULT=
-  
+
   map_
   local file
   for file in \
@@ -157,7 +157,8 @@ run_tests() {
       test -r "$log_file_path" && sed -e 's/^/  /' <"$log_file_path" >&2
       some_failed=true
     fi
-  }; veach "$tests_to_run" _
+  }
+  veach "$tests_to_run" _
   "$some_failed" && return 1
   return 0
 }

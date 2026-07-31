@@ -4,30 +4,12 @@ set -- __LIB_EMBED_SCRIPT_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && re
 
 if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = _SCRDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- _SCRDIR . "$OLDPWD" "$@" # shpp:sources
 . ./utils.sh
-is_mise || . ./commands.sh
-script_902b082="$(realpath ./embed-script.py)"
+script_902b082="$(realpath ./embed-script.pl)"
 cd "$3" || exit; shift 3 # /shpp:sources
 
 # This function is tested, do not inlined.
 embed_minified_sub() {
-  local python_bin=
-  local arg
-  for arg in python python3
-  do
-    if has_external_command "$arg"
-    then
-      python_bin="$arg"
-      break
-    fi
-  done
-  if test -z "$python_bin"
-  then
-    echo Python is not found on path. >&2
-    skip
-  fi
-  # -u     : force the stdout and stderr streams to be unbuffered;
-  #          this option has no effect on stdin; also PYTHONUNBUFFERED=x
-  "$python_bin" -u "$script_902b082" "$1"
+  perl "$script_902b082" "$1"
 }
 
 # Embeds minified file contents into shell script files in-place.

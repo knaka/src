@@ -28,7 +28,7 @@ run='''
 # $TASKS_REL_DIR/$base:$func_name
 saved_pwd_85053ae="\$PWD"
 cd "\$MISE_PROJECT_ROOT"/"$TASKS_REL_DIR" || exit 1
-set -- _SCRDIR "\$PWD"
+set -- _SCRDIR "\$PWD" "\$@"
 . ./"$base"
 shift 2
 cd "\$saved_pwd_85053ae" || exit 1

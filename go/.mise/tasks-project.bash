@@ -1,13 +1,10 @@
-#!/usr/bin/env sh
-# vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
-# shellcheck shell=sh
-_() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ 45e2d86 && return 0
+#!/usr/bin/env bash
+set -- _GO__MISE_TASKS_PROJECT_BASH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
-# shellcheck disable=SC3028,SC3054
-if test "${BASH_VERSION+set}"; then cd "${BASH_SOURCE[0]%[/\\]*}" || cd .; elif test "${1-}" = _SCRDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- _SCRDIR ../../.lib "$OLDPWD" "$@"
+pushd "${BASH_SOURCE[0]%[/\\]*}" &>/dev/null || pushd . >/dev/null
 . ../../.lib/utils.sh
-is_mise || . ../../.lib/commands.sh
-cd "$3" || exit; shift 3
+. ../../.lib/commands.sh
+popd >/dev/null || exit
 
 # Generate Go-inlined sample scripts.
 task_hello_sh__gen() {

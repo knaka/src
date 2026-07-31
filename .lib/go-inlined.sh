@@ -1,12 +1,9 @@
-# vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
-# shellcheck shell=sh
-"${sourced_f82c335-false}" && return 0; sourced_f82c335=true
+#!/usr/bin/env sh
+set -- __LIB_GO_INLINED_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
-set -- "$PWD" "$@"; if test "${2:+$2}" = _LIBDIR; then cd "$3" || exit 1; fi
-set -- _LIBDIR .lib "$@"
-. ./.lib/utils.sh
-shift 2
-cd "$3" || exit; shift 3
+if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = _SCRDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- _SCRDIR ../.lib "$OLDPWD" "$@" # shpp:sources
+. ../.lib/utils.sh
+cd "$3" || exit; shift 3 # /shpp:sources
 
 # Generate a Go-inlined shell script that embeds and compiles Go code
 #
