@@ -180,10 +180,16 @@ trap_terminating_signals() {
   done
 }
 
-# Guard against multiple calls. $1 is a unique ID
+usv_called_25b9fbb=
+
+# Guard against multiple calls. $1 is a unique ID. Calls from a different directory are regarded as different calls.
 first_call() {
-  eval "\${_CALLED_$1-false}" && return 1
-  eval "_CALLED_$1=true"
+  case "$CH_US$usv_called_25b9fbb" in
+    (*"$CH_US$PWD|$1$CH_US"*)
+      return 1
+      ;;
+  esac
+  usv_called_25b9fbb="$PWD|$1$CH_US$usv_called_25b9fbb"
 }
 
 # Check if stdio is tty.
@@ -193,14 +199,14 @@ is_terminal() {
 
 usv_called_6b2a1df=
 
-# Run only once
+# Run only once. Calls from a different directory are regarded as different calls.
 run_once() {
   case "$CH_US$usv_called_6b2a1df" in
-    (*"$CH_US$*$CH_US"*)
+    (*"$CH_US$PWD|$*$CH_US"*)
       return 0
       ;;
   esac
-  usv_called_6b2a1df="$usv_called_6b2a1df$*$CH_US"
+  usv_called_6b2a1df="$usv_called_6b2a1df$PWD|$*$CH_US"
   "$@"
 }
 

@@ -81,6 +81,7 @@ counter_268b0bb=
 
 increment_2cfb6e4() {
   first_call aa08b06 || return 0
+  first_call 74cfdba || :
   counter_268b0bb=$((counter_268b0bb + 1))
 }
 
@@ -88,6 +89,47 @@ test_first_call() {
   counter_268b0bb=0
   increment_2cfb6e4
   assert_eq "$counter_268b0bb" 1
+  init_temp_dir
+  # Spaces in dir name.
+  local dir="$TEMP_DIR/foo bar   baz"
+  mkdir "$dir"
+  cd "$dir" || exit 1
+  increment_2cfb6e4
+  assert_eq "$counter_268b0bb" 2
+  cd ..
+  increment_2cfb6e4
+  assert_eq "$counter_268b0bb" 3
+  cd "$dir" || exit 1
+  increment_2cfb6e4
+  assert_eq "$counter_268b0bb" 3
+}
+
+counter_81344cf=
+
+increment_d1d63b0() {
+  counter_81344cf=$((counter_81344cf + 1))
+}
+
+test_run_once() {
+  counter_81344cf=0
+  run_once increment_d1d63b0
+  assert_eq "$counter_81344cf" 1
+  init_temp_dir
+  # Spaces in dir name.
+  local dir="$TEMP_DIR/hoge fuga   foo"
+  mkdir "$dir"
+  cd "$dir" || exit 1
+  run_once increment_d1d63b0
+  assert_eq "$counter_81344cf" 2
+  cd ..
+  run_once increment_d1d63b0
+  assert_eq "$counter_81344cf" 3
+  cd "$dir" || exit 1
+  run_once increment_d1d63b0
+  assert_eq "$counter_81344cf" 3
+  run_once increment_d1d63b0 hoge
+  run_once increment_d1d63b0 fuga foo
+  assert_eq "$counter_81344cf" 5
 }
 
 cleanup1sh() { echo cleanup1sh; };

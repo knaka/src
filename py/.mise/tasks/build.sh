@@ -1,10 +1,10 @@
 #!/usr/bin/env sh
-set -- _d1b9187 "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
+set -- _PY__MISE_TASKS_BUILD_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
-if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = _SCRDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null && set -- _SCRDIR ../../../.lib "$OLDPWD" "$@" # shpp:sources
+if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = _SCRDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- _SCRDIR ../../../.lib "$OLDPWD" "$@" # shpp:sources
 . ../../../.lib/utils.sh
 . ../../../.lib/embed-script.sh
-cd "$3" || exit && shift 3 # /shpp:sources
+cd "$3" || exit; shift 3 # /shpp:sources
 
 build() {
   embed_minified \

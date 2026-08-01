@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-set -- _41f92e5 "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
+set -- _BIN_SHPP_BASH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
 pushd "${BASH_SOURCE[0]%[/\\]*}" &>/dev/null || pushd . >/dev/null
 . ../.mise/tasks/shpp.bash

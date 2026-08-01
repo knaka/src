@@ -95,9 +95,9 @@ is_mise_project_dir() {
 }
 
 expand() {
-  cd "${INIT_CWD-}"
-  cd "${MISE_ORIGINAL_CWD-}"
-  cd "${INITIAL_DIR-}"
+  cd "${INIT_CWD-}" || :
+  cd "${MISE_ORIGINAL_CWD-}" || :
+  cd "${INITIAL_DIR-}" || :
   while :
   do
     if is_mise_project_dir "$PWD"
