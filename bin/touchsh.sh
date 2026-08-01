@@ -1,4 +1,6 @@
 #!/usr/bin/env sh
+# vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
+# shellcheck shell=sh
 set -- _BIN_TOUCHSH_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
 # Generate Bourne shell script scaffold.
@@ -9,8 +11,7 @@ shift 2; set -- _SCRDIR . "$@" # shpp:sources_chdir
 . ./rand7.sh 
 cd "$3" || exit; shift 3 # /shpp:sources
 
-# # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
-# # shellcheck shell=sh
+# Use tab-stripping here-documents not to be re-written by shpp.
 
 gen_header_49df118() { cat <<-'EOF'
 	#!/usr/bin/env sh

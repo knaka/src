@@ -36,10 +36,6 @@ shpp() {
   for file in "$@"
   do
     test -r "$file" || continue
-    # local base="${file##*[/\\]}"
-    # case "$base" in
-    #   (touchsh.sh|touchbash.bash) continue;;
-    # esac
     file="$(realpath "$file")"
     file="${file#"$PWD/"}"
     perl "$path_c3e24bd" "$file" >"$out"
