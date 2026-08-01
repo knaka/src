@@ -1,13 +1,10 @@
-# vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
-# shellcheck shell=sh
-"${sourced_0a93fd3-false}" && return 0; sourced_0a93fd3=true
+#!/usr/bin/env bash
+set -- _3b2018c "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
-set -- "$PWD" "${0%/*}" "$@"; test -z "${_APPDIR-}" && { test "$2" = "$0" && _APPDIR=. || _APPDIR="$2"; cd "$_APPDIR" || exit 1; }
-set -- _LIBDIR .lib "$@"
-. ./.lib/utils.lib.sh
-. ./.lib/commands.lib.sh
-shift 2
-cd "$3" || exit; shift 3
+pushd "${BASH_SOURCE[0]%[/\\]*}" &>/dev/null || pushd . >/dev/null
+. ../../.lib/utils.sh
+. ../../.lib/commands.sh
+popd >/dev/null || exit
 
 gen_cmd_script_5712688() { cat <<EOF
 @ECHO OFF
@@ -59,13 +56,13 @@ task_run() (
 )
 
 # Updates the UV virtualenv.
-subcmd_sync() {
+task_sync() {
   cd "$PROJECT_DIR" || exit
   uv sync "$@"
 }
 
 # Foo
-subcmd_foo() {
+task_foo() {
   cd "$PROJECT_DIR" || exit
   no_indent_script="$(cat <<'EOF'
 print('Hello, World!')
