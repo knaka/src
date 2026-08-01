@@ -7,7 +7,7 @@ popd >/dev/null || exit
 
 # Install npm packages if "package.json" has been updated.
 task_npm__install() {
-  local retcmds=:
+  local retcmds="trap - RETURN"
   trap 'eval "$retcmds"' RETURN
   pushd . >/dev/null
   retcmds="popd >/dev/null || exit; $retcmds"

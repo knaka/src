@@ -19,7 +19,7 @@ popd >/dev/null || exit
 # shellcheck shell=bash
 
 gen_header_bf7ac7d() { cat <<-'EOF'
-	#!/usr/bin/env sh
+	#!/usr/bin/env bash
 	set -- _@UNIQUE_ID@ "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 EOF
 }
