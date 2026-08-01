@@ -12,24 +12,6 @@ popd >/dev/null || exit
 : "${LSV_SHPP_TARGETS=}"
 
 shpp() {
-  if test $# -eq 0
-  then
-    local IFS
-    local disable_noglob=false
-    case $- in (*f*) ;; (*) set -o noglob; disable_noglob=true;; esac
-    IFS="$CH_LF"
-    # shellcheck disable=SC2086
-    set -- $LSV_SHPP_TARGETS
-    "$disable_noglob" && set +o noglob
-    # shellcheck disable=SC2046
-    set -- $(extglob "$@")
-    unset IFS
-    if is_terminal
-    then
-      echo "$@"
-      prompt_confirm "Process for $# files?" || return
-    fi
-  fi
   init_temp_dir
   local out="$TEMP_DIR"/a489fed
   local file
@@ -46,8 +28,30 @@ shpp() {
   done
 }
 
+shpp_for_task() {
+  if test $# -eq 0
+  then
+    local IFS
+    local disable_noglob=false
+    case $- in (*f*) ;; (*) set -o noglob; disable_noglob=true;; esac
+    IFS="$CH_LF"
+    # shellcheck disable=SC2086
+    set -- $LSV_SHPP_TARGETS
+    "$disable_noglob" && set +o noglob
+    # shellcheck disable=SC2046
+    set -- $(extglob "$@")
+    unset IFS
+    if is_terminal
+    then
+      echo "$@" >&2
+      prompt_confirm "Process for $# files?" || return
+    fi
+  fi
+  shpp "$@"
+}
+
 if test "$0" = "${BASH_SOURCE[0]}"
 then
   set -o nounset -o errexit -o pipefail
-  shpp "$@"
+  shpp_for_task "$@"
 fi
