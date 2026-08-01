@@ -16,11 +16,12 @@ EOF
 
 gen_sh_script_a581384() { cat <<EOF
 #!/usr/bin/env sh
-export INITIAL_DIR="\$PWD"
 cd "$PROJECT_DIR"
-./task ./mise-tasks/tasks-project.sh:task_run "$1" "\$@"
+exec mise exec -- uv run python3 _chdir.py "\$OLDPWD" "$PROJECT_DIR"/"$file" "\$@"
 EOF
 }
+
+# mise exec -- uv tool run python3
 
 # Install scripts.
 task_install() {
@@ -31,18 +32,13 @@ task_install() {
   local file
   for file in *.py
   do
-    test -e "$file" || continue
+    test -r "$file" || continue
     case "$file" in
       (_*) continue;;
     esac
     local name="${file%.py}"
-    if is_windows
-    then
-      gen_cmd_script_5712688 "$file" >"$bin_dir_path"/"$name".cmd
-    else
-      gen_sh_script_a581384 "$file" >"$bin_dir_path"/"$name"
-      chmod +x "$bin_dir_path"/"$name"
-    fi
+    gen_sh_script_a581384 "$file" >"$bin_dir_path"/"$name"
+    chmod +x "$bin_dir_path"/"$name"
   done
   pop_dir
 }
