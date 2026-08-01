@@ -8,6 +8,9 @@ cat_sh_e52f026() { cat <<'EOF'
 #!/usr/bin/env sh
 set -- _83da9bf "$@"; eval "shift; \${$1-false} || ! $1=true" && return || :
 
+# Downloads and executes Mise in a project where contributors may not have mise installed.
+# — Home | mise-en-place https://mise.jdx.dev/
+
 # Mise - Home | mise-en-place https://mise.jdx.dev/
 mise_ver_e8ccfbb=2026.7.5
 
@@ -68,7 +71,9 @@ EOF
 
 #EMBED: ./.assets/_mise.cmd
 cat_cmd_7825e46() { cat <<'EOF'
-@REM Home | mise-en-place https://mise.jdx.dev/
+@REM Downloads and executes Mise in a project where contributors may not have mise installed.
+@REM — Home | mise-en-place https://mise.jdx.dev/
+
 @REM Releases · jdx/mise https://github.com/jdx/mise/releases
 @set ver=__MISE_VERSION__
 

@@ -1,6 +1,8 @@
-@REM Home | mise-en-place https://mise.jdx.dev/
+@REM Downloads and executes Mise in a project where contributors may not have mise installed.
+@REM — Home | mise-en-place https://mise.jdx.dev/
+
 @REM Releases · jdx/mise https://github.com/jdx/mise/releases
-@set ver=2026.7.15
+@set ver=2026.7.18
 
 @echo off
 setlocal enabledelayedexpansion

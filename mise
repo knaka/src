@@ -1,8 +1,11 @@
 #!/usr/bin/env sh
 set -- _83da9bf "$@"; eval "shift; \${$1-false} || ! $1=true" && return || :
 
+# Downloads and executes Mise in a project where contributors may not have mise installed.
+# — Home | mise-en-place https://mise.jdx.dev/
+
 # Mise - Home | mise-en-place https://mise.jdx.dev/
-mise_ver_e8ccfbb=2026.7.15
+mise_ver_e8ccfbb=2026.7.18
 
 should_exec_9bf84a8=false
 
