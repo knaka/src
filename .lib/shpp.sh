@@ -7,28 +7,5 @@ script_ccd23eb="$PWD"/shpp.pl
 cd "$3" || exit; shift 3 # /shpp:sources
 
 shpp() {
-  local in_place=false
-  OPTIND=1; while getopts _-: OPT
-  do
-    test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
-    case "$OPT" in
-      (in-place) in_place=true;;
-      (?) return 1;;
-      (*) echo "$0: illegal option -- $OPT" >&2; return 1;;
-    esac
-  done
-  shift $((OPTIND-1))
-
-  local pwd
-  pwd="$(realpath "$PWD")"
-  local file
-  for file in "$@"
-  do
-    shift
-    file="$(realpath "$file")"
-    file="${file#"$pwd/"}"
-    set -- "$@" "$file"
-  done
-  "$in_place" && set -- --in-place "$@"
   perl "$script_ccd23eb" "$@"
 }

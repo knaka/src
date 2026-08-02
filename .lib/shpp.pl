@@ -29,6 +29,8 @@ use warnings;
 
 use experimental qw{switch vlb};
 use File::Basename qw(basename);
+use File::Spec ();
+use Cwd qw(abs_path);
 use Text::ParseWords qw(shellwords);
 use Getopt::Long qw(GetOptions);
 use File::Temp qw(tempfile);
@@ -123,7 +125,11 @@ sub shpp {
           my @fields = split /=/, $word;
           $unique_id = $fields[1] if grep { $_ eq $fields[0] } qw(id uid unique_id);
         }
-        $unique_id //= ($ARGV =~ s/[^a-zA-Z0-9]/_/gr =~ y/[a-z]/[A-Z]/r);
+        $unique_id //= do {
+          my $rel = File::Spec->abs2rel(abs_path($ARGV));
+          $rel =~ s{^\./}{};
+          ($rel =~ s/[^a-zA-Z0-9]/_/gr =~ y/[a-z]/[A-Z]/r);
+        };
         my $source_guard = $source_guard_tmpl =~ s/\@UNIQUE_ID\@/$unique_id/gr;
         puts "$source_guard$trailing";
       }
