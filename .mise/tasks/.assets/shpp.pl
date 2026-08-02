@@ -25,10 +25,16 @@ exit(2) unless is_strict_enabled;
 
 # Declaring v5.35 or higher automatically enables `use warnings`; the checking was added after Perl 5.36.
 use warnings;
-exit(3) unless is_warnings_enabled;
+# exit(3) unless is_warnings_enabled;
 
 use experimental qw{switch vlb};
 use File::Basename qw(basename);
+use Text::ParseWords qw(shellwords);
+
+use Data::Dumper qw(Dumper);
+local $Data::Dumper::Sortkeys = 1;
+local $Data::Dumper::Terse = 1;
+local $Data::Dumper::Indent = 0;
 
 my $source_guard_tmpl = (<<'EOF' =~ s/\R$//r);
 set -- _@UNIQUE_ID@ "$@"; eval "shift; \${$1-false} || ! $1=true" && return
@@ -73,10 +79,17 @@ sub shpp {
       when (/^\s*$/s) {
         puts $_;
       }
-      when (/^[^\s].*( #\s*shpp:source_guard\b.*)$/s) {
+      when (/^[^\s].*( #\s*shpp:source_guard\b\s*(.*))$/s) {
         my $trailing = $1;
-        my $unique_id = "";
-        $unique_id = ($ARGV =~ s/[^a-zA-Z0-9]/_/gr =~ y/[a-z]/[A-Z]/r);
+        my $params = $2;
+        my @words = shellwords($params);
+        # print STDERR Dumper(\@words);
+        my $unique_id;
+        for my $word (@words) {
+          my @fields = split /=/, $word;
+          $unique_id = $fields[1] if grep { $_ eq $fields[0] } qw(id uid unique_id);
+        }
+        $unique_id //= ($ARGV =~ s/[^a-zA-Z0-9]/_/gr =~ y/[a-z]/[A-Z]/r);
         my $source_guard = $source_guard_tmpl =~ s/\@UNIQUE_ID\@/$unique_id/gr;
         puts "$source_guard$trailing";
       }

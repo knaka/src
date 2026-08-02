@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -- _7e8d280 "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
+set -- _BIN_GIT_ACOMMIT_BASH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
 # Git Amend-commit
 
