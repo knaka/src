@@ -29,8 +29,8 @@ task_npm__install() {
   do
     test $# -gt 0 && break
     ! test -d ./node_modules && break
-    ! test -r "$last_check_rel_path" && break
     ! test -r ./package-lock.json && break
+    ! test -r "$last_check_rel_path" && break
     updated ./package.json --after "$last_check_rel_path" && break
     updated ./package-lock.json --after "$last_check_rel_path" && break
     return 0
