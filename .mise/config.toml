@@ -14,6 +14,7 @@ LSV_EMBED_SCRIPT_TARGETS = """
 """
 LSV_EMBED_HEREDOC_TARGETS = """
 {{ config_root }}/.mise/tasks/bootstrap/generate.sh
+{{ config_root }}/.lib/shpp.sh
 """
 LSV_SHPP_TARGETS = """
 {{ config_root }}/bin/**/*.sh

@@ -26,10 +26,10 @@ BEGIN {
   }
 }
 
-((! red_delim) && /^.*<< *['"]?[a-zA-Z_][a-zA-Z_]*['"]?/) {
+((! red_delim) && /^.*<< *['"]?[a-zA-Z_][a-zA-Z0-9_]*['"]?/) {
   _ = $0
   sub(/^.*<< *['"]?/, "", _) # '"
-  match(_, /[a-zA-Z_][a-zA-Z_]*/)
+  match(_, /[a-zA-Z_][a-zA-Z0-9_]*/)
   re_delim = "^" substr(_, RSTART, RLENGTH)
 }
 
