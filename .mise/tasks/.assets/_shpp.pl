@@ -30,11 +30,23 @@ use warnings;
 use experimental qw{switch vlb};
 use File::Basename qw(basename);
 use Text::ParseWords qw(shellwords);
+use Getopt::Long qw(GetOptions);
+use File::Temp qw(tempfile);
+use File::Compare qw(compare);
+use File::Copy qw(copy);
 
 use Data::Dumper qw(Dumper);
 local $Data::Dumper::Sortkeys = 1;
 local $Data::Dumper::Terse = 1;
 local $Data::Dumper::Indent = 0;
+
+# A minimal scope-guard: runs $code when the returned object is destroyed,
+# i.e. when it goes out of scope, whether by normal return, early return, or
+# die-triggered stack unwinding.
+package ScopeGuard;
+sub new { my ($class, $code) = @_; return bless { code => $code }, $class; }
+sub DESTROY { my $self = shift; $self->{code}->(); }
+package main;
 
 my $source_guard_tmpl = (<<'EOF' =~ s/\R$//r);
 set -- _@UNIQUE_ID@ "$@"; eval "shift; \${$1-false} || ! $1=true" && return
@@ -61,10 +73,32 @@ sub puts {
   $last = $line;
 }
 
-sub shpp {
+sub _shpp {
+  my $in_place = 0;
+  GetOptions(
+    'i|in-place' => \$in_place,
+  ) or exit(1);
+  if ($in_place && !@ARGV) {
+    print STDERR "No file specified for --in-place\n";
+    exit(1);
+  }
+
   my $rand = rand(0xFFFFFFF) + 1;
   my $rand7 = sprintf("%x", $rand);
   my $finding_dir = "";
+
+  my ($tmp_fh, $tmp_filename);
+  my $tmp_guard;
+  if ($in_place) {
+    ($tmp_fh, $tmp_filename) = tempfile(UNLINK => 1);
+    select($tmp_fh);
+    $tmp_guard = ScopeGuard->new(sub {
+      select(STDOUT);
+      close($tmp_fh) if $tmp_fh;
+      unlink($tmp_filename) if defined $tmp_filename && -e $tmp_filename;
+    });
+  }
+
   while (<>) {
     given ($_) {
       # Sourcing.
@@ -114,8 +148,21 @@ sub shpp {
         puts "$_";
       }
     }
-    close(ARGV) if eof;
+    if (eof) {
+      if ($in_place) {
+        select(STDOUT);
+        close($tmp_fh);
+        my $file = $ARGV;
+        if (compare($tmp_filename, $file) != 0) {
+          copy($tmp_filename, $file) or die "$tmp_filename -> $file: $!";
+        }
+        unlink($tmp_filename);
+        ($tmp_fh, $tmp_filename) = tempfile(UNLINK => 1);
+        select($tmp_fh);
+      }
+      close(ARGV);
+    }
   }
 }
 
-shpp() unless caller;
+_shpp() unless caller;

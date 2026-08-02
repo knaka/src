@@ -6,7 +6,7 @@ set -- _00270f2 "$@"; eval "shift; \${$1-false} || ! $1=true" && return
 pushd "${BASH_SOURCE[0]%[/\\]*}" >/dev/null 2>&1 || pushd . >/dev/null
 . ../../.lib/utils.sh
 . ../../.lib/cui.sh
-path_c3e24bd="$PWD"/.assets/shpp.pl
+assets_path_c3e24bd="$PWD"/.assets
 popd >/dev/null || exit
 
 : "${LSV_SHPP_TARGETS=}"
@@ -14,21 +14,19 @@ popd >/dev/null || exit
 shpp() {
   init_temp_dir
   local out="$TEMP_DIR"/a489fed
+  local pwd
+  pwd="$(realpath "$PWD")"
   local file
   for file in "$@"
   do
     test -r "$file" || continue
     file="$(realpath "$file")"
-    file="${file#"$PWD/"}"
-    perl "$path_c3e24bd" "$file" >"$out"
-    if test -s "$out" && ! cmp -s "$out" "$file"
-    then
-      cat "$out" >"$file"
-    fi
+    file="${file#"$pwd/"}"
+    perl "$assets_path_c3e24bd"/_shpp.pl --in-place "$file" >"$out"
   done
 }
 
-shpp_for_task() {
+main_4a10603() {
   if test $# -eq 0
   then
     local IFS
@@ -53,5 +51,5 @@ shpp_for_task() {
 if test "$0" = "${BASH_SOURCE[0]}"
 then
   set -o nounset -o errexit -o pipefail
-  shpp_for_task "$@"
+  main_4a10603 "$@"
 fi
