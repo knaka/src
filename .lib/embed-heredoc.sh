@@ -8,9 +8,9 @@ cd "$3" || exit; shift 3 # /shpp:sources
 
 embed_heredoc_sub() {
   local file="$1"
-  cd "$(dirname "$file")" || return 1
+  cd "$(dirname "$file")" || return
   awk -f "$script_4f605d1" <"$(basename "$file")"
-  cd "$OLDPWD" || return 1
+  cd "$OLDPWD" || exit
 }
 
 embed_heredoc() {

@@ -465,18 +465,14 @@ printf_() {
   else
     local file_path
     file_path="$(mktemp)"
-    {
-      # shellcheck disable=SC2059
-      printf "$@"
-      printf "\n%s\n" "_51821ba_"
-    } >"$file_path"
+    # shellcheck disable=SC2059
+    printf "$@" >"$file_path"
     RESULT=
     local REPLY
     local first=true
     # `read -d` is Bash extension.
-    while read -r REPLY
+    while read -r REPLY || test -n "$REPLY"
     do
-      test "$REPLY" = "_51821ba_" && break
       if "$first"
       then
         RESULT="$REPLY"
