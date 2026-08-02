@@ -1,30 +1,15 @@
 #!/usr/bin/env bash
-set -- _00270f2 "$@"; eval "shift; \${$1-false} || ! $1=true" && return
+set -- __MISE_TASKS_SHPP_BASH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
 #MISE description="[files...] SHell PreProcessor. If no filenames are provided, all files listed in $LSV_SHPP_TARGETS are processed."
 
 pushd "${BASH_SOURCE[0]%[/\\]*}" >/dev/null 2>&1 || pushd . >/dev/null
 . ../../.lib/utils.sh
 . ../../.lib/cui.sh
-assets_path_c3e24bd="$PWD"/.assets
+. ../../.lib/shpp.sh
 popd >/dev/null || exit
 
 : "${LSV_SHPP_TARGETS=}"
-
-shpp() {
-  init_temp_dir
-  local out="$TEMP_DIR"/a489fed
-  local pwd
-  pwd="$(realpath "$PWD")"
-  local file
-  for file in "$@"
-  do
-    test -r "$file" || continue
-    file="$(realpath "$file")"
-    file="${file#"$pwd/"}"
-    perl "$assets_path_c3e24bd"/_shpp.pl --in-place "$file" >"$out"
-  done
-}
 
 main_4a10603() {
   if test $# -eq 0
@@ -41,11 +26,11 @@ main_4a10603() {
     unset IFS
     if is_terminal
     then
-      echo "$@" >&2
+      # echo "$@" >&2
       prompt_confirm "Process for $# files?" || return
     fi
   fi
-  shpp "$@"
+  shpp --in-place "$@"
 }
 
 if test "$0" = "${BASH_SOURCE[0]}"

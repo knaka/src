@@ -73,7 +73,7 @@ sub puts {
   $last = $line;
 }
 
-sub _shpp {
+sub shpp {
   my $in_place = 0;
   GetOptions(
     'i|in-place' => \$in_place,
@@ -165,4 +165,4 @@ sub _shpp {
   }
 }
 
-_shpp() unless caller;
+shpp() unless caller;

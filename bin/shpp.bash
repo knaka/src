@@ -2,7 +2,7 @@
 set -- _BIN_SHPP_BASH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
 pushd "${BASH_SOURCE[0]%[/\\]*}" &>/dev/null || pushd . >/dev/null
-. ../.mise/tasks/shpp.bash
+. ../.lib/shpp.sh
 popd >/dev/null || exit
 
 if test "$0" = "${BASH_SOURCE[0]}"
