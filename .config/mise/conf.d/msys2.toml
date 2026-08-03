@@ -12,4 +12,4 @@ bin_path = "msys64/usr/bin"
 url = 'https://github.com/msys2/msys2-installer/releases/download/{{ version }}/msys2-base-{{ arch(x64="x86_64") }}-{{ vars.msys2_version | replace(from="-", to="") }}.tar.zst'
 platforms.windows-amd64 = { checksum = "sha256:7a3e5c0a728ebefd24dca6da179fe569dc98d6c7d20ce80981d8dc33fb15f7fc" }
 # platforms.windows-amd64 = { checksum = "sha256:ace898d250d7302a24259a0288d69354649365af9cc64c8bcc2f219bc1e28374" }
-postinstall = 'cd %MISE_TOOL_INSTALL_PATH%\msys64 & C:\Windows\System32\curl.exe -fsSL -o temp.tar.zst https://mirror.msys2.org/msys/x86_64/diffutils-3.12-1-x86_64.pkg.tar.zst & C:\Windows\System32\tar.exe --zstd -xf temp.tar.zst & del temp.tar.zst'
+postinstall = 'cd %MISE_TOOL_INSTALL_PATH%\msys64 & C:\Windows\System32\curl.exe -fsSL -o - https://mirror.msys2.org/msys/x86_64/diffutils-3.12-1-x86_64.pkg.tar.zst | C:\Windows\System32\tar.exe --zstd -xf -'
