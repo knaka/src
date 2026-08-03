@@ -19,7 +19,7 @@ shpp() {
 }
 
 #EMBED: ./shpp.pl
-load_f35a07c() { while IFS= read -r REPLY || test -n "$REPLY"; do script_ed0985e="$script_ed0985e${REPLY}$CH_LF"; done <<'EOF_E6274B4'
+load_f35a07c() { assign_stdin script_ed0985e <<'EOF_6B36ED6'
 #!/usr/bin/env perl
 # vim: set tabstop=2 shiftwidth=2 et:
 # -*- mode: perl; tab-width: 2; indent-tabs-mode: nil; -*-
@@ -194,5 +194,5 @@ sub shpp {
 }
 
 shpp() unless caller;
-EOF_E6274B4
+EOF_6B36ED6
 }
