@@ -456,6 +456,28 @@ set_() {
   RESULT="$1"
 }
 
+# Assign stdin input stream to variable, preserving whether the input ends with
+# a trailing newline.
+assign_stdin() {
+  local var_name="$1"
+  if is_bash_bin
+  then
+    eval "IFS='' read -r -d '' \"$var_name\"" || :
+    return
+  fi
+  eval "$var_name="
+  local REPLY
+  while :
+  do
+    if ! IFS='' read -r REPLY
+    then
+      test -n "$REPLY" && eval "$var_name=\"\$$var_name\$REPLY\""
+      break
+    fi
+    eval "$var_name=\"\$$var_name\$REPLY\$CH_LF\""
+  done
+}
+
 printf_() {
   if is_bash_bin
   then
@@ -468,19 +490,7 @@ printf_() {
     # shellcheck disable=SC2059
     printf "$@" >"$file_path"
     RESULT=
-    local REPLY
-    local first=true
-    # `read -d` is Bash extension.
-    while read -r REPLY || test -n "$REPLY"
-    do
-      if "$first"
-      then
-        RESULT="$REPLY"
-        first=false
-      else
-        RESULT="$RESULT$CH_LF$REPLY"
-      fi
-    done <"$file_path"
+    assign_stdin RESULT <"$file_path"
     rm -f "$file_path"
   fi
 }

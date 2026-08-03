@@ -242,3 +242,22 @@ test_memoize_failure() {
     true
   fi
 }
+
+test_assign_stdin() {
+  init_temp_dir
+  local expected_file="$TEMP_DIR"/7067d45
+  local result_file="$TEMP_DIR"/dd9f0e5
+  local foo=
+
+  printf "Hello\nWorld!" >"$expected_file"
+  assign_stdin foo <"$expected_file"
+  printf "%s" "$foo" >"$result_file"
+  assert test -s "$result_file"
+  assert cmp "$expected_file" "$result_file"
+
+  printf "Hello\nWorld!\n" >"$expected_file"
+  assign_stdin foo <"$expected_file"
+  printf "%s" "$foo" >"$result_file"
+  assert test -s "$result_file"
+  assert cmp "$expected_file" "$result_file"
+}
