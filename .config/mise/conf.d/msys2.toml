@@ -10,4 +10,10 @@ bin_path = "msys64/usr/bin"
 # “version” cannot be filtered as tera template.
 url = 'https://github.com/msys2/msys2-installer/releases/download/{{ version }}/msys2-base-{{ arch(x64="x86_64") }}-{{ vars.msys2_version | replace(from="-", to="") }}.tar.zst'
 platforms.windows-amd64 = { checksum = "sha256:ace898d250d7302a24259a0288d69354649365af9cc64c8bcc2f219bc1e28374" }
-postinstall = '.config\mise\conf.d\postinstall-msys2.cmd'
+# postinstall = '.config\mise\conf.d\postinstall-msys2.cmd'
+postinstall = '''
+cd %MISE_TOOL_INSTALL_PATH%\msys64
+C:\Windows\System32\curl.exe -fsSL -o temp.tar.zst https://mirror.msys2.org/msys/x86_64/diffutils-3.12-1-x86_64.pkg.tar.zst
+C:\Windows\System32\tar.exe --zstd -xf temp.tar.zst
+del temp.tar.zst
+'''

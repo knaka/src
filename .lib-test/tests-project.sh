@@ -266,6 +266,7 @@ test_assign_stdin() {
     cmp --help
     which diff
     echo "$PATH"
+    ls -l /c/Users/runneradmin/AppData/Local/mise/installs/http-msys2/2026-06-11/msys64/usr/bin || :
   fi
   assert test -s "$result_file"
   assert cmp -s "$expected_file" "$result_file"
