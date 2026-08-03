@@ -3,7 +3,7 @@ min_version = "2026.7.18"
 [settings]
 activate_aggressive = true
 # Print output as it comes in to utilize Gum. // Settings | mise-en-place https://mise.jdx.dev/configuration/settings.html
-task_output = "interleave"
+output = "interleave"
 
 [env]
 MISE_PID = "{{ mise_pid }}"
