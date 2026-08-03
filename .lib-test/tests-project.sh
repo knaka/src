@@ -259,6 +259,10 @@ test_assign_stdin() {
     printf "ad46c3e: "; printf "%s" "$expected_file" | od -c
     ls -l "$expected_file"
     cat -n "$expected_file"
+    echo c72c0e9
+    which cmp
+    echo 606bfd5
+    ls -l /usr/bin/cmp || :
   fi
   assert test -s "$result_file"
   assert cmp "$expected_file" "$result_file"
