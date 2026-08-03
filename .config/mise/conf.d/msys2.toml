@@ -10,9 +10,4 @@ bin_path = "msys64/usr/bin"
 # “version” cannot be filtered as tera template.
 url = 'https://github.com/msys2/msys2-installer/releases/download/{{ version }}/msys2-base-{{ arch(x64="x86_64") }}-{{ vars.msys2_version | replace(from="-", to="") }}.tar.zst'
 platforms.windows-amd64 = { checksum = "sha256:ace898d250d7302a24259a0288d69354649365af9cc64c8bcc2f219bc1e28374" }
-# Hooks | mise-en-place https://mise.jdx.dev/hooks.html
-# Package: mingw-w64-ucrt-x86_64-diffutils - MSYS2 Packages https://packages.msys2.org/packages/mingw-w64-ucrt-x86_64-diffutils
-# postinstall = { run_windows = '''
-# curl -fsSL -o diffutils.pkg.tar.zst https://mirror.msys2.org/mingw/ucrt64/mingw-w64-ucrt-x86_64-diffutils-3.12-1-any.pkg.tar.zst
-# tar --zstd -xf diffutils.pkg.tar.zst -C "{{ env.MISE_TOOL_INSTALL_PATH }}/msys64" usr/
-# ''' }
+postinstall = '.config\mise\conf.d\postinstall-msys2.cmd'

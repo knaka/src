@@ -268,11 +268,11 @@ test_assign_stdin() {
     echo "$PATH"
   fi
   assert test -s "$result_file"
-  assert diff -qs "$expected_file" "$result_file"
+  assert cmp -s "$expected_file" "$result_file"
 
   printf "Hello\nWorld!\n" >"$expected_file"
   assign_stdin foo <"$expected_file"
   printf "%s" "$foo" >"$result_file"
   assert test -s "$result_file"
-  assert diff -qs "$expected_file" "$result_file"
+  assert cmp -s "$expected_file" "$result_file"
 }
