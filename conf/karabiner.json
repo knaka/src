@@ -2024,6 +2024,27 @@
                     ]
                   }
                 ]
+              },
+              {
+                "type": "basic",
+                "from": {
+                  "key_code": "h",
+                  "modifiers": {
+                    "mandatory": [
+                      "command",
+                      "shift",
+                      "control"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "key_code": "f17",
+                    "modifiers": [
+                      "shift"
+                    ]
+                  }
+                ]
               }
             ]
           }

@@ -252,6 +252,7 @@ test_assign_stdin() {
   printf "Hello\nWorld!" >"$expected_file"
   assign_stdin foo <"$expected_file"
   printf "%s" "$foo" >"$result_file"
+  is_windows && ls -l "$TEMP_DIR"
   assert test -s "$result_file"
   assert cmp "$expected_file" "$result_file"
 

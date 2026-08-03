@@ -53,14 +53,17 @@ hs.hotkey.bind(
   end
 )
 
--- Hash value in 7 digits
+-- Hash value in 7 digits (rand7)
 hs.hotkey.bind(
   -- {"command", "shift"}, "h",
   {"shift"}, "f14",
   function()
     math.randomseed(os.time() * 1000 + math.random(1, 1000))
-    local n = math.random(0, 268435455)  -- 0xFFFFFFF
-    local hexId = string.format("%07x", n)
+    local hexId
+    repeat
+      local n = math.random(0, 268435455)  -- 0xFFFFFFF
+      hexId = string.format("%07x", n)
+    until hexId:match("[a-f]")
     hs.eventtap.keyStrokes(hexId)
   end
 )
@@ -100,5 +103,19 @@ hs.hotkey.bind(
     hs.eventtap.keyStroke({}, "left", 0)
     hs.eventtap.keyStroke({}, "left", 0)
     hs.eventtap.keyStroke({}, "left", 0)
+  end
+)
+
+-- Hash value in 7 digits (RAND7, uppercase)
+hs.hotkey.bind(
+  {"shift"}, "f17",
+  function()
+    math.randomseed(os.time() * 1000 + math.random(1, 1000))
+    local hexId
+    repeat
+      local n = math.random(0, 268435455)  -- 0xFFFFFFF
+      hexId = string.format("%07X", n)
+    until hexId:match("[A-F]")
+    hs.eventtap.keyStrokes(hexId)
   end
 )
