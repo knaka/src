@@ -21,13 +21,12 @@ als() {
     esac
     case "$file" in
       (*.a) ar tv "$file";;
-      (*.tgz|*.tar.gz) tar ztvf "$file";;
+      (*.tgz|*.tar.gz|*.tar.Z|*.tar.zst) tar ztvf "$file";;
       (*.cgz|*.cpio.gz) gzip -d -c "$file" | cpio --list --verbose;;
       (*.cpio) cpio --list --verbose < "$file";;
       (*.tbz|tar.bz2) tar -t -v -f "$file" --bzip2;;
       (*.zip|*.ZIP|*.jar|*.xpi|*.egg|*.war|*.ipa|*.xlsx) unzip -l "$file";;
       (*.tar.lzma) tar Ytvf "$file";;
-      (*.tar.Z) tar Ztvf "$file";;
       (*.tar|*.gem) tar tvf "$file";;
       (*.rpm) rpm2cpio "$file" | cpio --unconditional --list -v;;
       (*.lzh|*.Lzh|*.LZH) lha l "%s";;

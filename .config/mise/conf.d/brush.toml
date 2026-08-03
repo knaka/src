@@ -1,6 +1,12 @@
+[hooks]
+postinstall = { run_windows = "cmd" }
+
 [tools."http:brush"]
-os = []
+# os = []
+# os = ["macos"]
 # Releases · reubeno/brush https://github.com/reubeno/brush/releases
 version = "0.4.0"
 url = 'https://github.com/reubeno/brush/releases/download/brush-shell-v{{ version }}/brush-{{ arch(x64="x86_64",arm64="aarch64") }}-{{ os(macos="apple-darwin") }}.tar.gz'
-rename_exe = 'bash'
+# rename_exe = 'bash'
+install_env = { FOO = "foo bar {{ config_root }}" }
+postinstall = '"$MISE_TOOL_INSTALL_PATH"/brush "$MISE_CONFIG_ROOT"/.config/mise/conf.d/postinstall-brush.sh'
