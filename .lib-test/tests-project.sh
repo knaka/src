@@ -258,6 +258,7 @@ test_assign_stdin() {
     ls -l "$TEMP_DIR"
     printf "ad46c3e: "; printf "%s" "$expected_file" | od -c
     ls -l "$expected_file"
+    cat -n "$expected_file"
   fi
   assert test -s "$result_file"
   assert cmp "$expected_file" "$result_file"
