@@ -28,6 +28,7 @@ platforms.windows-amd64 = { checksum = "sha256:ace898d250d7302a24259a0288d693546
 
 postinstall = """
 cd /d %MISE_TOOL_INSTALL_PATH%\\msys64 & \
+usr\\bin\\bash.exe /usr/bin/pacman-key --init & \
 usr\\bin\\pacman.exe -Syu bc diffutils patch & \
 rem \
 """
