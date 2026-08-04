@@ -32,7 +32,10 @@ LSV_SHPP_TARGETS = """
 {{ config_root }}/py/.mise/**/*.sh
 {{ config_root }}/py/.mise/**/*.sh
 """
-# _.path = ["{{ config_root }}/.mise/preferred-sh"]
+_.path = [
+  # "{{ config_root }}/.mise/preferred-sh",
+  # "{{ config_root }}/.mise/preferred-bash",
+]
 HEREDOC = { default = """
 foo \
 bar \

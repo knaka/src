@@ -53,7 +53,7 @@ run_worker() {
   if "$group"
   then
     local pid
-    if is_bash_bin
+    if is_bash_bin && ! is_brush
     then
       # Bash provides rich job control feature even on MSYS2.
       local disable_monitor=false
@@ -129,7 +129,14 @@ run_worker() {
     wid="g$pid"
   else
     local pid
-    if is_bash_bin
+    if is_brush
+    then
+      # On Brush shell, this in a subshell does not return PID.
+      # > "$@" </dev/null &
+      # > echo $! >"$pid_file"
+      echo Not implemented. >&2
+      return 1
+    elif is_bash_bin
     then
       if "$record_log"
       then

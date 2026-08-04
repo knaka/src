@@ -1,0 +1,13 @@
+#!/bin/sh
+
+IFS='|'
+for shell in ${PSV_PREFERRED_BASHS-brush|bash}
+do
+  cmd="${shell%% *}"
+  if command -v "$cmd" >/dev/null 2>&1
+  then
+    unset IFS
+    exec $shell "$@"
+  fi
+done
+exec /bin/bash "$@"

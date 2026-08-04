@@ -96,6 +96,10 @@ is_bash_native() {
   is_bash_bin "$@" && [[ ":$SHELLOPTS:" != *:posix:* ]]
 }
 
+is_brush() {
+  test "${BRUSH_VERSION+set}"
+}
+
 # Executable file extension.
 EXE_EXT=
 if is_windows

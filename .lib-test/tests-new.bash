@@ -17,11 +17,25 @@ test_new_success2() {
   assert_eq "$((1 + 2 + 3 + 4))" 10
 }
 
-cleanup1bash() { echo cleanup1bash; };
-cleanup2bash() { echo cleanup2bash; };
-cleanup3bash() { echo cleanup3bash; };
+cleanup1bash() {
+  echo 33eb70c cleanup1bash >&2
+  echo cleanup1bash
+}
+
+cleanup2bash() {
+  echo f12d40d cleanup2bash >&2
+  echo cleanup2bash;
+}
+
+cleanup3bash() {
+  echo 1f1126d cleanup3bash >&2
+  echo cleanup3bash
+}
 
 test_register_exit_handler_bash() {
+  # On Brush shell, the `EXIT` trap in a subshell doesn't seem to work at all. (2026-08-04)
+  skip_if is_brush
+
   local temp_file
   temp_file="$(mktemp)"
   add_exit_handler cleanup1bash
@@ -36,6 +50,9 @@ test_register_exit_handler_bash() {
 }
 
 test_cleanup_child_processes_bash() {
+  # On Brush shell, the `EXIT` trap in a subshell doesn't seem to work at all. (2026-08-04)
+  skip_if is_brush
+
   init_temp_dir
   local child_pid_file="$TEMP_DIR/child_pid"
 

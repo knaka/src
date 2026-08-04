@@ -4,6 +4,7 @@ set -- __LIB_TEST_TESTS_BASH_FEATURES_BASH "$@"; eval "shift; \${$1-false} || ! 
 pushd "${BASH_SOURCE[0]%[/\\]*}" &>/dev/null || pushd . >/dev/null
 . ../.lib/utils.sh
 . ../.lib/assert.sh
+. ../.lib/test.sh
 popd >/dev/null || exit
 
 qux_b8af6e1() {
@@ -34,10 +35,14 @@ foo_9faf116() {
   bar_40d5ce3
 }
 
-# `trap - RETURN` は他のシグナルと挙動が異なるようで、スタックされた元関数のハンドラへ reset される。
+# `trap - RETURN` appears to behave differently from other signals: it gets reset to the RETURN handler that was stacked for the calling function.
 # — Save and restore bash RETURN traps within functions - Unix & Linux Stack Exchange https://unix.stackexchange.com/questions/804341/save-and-restore-bash-return-traps-within-functions
 
 test_defer() {
+  # On Brush shell, `RETURN` trap is not implemented yet. (2026-08-04)
+  # brush/docs/reference/compatibility.md at main · reubeno/brush https://github.com/reubeno/brush/blob/main/docs/reference/compatibility.md
+  skip_if is_brush
+
   assert_eq \
     "foo_9faf116,bar_40d5ce3,baz_a1bd4c5,BAZ,qux_b8af6e1,QUX,FOO,main" \
     "$(foo_9faf116; echo -n main)"

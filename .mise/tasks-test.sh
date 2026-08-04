@@ -58,7 +58,7 @@ run_tests() {
     test -r "$file" || continue
     case "$file" in
       (*.bash)
-        is_bbwin && continue
+        is_bbwin && continue || :
         ;;
     esac
     local test

@@ -3,7 +3,7 @@
 # shellcheck shell=sh
 
 IFS='|'
-for shell in ${PSV_PREFERRED_SHELLS-bash --posix|/bin/sh|dash}
+for shell in ${PSV_PREFERRED_SHELLS-/bin/sh|dash}
 do
   cmd="${shell%% *}"
   if command -v "$cmd" >/dev/null 2>&1

@@ -10,10 +10,6 @@ if test "${BASH_VERSION+set}"; then cd "${BASH_SOURCE[0]%[/\\]*}" || cd .; elif 
 . ../.lib/test.sh
 cd "$3" || exit; shift 3
 
-skip_cond_ce1f35f() {
-  is_bbwin
-}
-
 : "${path_3da3ab4-}"
 
 fn_not_to_clean_901f64b() {
@@ -24,7 +20,8 @@ fn_not_to_clean_901f64b() {
 }
 
 test_worker() {
-  skip_if skip_cond_ce1f35f
+  skip_if is_bbwin
+  skip_if is_brush
 
   init_worker_queue
   run_rec_worker sleep 1234
@@ -42,7 +39,7 @@ test_worker() {
   wait_worker --timeout-sec=10 "$wid"
   assert_failure kill -0 "$(pid_of_worker "$wid")" >/dev/null 2>&1
 
-  if is_bash_bin
+  if is_bash_bin && ! is_brush
   then
     path_3da3ab4="$TEMP_DIR/b39f0df"
     run_rec_worker --group fn_not_to_clean_901f64b
