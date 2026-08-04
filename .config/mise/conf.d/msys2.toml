@@ -12,6 +12,7 @@ bin_path = "msys64/usr/bin"
 # Package: base - MSYS2 Packages https://packages.msys2.org/packages/base
 url = 'https://github.com/msys2/msys2-installer/releases/download/{{ vars.msys2_version }}/msys2-base-{{ arch(x64="x86_64") }}-{{ vars.msys2_version | replace(from="-", to="") }}.tar.zst'
 platforms.windows-amd64 = { checksum = "sha256:ace898d250d7302a24259a0288d69354649365af9cc64c8bcc2f219bc1e28374" }
+postinstall = '%MISE_TOOL_INSTALL_PATH%\msys64\usr\bin\pacman.exe -Syu --noconfirm bc diffutils patch'
 
 # Add packages.
 # 
@@ -25,13 +26,6 @@ platforms.windows-amd64 = { checksum = "sha256:ace898d250d7302a24259a0288d693546
 # C:\\Windows\\System32\\curl.exe --fail --silent --show-error --location --output - https://mirror.msys2.org/msys/x86_64/patch-2.7.6-3-x86_64.pkg.tar.zst | C:\\Windows\\System32\\tar.exe zxf - & \
 # rem \
 # """
-
-postinstall = """
-cd /d %MISE_TOOL_INSTALL_PATH%\\msys64 & \
-usr\\bin\\bash.exe /usr/bin/pacman-key --init & \
-usr\\bin\\pacman.exe -Syu bc diffutils patch & \
-rem \
-"""
 
 # Packages which I have noticed missing from the POSIX command set. // Package: man-pages-posix - MSYS2 Packages https://packages.msys2.org/packages/man-pages-posix
 # 

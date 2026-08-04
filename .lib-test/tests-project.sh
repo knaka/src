@@ -252,22 +252,6 @@ test_assign_stdin() {
   printf "Hello\nWorld!" >"$expected_file"
   assign_stdin foo <"$expected_file"
   printf "%s" "$foo" >"$result_file"
-  if is_windows 
-  then
-    printf "78aa0d3: "; printf "%s" "$TEMP_DIR" | od -c
-    ls -l "$TEMP_DIR"
-    printf "ad46c3e: "; printf "%s" "$expected_file" | od -c
-    ls -l "$expected_file"
-    cat -n "$expected_file"
-    echo c72c0e9
-    which cmp
-    echo 606bfd5
-    ls -l /usr/bin/cmp || :
-    cmp --help
-    which diff
-    echo "$PATH"
-    ls -l /c/Users/runneradmin/AppData/Local/mise/installs/http-msys2/2026-06-11/msys64/usr/bin || :
-  fi
   assert test -s "$result_file"
   assert cmp -s "$expected_file" "$result_file"
 
