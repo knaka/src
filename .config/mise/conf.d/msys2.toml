@@ -16,13 +16,13 @@ platforms.windows-amd64 = { checksum = "sha256:ace898d250d7302a24259a0288d693546
 # Package: bc - MSYS2 Packages https://packages.msys2.org/packages/bc
 # Package: diffutils - MSYS2 Packages https://packages.msys2.org/packages/diffutils
 # Package: patch - MSYS2 Packages https://packages.msys2.org/packages/patch
-postinstall = '''
-cd /d %MISE_TOOL_INSTALL_PATH%\msys64 &
-curl --fail --silent --show-error --location --output - https://mirror.msys2.org/msys/x86_64/bc-1.08.2-1-x86_64.pkg.tar.zst | tar zxf - &
-curl --fail --silent --show-error --location --output - https://mirror.msys2.org/msys/x86_64/diffutils-3.12-1-x86_64.pkg.tar.zst | tar zxf - &
-curl --fail --silent --show-error --location --output - https://mirror.msys2.org/msys/x86_64/patch-2.7.6-3-x86_64.pkg.tar.zst | tar zxf - &
-rem
-'''
+postinstall = """
+cd /d %MISE_TOOL_INSTALL_PATH%\\msys64 & \
+C:\\Windows\\System32\\curl.exe --fail --silent --show-error --location --output - https://mirror.msys2.org/msys/x86_64/bc-1.08.2-1-x86_64.pkg.tar.zst | C:\\Windows\\System32\\tar.exe zxf - & \
+C:\\Windows\\System32\\curl.exe --fail --silent --show-error --location --output - https://mirror.msys2.org/msys/x86_64/diffutils-3.12-1-x86_64.pkg.tar.zst | C:\\Windows\\System32\\tar.exe zxf - & \
+C:\\Windows\\System32\\curl.exe --fail --silent --show-error --location --output - https://mirror.msys2.org/msys/x86_64/patch-2.7.6-3-x86_64.pkg.tar.zst | C:\\Windows\\System32\\tar.exe zxf - & \
+rem \
+"""
 
 # Packages which I have noticed missing from the POSIX command set. // Package: man-pages-posix - MSYS2 Packages https://packages.msys2.org/packages/man-pages-posix
 # 

@@ -317,8 +317,26 @@ F13:: {
 
 ; Hash value in 7 digits
 +>^h:: {
-  n := Random(0, 268435455)
-  SendText Format("{:07x}", n)
+  loop {
+    n := Random(0, 268435455)
+    s := Format("{:07x}", n)
+    if RegExMatch(s, "[a-f]") > 0 {
+      SendText s
+      break
+    }
+  }
+}
+
+; Hash value in 7 digits
++<^>^h:: {
+  loop {
+    n := Random(0, 268435455)
+    s := Format("{:07X}", n)
+    if RegExMatch(s, "[A-F]") > 0 {
+      SendText s
+      break
+    }
+  }
 }
 
 ; Date serial (YYYYMMDD + day progress percentage)
