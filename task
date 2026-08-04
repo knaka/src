@@ -26,12 +26,12 @@ EOF
 
 task() {
   local show_help=false
-  OPTIND=1; while getopts _-:E:e: OPT
+  OPTIND=1; while getopts _-:E: OPT
   do
     test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
     case "$OPT" in
       (h|help) show_help=true;;
-      (env)
+      (E|env)
         case "$OPTARG" in
           (*=*)
             local var_name="${OPTARG%%=*}"
