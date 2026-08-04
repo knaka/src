@@ -3,6 +3,7 @@ set -- __MISE_TASKS_NODE_BASH "$@"; eval "shift; \${$1-false} || ! $1=true" && r
 
 pushd "${BASH_SOURCE[0]%[/\\]*}" &>/dev/null || pushd . >/dev/null
 . ../.lib/utils.sh
+. ../.lib/build.sh
 popd >/dev/null || exit
 
 # Install npm packages if "package.json" has been updated.
