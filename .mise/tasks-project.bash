@@ -7,5 +7,5 @@ popd >/dev/null || exit
 
 # Foo
 task_foo() {
-  printf "<%s>" "$HEREDOC"
+  printf "<%s>, <%s>" "$HEREDOC" "$APP_ENV"
 }

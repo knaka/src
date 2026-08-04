@@ -1,37 +1,62 @@
 #!/usr/bin/env sh
 
-cd "${0%[/\\]*}" 2>/dev/null || cd .; _APPDIR="$PWD"; cd "$OLDPWD" || exit
+cd "${0%[/\\]*}" 2>/dev/null || cd .; APPDIR="$PWD"; cd "$OLDPWD" || exit
+readonly APPDIR
 
 resolve_file() {
   test "${file+set}" = set || return 1
   local cand
   for cand in \
-    "$_APPDIR"/"$file" \
-    "$_APPDIR"/mise/"$file" \
-    "$_APPDIR"/.mise/"$file" \
-    "$_APPDIR"/.config/"$file" \
-    "$_APPDIR"/.config/mise/"$file" \
-    "$_APPDIR"/.config/mise/conf.d/"$file"
+    "$APPDIR"/"$file" \
+    "$APPDIR"/mise/"$file" \
+    "$APPDIR"/.mise/"$file" \
+    "$APPDIR"/.config/"$file" \
+    "$APPDIR"/.config/mise/"$file" \
+    "$APPDIR"/.config/mise/conf.d/"$file"
   do
     test -r "$cand" && file="$cand" && break
   done
 }
 
+help() { cat <<EOF
+Usage: task [--env=MISE_ENV] [--env="ENV_VAR=VAL"] <task> [args...]
+
+EOF
+}
+
 task() {
-  local mise_env=
-  OPTIND=1; while getopts _-:E: OPT
+  local show_help=false
+  OPTIND=1; while getopts _-:E:e: OPT
   do
     test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
     case "$OPT" in
-      (E|env) mise_env="$OPTARG";;
+      (h|help) show_help=true;;
+      (env)
+        case "$OPTARG" in
+          (*=*)
+            local var_name="${OPTARG%%=*}"
+            # shellcheck disable=SC2034
+            local var_val="${OPTARG#*=}"
+            eval "export $var_name=\"\$var_val\""
+            ;;
+          (*)
+            export MISE_ENV="$OPTARG"
+            ;;
+        esac
+        ;;
       (?) exit 1;;
       (*) echo "$0: illegal option -- $OPT" >&2; exit 1;;
     esac
   done
   shift $((OPTIND-1))
 
-  test $# = 0 && exec "$_APPDIR"/mise tasks
-  test -n "$mise_env" && export MISE_ENV="$mise_env"
+  test $# -eq 0 && show_help=true
+  if "$show_help"
+  then
+    help
+  fi
+
+  test $# = 0 && exec "$APPDIR"/mise tasks
   case "$1" in
     (*.sh:*|*.bash:*)
       # "file_name:function_name"
@@ -78,17 +103,10 @@ task() {
       ;;
     (*)
       set -- run "$@"
-      if test -n "$mise_env"
-      then
-        set -- --env "$mise_env" "$@"
-      fi
-      exec "$_APPDIR"/mise "$@"
+      exec "$APPDIR"/mise "$@"
       ;;
   esac
 }
 
-if case ".${0##*[/\\]}." in (*.task.*) ;; (*) false;; esac
-then
-  set -o nounset -o errexit
-  task "$@"
-fi
+set -o nounset -o errexit
+task "$@"

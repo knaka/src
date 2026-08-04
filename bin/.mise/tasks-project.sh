@@ -110,21 +110,21 @@ task_hello_sourced_sh__gen() {
 
 gen_bash_script() { cat <<EOF
 #!/usr/bin/env sh
-cd "$PROJECT_DIR"
+cd "$PROJECT_DIR" || exit
 exec mise exec -- bash _chdir.bash "\$OLDPWD" "$PROJECT_DIR"/"$file" "\$@"
 EOF
 }
 
 gen_sh_script() { cat <<EOF
 #!/usr/bin/env sh
-cd "$PROJECT_DIR"
+cd "$PROJECT_DIR" || exit
 exec mise exec -- sh _chdir.sh "\$OLDPWD" "$PROJECT_DIR"/"$file" "\$@"
 EOF
 }
 
 gen_py_sh_script() { cat <<EOF
 #!/usr/bin/env sh
-cd "$PROJECT_DIR"
+cd "$PROJECT_DIR" || exit
 exec mise exec -- python _chdir.py "\$OLDPWD" "$PROJECT_DIR"/"$file" "\$@"
 EOF
 }
