@@ -1,14 +1,16 @@
 [vars]
 # Releases · msys2/msys2-installer https://github.com/msys2/msys2-installer/releases
 msys2_version = "2026-06-11"
+# Increase this to force re-installation.
+msys2_subver = "2026080414"
 
 [tools."http:msys2"]
 os = ["windows"]
-version = "{{ vars.msys2_version }}"
+version = "{{ vars.msys2_version }}-{{ vars.msys2_subver }}"
 bin_path = "msys64/usr/bin"
 # “version” cannot be filtered as tera template.
 # Package: base - MSYS2 Packages https://packages.msys2.org/packages/base
-url = 'https://github.com/msys2/msys2-installer/releases/download/{{ version }}/msys2-base-{{ arch(x64="x86_64") }}-{{ vars.msys2_version | replace(from="-", to="") }}.tar.zst'
+url = 'https://github.com/msys2/msys2-installer/releases/download/{{ vars.msys2_version }}/msys2-base-{{ arch(x64="x86_64") }}-{{ vars.msys2_version | replace(from="-", to="") }}.tar.zst'
 platforms.windows-amd64 = { checksum = "sha256:ace898d250d7302a24259a0288d69354649365af9cc64c8bcc2f219bc1e28374" }
 
 # Add packages.
