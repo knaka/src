@@ -123,21 +123,6 @@ set -o nounset -o errexit
 task_docker__busybox__run "$@"
 '''
 
-[tasks."npm:install"]
-description='''Install npm packages if "package.json" has been updated.'''
-run='''
-#!/usr/bin/env sh
-# .mise/tasks-node.sh:task_npm__install
-saved_pwd_85053ae="$PWD"
-cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
-set -- _SCRDIR "$PWD" "$@"
-. ./"tasks-node.sh"
-shift 2
-cd "$saved_pwd_85053ae" || exit 1
-set -o nounset -o errexit
-task_npm__install "$@"
-'''
-
 [tasks."session:init"]
 description='''Clears the session environment.'''
 run='''
@@ -202,4 +187,28 @@ shift 2
 cd "$saved_pwd_85053ae" || exit 1
 set -o nounset -o errexit
 task_test "$@"
+'''
+
+[tasks."npm:install"]
+description='''Install npm packages if "package.json" has been updated.'''
+run='''
+#!/usr/bin/env bash
+# .mise/tasks-node.bash:task_npm__install
+pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
+. ./"tasks-node.bash"
+popd >/dev/null || exit 1
+set -o nounset -o errexit -o pipefail
+task_npm__install "$@"
+'''
+
+[tasks."foo"]
+description='''Foo'''
+run='''
+#!/usr/bin/env bash
+# .mise/tasks-project.bash:task_foo
+pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
+. ./"tasks-project.bash"
+popd >/dev/null || exit 1
+set -o nounset -o errexit -o pipefail
+task_foo "$@"
 '''

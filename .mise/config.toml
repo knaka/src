@@ -32,6 +32,11 @@ LSV_SHPP_TARGETS = """
 {{ config_root }}/py/.mise/**/*.sh
 """
 # _.path = ["{{ config_root }}/.mise/preferred-sh"]
+HEREDOC = """
+foo \
+bar \
+baz \
+"""
 
 [tools]
 # "node" = "24"

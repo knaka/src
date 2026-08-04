@@ -17,10 +17,10 @@ platforms.windows-amd64 = { checksum = "sha256:ace898d250d7302a24259a0288d693546
 # Package: diffutils - MSYS2 Packages https://packages.msys2.org/packages/diffutils
 # Package: patch - MSYS2 Packages https://packages.msys2.org/packages/patch
 postinstall = '''
-cd /d %MISE_TOOL_INSTALL_PATH%\msys64 & \
-curl --fail --silent --show-error --location --output - https://mirror.msys2.org/msys/x86_64/bc-1.08.2-1-x86_64.pkg.tar.zst | tar zxf - & \
-curl --fail --silent --show-error --location --output - https://mirror.msys2.org/msys/x86_64/diffutils-3.12-1-x86_64.pkg.tar.zst | tar zxf - & \
-curl --fail --silent --show-error --location --output - https://mirror.msys2.org/msys/x86_64/patch-2.7.6-3-x86_64.pkg.tar.zst | tar zxf - & \
+cd /d %MISE_TOOL_INSTALL_PATH%\msys64 &
+curl --fail --silent --show-error --location --output - https://mirror.msys2.org/msys/x86_64/bc-1.08.2-1-x86_64.pkg.tar.zst | tar zxf - &
+curl --fail --silent --show-error --location --output - https://mirror.msys2.org/msys/x86_64/diffutils-3.12-1-x86_64.pkg.tar.zst | tar zxf - &
+curl --fail --silent --show-error --location --output - https://mirror.msys2.org/msys/x86_64/patch-2.7.6-3-x86_64.pkg.tar.zst | tar zxf - &
 rem
 '''
 
