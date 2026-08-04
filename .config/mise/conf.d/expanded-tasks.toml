@@ -123,6 +123,21 @@ set -o nounset -o errexit
 task_docker__busybox__run "$@"
 '''
 
+[tasks."docker:archlinux:run"]
+description='''Run Arch Linux Docker container.'''
+run='''
+#!/usr/bin/env sh
+# .mise/tasks-docker.sh:task_docker__archlinux__run
+saved_pwd_85053ae="$PWD"
+cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
+set -- _SCRDIR "$PWD" "$@"
+. ./"tasks-docker.sh"
+shift 2
+cd "$saved_pwd_85053ae" || exit 1
+set -o nounset -o errexit
+task_docker__archlinux__run "$@"
+'''
+
 [tasks."session:init"]
 description='''Clears the session environment.'''
 run='''
