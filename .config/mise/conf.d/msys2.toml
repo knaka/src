@@ -10,5 +10,24 @@ bin_path = "msys64/usr/bin"
 # Package: base - MSYS2 Packages https://packages.msys2.org/packages/base
 url = 'https://github.com/msys2/msys2-installer/releases/download/{{ version }}/msys2-base-{{ arch(x64="x86_64") }}-{{ vars.msys2_version | replace(from="-", to="") }}.tar.zst'
 platforms.windows-amd64 = { checksum = "sha256:ace898d250d7302a24259a0288d69354649365af9cc64c8bcc2f219bc1e28374" }
+
+# Add packages.
+# 
+# Package: bc - MSYS2 Packages https://packages.msys2.org/packages/bc
 # Package: diffutils - MSYS2 Packages https://packages.msys2.org/packages/diffutils
-postinstall = 'cd /d %MISE_TOOL_INSTALL_PATH%\msys64 & curl -fsSL -o - https://mirror.msys2.org/msys/x86_64/diffutils-3.12-1-x86_64.pkg.tar.zst | tar --zstd -xf -'
+# Package: patch - MSYS2 Packages https://packages.msys2.org/packages/patch
+postinstall = '''
+cd /d %MISE_TOOL_INSTALL_PATH%\msys64 & \
+curl --fail --silent --show-error --location --output - https://mirror.msys2.org/msys/x86_64/bc-1.08.2-1-x86_64.pkg.tar.zst | tar zxf - & \
+curl --fail --silent --show-error --location --output - https://mirror.msys2.org/msys/x86_64/diffutils-3.12-1-x86_64.pkg.tar.zst | tar zxf - & \
+curl --fail --silent --show-error --location --output - https://mirror.msys2.org/msys/x86_64/patch-2.7.6-3-x86_64.pkg.tar.zst | tar zxf - & \
+rem
+'''
+
+# Packages which I have noticed missing from the POSIX command set. // Package: man-pages-posix - MSYS2 Packages https://packages.msys2.org/packages/man-pages-posix
+# 
+# Package: ed - MSYS2 Packages https://packages.msys2.org/packages/ed
+# Package: gcc - MSYS2 Packages https://packages.msys2.org/packages/gcc # c99(1)
+# Package: m4 - MSYS2 Packages https://packages.msys2.org/packages/m4
+# Package: make - MSYS2 Packages https://packages.msys2.org/packages/make
+# Package: vim - MSYS2 Packages https://packages.msys2.org/packages/vim # `vi` does not exist.

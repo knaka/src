@@ -86,17 +86,15 @@ run_tests() {
     return 0
   fi
   
-  mkeys_ "$test_file_map"
-  # vshuf_ "$RESULT"
-  local all_tests="$RESULT"
-  
   local tests_to_run
   if test $# -gt 0
   then
     vec_ "$@"
     tests_to_run="$RESULT"
   else
-    tests_to_run="$all_tests"
+    mkeys_ "$test_file_map"
+    # vshuf_ "$RESULT"
+    tests_to_run="$RESULT"
   fi
 
   init_temp_dir
