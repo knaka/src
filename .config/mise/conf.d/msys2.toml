@@ -2,7 +2,7 @@
 # Releases · msys2/msys2-installer https://github.com/msys2/msys2-installer/releases
 msys2_version = "2026-06-11"
 # Increase this to force re-installation.
-msys2_subver = "2026080445"
+msys2_subver = "2026080446"
 
 [tools."http:msys2"]
 os = ["windows"]
