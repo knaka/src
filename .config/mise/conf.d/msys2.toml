@@ -2,7 +2,7 @@
 # Releases · msys2/msys2-installer https://github.com/msys2/msys2-installer/releases
 msys2_version = "2026-06-11"
 # Increase this to force re-installation.
-msys2_subver = "2026080505"
+msys2_subver = "2026080510"
 
 [tools."http:msys2"]
 os = ["windows"]
@@ -12,27 +12,39 @@ bin_path = "msys64/usr/bin"
 # Package: base - MSYS2 Packages https://packages.msys2.org/packages/base
 url = 'https://github.com/msys2/msys2-installer/releases/download/{{ vars.msys2_version }}/msys2-base-{{ arch(x64="x86_64") }}-{{ vars.msys2_version | replace(from="-", to="") }}.tar.zst'
 platforms.windows-amd64 = { checksum = "sha256:ace898d250d7302a24259a0288d69354649365af9cc64c8bcc2f219bc1e28374" }
-# postinstall = '''cd /d %MISE_TOOL_INSTALL_PATH%\msys64 & usr\bin\bash.exe -lc "/usr/bin/pacman-key --init && /usr/bin/pacman-key --populate msys2 && /usr/bin/pacman -Syu --noconfirm --overwrite '*' bc diffutils patch"'''
-# postinstall = '''cd /d %MISE_TOOL_INSTALL_PATH%\msys64 & usr\bin\bash.exe -lc 'export PATH=/usr/bin; pacman-key --init; pacman.exe -Syu --noconfirm --overwrite "*" bc diffutils patch'''
-postinstall = """
-cd /d %MISE_TOOL_INSTALL_PATH%\\msys64 && \
-usr\\bin\\bash.exe -lc 'pacman-key --init' && \
-usr\\bin\\bash.exe -lc 'pacman-key --populate msys2' && \
-usr\\bin\\pacman.exe -Syu --noconfirm --overwrite '*' bc diffutils patch \
-"""
 
-# Add packages.
+# postinstall = """
+# cd /d %MISE_TOOL_INSTALL_PATH%\\msys64 && \
+# usr\\bin\\bash.exe -lc 'pacman-key --init' && \
+# usr\\bin\\bash.exe -lc 'pacman-key --populate msys2' && \
+# usr\\bin\\pacman.exe -Syu --noconfirm --overwrite '*' bc diffutils patch \
+# """
+#
+# Doing the update and install via the official procedure above seems to bloat the GitHub Actions cache, which appears to sometimes cause it to hang, so this approach is avoided.
+#
+# ````
+# /usr/bin/tar: C\:/Users/runneradmin/AppData/Local/mise/http-tarballs/b2b93f537bc7f81379311cfa0d3e4ab3c079eedaa2b7f5a60fc65f078708dbdc/msys64/etc/pacman.d/gnupg/S.gpg-agent: socket ignored
+# /usr/bin/tar: C\:/Users/runneradmin/AppData/Local/mise/http-tarballs/b2b93f537bc7f81379311cfa0d3e4ab3c079eedaa2b7f5a60fc65f078708dbdc/msys64/etc/pacman.d/gnupg/S.gpg-agent.browser: socket ignored
+# /usr/bin/tar: C\:/Users/runneradmin/AppData/Local/mise/http-tarballs/b2b93f537bc7f81379311cfa0d3e4ab3c079eedaa2b7f5a60fc65f078708dbdc/msys64/etc/pacman.d/gnupg/S.gpg-agent.extra: socket ignored
+# /usr/bin/tar: C\:/Users/runneradmin/AppData/Local/mise/http-tarballs/b2b93f537bc7f81379311cfa0d3e4ab3c079eedaa2b7f5a60fc65f078708dbdc/msys64/etc/pacman.d/gnupg/S.gpg-agent.ssh: socket ignored
+# Sent 0 of 181457917 (0.0%), 0.0 MBs/sec
+# Sent 0 of 181457917 (0.0%), 0.0 MBs/sec
+# Sent 181457917 of 181457917 (100.0%), 63.9 MBs/sec
+# Cache saved from C:\Users\runneradmin\AppData\Local\mise with key: mise-fcd6973-windows-x64-win25-vs2026-9678002861e7daba0eac4345acfb91052d31d214c236f5fb331d178ee7cd1b57
+# ````
+
+# Instead, fetch the packages directly and extract them.
 # 
 # Package: bc - MSYS2 Packages https://packages.msys2.org/packages/bc
 # Package: diffutils - MSYS2 Packages https://packages.msys2.org/packages/diffutils
 # Package: patch - MSYS2 Packages https://packages.msys2.org/packages/patch
-# postinstall = """
-# cd /d %MISE_TOOL_INSTALL_PATH%\\msys64 & \
-# C:\\Windows\\System32\\curl.exe --fail --silent --show-error --location --output - https://mirror.msys2.org/msys/x86_64/bc-1.08.2-1-x86_64.pkg.tar.zst | C:\\Windows\\System32\\tar.exe zxf - & \
-# C:\\Windows\\System32\\curl.exe --fail --silent --show-error --location --output - https://mirror.msys2.org/msys/x86_64/diffutils-3.12-1-x86_64.pkg.tar.zst | C:\\Windows\\System32\\tar.exe zxf - & \
-# C:\\Windows\\System32\\curl.exe --fail --silent --show-error --location --output - https://mirror.msys2.org/msys/x86_64/patch-2.7.6-3-x86_64.pkg.tar.zst | C:\\Windows\\System32\\tar.exe zxf - & \
-# rem \
-# """
+postinstall = """
+cd /d %MISE_TOOL_INSTALL_PATH%\\msys64 && \
+C:\\Windows\\System32\\curl.exe --fail --silent --show-error --location --output - https://mirror.msys2.org/msys/x86_64/bc-1.08.2-1-x86_64.pkg.tar.zst | C:\\Windows\\System32\\tar.exe zxf - && \
+C:\\Windows\\System32\\curl.exe --fail --silent --show-error --location --output - https://mirror.msys2.org/msys/x86_64/diffutils-3.12-1-x86_64.pkg.tar.zst | C:\\Windows\\System32\\tar.exe zxf - && \
+C:\\Windows\\System32\\curl.exe --fail --silent --show-error --location --output - https://mirror.msys2.org/msys/x86_64/patch-2.7.6-3-x86_64.pkg.tar.zst | C:\\Windows\\System32\\tar.exe zxf - && \
+rem \
+"""
 
 # Packages which I have noticed missing from the POSIX command set. // Package: man-pages-posix - MSYS2 Packages https://packages.msys2.org/packages/man-pages-posix
 # 
