@@ -20,7 +20,7 @@ platforms.windows-amd64 = { checksum = "sha256:ace898d250d7302a24259a0288d693546
 # usr\\bin\\pacman.exe -Syu --noconfirm --overwrite '*' bc diffutils patch \
 # """
 #
-# Doing the update and install via the official procedure above seems to bloat the GitHub Actions cache, which appears to sometimes cause it to hang, so this approach is avoided.
+# Doing the update and install via the official procedure above works locally but seems to bloat the GitHub Actions cache, which appears to sometimes cause it to hang, so this approach is avoided.
 #
 # ````
 # /usr/bin/tar: C\:/Users/runneradmin/AppData/Local/mise/http-tarballs/b2b93f537bc7f81379311cfa0d3e4ab3c079eedaa2b7f5a60fc65f078708dbdc/msys64/etc/pacman.d/gnupg/S.gpg-agent: socket ignored
