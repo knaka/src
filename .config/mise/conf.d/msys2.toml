@@ -12,7 +12,8 @@ bin_path = "msys64/usr/bin"
 # Package: base - MSYS2 Packages https://packages.msys2.org/packages/base
 url = 'https://github.com/msys2/msys2-installer/releases/download/{{ vars.msys2_version }}/msys2-base-{{ arch(x64="x86_64") }}-{{ vars.msys2_version | replace(from="-", to="") }}.tar.zst'
 platforms.windows-amd64 = { checksum = "sha256:ace898d250d7302a24259a0288d69354649365af9cc64c8bcc2f219bc1e28374" }
-postinstall = '''cd /d %MISE_TOOL_INSTALL_PATH%\msys64 & usr\bin\sh.exe -c "/usr/bin/pacman-key --init && /usr/bin/pacman-key --populate msys2 && /usr/bin/pacman -Syu --noconfirm --overwrite '*' bc diffutils patch"'''
+# postinstall = '''cd /d %MISE_TOOL_INSTALL_PATH%\msys64 & usr\bin\bash.exe -lc "/usr/bin/pacman-key --init && /usr/bin/pacman-key --populate msys2 && /usr/bin/pacman -Syu --noconfirm --overwrite '*' bc diffutils patch"'''
+postinstall = '''cd /d %MISE_TOOL_INSTALL_PATH%\msys64 & usr\bin\pacman.exe -Syu --noconfirm --overwrite * bc diffutils patch & rem'''
 
 # Add packages.
 # 
