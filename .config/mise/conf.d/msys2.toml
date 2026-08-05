@@ -18,7 +18,7 @@ postinstall = """
 cd /d %MISE_TOOL_INSTALL_PATH%\\msys64 && \
 usr\\bin\\bash.exe -lc 'pacman-key --init' && \
 usr\\bin\\bash.exe -lc 'pacman-key --populate msys2' && \
-usr\\bin\\pacman.exe -Syu --noconfirm bc diffutils patch \
+usr\\bin\\pacman.exe -Syu --noconfirm --overwrite '*' bc diffutils patch \
 """
 
 # Add packages.
