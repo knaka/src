@@ -142,49 +142,54 @@ cmd_clone() {
 
   pop_dir
 
-  # Record/update metadata
-  if "$pull"
+  if test -n "$(git status --porcelain)"
   then
-    # Update existing entry
-    jq \
-      --arg name "$name" \
-      --arg commit "$commit" \
-      --arg fetched_at "$timestamp" \
-      '
-        (.libraries[] | select(.name == $name)) |= . + {
-          commit: $commit,
-          fetched_at: $fetched_at
-        }
-      ' "$CONFIG_FILE" \
-      > "$CONFIG_FILE.tmp"
-    mv "$CONFIG_FILE.tmp" "$CONFIG_FILE"
-    echo "Updated $name (commit: $(echo "$commit" | sed -E -e 's/^(.......).*/\1/'))"
+    # Record/update metadata
+    if "$pull"
+    then
+      # Update existing entry
+      jq \
+        --arg name "$name" \
+        --arg commit "$commit" \
+        --arg fetched_at "$timestamp" \
+        '
+          (.libraries[] | select(.name == $name)) |= . + {
+            commit: $commit,
+            fetched_at: $fetched_at
+          }
+        ' "$CONFIG_FILE" \
+        > "$CONFIG_FILE.tmp"
+      mv "$CONFIG_FILE.tmp" "$CONFIG_FILE"
+      echo "Updated $name (commit: $(echo "$commit" | sed -E -e 's/^(.......).*/\1/'))"
+    else
+      # Add new entry
+      local new_entry
+      new_entry="$(jq -n \
+        --arg name "$name" \
+        --arg repo "$repo" \
+        --argjson paths "$paths_json" \
+        --arg dest "$dest" \
+        --arg branch "$branch" \
+        --arg commit "$commit" \
+        --arg fetched_at "$timestamp" \
+        '
+          {
+            name: $name,
+            repo: $repo,
+            paths: $paths,
+            dest: $dest,
+            branch: $branch,
+            commit: $commit,
+            fetched_at: $fetched_at
+          }
+        '
+      )"
+      jq --argjson entry "$new_entry" '.libraries += [$entry]' "$CONFIG_FILE" > "$CONFIG_FILE.tmp"
+      mv "$CONFIG_FILE.tmp" "$CONFIG_FILE"
+      echo "Added $name (commit: $(echo "$commit" | sed -E -e 's/^(.......).*/\1/'))"
+    fi
   else
-    # Add new entry
-    local new_entry
-    new_entry="$(jq -n \
-      --arg name "$name" \
-      --arg repo "$repo" \
-      --argjson paths "$paths_json" \
-      --arg dest "$dest" \
-      --arg branch "$branch" \
-      --arg commit "$commit" \
-      --arg fetched_at "$timestamp" \
-      '
-        {
-          name: $name,
-          repo: $repo,
-          paths: $paths,
-          dest: $dest,
-          branch: $branch,
-          commit: $commit,
-          fetched_at: $fetched_at
-        }
-      '
-    )"
-    jq --argjson entry "$new_entry" '.libraries += [$entry]' "$CONFIG_FILE" > "$CONFIG_FILE.tmp"
-    mv "$CONFIG_FILE.tmp" "$CONFIG_FILE"
-    echo "Added $name (commit: $(echo "$commit" | sed -E -e 's/^(.......).*/\1/'))"
+    echo "Nothing changed." >&2
   fi
 
   rm -rf "$work_dir"

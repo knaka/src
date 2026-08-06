@@ -1,19 +1,9 @@
-````
-git clone git@github.com:knaka/src.git "$HOME"/repos/github.com/knaka/src
+# README.md
 
-git clone git@github.com:knaka/src.git %USERPROFILE%\repos\github.com\knaka\src
-git clone git@github.com:knaka/src.git $env:USERPROFILE\repos\github.com\knaka\src
-````
+* [Markdown からコードの特的行へのリンク](./task.cmd 'set "ARG0=%~f0"') (Powered by [HTML Related Links](https://marketplace.visualstudio.com/items?itemName=rioj7.html-related-links))
 
-`C:/msys64/msys2_shell.cmd -defterm -here -no-start -ucrt64 -use-full-path -shell zsh`
+# <a name=0d8322b></a>Foo Bar
 
-[The function](./.lib-test/tests-shell-features.sh "test_local_ifs()")
+[cowsay.sh にあるリンク](./bin/cowsay.sh '498080f')
 
-[The function](./.lib-test/tests-shell-features.sh#27)
-
-# <a id=a4ab51c />Hello</a>
-
-foo
-
-bar
-
+Baz.

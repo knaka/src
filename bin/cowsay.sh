@@ -22,3 +22,5 @@ then
   set -o nounset -o errexit
   cowsay "$@"
 fi
+
+# (498080f) file://../README.md#0d8322b コードから他のファイルの unique 文字列へのリンク (Powered by HTML Related Links https://marketplace.visualstudio.com/items?itemName=rioj7.html-related-links )
