@@ -8,11 +8,6 @@ if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; e
 cd "$3" || exit; shift 3 # /shpp:sources
 
 show_path() {
-  # if is_windows
-  # then
-  #   echo 'Not for Windows. Call "win-env" instead.' >&2
-  #   exit 1
-  # fi
   local IFS=':'
   # shellcheck disable=SC2086
   printf "%s\n" $PATH
