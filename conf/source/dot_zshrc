@@ -461,6 +461,7 @@ bindkey '^[.' insert-last-word
 bindkey "\e[D" unmark-backward-char
 # →
 bindkey "\e[C" unmark-forward-char
+# bindkey "^d" unmark-forward-char
 
 # Esc + ←
 bindkey '^[b' unmark-backward-word
