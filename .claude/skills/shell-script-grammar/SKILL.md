@@ -2,6 +2,7 @@
 name: shell-script-grammar
 description: Portability and version-compatibility rules for this project's shell scripts. Use when writing, editing, or reviewing any `.sh` or `.bash` file here.
 ---
+# Shell Script Grammar
 
 Shell script files with the `.bash` extension must be implemented using only features available up through Bash version 3, since they need to run under Bash version 3 on macOS.
 

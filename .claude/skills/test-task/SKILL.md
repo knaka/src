@@ -2,8 +2,7 @@
 name: test-task
 description: Run this project's tests via the mise `test` task, and understand the conventions used to define tests. Use when asked to run, add, or locate a test. Depends on the `mise` skill.
 ---
-
-This skill depends on the `mise` skill — load it first if mise usage (bootstrap scripts, `mise run`) isn't already established in context.
+# Testing
 
 All tests are executed via the `test` task.
 
