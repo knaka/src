@@ -9,3 +9,12 @@ popd >/dev/null || exit
 task_foo() {
   printf "<%s>, <%s>" "$HEREDOC" "$APP_ENV"
 }
+
+# Update documentation files.
+task_doc() {
+  mdpp --in-place --allow-remote \
+    README.md \
+    DEVELOPMENT.md \
+    CLAUDE.md \
+    #nop
+}

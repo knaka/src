@@ -1,6 +1,6 @@
 ---
 name: mise-msys2
-description: Know which UNIXy/POSIX commands are available on Windows via the MSYS2 environment mise installs, and which are missing. Use when running shell commands, tests, or tasks on Windows, or troubleshooting a command not found there.
+description: Know which UNIXy/POSIX commands are available on Windows via the MSYS2 environment mise installs, and which are missing. Use when running shell commands, tests, or tasks on Windows, or troubleshooting a command not found there. Depends on the `mise` skill.
 ---
 # MSYS2 commands in Mise environment on Windows
 
