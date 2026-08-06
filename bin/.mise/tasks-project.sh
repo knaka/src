@@ -122,6 +122,12 @@ exec mise exec -- sh _chdir.sh "\$OLDPWD" "$PROJECT_DIR"/"$file" "\$@"
 EOF
 }
 
+gen_direct_sh_script() { cat <<EOF
+#!/usr/bin/env sh
+exec sh "$PROJECT_DIR"/"$file" "\$@"
+EOF
+}
+
 gen_py_sh_script() { cat <<EOF
 #!/usr/bin/env sh
 cd "$PROJECT_DIR" || exit
@@ -147,8 +153,17 @@ task_install() {
     case "$file" in
       (_*) continue;;
     esac
-    local name="${file%.sh}"
-    gen_sh_script >"$bin_dir_path"/"$name"
+    local name
+    case "$file" in
+      (*.direct.sh)
+        name="${file%.direct.sh}"
+        gen_direct_sh_script >"$bin_dir_path"/"$name"
+        ;;
+      (*)
+        name="${file%.sh}"
+        gen_sh_script >"$bin_dir_path"/"$name"
+        ;;
+    esac
     chmod +x "$bin_dir_path"/"$name"
     if is_windows
     then

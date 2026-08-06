@@ -7,7 +7,8 @@ popd >/dev/null || exit
 
 # Foo
 task_foo() {
-  printf "<%s>, <%s>" "$HEREDOC" "$APP_ENV"
+  printf "<%s>, <%s>\n" "$HEREDOC" "$APP_ENV"
+  echo 6aa11dd "$@"
 }
 
 # Update documentation files.
