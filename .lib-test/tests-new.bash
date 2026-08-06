@@ -73,7 +73,7 @@ test_cleanup_child_processes_bash() {
   while ! test -s "$child_pid_file"
   do
     i=$((i + 1))
-    assert_true -m d2557a0 test $i -lt 100
+    assert_true -m "timed out waiting for child_pid_file to appear" test $i -lt 100
     sleep 0.1
   done
   local child_pid
@@ -82,8 +82,8 @@ test_cleanup_child_processes_bash() {
   kill -TERM "$harness_pid"
   sleep 0.5
 
-  assert_false -m 8147d97 kill -0 "$child_pid"
-  assert_false -m 0e61473 kill -0 "$harness_pid"
+  assert_false -m "child process should have been terminated along with the harness" kill -0 "$child_pid"
+  assert_false -m "harness process should have exited after receiving SIGTERM" kill -0 "$harness_pid"
 }
 
 test_rc_variables() {
@@ -97,7 +97,7 @@ test_rc_variables() {
     local sig_name="${rc_sig_name#RC_}"
     local sig_num
     sig_num="$(kill -l "$sig_name")"
-    assert_eq -m fccf24f "$rc_sig_value" $((128 + sig_num))
+    assert_eq -m "$rc_sig_name should equal 128 + signal number of $sig_name" "$rc_sig_value" $((128 + sig_num))
     echo OK: "$rc_sig_name"
   done
 }

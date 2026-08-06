@@ -43,7 +43,7 @@ test_defer() {
   # brush/docs/reference/compatibility.md at main · reubeno/brush https://github.com/reubeno/brush/blob/main/docs/reference/compatibility.md
   skip_if is_brush
 
-  assert_eq \
+  assert_eq -m "RETURN trap handlers should fire in LIFO order as each function returns, interleaved with the call order" \
     "foo_9faf116,bar_40d5ce3,baz_a1bd4c5,BAZ,qux_b8af6e1,QUX,FOO,main" \
     "$(foo_9faf116; echo -n main)"
 }
