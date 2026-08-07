@@ -37,7 +37,7 @@ task() {
             local var_name="${OPTARG%%=*}"
             # shellcheck disable=SC2034
             local var_val="${OPTARG#*=}"
-            eval "export $var_name=\"\$var_val\""
+            eval "export $var_name=\$var_val"
             ;;
           (*)
             export MISE_ENV="$OPTARG"
@@ -50,13 +50,13 @@ task() {
   done
   shift $((OPTIND-1))
 
-  test $# -eq 0 && show_help=true
-  if "$show_help"
+  if test $# = 0 || "$show_help"
   then
     help
+    "$APPDIR"/mise tasks
+    "$show_help" && return 0
+    return 1
   fi
-
-  test $# = 0 && exec "$APPDIR"/mise tasks
   case "$1" in
     (*.sh:*|*.bash:*)
       # "file_name:function_name"
@@ -102,7 +102,9 @@ task() {
       esac
       ;;
     (*)
-      set -- run "$@"
+      local task="$1"
+      shift
+      set -- run "$task" -- "$@"
       exec "$APPDIR"/mise "$@"
       ;;
   esac
