@@ -3,4 +3,4 @@ idiomatic_version_file_enable_tools = ['python']
 
 [tools]
 # chezmoi | mise versions https://mise-versions.jdx.dev/tools/chezmoi
-chezmoi = '2.72.0'
+chezmoi = '2.71.1'

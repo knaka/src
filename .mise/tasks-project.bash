@@ -9,6 +9,7 @@ popd >/dev/null || exit
 task_foo() {
   printf "<%s>, <%s>\n" "$HEREDOC" "$APP_ENV"
   echo 6aa11dd "$@"
+  echo d468476 "$MISE_BIN"
 }
 
 # Update documentation files.

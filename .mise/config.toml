@@ -35,6 +35,7 @@ LSV_SHPP_TARGETS = """
 _.path = [
   # "{{ config_root }}/.mise/preferred-sh",
   # "{{ config_root }}/.mise/preferred-bash",
+  "{{ mise_bin | dirname }}",
 ]
 HEREDOC = { default = """
 foo \
