@@ -1,3 +1,6 @@
+[settings]
+idiomatic_version_file_enable_tools = ['python']
+
 [tools]
-"jq" = "1.8.1"
-"python" = "3.14.2"
+# chezmoi | mise versions https://mise-versions.jdx.dev/tools/chezmoi
+chezmoi = '2.72.0'

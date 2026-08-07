@@ -16,6 +16,7 @@ conf() {
     test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
     case "$OPT" in
       (help) chezmoi --help; return;;
+      (version) chezmoi --version; return;;
       (mode) mode="$OPTARG";;
       (source) source_path="$OPTARG";;
       (?) return 1;;
