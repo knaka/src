@@ -204,4 +204,9 @@ task_install() {
   pop_dir
 }
 
+# bin foo
+task_foo(){
+  echo bin foo
+}
+
 #endregion

@@ -34,12 +34,14 @@ cd "$3" || exit; shift 3 # /shpp:sources
 run_worker() {
   local record_log=false
   local group=false
+  local work_dir=.
   OPTIND=1; while getopts _-: OPT
   do
     test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
     case "$OPT" in
       (group) group=true;;
       (record-log) record_log=true;;
+      (cd|chdir) work_dir="$OPTARG";;
       (?) return 1;;
       (*) echo "$0: illegal option -- $OPT" >&2; return 1;;
     esac
@@ -58,6 +60,7 @@ run_worker() {
       # Bash provides rich job control feature even on MSYS2.
       local disable_monitor=false
       case $- in (*m*) ;; (*) set -m; disable_monitor=true;; esac
+      push_dir "$work_dir" || return 1
       # Run the background job and detach from the shell's job table so this
       # worker (though in its own process group via `set -m`) isn't reaped/awaited
       # by an unrelated bare `wait`/`jobs` the caller (who sourced this library)
@@ -69,6 +72,7 @@ run_worker() {
         "$@" </dev/null &
       fi
       pid=$!
+      pop_dir
       "$disable_monitor" && set +m
       # shellcheck disable=SC3044
       disown %+
@@ -86,6 +90,7 @@ run_worker() {
         # unrelated bare `wait`/`jobs` in the caller's shell. (POSIX sh has no
         # `disown` to do this explicitly.)
         (
+          cd "$work_dir" || exit 1
           "$record_log" && exec >"$log_file" 2>&1
           setsid "$@" </dev/null &
           echo $! >"$pid_file"
@@ -98,6 +103,7 @@ run_worker() {
         # stays the worker's pid). Wrapped in the same detaching subshell as the
         # Linux branch above, for the same reason.
         (
+          cd "$work_dir" || exit 1
           "$record_log" && exec >"$log_file" 2>&1
           perl -e 'use POSIX "setsid"; setsid(); exec @ARGV' "$@" </dev/null &
           echo $! >"$pid_file"
@@ -135,9 +141,10 @@ run_worker() {
       # > "$@" </dev/null &
       # > echo $! >"$pid_file"
       echo Not implemented. >&2
-      return 1
+      exit 1
     elif is_bash_bin
     then
+      push_dir "$work_dir" || exit 1
       if "$record_log"
       then
         "$@" </dev/null >"$log_file" 2>&1 &
@@ -147,10 +154,12 @@ run_worker() {
       pid="$!"
       # shellcheck disable=SC3044
       disown %+
+      pop_dir
     else
       local pid_file
       pid_file="$(mktemp "$TEMP_DIR"/XXXXXX)"
       (
+        cd "$work_dir" || exit 1
         "$record_log" && exec >"$log_file" 2>&1
         "$@" </dev/null &
         echo $! >"$pid_file"

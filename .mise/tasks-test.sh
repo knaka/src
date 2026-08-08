@@ -24,8 +24,6 @@ run_tests() {
   done
   shift $((OPTIND-1))
 
-  cd "${INITIAL_DIR-}" || return
-
   local RED=""
   local GREEN=""
   local YELLOW=""

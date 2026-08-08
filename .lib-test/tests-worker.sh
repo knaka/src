@@ -39,6 +39,15 @@ test_worker() {
   wait_worker --timeout-sec=10 "$wid"
   assert_failure kill -0 "$(pid_of_worker "$wid")" >/dev/null 2>&1
 
+  local pwd="$PWD"
+  local wid_log=
+  # shellcheck disable=SC2016
+  run_log_worker --chdir=/ sh -c 'printf "eeba269 %s a9a1413" "$(pwd)"'
+  wid_log="$WID"
+  wait_worker_start --timeout-sec=10 "$wid_log"
+  assert_eq -m 378d175 "$pwd" "$PWD"
+  assert_eq "eeba269 / a9a1413" "$(log_worker "$wid_log")"
+
   if is_bash_bin && ! is_brush
   then
     path_3da3ab4="$TEMP_DIR/b39f0df"

@@ -1,4 +1,10 @@
 min_version = "2026.7.18"
+monorepo_root = true
+
+[monorepo]
+config_roots = [
+  "bin",
+]
 
 [settings]
 activate_aggressive = true
@@ -35,7 +41,6 @@ LSV_SHPP_TARGETS = """
 _.path = [
   # "{{ config_root }}/.mise/preferred-sh",
   # "{{ config_root }}/.mise/preferred-bash",
-  "{{ mise_bin | dirname }}",
 ]
 HEREDOC = { default = """
 foo \

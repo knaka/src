@@ -53,7 +53,7 @@ task() {
   if test $# = 0 || "$show_help"
   then
     help
-    "$APPDIR"/mise tasks
+    "$APPDIR"/mise tasks --all
     "$show_help" && return 0
     return 1
   fi

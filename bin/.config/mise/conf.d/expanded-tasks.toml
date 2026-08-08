@@ -44,3 +44,18 @@ cd "$saved_pwd_85053ae" || exit 1
 set -o nounset -o errexit
 task_install "$@"
 '''
+
+[tasks."foo"]
+description='''bin foo'''
+run='''
+#!/usr/bin/env sh
+# .mise/tasks-project.sh:task_foo
+saved_pwd_85053ae="$PWD"
+cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
+set -- _SCRDIR "$PWD" "$@"
+. ./"tasks-project.sh"
+shift 2
+cd "$saved_pwd_85053ae" || exit 1
+set -o nounset -o errexit
+task_foo "$@"
+'''
