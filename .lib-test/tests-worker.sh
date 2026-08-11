@@ -42,8 +42,9 @@ test_worker() {
   local pwd="$PWD"
   local wid_log=
   # shellcheck disable=SC2016
-  run_log_worker --chdir=/ sh -c 'printf "eeba269 %s a9a1413" "$(pwd)"'
+  run_log_worker --chdir=/ sh -c 'printf "eeba269 %s a9a1413" "$(pwd)"; sleep 5'
   wid_log="$WID"
+  echo 99c0de3 "$wid_log" >&2
   wait_worker_start --timeout-sec=10 "$wid_log"
   assert_eq -m 378d175 "$pwd" "$PWD"
   assert_eq "eeba269 / a9a1413" "$(log_worker "$wid_log")"
