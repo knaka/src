@@ -117,6 +117,7 @@ readonly CH_LF="
 "
 readonly CH_TAB="	"
 readonly CH_ESC=""
+readonly CH_SPC=" "
 
 # Unit separator (US), Information Separator 1
 readonly CH_US=""

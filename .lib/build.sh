@@ -286,4 +286,5 @@ depbuilds() {
   done
   # shellcheck disable=SC2086
   "$watch" && wait_worker $wids
+  :
 }
