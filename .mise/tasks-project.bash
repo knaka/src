@@ -20,3 +20,21 @@ task_doc() {
     CLAUDE.md \
     #nop
 }
+
+# Run Debian Docker container.
+task_docker__debian__run() {
+  run_once task_docker__start__temp
+  docker run --rm -it -v "$PWD:/work" "$(docker build --quiet --file debian.Dockerfile .)" "$@"
+}
+
+# Run BusyBox Docker container.
+task_docker__busybox__run() {
+  run_once task_docker__start__temp
+  docker run --rm -it -v "$PWD:/work" "$(docker build --quiet --file busybox.Dockerfile .)" "$@"
+}
+
+# Run Arch Linux Docker container.
+task_docker__archlinux__run() {
+  run_once task_docker__start__temp
+  docker run --platform linux/amd64 --rm -it -v "$PWD:/work" "$(docker build  --platform linux/amd64 --quiet --file archlinux.Dockerfile .)" "$@"
+}

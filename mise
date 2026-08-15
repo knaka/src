@@ -5,7 +5,7 @@ set -- _83da9bf "$@"; eval "shift; \${$1-false} || ! $1=true" && return || :
 # — Home | mise-en-place https://mise.jdx.dev/
 
 # Mise - Home | mise-en-place https://mise.jdx.dev/
-mise_ver_e8ccfbb=2026.8.1
+mise_ver_e8ccfbb=2026.8.6
 
 should_exec_9bf84a8=false
 
@@ -53,7 +53,7 @@ mise() {
   command "$cmd_path" "$@"
 }
 
-_() { case "${0##*[/\\]}" in ("$1"|"$1".*) :;; (*) ! :;; esac; }; if _ mise
+if eval 'test "$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (mise.*) ;; (*) false;; esac # shpp:main_guard
 then
   set -o nounset -o errexit
   should_exec_9bf84a8=true

@@ -1,11 +1,9 @@
-#!/usr/bin/env sh
-# vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
-# shellcheck shell=sh
-set -- __MISE_TASKS_DOCKER_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
+#!/usr/bin/env bash
+set -- _7408127 "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
-if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = _SCRDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- _SCRDIR ../.lib "$OLDPWD" "$@" # shpp:sources
+pushd "${BASH_SOURCE[0]%[/\\]*}" &>/dev/null || pushd . >/dev/null
 . ../.lib/utils.sh
-cd "$3" || exit; shift 3 # /shpp:sources
+popd >/dev/null || exit
 
 # Show the status of Docker.
 task_docker__status() {
@@ -67,22 +65,4 @@ task_docker__start__temp() {
     run_once task_docker__start
     add_exit_handler task_docker__stop
   fi
-}
-
-# Run Debian Docker container.
-task_docker__debian__run() {
-  run_once task_docker__start__temp
-  docker run --rm -it -v "$PWD:/work" "$(docker build --quiet --file debian.Dockerfile .)" "$@"
-}
-
-# Run BusyBox Docker container.
-task_docker__busybox__run() {
-  run_once task_docker__start__temp
-  docker run --rm -it -v "$PWD:/work" "$(docker build --quiet --file busybox.Dockerfile .)" "$@"
-}
-
-# Run Arch Linux Docker container.
-task_docker__archlinux__run() {
-  run_once task_docker__start__temp
-  docker run --platform linux/amd64 --rm -it -v "$PWD:/work" "$(docker build  --platform linux/amd64 --quiet --file archlinux.Dockerfile .)" "$@"
 }

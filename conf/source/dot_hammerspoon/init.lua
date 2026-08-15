@@ -1,9 +1,13 @@
 -- Open and Closing Quotation Marks, then move to left
-hs.hotkey.bind({"option"}, "[", function()
-  hs.eventtap.keyStrokes("“”")
-  hs.timer.usleep(1000)
-  hs.eventtap.keyStroke({}, "left", 0)
-end)
+hs.hotkey.bind(
+  {"option"}, "[", 
+  -- {"shift"}, "f18",
+  function()
+    hs.eventtap.keyStrokes("“”")
+    hs.timer.usleep(1000)
+    hs.eventtap.keyStroke({}, "left", 0)
+  end
+)
 
 -- &Variable Expansion (parameter expansion)
 hs.hotkey.bind({"option"}, "v", function()

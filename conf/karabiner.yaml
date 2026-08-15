@@ -586,3 +586,6 @@ profiles:
             - type: basic
               from: {key_code: "h", modifiers: {mandatory: [command, shift, control]}}
               to: [{key_code: f17, modifiers: [shift]}]
+            # - type: basic
+            #   from: {key_code: open_bracket, modifiers: {mandatory: [option]}}
+            #   to: [{key_code: f18, modifiers: [shift]}]

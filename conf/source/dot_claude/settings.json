@@ -20,5 +20,6 @@
       }
     ]
   },
-  "theme": "light"
+  "theme": "light",
+  "tui": "fullscreen"
 }
