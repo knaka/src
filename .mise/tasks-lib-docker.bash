@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -- _7408127 "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
+set -- __CONFIG_MISE_TASKS_DOCKER_BASH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
 pushd "${BASH_SOURCE[0]%[/\\]*}" &>/dev/null || pushd . >/dev/null
 . ../.lib/utils.sh

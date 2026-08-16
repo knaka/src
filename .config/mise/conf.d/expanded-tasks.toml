@@ -4,11 +4,11 @@
 description='''[password] Create hash from password with bcrypt.'''
 run='''
 #!/usr/bin/env sh
-# .mise/tasks-bcrypt.sh:task_bcrypt__hash
+# .mise/tasks-bcrypt.lib.sh:task_bcrypt__hash
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
 set -- _SCRDIR "$PWD" "$@"
-. ./"tasks-bcrypt.sh"
+. ./"tasks-bcrypt.lib.sh"
 shift 2
 cd "$saved_pwd_85053ae" || exit 1
 set -o nounset -o errexit
@@ -20,11 +20,11 @@ tools={"uv"="0.10"}
 description='''[--password=<password> --hash=<hash>] Verify password against bcrypt hash.'''
 run='''
 #!/usr/bin/env sh
-# .mise/tasks-bcrypt.sh:task_bcrypt__verify
+# .mise/tasks-bcrypt.lib.sh:task_bcrypt__verify
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
 set -- _SCRDIR "$PWD" "$@"
-. ./"tasks-bcrypt.sh"
+. ./"tasks-bcrypt.lib.sh"
 shift 2
 cd "$saved_pwd_85053ae" || exit 1
 set -o nounset -o errexit
@@ -32,121 +32,15 @@ task_bcrypt__verify "$@"
 '''
 tools={"uv"="0.10"}
 
-[tasks."docker:status"]
-description='''Show the status of Docker.'''
-run='''
-#!/usr/bin/env sh
-# .mise/tasks-docker.sh:task_docker__status
-saved_pwd_85053ae="$PWD"
-cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
-set -- _SCRDIR "$PWD" "$@"
-. ./"tasks-docker.sh"
-shift 2
-cd "$saved_pwd_85053ae" || exit 1
-set -o nounset -o errexit
-task_docker__status "$@"
-'''
-
-[tasks."docker:start"]
-description='''Start Docker.'''
-run='''
-#!/usr/bin/env sh
-# .mise/tasks-docker.sh:task_docker__start
-saved_pwd_85053ae="$PWD"
-cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
-set -- _SCRDIR "$PWD" "$@"
-. ./"tasks-docker.sh"
-shift 2
-cd "$saved_pwd_85053ae" || exit 1
-set -o nounset -o errexit
-task_docker__start "$@"
-'''
-
-[tasks."docker:stop"]
-description='''Stop Docker.'''
-run='''
-#!/usr/bin/env sh
-# .mise/tasks-docker.sh:task_docker__stop
-saved_pwd_85053ae="$PWD"
-cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
-set -- _SCRDIR "$PWD" "$@"
-. ./"tasks-docker.sh"
-shift 2
-cd "$saved_pwd_85053ae" || exit 1
-set -o nounset -o errexit
-task_docker__stop "$@"
-'''
-
-[tasks."docker:start:temp"]
-description='''Start Docker service temporarily. If Docker is already running, do nothing when the task runner exits.'''
-run='''
-#!/usr/bin/env sh
-# .mise/tasks-docker.sh:task_docker__start__temp
-saved_pwd_85053ae="$PWD"
-cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
-set -- _SCRDIR "$PWD" "$@"
-. ./"tasks-docker.sh"
-shift 2
-cd "$saved_pwd_85053ae" || exit 1
-set -o nounset -o errexit
-task_docker__start__temp "$@"
-'''
-hide=true
-
-[tasks."docker:debian:run"]
-description='''Run Debian Docker container.'''
-run='''
-#!/usr/bin/env sh
-# .mise/tasks-docker.sh:task_docker__debian__run
-saved_pwd_85053ae="$PWD"
-cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
-set -- _SCRDIR "$PWD" "$@"
-. ./"tasks-docker.sh"
-shift 2
-cd "$saved_pwd_85053ae" || exit 1
-set -o nounset -o errexit
-task_docker__debian__run "$@"
-'''
-
-[tasks."docker:busybox:run"]
-description='''Run BusyBox Docker container.'''
-run='''
-#!/usr/bin/env sh
-# .mise/tasks-docker.sh:task_docker__busybox__run
-saved_pwd_85053ae="$PWD"
-cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
-set -- _SCRDIR "$PWD" "$@"
-. ./"tasks-docker.sh"
-shift 2
-cd "$saved_pwd_85053ae" || exit 1
-set -o nounset -o errexit
-task_docker__busybox__run "$@"
-'''
-
-[tasks."docker:archlinux:run"]
-description='''Run Arch Linux Docker container.'''
-run='''
-#!/usr/bin/env sh
-# .mise/tasks-docker.sh:task_docker__archlinux__run
-saved_pwd_85053ae="$PWD"
-cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
-set -- _SCRDIR "$PWD" "$@"
-. ./"tasks-docker.sh"
-shift 2
-cd "$saved_pwd_85053ae" || exit 1
-set -o nounset -o errexit
-task_docker__archlinux__run "$@"
-'''
-
 [tasks."session:init"]
 description='''Clears the session environment.'''
 run='''
 #!/usr/bin/env sh
-# .mise/tasks-session.sh:task_session__init
+# .mise/tasks-session.lib.sh:task_session__init
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
 set -- _SCRDIR "$PWD" "$@"
-. ./"tasks-session.sh"
+. ./"tasks-session.lib.sh"
 shift 2
 cd "$saved_pwd_85053ae" || exit 1
 set -o nounset -o errexit
@@ -158,11 +52,11 @@ hide=true
 description='''Ensures the application environment variable $APP_ENV is set.'''
 run='''
 #!/usr/bin/env sh
-# .mise/tasks-session.sh:task_appenv__ensure
+# .mise/tasks-session.lib.sh:task_appenv__ensure
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
 set -- _SCRDIR "$PWD" "$@"
-. ./"tasks-session.sh"
+. ./"tasks-session.lib.sh"
 shift 2
 cd "$saved_pwd_85053ae" || exit 1
 set -o nounset -o errexit
@@ -176,11 +70,11 @@ tools={"gum"="0.17.0"}
 description='''Confirms a critical operation.'''
 run='''
 #!/usr/bin/env sh
-# .mise/tasks-session.sh:task_critical__confirm
+# .mise/tasks-session.lib.sh:task_critical__confirm
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
 set -- _SCRDIR "$PWD" "$@"
-. ./"tasks-session.sh"
+. ./"tasks-session.lib.sh"
 shift 2
 cd "$saved_pwd_85053ae" || exit 1
 set -o nounset -o errexit
@@ -193,36 +87,24 @@ depends=["appenv:ensure"]
 description='''[tests...] Run tests. If no test names are provided, all tests are run.'''
 run='''
 #!/usr/bin/env sh
-# .mise/tasks-test.sh:task_test
+# .mise/tasks-test.lib.sh:task_test
 saved_pwd_85053ae="$PWD"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
 set -- _SCRDIR "$PWD" "$@"
-. ./"tasks-test.sh"
+. ./"tasks-test.lib.sh"
 shift 2
 cd "$saved_pwd_85053ae" || exit 1
 set -o nounset -o errexit
 task_test "$@"
 '''
 
-[tasks."npm:install"]
-description='''Install npm packages if "package.json" has been updated.'''
-run='''
-#!/usr/bin/env bash
-# .mise/tasks-node.bash:task_npm__install
-pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
-. ./"tasks-node.bash"
-popd >/dev/null || exit 1
-set -o nounset -o errexit -o pipefail
-task_npm__install "$@"
-'''
-
 [tasks."foo"]
 description='''Foo'''
 run='''
 #!/usr/bin/env bash
-# .mise/tasks-project.bash:task_foo
+# .mise/tasks.bash:task_foo
 pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
-. ./"tasks-project.bash"
+. ./"tasks.bash"
 popd >/dev/null || exit 1
 set -o nounset -o errexit -o pipefail
 task_foo "$@"
@@ -232,10 +114,107 @@ task_foo "$@"
 description='''Update documentation files.'''
 run='''
 #!/usr/bin/env bash
-# .mise/tasks-project.bash:task_doc
+# .mise/tasks.bash:task_doc
 pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
-. ./"tasks-project.bash"
+. ./"tasks.bash"
 popd >/dev/null || exit 1
 set -o nounset -o errexit -o pipefail
 task_doc "$@"
+'''
+
+[tasks."docker:debian:run"]
+description='''Run Debian Docker container.'''
+run='''
+#!/usr/bin/env bash
+# .mise/tasks.bash:task_docker__debian__run
+pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
+. ./"tasks.bash"
+popd >/dev/null || exit 1
+set -o nounset -o errexit -o pipefail
+task_docker__debian__run "$@"
+'''
+
+[tasks."docker:busybox:run"]
+description='''Run BusyBox Docker container.'''
+run='''
+#!/usr/bin/env bash
+# .mise/tasks.bash:task_docker__busybox__run
+pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
+. ./"tasks.bash"
+popd >/dev/null || exit 1
+set -o nounset -o errexit -o pipefail
+task_docker__busybox__run "$@"
+'''
+
+[tasks."docker:archlinux:run"]
+description='''Run Arch Linux Docker container.'''
+run='''
+#!/usr/bin/env bash
+# .mise/tasks.bash:task_docker__archlinux__run
+pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
+. ./"tasks.bash"
+popd >/dev/null || exit 1
+set -o nounset -o errexit -o pipefail
+task_docker__archlinux__run "$@"
+'''
+
+[tasks."docker:status"]
+description='''Show the status of Docker.'''
+run='''
+#!/usr/bin/env bash
+# .mise/tasks-docker.lib.bash:task_docker__status
+pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
+. ./"tasks-docker.lib.bash"
+popd >/dev/null || exit 1
+set -o nounset -o errexit -o pipefail
+task_docker__status "$@"
+'''
+
+[tasks."docker:start"]
+description='''Start Docker.'''
+run='''
+#!/usr/bin/env bash
+# .mise/tasks-docker.lib.bash:task_docker__start
+pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
+. ./"tasks-docker.lib.bash"
+popd >/dev/null || exit 1
+set -o nounset -o errexit -o pipefail
+task_docker__start "$@"
+'''
+
+[tasks."docker:stop"]
+description='''Stop Docker.'''
+run='''
+#!/usr/bin/env bash
+# .mise/tasks-docker.lib.bash:task_docker__stop
+pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
+. ./"tasks-docker.lib.bash"
+popd >/dev/null || exit 1
+set -o nounset -o errexit -o pipefail
+task_docker__stop "$@"
+'''
+
+[tasks."docker:start:temp"]
+description='''Start Docker service temporarily. If Docker is already running, do nothing when the task runner exits.'''
+run='''
+#!/usr/bin/env bash
+# .mise/tasks-docker.lib.bash:task_docker__start__temp
+pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
+. ./"tasks-docker.lib.bash"
+popd >/dev/null || exit 1
+set -o nounset -o errexit -o pipefail
+task_docker__start__temp "$@"
+'''
+hide=true
+
+[tasks."npm:install"]
+description='''Install npm packages if "package.json" has been updated.'''
+run='''
+#!/usr/bin/env bash
+# .mise/tasks-node.lib.bash:task_npm__install
+pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
+. ./"tasks-node.lib.bash"
+popd >/dev/null || exit 1
+set -o nounset -o errexit -o pipefail
+task_npm__install "$@"
 '''

@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-set -- _0af8be1 "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
+set -- __CONFIG_MISE_CONF_D_POSTINSTALL_BRUSH_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
 foo_a2fe1ad() {
   pwd

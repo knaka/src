@@ -11,10 +11,10 @@ MISE_PID = "{{ mise_pid }}"
 MISE_BIN = "{{ mise_bin }}"
 LSV_EMBED_SCRIPT_TARGETS = """
 {{ config_root }}/.lib/json2sh.sh
-{{ config_root }}/.mise/tasks/tasks/expand.sh
+{{ config_root }}/.config/mise/tasks/tasks/expand.sh
 """
 LSV_EMBED_HEREDOC_TARGETS = """
-{{ config_root }}/.mise/tasks/bootstrap/generate.sh
+{{ config_root }}/.config/mise/tasks/bootstrap/generate.sh
 {{ config_root }}/.lib/shpp.sh
 """
 LSV_SHPP_TARGETS = """
@@ -26,8 +26,8 @@ LSV_SHPP_TARGETS = """
 {{ config_root }}/.lib-test/*.bash
 {{ config_root }}/.mise/**/*.sh
 {{ config_root }}/.mise/**/*.bash
-{{ config_root }}/conf/.mise/**/*.sh
-{{ config_root }}/conf/.mise/**/*.bash
+{{ config_root }}/.config/mise/**/*.sh
+{{ config_root }}/.config/mise/**/*.bash
 {{ config_root }}/go/.mise/**/*.bash
 {{ config_root }}/py/.mise/**/*.sh
 {{ config_root }}/py/.mise/**/*.sh

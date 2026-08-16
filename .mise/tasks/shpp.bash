@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-set -- __MISE_TASKS_SHPP_BASH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
+set -- __CONFIG_MISE_TASKS_SHPP_BASH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
 #MISE description="[files...] SHell PreProcessor. If no filenames are provided, all files listed in $LSV_SHPP_TARGETS are processed."
 
 pushd "${BASH_SOURCE[0]%[/\\]*}" >/dev/null 2>&1 || pushd . >/dev/null
-. ../../.lib/utils.sh
-. ../../.lib/cui.sh
-. ../../.lib/shpp.sh
+. ../../../.lib/utils.sh
+. ../../../.lib/cui.sh
+. ../../../.lib/shpp.sh
 popd >/dev/null || exit
 
 : "${LSV_SHPP_TARGETS=}"
