@@ -1,8 +1,8 @@
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-set -- __CONFIG_MISE_TASKS_BCRYPT_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
+set -- __MISE_TASKS_LIB_BCRYPT_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
-if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = _SCRDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- _SCRDIR ../../.lib "$OLDPWD" "$@" # shpp:sources
+if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = _SCRDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- _SCRDIR ../.lib "$OLDPWD" "$@" # shpp:sources
 . ../.lib/utils.sh
 cd "$3" || exit; shift 3 # /shpp:sources
 
@@ -38,7 +38,7 @@ task_bcrypt__verify() {
   mise exec uv -- uv tool run --from "bcrypt" python3 -c 'import sys, bcrypt; sys.exit(0 if bcrypt.checkpw(sys.argv[1].encode(), sys.argv[2].encode()) else 1)' "$password" "$hash" >/dev/null 2>&1
 }
 
-if eval 'test "$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (tasks-bcrypt.*) ;; (*) false;; esac # shpp:main_guard
+if eval 'test "$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (tasks-lib-bcrypt.*) ;; (*) false;; esac # shpp:main_guard
 then
   set -o nounset -o errexit
   "$@"

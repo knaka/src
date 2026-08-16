@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-set -- __CONFIG_MISE_TASKS_TEST_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
+set -- __MISE_TASKS_LIB_TEST_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
 if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = _SCRDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- _SCRDIR ../.lib "$OLDPWD" "$@" # shpp:sources
 . ../.lib/utils.sh
@@ -164,7 +164,7 @@ task_test() {
   run_tests "$@"
 }
 
-if eval 'test "$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (tasks-test.*) ;; (*) false;; esac # shpp:main_guard
+if eval 'test "$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (tasks-lib-test.*) ;; (*) false;; esac # shpp:main_guard
 then
   set -o nounset -o errexit
   run_tests "$@"

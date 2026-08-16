@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-set -- __CONFIG_MISE_TASKS_TASKS_EXPAND_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
+set -- __MISE_TASKS_TASKS_EXPAND_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
 #MISE description="Generate Mise TOML tasks to call shell functions defined in monolithic shell files."
 
