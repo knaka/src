@@ -24,7 +24,8 @@ EOF
 }
 
 test_yq_comment() {
-  local yaml="$(yaml_021812a | yq '.bar = .bar + " HOGE"')"
+  local yaml
+  yaml="$(yaml_021812a | yq '.bar = .bar + " HOGE"')"
   assert_eq "$(yaml_expected_015a1fa)" "$yaml"
 }
 

@@ -91,7 +91,6 @@ test_ifsv_filter() (
 test_ifsv_reduce() (
   set -o errexit
 
-  # shellcheck disable=SC2317
   add() (
     echo $(( $1 + $2 ))
   )
