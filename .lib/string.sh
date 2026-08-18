@@ -177,6 +177,7 @@ split_() {
   gsub_ "$1" "$2" "$delim"
 }
 
+# shellcheck disable=SC2153
 test_lib_string_sh() {
   set -- _SCRDIR .
   . ./assert.sh

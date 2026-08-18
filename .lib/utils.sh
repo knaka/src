@@ -169,6 +169,10 @@ then
   readonly RC_SIGUSR2=$((128 + SIGUSR2))
 fi
 
+foo_404b37f() {
+  :
+}
+
 # The EXIT handler runs when the script runs to the end, or when the `exit`
 # builtin is called. In Bash, it also runs on receiving a terminating signal.
 # shellcheck disable=SC2064

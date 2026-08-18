@@ -1,9 +1,9 @@
-#!/bin/sh
-set -o nounset -o errexit
+#!/usr/bin/env sh
+set -- _52850b5 "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
-test "${guard_c877466+set}" = set && return 0; guard_c877466=x
-
-. "$(dirname "$0")"/utils.sh
+if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = _SCRDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null && set -- _SCRDIR ../.lib "$OLDPWD" "$@" # shpp:sources
+. ../.lib/utils.sh
+cd "$3" || exit && shift 3 # /shpp:sources
 
 if is_windows
 then
@@ -16,7 +16,7 @@ then
     fi
     path="$(realpath "$path")"
     ifs_pipe
-    for attrib in $psv_file_sharing_ignorance_attributes
+    for attrib in ${PSV_FILE_SHARING_IGNORANCE_ATTRIBUTES-}
     do
       # Remove trailing backslashes.
       printf "%s:%s " "$path" "$attrib":

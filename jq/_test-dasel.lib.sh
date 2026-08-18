@@ -10,11 +10,12 @@
 # Test
 test_dasel() {
   # dasel2 seems have omitted `--compact` option
-  local json="$(echo '{"greeting": "Hello, world", "foo": "bar"}' | jq --compact-output --sort-keys)"
-  local toml="$(echo "$json" | dasel --read=json --write=toml)"
-  local greeting="$(echo "$toml" | dasel --read=toml --write=- '.greeting')"
+  local json toml greeting json2
+  json="$(echo '{"greeting": "Hello, world", "foo": "bar"}' | jq --compact-output --sort-keys)"
+  toml="$(echo "$json" | dasel --read=json --write=toml)"
+  greeting="$(echo "$toml" | dasel --read=toml --write=- '.greeting')"
   assert_eq "Hello, world" "$greeting"
-  local json2="$(echo "$toml" | dasel --read=toml --write=json | jq -cS)"
+  json2="$(echo "$toml" | dasel --read=toml --write=json | jq -cS)"
   assert_eq "$json2" "$json"
 }
 

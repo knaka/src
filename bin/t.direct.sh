@@ -34,7 +34,7 @@ t() {
   local original_pwd="$PWD"
   while :
   do
-    if is_mise_project_dir
+    if is_mise_project_dir "$PWD"
     then
       if test -x ./task
       then
