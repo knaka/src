@@ -239,7 +239,10 @@ depbuild() {
     echo "Must be unreachable (a7a6f8e)." >&2
     return 1
   else
+    local disable_noglob=false
+    case $- in (*f*) ;; (*) set -o noglob; disable_noglob=true;; esac
     IFS="$CH_US"; set -- $usv_sources; unset IFS
+    "$disable_noglob" && set +o noglob
     # IFS=; set -- $@; unset IFS # Normal glob
     IFS="$CH_LF"; set -- $(extglob "$@"); unset IFS
     if "$force" || updated "$@" --after "$target"

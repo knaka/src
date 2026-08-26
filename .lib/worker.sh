@@ -423,6 +423,7 @@ init_worker_queue() {
   mkdir -p "$worker_queue_dir_60742ac"
   touch "$worker_queue_dir_60742ac"/wids
   add_exit_handler cleanup_worker_queue_f63891f
+  echo worker_queue_dir: "$worker_queue_dir_60742ac" >&2
 }
 
 #endregion

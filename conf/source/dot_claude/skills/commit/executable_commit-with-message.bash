@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -- _2fc9d8e "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
+set -- _b28c90e "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
 commit_with_message() {
   local temp_file

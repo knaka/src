@@ -73,7 +73,7 @@ ip_random_free_port() {
   ip_free_ports "$start" "$end" | shuf | head -n "$number" || test $? -eq "$RC_SIGPIPE"
 }
 
-# Wait for one or more servers to respond with HTTP 200. Checks each URL sequentially with a 60-second timeout per URL.
+# Wait for one or more servers to respond with HTTP. Checks each URL sequentially with a 60-second timeout per URL.
 wait_for_http() {
   local url
   local max_attempts=60
@@ -87,7 +87,7 @@ wait_for_http() {
       # -o /dev/null: discard response body
       # -w "%{http_code}": print HTTP status code after transfers
       # 2>/dev/null: suppress stderr
-      if curl -s -o /dev/null -w "%{http_code}" "$url" 2>/dev/null | grep -q "200"
+      if curl -s -o /dev/null -w "%{http_code}" "$url" 2>/dev/null | grep -q -e "20[0-9]" -e "40[0-9]"
       then
         echo "✓ Server is ready at $url" >&2
         break

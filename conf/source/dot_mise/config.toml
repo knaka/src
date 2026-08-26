@@ -8,7 +8,7 @@
 # "github:googleworkspace/cli" = "0.17.0"
 # "gum" = "0.17.0"
 # "jq" = "1.8.1"
-# "node" = "24"
+"node" = "24"
 # "python" = "3.14"
 # "yj" = "5.1.0"
 # "yq" = "4.52.4"

@@ -10,6 +10,7 @@ typeset -U path
 path=(
   "$HOME"/bin
   "$HOME"/*-bin
+  "$HOME"/go/bin
 
   # Homebrew Keg-only
   /usr/local/opt/sqlite/bin

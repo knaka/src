@@ -1,9 +1,46 @@
--- Open and Closing Quotation Marks, then move to left
+-- em-dash
 hs.hotkey.bind(
-  {"option"}, "[", 
-  -- {"shift"}, "f18",
+  {"option"}, "-",
+  function()
+    hs.eventtap.keyStrokes("—")
+  end
+)
+
+-- Left and right single quotation marks, then move to left
+hs.hotkey.bind(
+  {"option"}, "'",
+  function()
+    hs.eventtap.keyStrokes("‘’")
+    hs.timer.usleep(1000)
+    hs.eventtap.keyStroke({}, "left", 0)
+  end
+)
+
+-- Left and right double quotation marks, then move to left
+hs.hotkey.bind(
+  {"option", "shift"}, "'",
   function()
     hs.eventtap.keyStrokes("“”")
+    hs.timer.usleep(1000)
+    hs.eventtap.keyStroke({}, "left", 0)
+  end
+)
+
+-- Brases, then move to left
+hs.hotkey.bind(
+  {"option"}, "[", 
+  function()
+    hs.eventtap.keyStrokes("[]")
+    hs.timer.usleep(1000)
+    hs.eventtap.keyStroke({}, "left", 0)
+  end
+)
+
+-- Brackets, then move to left
+hs.hotkey.bind(
+  {"option", "shift"}, "[",
+  function()
+    hs.eventtap.keyStrokes("{}")
     hs.timer.usleep(1000)
     hs.eventtap.keyStroke({}, "left", 0)
   end
