@@ -40,7 +40,7 @@ then
   name="$call_name"
 fi
 cat <<-EOF
-	if eval 'test "\$0" = "\${BASH_SOURCE-}"' || case "\${0##*[/\\]}." in (${name}.*) ;; (*) false;; esac # shpp:main_guard
+	if eval 'test "\$0" = "\${BASH_SOURCE-}"' || case "\${0##*[/\\\\]}." in (${name}.*) ;; (*) false;; esac # shpp:main_guard
 	then
 	  set -o nounset -o errexit
 	  ${func_name} "\$@"

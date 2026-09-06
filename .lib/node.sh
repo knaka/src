@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-set -- _ddfed19 "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
+set -- __LIB_NODE_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
 # Run `npm install` only if it hasn't been run yet, or if `package.json` has changed since the last run.
 npm_install_changed() {

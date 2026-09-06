@@ -579,14 +579,9 @@ is_fd_open() {
 : "${TAIL_DEPTH:=0}"
 
 # Exec only if every caller on the function call stack has declared that this is a "tail" call. Otherwise simply call it.
-# shellcheck disable=SC3028
 tail_exec() {
-  if ! is_bash_native
-  then
-    echo "This function requires native Bash." >&2
-    exit 1
-  fi
-  if test "${#FUNCNAME[@]}" -eq $((TAIL_DEPTH + 2))
+  # `+2` accounts for excluding the top-level frame (`main`) and this function itself.
+  if "${FORCE_EXEC-false}" || { test "${BASH_VERSION+set}" && eval 'test ${#FUNCNAME[@]} -eq $((TAIL_DEPTH+2))'; }
   then
     set -- exec "$@"
     run_exit_handlers
