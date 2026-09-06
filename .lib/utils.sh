@@ -571,4 +571,27 @@ is_fd_open() {
   { : >&"$1"; } 2>/dev/null
 }
 
+# Number of ancestor calls on the Bash function call stack that have
+# explicitly opted in to being skipped over by `tail_exec` (see below), by
+# invoking their own callee with `TAIL_DEPTH=$((TAIL_DEPTH+1))` prefixed to
+# the call. Compared against `${#FUNCNAME[@]}` to detect whether every
+# frame between the top-level entry point and `tail_exec` has opted in.
+: "${TAIL_DEPTH:=0}"
+
+# Exec only if every caller on the function call stack has declared that this is a "tail" call. Otherwise simply call it.
+# shellcheck disable=SC3028
+tail_exec() {
+  if ! is_bash_native
+  then
+    echo "This function requires native Bash." >&2
+    exit 1
+  fi
+  if test "${#FUNCNAME[@]}" -eq $((TAIL_DEPTH + 2))
+  then
+    set -- exec "$@"
+    run_exit_handlers
+  fi
+  "$@"
+}
+
 #endregion

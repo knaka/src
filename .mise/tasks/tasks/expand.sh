@@ -48,7 +48,7 @@ pushd "\$MISE_PROJECT_ROOT"/"$TASKS_REL_DIR" >/dev/null || exit 1
 . ./"$base"
 popd >/dev/null || exit 1
 set -o nounset -o errexit -o pipefail
-${func_name} "\$@"
+TAIL_DEPTH=1 ${func_name} "\$@"
 '''
 EOF
 }

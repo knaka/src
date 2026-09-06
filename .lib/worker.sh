@@ -181,6 +181,18 @@ run_worker() {
 # Stream the log output of the given workers (or all queued workers if none
 # given) via `tail -f`.
 tail_worker() {
+  local exec=false
+  OPTIND=1; while getopts _-: OPT
+  do
+    test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
+    case "$OPT" in
+      (exec) exec=true;;
+      (?) return 1;;
+      (*) echo "$0: illegal option -- $OPT" >&2; return 1;;
+    esac
+  done
+  shift $((OPTIND-1))
+
   if test $# -eq 0
   then
     # shellcheck disable=SC2046
@@ -195,10 +207,22 @@ tail_worker() {
     fi
     shift
   done
-  (
-    set -m
-    tail -f "$@" || :
-  )
+  if test $# -eq 0
+  then
+    return
+  fi
+  if "$exec"
+  then
+    exec tail -f "$@"
+  elif is_terminal
+  then
+    (
+      set -m
+      tail -f "$@" || :
+    )
+  else
+    tail -f "$@"
+  fi
 }
 
 run_rec_worker() {
@@ -226,7 +250,11 @@ log_worker() {
     fi
     shift
   done
-  cat "$@"
+  if test $# -gt 0
+  then
+    cat "$@"
+  fi
+  :
 }
 
 # Send SIGTERM to each given worker: the whole process group for a

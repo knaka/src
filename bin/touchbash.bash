@@ -39,7 +39,7 @@ ${func_name}() {
 if test "\$0" = "\${BASH_SOURCE[0]}"
 then
   set -o nounset -o errexit -o pipefail
-  ${func_name} "\$@"
+  TAIL_DEPTH=1 ${func_name} "\$@"
 fi
 EOF
 }
