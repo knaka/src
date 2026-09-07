@@ -63,12 +63,12 @@ profiles:
             - type: basic
               conditions: *conditions_terminal
               from: {key_code: a, modifiers: {mandatory: [control, command, shift]}}
-              to: [{key_code: f13}]
+              to: [{key_code: f13, modifiers: []}]
             # 行末まで選択
             - type: basic
               conditions: *conditions_terminal
               from: {key_code: f, modifiers: {mandatory: [control, command, shift]}}
-              to: [{key_code: f14}]
+              to: [{key_code: f19, modifiers: [shift]}]
             # 行頭
             - type: basic
               conditions: *conditions_terminal

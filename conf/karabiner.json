@@ -168,7 +168,8 @@
                 },
                 "to": [
                   {
-                    "key_code": "f13"
+                    "key_code": "f13",
+                    "modifiers": []
                   }
                 ]
               },
@@ -194,7 +195,10 @@
                 },
                 "to": [
                   {
-                    "key_code": "f14"
+                    "key_code": "f19",
+                    "modifiers": [
+                      "shift"
+                    ]
                   }
                 ]
               },
