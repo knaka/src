@@ -7,39 +7,25 @@ popd >/dev/null || exit
 
 readonly REPOS="$HOME"/repos
 readonly REPO_OVERLAY="$REPOS"/github.com/$USER/repo-overlay
+readonly SOURCE_DIR="$REPO_OVERLAY"/"${PROJECT_DIR#"$REPOS/"}"
+readonly DEST_DIR="$PROJECT_DIR"
 
 run_chezmoi() {
-  local source_dir="$REPO_OVERLAY"/"${PROJECT_DIR#"$REPOS/"}"
-  local dest_dir="$PROJECT_DIR"
-  OPTIND=1; while getopts _-: OPT
-  do
-    test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
-    case "$OPT" in
-      (source) source_dir="$OPTARG";;
-      (destination) dest_dir="$OPTARG";;
-      (?) return 1;;
-      (*) echo "$0: illegal option -- $OPT" >&2; return 1;;
-    esac
-  done
-  shift $((OPTIND-1))
-
-  chezmoi --source="$source_dir" --destination="$dest_dir" "$@"
+  chezmoi --source="$SOURCE_DIR" --destination="$DEST_DIR" "$@"
 }
 
 # Generate the Git exclude configuration for the overlaid files.
 task_overlay__exclude__gen() {
-  local dest_dir="$PROJECT_DIR"
   run_chezmoi managed \
   | while read -r file_path
     do
-      if test -d "$dest_dir/$file_path"
+      if test -d "$DEST_DIR/$file_path"
       then
-        echo Skipping "$file_path" >&2
         continue
       fi
       echo "/$file_path"
     done \
-  >"$dest_dir"/.git/info/exclude
+  >"$DEST_DIR"/.git/info/exclude
 }
 
 # [files...] Add overlaid files. If no file is specified, re-add managed files.
