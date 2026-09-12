@@ -1,12 +1,10 @@
-#!/usr/bin/env sh
-# vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
-# shellcheck shell=sh
-set -- _BIN_CONF_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
+#!/usr/bin/env bash
+set -- _a5d3dd5 "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
-if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = _SCRDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- _SCRDIR ../.lib "$OLDPWD" "$@" # shpp:sources
+pushd "${BASH_SOURCE[0]%[/\\]*}" &>/dev/null || pushd . >/dev/null
 . ../.lib/utils.sh
 . ../.lib/commands.sh
-cd "$3" || exit; shift 3 # /shpp:sources
+popd >/dev/null || exit
 
 conf() {
   local source_path="$HOME"/.local/share/chezmoi
@@ -23,7 +21,9 @@ conf() {
       (*) echo "$0: illegal option -- $OPT" >&2; exit 1;;
     esac
   done
+  shift $((OPTIND-1))
 
+  local -a global_opts=(--mode="$mode" --source="$source_path")
   local found_subcmd=false
   local arg
   for arg in "$@"
@@ -33,11 +33,25 @@ conf() {
     then
       case "${arg}" in
         (-*)
+          global_opts+=("$arg")
+          continue
           ;;
         (*)
           found_subcmd=true
-          set -- "$@" --mode="$mode" --source="$source_path"
           case "$arg" in
+            (add)
+              if test $# -gt 0
+              then
+                set -- "$@" add
+              else
+                set -- "$@" re-add
+              fi
+              continue
+              ;;
+            (diff)
+              set -- "$@" diff --reverse
+              continue
+              ;;
             (ed|edit)
               set -- "$@" edit --watch
               continue
@@ -50,14 +64,15 @@ conf() {
     fi
     set -- "$@" "$arg"
   done
-  chezmoi "$@"
+  
+  chezmoi "${global_opts[@]}" "$@"
 }
 
-if eval 'test "$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (conf.*) ;; (*) false;; esac # shpp:main_guard
+if test "$0" = "${BASH_SOURCE[0]}"
 then
   set -o nounset -o errexit
   set -- --source="$HOME/repos/github.com/knaka/src/conf/source" "$@"
   # set -- --mode="symlink" "$@"
   set -- --mode="file" "$@"
-  conf "$@"
+  TAIL_DEPTH=1 conf "$@"
 fi
