@@ -176,11 +176,11 @@ incbuild() {
   local force=false
   local watch=false
   local handler=
-  OPTIND=1; while getopts _-: OPT
+  OPTIND=1; while getopts _-:B OPT
   do
     test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
     case "$OPT" in
-      (force) force=true;;
+      (force|B|always-make) force=true;;
       (handler) handler="$OPTARG";;
       (watch) watch=true;;
       (?) return 1;;
