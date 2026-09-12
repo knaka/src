@@ -155,18 +155,24 @@ wait_for_change() {
   return 1
 }
 
-# Run a handler against a target only when its sources have changed, or keep
-# doing so forever as they change. Usage:
-#   depbuild [--force] [--handler=cmd] target sources... [-- handler args...]
-# The handler can be given either via --handler=cmd or as trailing arguments
-# after a `--` delimiter; at least one of the two is required. Without
+# Incrementally build a target by running a handler only when its sources have
+# changed, or keep doing so forever as they change. Usage:
+#
+#   incbuild [--force] [--handler=handler_cmd] target sources... [-- handler_cmd args...]
+#
+# The handler can be given either via --handler=handler_cmd or as trailing
+# arguments after a `--` delimiter; at least one of the two is required. Without
 # --watch, the handler runs once, and only if --force was given or `updated`
-# reports the sources are newer than target (see `updated` above). With
-# --watch, the handler instead runs every time `wait_for_change` (see above)
-# reports a batch of changes to the sources, with the paths of the changed
-# files appended to the handler's arguments; the first call runs immediately
-# with no changed-file arguments, so the handler always fires at least once.
-depbuild() {
+# reports the sources are newer than target (see `updated` above). With --watch,
+# the handler instead runs every time `wait_for_change` (see above) reports a
+# batch of changes to the sources, with the paths of the changed files appended
+# to the handler's arguments; the first call runs immediately with no
+# changed-file arguments, so the handler always fires at least once. Sources
+# may be given as wildcard (glob) patterns instead of literal paths; this
+# matters most with --watch, since the pattern is handed to `wait_for_change`
+# as-is and keeps matching files created after the call, whereas expanding it
+# up front would only capture what already existed.
+incbuild() {
   local force=false
   local watch=false
   local handler=
@@ -253,8 +259,8 @@ depbuild() {
   fi
 }
 
-# Run depbuild functions sequentially or in background.
-depbuilds() {
+# Run incbuild functions sequentially or in background.
+incbuilds() {
   local watch=false
   local force=false
   OPTIND=1; while getopts _-: OPT
@@ -275,13 +281,13 @@ depbuilds() {
     trap_terminating_signals
     init_worker_queue
   fi
-  for depbuild in "$@"
+  for incbuild in "$@"
   do
     if "$watch"
     then
-      set -- run_worker "$depbuild" --watch
+      set -- run_worker "$incbuild" --watch
     else
-      set -- "$depbuild"
+      set -- "$incbuild"
     fi
     "$force" && set -- "$@" --force
     "$@"
