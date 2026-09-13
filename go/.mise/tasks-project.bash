@@ -19,7 +19,7 @@ task_gen() {
 }
 
 # Build Go source packages (*.go, ./cmd/*/) incrementally.
-task_depbuild() {
+task_incbuild() {
   push_dir "$PROJECT_DIR"
   local go_bin_dir_path=./build
   mkdir -p "$go_bin_dir_path"
@@ -59,7 +59,7 @@ task_depbuild() {
 
 # Build
 task_build() {
-  task_depbuild "$@"
+  task_incbuild "$@"
 }
 
 gen_win_shim_0d8d45c() { cat <<EOF
@@ -82,7 +82,7 @@ EOF
 
 # Install Go tools.
 task_install() {
-  local task="tasks-project.sh:task_depbuild"
+  local task="tasks-project.sh:task_incbuild"
   local go_shim_dir_path="$HOME"/go-bin
   mkdir -p "$go_shim_dir_path"
   rm -f "$go_shim_dir_path"/*
