@@ -1,0 +1,16 @@
+
+./.source/hello.txt#line=1
+
+./.source/hello.txt#L=3
+
+./.source/hello.txt#:~:text=hoge-,world%20foo&bar
+
+./.source/hello.txt#:~:text=hoge-,world%20foo,-fuga&bar
+
+x  foo/bar./baz/aaa.txt#line=123
+
+file://./.source/hello.txt#hello
+
+file://./.source/hello.txt#:~:text=world%20foo&bar
+
+file://./.source/hello.txt#:~:text=hoge-,world%20foo&bar
