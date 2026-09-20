@@ -212,3 +212,63 @@ popd >/dev/null || exit 1
 set -o nounset -o errexit -o pipefail
 TAIL_DEPTH=1 task_npm__install "$@"
 '''
+
+[tasks."overlay:exclude:gen"]
+description='''Generate the Git exclude configuration for the overlaid files.'''
+run='''
+#!/usr/bin/env bash
+# .mise/tasks-lib-overlay.bash:task_overlay__exclude__gen
+pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
+. ./"tasks-lib-overlay.bash"
+popd >/dev/null || exit 1
+set -o nounset -o errexit -o pipefail
+TAIL_DEPTH=1 task_overlay__exclude__gen "$@"
+'''
+
+[tasks."overlay:add"]
+description='''[files...] Add overlaid files. If no file is specified, re-add managed files.'''
+run='''
+#!/usr/bin/env bash
+# .mise/tasks-lib-overlay.bash:task_overlay__add
+pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
+. ./"tasks-lib-overlay.bash"
+popd >/dev/null || exit 1
+set -o nounset -o errexit -o pipefail
+TAIL_DEPTH=1 task_overlay__add "$@"
+'''
+
+[tasks."overlay:diff"]
+description='''Show diff for managed overlaid files.'''
+run='''
+#!/usr/bin/env bash
+# .mise/tasks-lib-overlay.bash:task_overlay__diff
+pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
+. ./"tasks-lib-overlay.bash"
+popd >/dev/null || exit 1
+set -o nounset -o errexit -o pipefail
+TAIL_DEPTH=1 task_overlay__diff "$@"
+'''
+
+[tasks."overlay:managed"]
+description='''Show managed overlaid files.'''
+run='''
+#!/usr/bin/env bash
+# .mise/tasks-lib-overlay.bash:task_overlay__managed
+pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
+. ./"tasks-lib-overlay.bash"
+popd >/dev/null || exit 1
+set -o nounset -o errexit -o pipefail
+TAIL_DEPTH=1 task_overlay__managed "$@"
+'''
+
+[tasks."overlay:forget"]
+description='''Remove overlaid targets from the source state.'''
+run='''
+#!/usr/bin/env bash
+# .mise/tasks-lib-overlay.bash:task_overlay__forget
+pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
+. ./"tasks-lib-overlay.bash"
+popd >/dev/null || exit 1
+set -o nounset -o errexit -o pipefail
+TAIL_DEPTH=1 task_overlay__forget "$@"
+'''

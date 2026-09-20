@@ -60,7 +60,7 @@ mise() {
   command "$cmd_path" "$@"
 }
 
-if eval 'test "$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (generate.*) ;; (*) false;; esac # shpp:main_guard
+if eval 'test "$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (mise.*) ;; (*) false;; esac # shpp:main_guard
 then
   set -o nounset -o errexit
   should_exec_9bf84a8=true

@@ -9,8 +9,10 @@
 
 x  foo/bar./baz/aaa.txt#line=123
 
-file://./.source/hello.txt#hello
+file://./.source/hello.txt#hello,godbye
 
-file://./.source/hello.txt#:~:text=world%20foo&bar
+hogefile://./.source/hello.txt#:~:text=world%20foo&bar
+
+fugafile://./.source/hello.txt#hoge,goodbye
 
 file://./.source/hello.txt#:~:text=hoge-,world%20foo&bar
