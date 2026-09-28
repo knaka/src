@@ -86,6 +86,7 @@ increment_2cfb6e4() {
 }
 
 test_first_call() {
+  local first_pwd="$PWD"
   counter_268b0bb=0
   increment_2cfb6e4
   assert_eq "$counter_268b0bb" 1
@@ -102,6 +103,8 @@ test_first_call() {
   cd "$dir" || exit 1
   increment_2cfb6e4
   assert_eq "$counter_268b0bb" 3
+  # Change back to the original directory. Otherwise, the test fails on Busybox for Windows with an "rm: can't remove ..." error.
+  cd "$first_pwd" || exit 1
 }
 
 counter_81344cf=
@@ -111,6 +114,7 @@ increment_d1d63b0() {
 }
 
 test_run_once() {
+  local first_pwd="$PWD"
   counter_81344cf=0
   run_once increment_d1d63b0
   assert_eq "$counter_81344cf" 1
@@ -130,6 +134,7 @@ test_run_once() {
   run_once increment_d1d63b0 hoge
   run_once increment_d1d63b0 fuga foo
   assert_eq "$counter_81344cf" 5
+  cd "$first_pwd" || exit 1
 }
 
 cleanup1sh() { echo cleanup1sh; };
