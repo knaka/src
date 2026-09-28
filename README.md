@@ -1,17 +1,17 @@
 # README.md
 
-* [Markdown からコードの特定行へのリンク](./task.cmd 'set "ARG0=%~f0"') (Powered by [HTML Related Links](https://marketplace.visualstudio.com/items?itemName=rioj7.html-related-links))
-
-[cowsay.sh](./bin/cowsay.sh "set -o nounset -o errexit")
+* [Markdown からコードの特定行へのリンク](./task.cmd 'set "ARG0=%~f0"')
+* [./bin/cowsay.sh の特定行へのリンク](./bin/cowsay.sh "set -o nounset -o errexit")
 
 # <a name=0d8322b></a>Foo Bar
 
 これらは行ける。前半部はデフォのリンクになってしまうが、後半はデフォの管理外なので、正しく置き換えられている。
 
 * [cowsay.sh にある “anchor”](./bin/cowsay.sh '498080f')
-* [cowsay.sh にある “anchor”](./bin/cowsay.sh "498080f")
 
-これダメなのなぜ？ [cowsay.sh にある “anchor”](./bin/cowsay.sh#498080f)
+これダメなのなぜかと言うと、VSCode 的にその region が二重で link provide されるのだが、どちらが「上」になるかが一定でない（並列処理されるようで、どっちが上になるか一定しない）から [cowsay.sh にある “anchor”](./bin/cowsay.sh#:~:text=498080f)
+
+* issue 出したがナシのつぶて — [`DocumentLink` click target is unpredictable when multiple providers return overlapping ranges — provider priority (score/isBuiltin/registration order) is not respected · Issue #336258 · microsoft/vscode](https://github.com/microsoft/vscode/issues/336258)
 
 生での相対パスでもリンクできるようにした: ./bin/cowsay.sh#:~:text=498080f
 

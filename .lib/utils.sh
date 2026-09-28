@@ -53,7 +53,12 @@ is_bsd() {
 }
 
 is_mise() {
-  test "${MISE_CONFIG_ROOT+set}"
+  # Executed under Mise, even if not in an activated shell environment
+  test "${__MISE_DIFF-}" && return 0
+  # Running in a Mise task
+  test "${MISE_CONFIG_ROOT-}" && return 0
+  # Otherwise
+  return 1
 }
 
 is_linux() {
