@@ -11,6 +11,7 @@ tap 'jmespath/jmespath' # for 'jp'
 # ==========================================================================
 #region fomulae 一覧・検索 https://formulae.brew.sh/formula/
 
+brew 'ripgrep'
 # brew 'bash'
 # brew 'coreutils'
 # brew 'cpulimit' # https://github.com/opsengine/cpulimit

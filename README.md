@@ -13,6 +13,8 @@
 
 * issue 出したがナシのつぶて — [`DocumentLink` click target is unpredictable when multiple providers return overlapping ranges — provider priority (score/isBuiltin/registration order) is not respected · Issue #336258 · microsoft/vscode](https://github.com/microsoft/vscode/issues/336258)
 
+なので、自前の extension を作成 — [Custom Document Link Rules - Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=ayutaya.custom-document-link-rules)
+
 生での相対パスでもリンクできるようにした: ./bin/cowsay.sh#:~:text=498080f
 
 これらは、そもそも Markdown preview が面倒見ないので、置き換えがうまく行くようだ。
