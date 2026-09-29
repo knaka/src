@@ -11,7 +11,6 @@ tap 'jmespath/jmespath' # for 'jp'
 # ==========================================================================
 #region fomulae 一覧・検索 https://formulae.brew.sh/formula/
 
-brew 'ripgrep'
 # brew 'bash'
 # brew 'coreutils'
 # brew 'cpulimit' # https://github.com/opsengine/cpulimit
@@ -36,7 +35,9 @@ brew 'postgresql@17' # brew services list で一覧 | brew services start/stop p
 brew 'pstree'
 # brew 'purescript'
 # brew 'python-yq' # https://formulae.brew.sh/formula/python-yq | yq コマンドはこれ — yq: Command-line YAML/XML/TOML processor - jq wrapper for YAML, XML, TOML documents — yq documentation https://kislyuk.github.io/yq/
+brew 'python'
 brew 'python' # なんでか Claude Code が、/usr/local/bin/python3 が無いとうるさい
+brew 'ripgrep'
 brew 'shellcheck'
 # brew 'tmux'
 # brew 'volta' # nvm は、nvm use するまで切り替えてくれない。avn を入れろと言われたが、npm パッケージのルート導入はしたくない。volta はどうか。…周辺のサポートや IDE のサポートを考え、NVM に戻すか。…と思ったが、やはり Volta は出来が良いな

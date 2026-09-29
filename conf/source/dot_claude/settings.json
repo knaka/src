@@ -11,14 +11,14 @@
       }
     ]
   },
-  "ask": [
-    "Bash(find * -exec *)",
-    "Bash(find * -execdir *)",
-
-    "Bash(true)"
-  ],
   "permissions": {
     "additionalDirectories": ["~/go/pkg/mod"],
+    "ask": [
+      "Bash(find * -exec *)",
+      "Bash(find * -execdir *)",
+
+      "Bash(true)"
+    ],
     "allow": [
       "Bash(cat *)",
       "Bash(dir *)",

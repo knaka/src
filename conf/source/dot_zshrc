@@ -38,18 +38,18 @@ then
   path=("$(cygpath $LOCALAPPDATA)"/Microsoft/WinGet/Links $path)
 fi
 
-if command -v mise >/dev/null 2>&1
-then
-  # "Parameter Expansion Flags"
-  # "f: Split the result of the expansion at newlines. This is a shorthand for ‘ps:\n:’."
-  # — zsh: 14 Expansion https://zsh.sourceforge.io/Doc/Release/Expansion.html
-  if is_windows
-  then
-    path=(${(s.:.)$(cygpath --path "$(mise bin-paths | tr '\n' ';' | sed 's/;$//')")} $path)
-  else
-    path=(${(f)"$(mise bin-paths)"} $path)
-  fi
-fi
+# if command -v mise >/dev/null 2>&1
+# then
+#   # "Parameter Expansion Flags"
+#   # "f: Split the result of the expansion at newlines. This is a shorthand for ‘ps:\n:’."
+#   # — zsh: 14 Expansion https://zsh.sourceforge.io/Doc/Release/Expansion.html
+#   if is_windows
+#   then
+#     path=(${(s.:.)$(cygpath --path "$(mise bin-paths | tr '\n' ';' | sed 's/;$//')")} $path)
+#   else
+#     path=(${(f)"$(mise bin-paths)"} $path)
+#   fi
+# fi
 
 # Claude Code はここに入るのだが、Node.js の方がパスで先にあると、self-update で Node.js 版の方を入れてしまうみたいだ。なので、先頭にしてみる
 path=("$HOME"/.local/bin $path)
