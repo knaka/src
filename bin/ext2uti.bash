@@ -6,6 +6,8 @@ pushd "${BASH_SOURCE[0]%[/\\]*}" &>/dev/null || pushd . >/dev/null
 popd >/dev/null || exit
 
 # File extension to UTI // Uniform Type Identifier - Wikipedia https://en.wikipedia.org/wiki/Uniform_Type_Identifier
+
+# File ext to UTI
 ext2uti() {
   is_macos || return 1
   test $# -eq 0 && return 1
@@ -17,11 +19,9 @@ ext2uti() {
   local file="$TEMP_DIR"/f5d9634"$ext"
   touch "$file"
   local uti
-  uti="$(
-    mdls -name kMDItemContentType -name kMDItemContentTypeTree "$file" \
-    | perl -ne 'if (/kMDItemContentType *= *"(.*)"/) { print $1 };'
-  )"
-  if test -z "$uti" || [[ "$uti" =~ ^dyn\. ]]
+  # Ask Spotlight for the content type of the empty dummy file, which macOS infers from its extension. `-raw` prints the bare value without the "kMDItemContentType = " prefix and quotes, or "(null)" if the attribute is unavailable.
+  uti="$(mdls -raw -name kMDItemContentType "$file")"
+  if test -z "$uti" || test "$uti" = "(null)" || [[ "$uti" =~ ^dyn\. ]]
   then
     echo UTI for "$ext" not found. >&2
     return 1
