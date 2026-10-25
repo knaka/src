@@ -13,10 +13,10 @@ cbar() {
   if test $# -gt 0
   then
     # If arguments are specified, archive them as files/directories, convert to text, and set to clipboard.
-    tar czvf - "$@" | base64 | sc
+    tar -c -v -f - "$@" | base64 | sc
   else
     # If no arguments are specified, extract the clipboard content as an archive.
-    gc | base64 -d | tar zxvf -
+    gc | base64 -d | tar -x -v -f -
   fi
 }
 

@@ -56,6 +56,10 @@ conf() {
               set -- "$@" edit --watch
               continue
               ;;
+            (st|status)
+              set -- "$@" status
+              continue
+              ;;
             (*)
               ;;
           esac
