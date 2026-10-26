@@ -2,6 +2,12 @@
 // browser on a claude.ai chat page, either as a bookmarklet or as a custom
 // shortcut via a tool such as Shortkeys.
 
+// * [Backing up your Claude conversations with a Chrome extension](https://thirdbear.substack.com/p/backing-up-your-claude-conversations)
+// * [GitHub - agarwalvishal/claude-chat-exporter: One-click, privacy-first exporter for Claude.ai chats — clean Markdown with artifacts and attachments, ready for Obsidian and RAG. · GitHub](https://github.com/agarwalvishal/claude-chat-exporter)
+// * [Claude Chat Exporter (all chats, all organizations) - Source code](https://greasyfork.org/en/scripts/598747-claude-chat-exporter-all-chats-all-organizations/code)
+// * [Claudeai Sync (Grade A) - Claude Skill | Skills Directory](https://www.skillsdirectory.com/skills/tonydzi-claudeai-sync)
+// * [Providers · cheaper-inference/OmniRoute Wiki · GitHub](https://github.com/cheaper-inference/OmniRoute/wiki/Providers)
+
 function fail(message) {
   alert(message);
   throw new Error(message);

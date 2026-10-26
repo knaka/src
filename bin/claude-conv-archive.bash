@@ -28,7 +28,7 @@ gen_markdown() {
       end
     | .[]
     | "",
-      (if .sender == "human" then "# you asked" else "# claude response" end),
+      (if .sender == "human" then "# Human" else "# Assistant" end),
       "",
       ([.content[] | select(.type == "text") | .text] | join("\n\n"))
   ' <"$file"
@@ -55,7 +55,9 @@ claude_conv_gen() {
     id="$(jq -r .uuid "$file")"
     id7="${id:0:7}"
     local out="$doc_dir/$year/$month$day-$id7.md"
-    echo 2ff11fe: "$file -> $out" >&2
+    local base
+    base="$(basename "$out")"
+    echo "* [](./$base)<!-- +SYNC_TITLE -->" >&2
     name="$(jq -r .name "$file")"
     created_at="$(jq -r .created_at "$file")"
     {
