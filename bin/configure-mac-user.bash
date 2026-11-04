@@ -10,6 +10,18 @@ popd >/dev/null || exit
 
 configure_mac_user() {
   is_macos || return 1
+  # スクリーンロックからの復帰には即パスワード要求
+  if sysadminctl -screenLock status 2>&1 | grep -q immediate
+  then
+    echo "Password is already required immediately after the screen lock." >&2
+  else
+    sysadminctl -password - -screenLock immediate
+    # sysadminctl -password - -screenLock 10
+  fi
+
+  crontab <<EOF
+* * * * * /Users/knaka/bin/check-clamshell
+EOF
 
   # Associate specific file extensions with the editor.
   local exts=(

@@ -6,15 +6,8 @@ pushd "${BASH_SOURCE[0]%[/\\]*}" &>/dev/null || pushd . >/dev/null
 . ./reset-system-settings.bash
 popd >/dev/null || exit
 
-ensure_root() {
-  if test "$EUID" -ne 0
-  then
-    echo "This script requires root privileges. Re-running with sudo..."
-    exec sudo bash "$0" "$@"
-  fi
-}
-
 hibernate_macos() {
+  pmset -a disablesleep 0
   pmset -a hibernatemode 25
   local start
   start="$(date +%s)"
@@ -32,7 +25,6 @@ hibernate_macos() {
 hibernate() {
   if is_macos
   then
-    ensure_root
     hibernate_macos
   elif is_windows
   then

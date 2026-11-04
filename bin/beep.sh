@@ -14,7 +14,9 @@ beep() {
     rundll32 user32.dll,MessageBeep &
   elif is_macos
   then
-    osascript -e 'beep' &
+    # printf '\a'
+    # osascript -e 'beep' &
+    afplay /System/Library/Sounds/Ping.aiff &
   else
     # Emit a terminal bell (BEL) character to trigger an audible or visual alert.
     printf '\a'

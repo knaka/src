@@ -128,6 +128,12 @@ exec sh "$PROJECT_DIR"/"$file" "\$@"
 EOF
 }
 
+gen_direct_bash_script() { cat <<EOF
+#!/usr/bin/env bash
+exec bash "$PROJECT_DIR"/"$file" "\$@"
+EOF
+}
+
 gen_py_sh_script() { cat <<EOF
 #!/usr/bin/env sh
 cd "$PROJECT_DIR" || exit
@@ -177,8 +183,17 @@ task_install() {
     case "$file" in
       (_*) continue;;
     esac
-    local name="${file%.bash}"
-    gen_bash_script >"$bin_dir_path"/"$name"
+    local name
+    case "$file" in
+      (*.direct.bash)
+        name="${file%.direct.bash}"
+        gen_direct_bash_script >"$bin_dir_path"/"$name"
+        ;;
+      (*)
+        name="${file%.bash}"
+        gen_bash_script >"$bin_dir_path"/"$name"
+        ;;
+    esac
     chmod +x "$bin_dir_path"/"$name"
     if is_windows
     then

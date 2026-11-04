@@ -8,16 +8,17 @@ popd >/dev/null || exit
 gen_markdown_frontmatter() { cat <<EOF
 ---
 id: "$id7"
-title: "Claude - $name"
+title: "$name - Claude"
 tags: []
 created_at: "$created_at"
 ---
+
 EOF
 }
 
 gen_markdown() {
-  echo
-  echo "> From: https://claude.ai/chat/$id"
+  echo "From: [$name - Claude](https://claude.ai/chat/$id)"
+  jq -r '.summary // empty | select(. != "") | "\n" + .' <"$file"
   # With `tree=true`, `chat_messages` also holds branches left by edits and retries, so follow the parent links from `current_leaf_message_uuid` to get only the branch shown on screen. Only `text` blocks are output; thinking and tool blocks are skipped.
   jq -r '
     (.chat_messages | map({key: .uuid, value: .}) | from_entries) as $by_uuid
@@ -36,6 +37,11 @@ gen_markdown() {
 
 claude_conv_gen() {
   local doc_dir="$HOME/doc"
+  if test $# -eq 0
+  then
+    echo No file is specified. >&2
+    return 1
+  fi
   if ! test -d "$doc_dir"
   then
     echo 00e4557 >&2

@@ -959,34 +959,54 @@
             ]
           },
           {
-            "description": "スリープ, S&leep",
+            "description": "Slee&p",
             "manipulators": [
               {
                 "type": "basic",
                 "from": {
-                  "key_code": "l",
+                  "key_code": "p",
                   "modifiers": {
                     "mandatory": [
-                      "option",
                       "command"
                     ]
                   }
                 },
                 "to": [
                   {
-                    "shell_command": "sleep 1 && pmset displaysleepnow"
+                    "shell_command": "nohup /Users/knaka/bin/sleepnow & disown"
                   }
                 ]
               }
             ]
           },
           {
-            "description": "スクリーンロック, Screen Loc&k",
+            "description": "&Hibernate",
             "manipulators": [
               {
                 "type": "basic",
                 "from": {
-                  "key_code": "k",
+                  "key_code": "h",
+                  "modifiers": {
+                    "mandatory": [
+                      "command"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "nohup /Users/knaka/bin/hibernate & disown"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "description": "スクリーンロック, Screen &Lock",
+            "manipulators": [
+              {
+                "type": "basic",
+                "from": {
+                  "key_code": "l",
                   "modifiers": {
                     "mandatory": [
                       "command"

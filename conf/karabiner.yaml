@@ -241,6 +241,26 @@ profiles:
               # to: [{ "key_code": "open_bracket", "modifiers": ["command", "shift"] }] # ？ Tahoe で？効かなくなった
               to: [{ "key_code": "left_arrow", "modifiers": ["option", "command"] }]
         # 以下、システム全体の設定
+        # できないみたい？
+        # - description: "Power (Touch ID) button"
+        #   manipulators:
+        #     - type: basic
+        #       from: { "consumer_key_code": "menu" }
+        #       # from: { "consumer_key_code": "al_terminal_lock_or_screensaver" }
+        #       to: [{key_code: left_arrow}]
+        #       # to:
+        #       #   - shell_command: /Users/knaka/bin/beep
+        # - description: "Sleep"
+        #   manipulators:
+        #     - type: basic
+        #       from: {key_code: "a", modifiers: {mandatory: []}}
+        #       # from: {consumer_key_code: "do_not_disturb", modifiers: {mandatory: []}}
+        #       # from: { "consumer_key_code": "do_not_disturb" }
+        #       # from: { "consumer_key_code": "al_terminal_lock_or_screensaver" }
+        #       # from: {key_code: spacebar, modifiers: {mandatory: [left_command]}}
+        #       to: [{key_code: left_arrow}]
+        #       # to:
+        #       #   - shell_command: /Users/knaka/bin/beep
         - description: "左 Command → Backquotes (Backticks) / tilde"
           manipulators:
             - type: basic
@@ -299,25 +319,34 @@ profiles:
             - type: basic
               from: {key_code: "backslash", modifiers: {mandatory: [control], optional: []}}
               to: {key_code: "return_or_enter", modifiers: [shift]}
-        - description: "スリープ, S&leep"
+        - description: "Slee&p"
           # ログインの画面からでも効く。Hammerspoon だと効かない
           manipulators: 
             - type: basic
               from:
-                key_code: l
+                key_code: p
                 modifiers:
                   mandatory:
-                    - option
+                    # - option
                     - command
               to:
-                # - shell_command: pmset sleepnow
-                # wait 入れないと、キー押してるからすぐ復帰してしまうようだ
-                - shell_command: sleep 1 && pmset displaysleepnow
-        - description: "スクリーンロック, Screen Loc&k"
+                - shell_command: "nohup /Users/knaka/bin/sleepnow & disown"
+        - description: "&Hibernate"
           manipulators: 
             - type: basic
               from:
-                key_code: k
+                key_code: h
+                modifiers:
+                  mandatory:
+                    # - option
+                    - command
+              to:
+                - shell_command: "nohup /Users/knaka/bin/hibernate & disown"
+        - description: "スクリーンロック, Screen &Lock"
+          manipulators: 
+            - type: basic
+              from:
+                key_code: l
                 modifiers:
                   mandatory:
                     - command

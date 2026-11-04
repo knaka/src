@@ -41,7 +41,10 @@ popd >/dev/null || exit
 reset_macos_power_settings() {
   # The -a, -b, -c, -u flags determine whether the settings apply to battery ( -b ), charger (wall power) ( -c ), UPS ( -u ) or all ( -a ).
   pmset -a standby 1
+  # パネル閉じても
+  pmset -a disablesleep 1 
 
+  # -b: battery
   pmset -b displaysleep 3
   # sleep - system sleep timer (value in minutes, or 0 to disable)
   pmset -b sleep 10
@@ -51,8 +54,9 @@ reset_macos_power_settings() {
   #   * deepsleep: 25
   pmset -b hibernatemode 3
 
+  # -c: charger
   pmset -c displaysleep 10
-  pmset -c sleep 0
+  pmset -c sleep 60
   pmset -c hibernatemode 3
 
   # powernap - enable/disable Power Nap on supported machines (value = 0/1)
@@ -63,25 +67,46 @@ reset_macos_power_settings() {
   # standbydelayhigh and standbydelaylow は Intel 用（“Intel Standby Mode”）で、Apple Sillicon にはないらしい
 }
 
-reset_macos_system_settings() {
-  # スクリーンロックからの復帰には即パスワード要求
-  sysadminctl -password - -screenLock immediate
-
-  reset_macos_power_settings
+gen_sudoers_d_user_pmset() { cat <<EOF
+$user ALL=(root) NOPASSWD: /usr/bin/pmset
+EOF
 }
 
 ensure_root() {
-  if test "$EUID" -ne 0
-  then
+   if test "$EUID" -ne 0
+   then
     echo "This script requires root privileges. Re-running with sudo..."
     exec sudo bash "$0" "$@"
+   fi
+}
+
+reset_macos_system_settings() {
+  ensure_root
+  local user="$USER"
+  if test "${SUDO_USER+set}" = set
+  then
+    user="$SUDO_USER"
+  fi
+
+  gen_sudoers_d_user_pmset >/etc/sudoers.d/"$user"-pmset
+
+  reset_macos_power_settings
+
+}
+
+pmset() {
+  if test "$EUID" -ne 0
+  then
+    sudo /usr/bin/pmset "$@"
+  else
+    /usr/bin/pmset "$@"
   fi
 }
 
 reset_system_settings() {
   if is_macos
   then
-    ensure_root
+    # ensure_root
     reset_macos_system_settings
   fi
 }
