@@ -541,8 +541,24 @@ prepend_path() {
   esac
 }
 
-# Try to take an exclusive lock on a file without blocking. Fails if another process holds the lock. The lock is held until this shell and all child processes that inherit the file descriptor exit.
-try_flock() {
+# The file descriptor of the lock held by this shell, or empty if none.
+flock_fd_dcfe4c8=
+
+# Release the lock taken by `try_flock` or `wait_flock`.
+release_flock() {
+  if test -z "$flock_fd_dcfe4c8"
+  then
+    echo "No lock is held." >&2
+    return 1
+  fi
+  eval "exec $flock_fd_dcfe4c8<&-"
+  flock_fd_dcfe4c8=
+}
+
+# Take an exclusive lock on the file $1, releasing the one this shell already holds. $2 is `LOCK_NB` not to block, or empty to block.
+flock_d17fb3c() {
+  local nb="$2"
+  test -n "$flock_fd_dcfe4c8" && release_flock
   local lock_fd
   if is_bash_bin 4
   then
@@ -551,25 +567,39 @@ try_flock() {
     lock_fd="$FD_FLOCK"
     eval "exec $lock_fd<\"\$1\""
   fi
+  flock_fd_dcfe4c8="$lock_fd"
+  local rc=0
   if has_external_command flock
   then
-    flock -n "$lock_fd"
+    flock ${nb:+-n} "$lock_fd"
   elif has_external_command perl
   then
-    perl -mFcntl=:flock -e "open(LOCK,'<&=$lock_fd');exit(!flock(LOCK,LOCK_EX|LOCK_NB))"
+    perl -mFcntl=:flock -e "open(LOCK,'<&=$lock_fd');exit(!flock(LOCK,LOCK_EX${nb:+|$nb}))"
   elif has_external_command python3
   then
-    python3 -c "from fcntl import *;flock($lock_fd,LOCK_EX|LOCK_NB)" 2>/dev/null
+    python3 -c "from fcntl import *;flock($lock_fd,LOCK_EX${nb:+|$nb})" 2>/dev/null
   elif has_external_command ruby
   then
-    ruby -e "exit(File.open($lock_fd).flock(File::LOCK_EX|File::LOCK_NB))"
+    ruby -e "exit(File.open($lock_fd).flock(File::LOCK_EX${nb:+|File::$nb}))"
   elif has_external_command php
   then
-    php -r "exit(flock(fopen('php://fd/$lock_fd','r'),LOCK_EX|LOCK_NB)?0:1);"
+    php -r "exit(flock(fopen('php://fd/$lock_fd','r'),LOCK_EX${nb:+|$nb})?0:1);"
   else
     echo "No command available to take a file lock." >&2
     exit 1
-  fi
+  fi || rc=$?
+  test "$rc" -ne 0 && release_flock
+  return "$rc"
+}
+
+# Try to take an exclusive lock on a file without blocking. Fails if another process holds the lock. A shell holds one lock at a time. The lock is held until `release_flock` is called, or until this shell exits, and also while a child process that inherited the file descriptor is running.
+try_flock() {
+  flock_d17fb3c "$1" LOCK_NB
+}
+
+# Take an exclusive lock on a file, blocking until it becomes available. See `try_flock` for how long the lock is held.
+wait_flock() {
+  flock_d17fb3c "$1" ""
 }
 
 if is_macos
