@@ -47,20 +47,24 @@ reset_macos_power_settings() {
   pmset -a disablesleep 1
   # pmset -a disablesleep 0
 
-  # -b: battery
-  pmset -b displaysleep 3
-  # sleep - system sleep timer (value in minutes, or 0 to disable)
-  pmset -b sleep 10
-  # コマンドで sleep させる際に hibernate mode を指定する方法はなさげ
-  #   * sleep: 0
-  #   * safesleep: 3 (default)
-  #   * deepsleep: 25
-  pmset -b hibernatemode 3
+  pmset -a displaysleep 60
+  pmset -a sleep 120
+  pmset -a hibernatemode 3
 
-  # -c: charger
-  pmset -c displaysleep 10
-  pmset -c sleep 60
-  pmset -c hibernatemode 3
+  # # -b: battery
+  # pmset -b displaysleep 3
+  # # sleep - system sleep timer (value in minutes, or 0 to disable)
+  # pmset -b sleep 10
+  # # コマンドで sleep させる際に hibernate mode を指定する方法はなさげ
+  # #   * sleep: 0
+  # #   * safesleep: 3 (default)
+  # #   * deepsleep: 25
+  # pmset -b hibernatemode 3
+
+  # # -c: charger
+  # pmset -c displaysleep 10
+  # pmset -c sleep 60
+  # pmset -c hibernatemode 3
 
   # powernap - enable/disable Power Nap on supported machines (value = 0/1)
   # “Power Nap is a macOS feature that lets your Mac perform background tasks—such as checking for Mail, Calendar, Contacts, Notes, and iCloud updates—while the computer is in sleep mode.”

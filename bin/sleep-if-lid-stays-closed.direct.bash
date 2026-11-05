@@ -3,15 +3,11 @@ set -- _98dc8d3 "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:s
 
 pushd "${BASH_SOURCE[0]%[/\\]*}" &>/dev/null || pushd . >/dev/null
 . ../.lib/utils.sh
+. ./power.bash
 . ./sleepnow.direct.bash
 popd >/dev/null || exit
 
-is_lid_closed() {
-  ioreg -r -k AppleClamshellState -d 1 | grep -qE '"AppleClamshellState" = Yes'
-}
-
 sleep_if_lid_stays_closed() {
-  export PATH="/usr/sbin:$PATH"
   local start
   start="$(date +%s)"
   while test $(($(date +%s) - start)) -lt 320

@@ -8,6 +8,14 @@ pushd "${BASH_SOURCE[0]%[/\\]*}" >/dev/null 2>&1 || pushd . >/dev/null
 . ./ext2uti.bash
 popd >/dev/null || exit
 
+gen_crontab_2c8ab95() { cat <<EOF
+* * * * * bash $PWD/sleep-if-lid-stays-closed.direct.bash
+*/5 * * * * bash $PWD/warn-awake-if-lid-stays-closed-long.direct.bash
+* * * * * bash $PWD/displaysleep-if-user-stays-idle.direct.bash
+*/5 * * * * bash $PWD/sleep-if-user-stays-idle.direct.bash
+EOF
+}
+
 configure_mac_user() {
   is_macos || return 1
   # スクリーンロックからの復帰には即パスワード要求
@@ -19,10 +27,10 @@ configure_mac_user() {
     # sysadminctl -password - -screenLock 10
   fi
 
-  crontab <<EOF
-* * * * * /Users/knaka/bin/sleep-if-lid-stays-closed
-* * * * * /Users/knaka/bin/check-clamshell
-EOF
+  if ! diff <(crontab -l) <(gen_crontab_2c8ab95)
+  then
+    gen_crontab_2c8ab95 | crontab
+  fi
 
   # Associate specific file extensions with the editor.
   local exts=(

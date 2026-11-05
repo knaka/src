@@ -20,7 +20,10 @@ sleepnow() {
   mode="${1-}"
   if is_macos
   then
-    echo Entering sleep... >&2
+    if test -t 2
+    then
+      echo Entering sleep... >&2
+    fi
     # The system does not enter sleep unless we wait for the key pressed to run this command to be released.
     sleep 1
     if test "$mode" = display
