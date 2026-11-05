@@ -1,13 +1,10 @@
 #!/usr/bin/env bash
 set -- _2f9d6d5 "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
-is_lid_closed() {
-  ioreg -r -k AppleClamshellState -d 1 | grep -qE '"AppleClamshellState" = Yes'
-}
-
-is_audio_playing() {
-  pmset -g assertions | grep -q 'coreaudiod.*preventuseridlesleep'
-}
+pushd "${BASH_SOURCE[0]%[/\\]*}" &>/dev/null || pushd . >/dev/null
+. ../.lib/utils.sh
+. ./power.bash
+popd >/dev/null || exit
 
 check_clamshell() {
   local voice="Samantha"
@@ -23,8 +20,7 @@ check_clamshell() {
 
 if test "$0" = "${BASH_SOURCE[0]}"
 then
-  exec 9< "$0"
-  perl -mFcntl=:flock -e "open(LOCK,'<&=9');exit(!flock(LOCK,LOCK_EX|LOCK_NB))" || exit 0
+  try_flock "$0" || exit 0
   set -o nounset -o errexit -o pipefail
   TAIL_DEPTH=1 check_clamshell "$@"
 fi

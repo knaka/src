@@ -224,6 +224,11 @@ run_once() {
   "$@"
 }
 
+# File descriptor numbers used in the library, allocated in descending order from 9 so that they do not overlap with each other or with those in user scripts, which are expected to use ascending numbers from 3. Keep them at 9 or lower, since POSIX requires shells to support only 0 to 9, and multi-digit numbers do not work on Dash. A number on the left of a redirection operator cannot be a parameter expansion, so such a redirection needs `eval`.
+readonly FD_FLOCK=9
+readonly FD_MEMOIZE_STDOUT=8
+readonly FD_WATCH_EVENTS=7
+
 #endregion
 
 # ==========================================================================
@@ -525,6 +530,48 @@ is_root_dir() {
   test "$dir" = "$parent_dir"
 }
 
+# Prepend a directory to $PATH unless it is already included.
+prepend_path() {
+  case ":$PATH:" in
+    (*:"$1":*)
+      ;;
+    (*)
+      PATH="$1:$PATH"
+      ;;
+  esac
+}
+
+# Try to take an exclusive lock on a file without blocking. Fails if another process holds the lock. The lock is held until this shell and all child processes that inherit the file descriptor exit.
+try_flock() {
+  local lock_fd
+  if is_bash_bin 4
+  then
+    eval 'exec {lock_fd}<"$1"'
+  else
+    lock_fd="$FD_FLOCK"
+    eval "exec $lock_fd<\"\$1\""
+  fi
+  if has_external_command flock
+  then
+    flock -n "$lock_fd"
+  elif has_external_command perl
+  then
+    perl -mFcntl=:flock -e "open(LOCK,'<&=$lock_fd');exit(!flock(LOCK,LOCK_EX|LOCK_NB))"
+  elif has_external_command python3
+  then
+    python3 -c "from fcntl import *;flock($lock_fd,LOCK_EX|LOCK_NB)" 2>/dev/null
+  elif has_external_command ruby
+  then
+    ruby -e "exit(File.open($lock_fd).flock(File::LOCK_EX|File::LOCK_NB))"
+  elif has_external_command php
+  then
+    php -r "exit(flock(fopen('php://fd/$lock_fd','r'),LOCK_EX|LOCK_NB)?0:1);"
+  else
+    echo "No command available to take a file lock." >&2
+    exit 1
+  fi
+}
+
 if is_macos
 then
   shuf() {
@@ -573,7 +620,8 @@ extglob() {
 
 # Return success if the given FD number is currently open (any mode).
 is_fd_open() {
-  { : >&"$1"; } 2>/dev/null
+  # `command` keeps a redirection error on the special builtin `:` from terminating the shell in POSIX-conforming shells.
+  { command : >&"$1"; } 2>/dev/null
 }
 
 # Number of ancestor calls on the Bash function call stack that have

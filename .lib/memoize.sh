@@ -51,13 +51,13 @@ try_memoize() {
   test -r "$cache_file_path_cb3727b" && cat "$cache_file_path_cb3727b" && return 1
   if is_bbwin
   then
-    exec 9>&1 >"$cache_file_path_cb3727b"
+    eval "exec $FD_MEMOIZE_STDOUT>&1 >\"\$cache_file_path_cb3727b\""
     return
   fi
   fifo_path_1af0d3e="$TEMP_DIR"/fifo-47374f3
   mkfifo "$fifo_path_1af0d3e"
-  exec 9>&1
-  tee "$cache_file_path_cb3727b" <"$fifo_path_1af0d3e" >&9 &
+  eval "exec $FD_MEMOIZE_STDOUT>&1"
+  tee "$cache_file_path_cb3727b" <"$fifo_path_1af0d3e" >&"$FD_MEMOIZE_STDOUT" &
   tee_pid_2b6e9c4=$!
   exec >"$fifo_path_1af0d3e"
 }
@@ -65,7 +65,7 @@ try_memoize() {
 # Close a memoization block opened by try_memoize: restores stdout and waits
 # for the background `tee` to finish writing the cache file before returning.
 end_memoize() {
-  exec 1>&9 9>&-
+  eval "exec 1>&$FD_MEMOIZE_STDOUT $FD_MEMOIZE_STDOUT>&-"
   if is_bbwin
   then
     cat "$cache_file_path_cb3727b" && return

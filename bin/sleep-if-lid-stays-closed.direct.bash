@@ -25,8 +25,7 @@ sleep_if_lid_stays_closed() {
 
 if test "$0" = "${BASH_SOURCE[0]}"
 then
-  exec 9< "$0"
-  perl -mFcntl=:flock -e "open(LOCK,'<&=9');exit(!flock(LOCK,LOCK_EX|LOCK_NB))" || exit 0
+  try_flock "$0" || exit 0
   set -o nounset -o errexit -o pipefail
   TAIL_DEPTH=1 sleep_if_lid_stays_closed "$@"
 fi

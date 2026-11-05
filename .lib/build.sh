@@ -101,7 +101,7 @@ on_exit_0e51f30() {
     wait "$pid_4ec98eb" >/dev/null 2>&1 || :
     pid_4ec98eb=
   fi
-  exec 8<&- || :
+  eval "exec $FD_WATCH_EVENTS<&-" || :
   test -n "$fifo_path_4ec98eb" && rm -f "$fifo_path_4ec98eb"
   fifo_path_4ec98eb=
 }
@@ -138,11 +138,11 @@ wait_for_change() {
       --only-emit-events --emit-events-to=stdio \
       "$@" >"$fifo_path_4ec98eb" 2>/dev/null &
     pid_4ec98eb=$!
-    exec 8<"$fifo_path_4ec98eb"
+    eval "exec $FD_WATCH_EVENTS<\"\$fifo_path_4ec98eb\""
   fi
   local line
   local line_prev="|"
-  while IFS= read -r line <&8
+  while IFS= read -r line <&"$FD_WATCH_EVENTS"
   do
     test -z "$line" && return 0
     line="${line#*:}"
