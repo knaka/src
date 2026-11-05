@@ -41,8 +41,11 @@ popd >/dev/null || exit
 reset_macos_power_settings() {
   # The -a, -b, -c, -u flags determine whether the settings apply to battery ( -b ), charger (wall power) ( -c ), UPS ( -u ) or all ( -a ).
   pmset -a standby 1
-  # パネル閉じても
-  pmset -a disablesleep 1 
+  # パネル閉じても sleep しないように
+  # …と思ったのだが、Amphetamine で sleep しないようにしよう。 // Hello 👋🏼 | Amphetamine https://x74353.github.io/Amphetamine/
+  # …と思って使ってみたが、どうもたびたび sleep するようになってしまうので、やはり disablesleep しよう。
+  pmset -a disablesleep 1
+  # pmset -a disablesleep 0
 
   # -b: battery
   pmset -b displaysleep 3

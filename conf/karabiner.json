@@ -973,7 +973,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "nohup /Users/knaka/bin/sleepnow & disown"
+                    "shell_command": "/Users/knaka/bin/sleepnow &"
                   }
                 ]
               }
@@ -994,7 +994,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "nohup /Users/knaka/bin/hibernate & disown"
+                    "shell_command": "/Users/knaka/bin/sleepnow hibernate &"
                   }
                 ]
               }

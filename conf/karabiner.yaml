@@ -320,7 +320,7 @@ profiles:
               from: {key_code: "backslash", modifiers: {mandatory: [control], optional: []}}
               to: {key_code: "return_or_enter", modifiers: [shift]}
         - description: "Slee&p"
-          # ログインの画面からでも効く。Hammerspoon だと効かない
+          # ログインの画面からでも働く。Hammerspoon だと働かない。
           manipulators: 
             - type: basic
               from:
@@ -330,7 +330,10 @@ profiles:
                     # - option
                     - command
               to:
-                - shell_command: "nohup /Users/knaka/bin/sleepnow & disown"
+                # power-state が変わると実行中のコマンドは kill されるみたいなので、long-running のコマンドはバックグラウンドへ逃す。
+                # console_user_server gets 'invalid shared secret' from daemon after wake from sleep (16.0.0) · Issue #4470 · pqrs-org/Karabiner-Elements https://github.com/pqrs-org/Karabiner-Elements/issues/4470
+                # Run in the background. Otherwise, the process is gone after waking from sleep and the settings are not restored.
+                - shell_command: "/Users/knaka/bin/sleepnow &"
         - description: "&Hibernate"
           manipulators: 
             - type: basic
@@ -341,7 +344,7 @@ profiles:
                     # - option
                     - command
               to:
-                - shell_command: "nohup /Users/knaka/bin/hibernate & disown"
+                - shell_command: "/Users/knaka/bin/sleepnow hibernate &"
         - description: "スクリーンロック, Screen &Lock"
           manipulators: 
             - type: basic

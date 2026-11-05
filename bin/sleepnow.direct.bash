@@ -6,19 +6,53 @@ pushd "${BASH_SOURCE[0]%[/\\]*}" &>/dev/null || pushd . >/dev/null
 . ./reset-system-settings.bash
 popd >/dev/null || exit
 
+show_usage_5ccb7a0() { cat <<EOF
+Put the system to sleep in the specified mode. If the mode is omitted, the currently set mode is used.
+
+Usage: $0 [display|suspend|hybrid|hibernate]
+EOF
+}
+
 sleepnow() {
+  local start
+  start="$(date +%s)"
+  local mode
+  mode="${1-}"
   if is_macos
   then
-    local start
-    start="$(date +%s)"
-    pmset -a disablesleep 0
+    echo Entering sleep... >&2
+    # The system does not enter sleep unless we wait for the key pressed to run this command to be released.
     sleep 1
-    pmset sleepnow &
-    while test $(($(date +%s) - start)) -lt 5
-    do
-      sleep 1
-    done
-    reset_macos_power_settings
+    if test "$mode" = display
+    then
+      pmset displaysleepnow
+    else
+      case "$mode" in
+        ("")
+          ;;
+        (suspend|memory)
+          pmset -a hibernatemode 0
+          ;;
+        (hybrid|both)
+          pmset -a hibernatemode 3
+          ;;
+        (hibernate|disk)
+          pmset -a hibernatemode 25
+          ;;
+        (*)
+          echo Unknown mode: "$mode" >&2
+          show_usage_5ccb7a0
+          return 1
+          ;;
+      esac
+      pmset -a disablesleep 0
+      pmset sleepnow
+      while test $(($(date +%s) - start)) -lt 5
+      do
+        sleep 1
+      done
+      reset_macos_power_settings
+    fi
   fi
 }
 

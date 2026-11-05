@@ -20,6 +20,7 @@ configure_mac_user() {
   fi
 
   crontab <<EOF
+* * * * * /Users/knaka/bin/sleep-if-lid-stays-closed
 * * * * * /Users/knaka/bin/check-clamshell
 EOF
 
