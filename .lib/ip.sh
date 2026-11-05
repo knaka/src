@@ -87,7 +87,7 @@ wait_for_http() {
       # -o /dev/null: discard response body
       # -w "%{http_code}": print HTTP status code after transfers
       # 2>/dev/null: suppress stderr
-      if curl -s -o /dev/null -w "%{http_code}" "$url" 2>/dev/null | grep -q -e "20[0-9]" -e "40[0-9]"
+      if curl -s -o /dev/null -w "%{http_code}" "$url" 2>/dev/null | grep_quiet -e "20[0-9]" -e "40[0-9]"
       then
         echo "✓ Server is ready at $url" >&2
         break

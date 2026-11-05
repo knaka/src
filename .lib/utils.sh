@@ -530,6 +530,11 @@ is_root_dir() {
   test "$dir" = "$parent_dir"
 }
 
+# `grep -q` that reads all the input. `grep -q` exits on the first match, which makes the preceding command in a pipeline fail with SIGPIPE, and the pipeline fail under `pipefail`.
+grep_quiet() {
+  grep "$@" >/dev/null
+}
+
 # Prepend a directory to $PATH unless it is already included.
 prepend_path() {
   case ":$PATH:" in

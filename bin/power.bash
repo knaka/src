@@ -15,31 +15,30 @@ fi
 prepend_path /usr/sbin
 
 is_lid_closed() {
-  ioreg -r -k AppleClamshellState -d 1 | grep -qE '"AppleClamshellState" = Yes' || test $? -eq "$RC_SIGPIPE"
+  ioreg -r -k AppleClamshellState -d 1 | grep_quiet -E '"AppleClamshellState" = Yes'
 }
 
 is_audio_playing() {
-  pmset -g assertions | grep -q 'coreaudiod.*preventuseridlesleep' || test $? -eq "$RC_SIGPIPE"
+  pmset -g assertions | grep_quiet 'coreaudiod.*preventuseridlesleep'
 }
 
 is_charger_connected() {
-  pmset -g ps | grep -q "drawing from 'AC Power'" || test $? -eq "$RC_SIGPIPE"
+  pmset -g ps | grep_quiet "drawing from 'AC Power'"
 }
 
 # Check if a process other than powerd, which holds an assertion while `disablesleep` is set, prevents the system from sleeping.
 is_sleep_prevented() {
-  pmset -g assertions | grep -v '(powerd)' | grep -qE '^ *pid [0-9]+\(.*\): .* (PreventUserIdleSystemSleep|PreventSystemSleep|NoIdleSleepAssertion) named:' || test $? -eq "$RC_SIGPIPE"
+  pmset -g assertions | grep -v '(powerd)' | grep_quiet -E '^ *pid [0-9]+\(.*\): .* (PreventUserIdleSystemSleep|PreventSystemSleep|NoIdleSleepAssertion) named:'
 }
 
 # Check if a process prevents the display from sleeping, such as during video playback.
 is_display_sleep_prevented() {
-  pmset -g assertions | grep -v '(powerd)' | grep -qE '^ *pid [0-9]+\(.*\): .* (PreventUserIdleDisplaySleep|NoDisplaySleepAssertion) named:' || test $? -eq "$RC_SIGPIPE"
+  pmset -g assertions | grep -v '(powerd)' | grep_quiet -E '^ *pid [0-9]+\(.*\): .* (PreventUserIdleDisplaySleep|NoDisplaySleepAssertion) named:'
 }
 
 # Check if a process serves an SSH connection, including one without a login session such as scp.
 has_ssh_session() {
-  # shellcheck disable=SC2009
-  ps -axo comm= | grep -qE '(^|/)sshd(-session)?$' || test $? -eq "$RC_SIGPIPE"
+  ps -axo comm= | grep_quiet -E '(^|/)sshd(-session)?$'
 }
 
 # Check if the last display power event in the power management log is turning off. Not recommended, since reading the whole log is heavy and takes more than a second.
@@ -48,7 +47,7 @@ is_display_asleep_not_recommended() {
 }
 
 is_screen_locked() {
-  ioreg -n Root -d 1 | grep -q '"CGSSessionScreenIsLocked"=Yes' || test $? -eq "$RC_SIGPIPE"
+  ioreg -n Root -d 1 | grep_quiet '"CGSSessionScreenIsLocked"=Yes'
 }
 
 # Set $RESULT to the seconds elapsed since the last user input event.

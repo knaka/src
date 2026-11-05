@@ -7,7 +7,7 @@ pushd "${BASH_SOURCE[0]%[/\\]*}" &>/dev/null || pushd . >/dev/null
 . ./sleepnow.direct.bash
 popd >/dev/null || exit
 
-warn_awake_if_lid_stays_closed_long() {
+warn_awake_if_lid_stays_closed() {
   local voice="Samantha"
   is_lid_closed || return 0
   is_audio_playing && return 0
@@ -16,12 +16,12 @@ warn_awake_if_lid_stays_closed_long() {
   is_lid_closed || return 0
   sleepnow display
   is_audio_playing && return 0
-  say -v "$voice" "Not sleeping even though the lid is closed."
+  say -v "$voice" "Still awake with the lid closed."
 }
 
 if test "$0" = "${BASH_SOURCE[0]}"
 then
   try_flock "$0" || exit 0
   set -o nounset -o errexit -o pipefail
-  TAIL_DEPTH=1 warn_awake_if_lid_stays_closed_long "$@"
+  TAIL_DEPTH=1 warn_awake_if_lid_stays_closed "$@"
 fi
