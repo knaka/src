@@ -11,6 +11,8 @@ tap 'jmespath/jmespath' # for 'jp'
 # ==========================================================================
 #region fomulae 一覧・検索 https://formulae.brew.sh/formula/
 
+brew 'dwdiff'
+brew 'git-delta'
 # brew 'bash'
 # brew 'coreutils'
 # brew 'cpulimit' # https://github.com/opsengine/cpulimit
@@ -22,7 +24,7 @@ brew 'git'
 brew 'go' # ~/go/ は $GOPATH であり、$GOROOT とは別であることが望ましいらしい？
 # brew 'jj'
 # brew 'jp' # AWS CLI の query 言語である、JMESPath のツール —jmespath/jp: Command line interface to JMESPath - http://jmespath.org https://github.com/jmespath/jp
-# brew 'jq'
+brew 'jq' # Mac の jq が古くて `--binary` オプションが無い
 brew 'less' # Mac の less は正規表現が不足
 # brew 'lua'
 brew 'mas' # Mac App Store command-line interface
@@ -35,15 +37,15 @@ brew 'postgresql@17' # brew services list で一覧 | brew services start/stop p
 brew 'pstree'
 # brew 'purescript'
 # brew 'python-yq' # https://formulae.brew.sh/formula/python-yq | yq コマンドはこれ — yq: Command-line YAML/XML/TOML processor - jq wrapper for YAML, XML, TOML documents — yq documentation https://kislyuk.github.io/yq/
-brew 'python'
 brew 'python' # なんでか Claude Code が、/usr/local/bin/python3 が無いとうるさい
 brew 'ripgrep'
 brew 'shellcheck'
 # brew 'tmux'
 # brew 'volta' # nvm は、nvm use するまで切り替えてくれない。avn を入れろと言われたが、npm パッケージのルート導入はしたくない。volta はどうか。…周辺のサポートや IDE のサポートを考え、NVM に戻すか。…と思ったが、やはり Volta は出来が良いな
 # brew 'wget'
-# brew 'yj'
-# brew 'yq' # mikefarah の方の yq(1) — mikefarah/yq: yq is a portable command-line YAML, JSON, XML, CSV, TOML and properties processor https://github.com/mikefarah/yq
+brew 'yj'
+brew 'yq' # mikefarah の方の yq(1) — mikefarah/yq: yq is a portable command-line YAML, JSON, XML, CSV, TOML and properties processor https://github.com/mikefarah/yq
+brew 'pinchtab/tap/pinchtab' # pinchtab/pinchtab: High-performance browser automation bridge and multi-instance orchestrator with advanced stealth injection and real-time dashboard. https://github.com/pinchtab/pinchtab
 
 #endregion
  
@@ -51,8 +53,9 @@ brew 'shellcheck'
 #region homebrew-cask — Homebrew Formulae https://formulae.brew.sh/cask/
 
 cask "hammerspoon"
-cask 'alt-tab' # alt-tab — Homebrew Formulae https://formulae.brew.sh/cask/alt-tab
+# cask 'alt-tab' # alt-tab — Homebrew Formulae https://formulae.brew.sh/cask/alt-tab
 # cask 'chromium'
+cask 'dockdoor'
 cask 'docker-desktop'
 # cask 'drawio' # jgraph/drawio-desktop: Official electron build of draw.io https://github.com/jgraph/drawio-desktop
 # cask 'dropbox' # 利用をやめる
@@ -69,6 +72,9 @@ cask '1password-cli' # 1password-cli — Homebrew Formulae https://formulae.brew
 # ==========================================================================
 #region Mac App Store
 
+# $ mas search ...
+
 # mas "Slack", id: 803453959
+# mas "Amphetamine", id: 937984704
 
 #endregion

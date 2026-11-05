@@ -55,6 +55,7 @@
       "Bash(nl -ba *)",
       "Bash(printf *)",
       "Bash(pwd *)",
+      "Bash(rg *)",
       "Bash(sed --posix -n *)",
       "Bash(sed -E -n *)",
       "Bash(sed -n *)",

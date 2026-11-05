@@ -5,7 +5,9 @@
 	quotepath = false
 	excludesfile = /Users/knaka/.gitignore_global
 	autoCRLF = false
-	pager = LESSCHARSET=utf-8 less
+	# pager = LESSCHARSET=utf-8 /opt/homebrew/bin/less
+	pager = delta --light
+	# pager = delta --detect-dark-light=always
 	symlinks = true
 [difftool "sourcetree"]
 	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
@@ -35,3 +37,14 @@
 	root = /Users/knaka/repos
 [url "ssh://git@github.com/"]
 	insteadOf = https://github.com/
+[interactive]
+	diffFilter = delta --color-only
+[delta]
+	navigate = true  # use n and N to move between diff sections
+	# dark = true      # or light = true, or omit for auto-detection
+	light = true
+[merge]
+	conflictStyle = zdiff3
+[color "diff"]
+	old = "#000000 brightred"
+	new = "#000000 brightgreen"
