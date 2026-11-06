@@ -113,18 +113,6 @@ Y="$y"
 
 dl="$HOME"/Downloads
 
-if test -x /usr/local/bin/less
-then
-  export PAGER=/usr/local/bin/less
-  export MANPAGER=/usr/local/bin/less
-fi
-
-if test -x /opt/homebrew/bin/less
-then
-  export PAGER=/opt/homebrew/bin/less
-  export MANPAGER=/opt/homebrew/bin/less
-fi
-
 #endregion
 
 # ==========================================================================
