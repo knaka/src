@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -- _9057fa1 "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
+set -- _BIN_SLEEP_CONDITIONS_BASH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
 # Functions to get the conditions for deciding whether a Mac should sleep. When executed directly, this script prints the current conditions and checks that the items they depend on still exist.
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -- _2f9d6d5 "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
+set -- _BIN_WARN_AWAKE_IF_LID_STAYS_CLOSED_DIRECT_BASH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
 pushd "${BASH_SOURCE[0]%[/\\]*}" &>/dev/null || pushd . >/dev/null
 . ../.lib/utils.sh
