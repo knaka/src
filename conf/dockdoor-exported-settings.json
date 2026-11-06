@@ -1,12 +1,19 @@
 {
   "app" : "DockDoor",
   "appVersion" : "1.42.2",
-  "exportedAt" : "2026-11-06T01:50:44Z",
+  "exportedAt" : "2026-11-06T02:12:32Z",
   "formatVersion" : 1,
   "settings" : {
+    "disableDockStyleTitles" : false,
+    "dockPreviewControlPosition" : "topTrailing",
+    "enabledTrafficLightButtons" : [
+
+    ],
     "includeHiddenWindowsInDockPreview" : false,
+    "includeHiddenWindowsInSwitcher" : true,
     "lastKnownScreenRecordingPermission" : true,
     "launched" : true,
+    "limitSwitcherToFrontmostApp" : false,
     "NSOSPLastRootDirectory" : {
       "$data" : "Ym9va6wCAAAAAAUQQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIwBAAAEAAAAAwMAAAAAACAFAAAAAQEAAFVzZXJzAAAABQAAAAEBAABrbmFrYQAAAAkAAAABAQAARG93bmxvYWRzAAAADAAAAAEGAAAQAAAAIAAAADAAAAAIAAAABAMAAL5HAAAAAAAACAAAAAQDAAD8mAQAAAAAAAgAAAAEAwAAL5kEAAAAAAAMAAAAAQYAAFgAAABoAAAAeAAAAAgAAAAABAAAQcdwDB83MToYAAAAAQIAAAIAAAAAAAAADwAAAAAAAAAAAAAAAAAAAAAAAAABBQAACAAAAAQDAAABAAAAAAAAAAQAAAADAwAA9QEAAAgAAAABCQAAZmlsZTovLy8MAAAAAQEAAE1hY2ludG9zaCBIRAgAAAAEAwAAAFCBGHMAAAAIAAAAAAQAAEHHwdEIgAAAJAAAAAEBAAA0RkI0OEQ3QS02Rjc3LTQ0RkMtOEIzMy03MDA5OUZFRDA3QTIYAAAAAQIAAIEAAAABAAAA7xMAAAEAAAAAAAAAAAAAAAEAAAABAQAALwAAANgAAAD+\/\/\/\/AQAAAAAAAAARAAAABBAAAEQAAAAAAAAABRAAAIgAAAAAAAAAEBAAAKwAAAAAAAAAQBAAAJwAAAAAAAAAAiAAAIABAAAAAAAABSAAAPAAAAAAAAAAECAAAAABAAAAAAAAESAAADQBAAAAAAAAEiAAABQBAAAAAAAAEyAAACQBAAAAAAAAICAAAGABAAAAAAAAMCAAAMwAAAAAAAAAAcAAANQAAAAAAAAAEcAAACAAAAAAAAAAEsAAAOQAAAAAAAAAAdAAAMwAAAAAAAAAENAAAAQAAAAAAAAA"
     },
@@ -22,6 +29,9 @@
       "{\"bundleIdentifier\":\"com.apple.systempreferences\",\"creationTime\":815474281.125958,\"lastAccessedTime\":815502783.614276,\"windowTitle\":\"リーダーと読み上げ\"}",
       "{\"bundleIdentifier\":\"com.apple.Dictionary\",\"creationTime\":815474301.377137,\"lastAccessedTime\":815482576.491669,\"windowTitle\":\"辞書 – 5件見つかりました\"}"
     ],
+    "showWindowlessAppsInSwitcher" : false,
+    "showWindowsFromCurrentMonitorOnlyInSwitcher" : true,
+    "showWindowsFromCurrentSpaceOnlyInSwitcher" : true,
     "SUAutomaticallyUpdate" : false,
     "SUEnableAutomaticChecks" : true,
     "SUHasLaunchedBefore" : true,
@@ -30,6 +40,13 @@
     },
     "SUSendProfileInfo" : false,
     "SUUpdateGroupIdentifier" : 74066845,
-    "unselectedContentOpacity" : 1
+    "switcherEnabledTrafficLightButtons" : [
+
+    ],
+    "switcherShowAppHeader" : true,
+    "switcherTrafficLightButtonsVisibility" : "never",
+    "trafficLightButtonsVisibility" : "never",
+    "unselectedContentOpacity" : 1,
+    "windowSwitcherControlPosition" : "diagonalTopLeftBottomRight"
   }
 }
