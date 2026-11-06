@@ -3,21 +3,8 @@ set -- _BIN_WARN_AWAKE_IF_LID_STAYS_CLOSED_DIRECT_BASH "$@"; eval "shift; \${$1-
 
 pushd "${BASH_SOURCE[0]%[/\\]*}" &>/dev/null || pushd . >/dev/null
 . ../.lib/utils.sh
-. ./sleep-conditions.bash
-. ./sleepnow.direct.bash
+. ./sleep-utils.bash
 popd >/dev/null || exit
-
-warn_awake_if_lid_stays_closed() {
-  local voice="Samantha"
-  is_lid_closed || return 0
-  is_audio_playing && return 0
-  # Wait until sleep-if-lid-stays-closed, run every minute, should have put the system to sleep.
-  sleep 360
-  is_lid_closed || return 0
-  sleepnow display
-  is_audio_playing && return 0
-  say -v "$voice" "Still awake with the lid closed."
-}
 
 if test "$0" = "${BASH_SOURCE[0]}"
 then

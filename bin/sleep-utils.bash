@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
-set -- _BIN_SLEEP_CONDITIONS_BASH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
+set -- _BIN_SLEEP_UTILS_BASH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
-# Functions to get the conditions for deciding whether a Mac should sleep. When executed directly, this script prints the current conditions and checks that the items they depend on still exist.
+# Functions to get the conditions for deciding whether a Mac should sleep, and to put the system or display to sleep according to them. When executed directly, this script prints the current conditions and checks that the items they depend on still exist.
 
 pushd "${BASH_SOURCE[0]%[/\\]*}" &>/dev/null || pushd . >/dev/null
 . ../.lib/utils.sh
+. ./sleepnow.direct.bash
 popd >/dev/null || exit
 
 if ! is_macos
@@ -210,6 +211,79 @@ sleep_conditions() {
   check_sleep_conditions_6e2b4d1
   test "$failed" = false
 }
+
+# ==========================================================================
+#region The following functions are expected to be called from cron at short intervals.
+
+say_it() {
+  # local voice="Daniel"
+  local voice="Karen"
+  # local voice="Samantha"
+  say -v "$voice" "$1" || :
+}
+
+# Put the display to sleep when the user has been idle for 3 minutes, or 10 minutes on the charger, unless a process is preventing display sleep.
+displaysleep_if_user_stays_idle() {
+  local idle_limit_sec=$((3 * 60))
+  is_charger_connected && idle_limit_sec=$((10 * 60))
+  user_idle_seconds_ || return
+  # This runs every minute, so the display is put to sleep only once when the idle time crosses the limit.
+  test "$RESULT" -ge "$idle_limit_sec" -a "$RESULT" -lt $((idle_limit_sec + 60)) || return 0
+  is_display_sleep_prevented && return 0
+  sleepnow display
+}
+
+# Put the system to sleep when the user has been idle for 10 minutes, or 60 minutes on the charger, unless a process is preventing sleep or an SSH session is active.
+sleep_if_user_stays_idle() {
+  local idle_limit_sec=$((10 * 60))
+  is_charger_connected && idle_limit_sec=$((60 * 60))
+  # Sleep sooner even on the charger during the night, from 1:00 to 5:00.
+  case "$(date +%H)" in
+    (01|02|03|04) idle_limit_sec=$((10 * 60));;
+  esac
+  user_idle_seconds_ || return
+  test "$RESULT" -lt "$idle_limit_sec" && return 0
+  # Waking up may not reset the idle time, so do not put the system back to sleep right after that.
+  seconds_since_wake_ || return
+  test "$RESULT" -lt "$idle_limit_sec" && return 0
+  is_sleep_prevented && return 0
+  has_ssh_session && return 0
+  say_it "No activity detected. Going to sleep now."
+  sleepnow "$@"
+}
+
+# Put the system to sleep if the lid stays closed for 5 minutes, announcing it by voice beforehand. Return as soon as the lid is found open.
+sleep_if_lid_stays_closed() {
+  local rest=$((5 * 60))
+  local interval=20
+  while test "$rest" -gt 0
+  do
+    is_lid_closed || return 0
+    case "$rest" in
+      (180) say_it "Going to sleep in 3 minutes.";;
+      (60) say_it "Going to sleep in 1 minute.";;
+    esac
+    sleep "$interval"
+    rest=$((rest - interval))
+  done
+  is_lid_closed || return 0
+  say_it "Lid closed. Going to sleep now."
+  sleepnow "$@"
+}
+
+# Put the display to sleep and warn by voice if the system is still awake 6 minutes after the lid was found closed. Do not warn while audio is playing.
+warn_awake_if_lid_stays_closed() {
+  is_lid_closed || return 0
+  is_audio_playing && return 0
+  # Wait until sleep-if-lid-stays-closed, run every minute, should have put the system to sleep.
+  sleep $((6 * 60))
+  is_lid_closed || return 0
+  sleepnow display
+  is_audio_playing && return 0
+  say_it "Still awake with the lid closed."
+}
+
+#endregion
 
 if test "$0" = "${BASH_SOURCE[0]}"
 then
