@@ -3,7 +3,7 @@ set -- _53f604e "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:s
 
 pushd "${BASH_SOURCE[0]%[/\\]*}" &>/dev/null || pushd . >/dev/null
 . ../.lib/utils.sh
-. ./power.bash
+. ./sleep-conditions.bash
 . ./sleepnow.direct.bash
 popd >/dev/null || exit
 
