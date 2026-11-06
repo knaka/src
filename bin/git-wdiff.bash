@@ -71,6 +71,8 @@ git_wdiff() {
     echo Not implemented yet. >&2
     exit 1
   fi
+  local word_diff=plain
+  test -t 1 && word_diff=color
   local color_diff_old="$color_diff_old_dark"
   local color_diff_new="$color_diff_new_dark"
   local should_query=false
@@ -93,7 +95,7 @@ git_wdiff() {
     -c color.diff.old="$color_diff_old" \
     -c color.diff.new="$color_diff_new" \
     diff \
-    --color-words \
+    --word-diff="$word_diff" \
     --word-diff-regex="$wdiff_re" \
     "$@"
 }

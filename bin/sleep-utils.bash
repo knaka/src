@@ -122,7 +122,7 @@ check_sleep_conditions_6e2b4d1() {
   # -d: Create an assertion to prevent the display from sleeping.
   caffeinate -d -t 3 &
   local display_sleep_probe_pid=$!
-  sleep 1
+  sleep 0.5
   test "$(audio_assertions | wc -l || true)" -gt "$audio_count" \
     || fail_check_6e2b4d1 "Playing a sound does not add an audio assertion."
   sleep_assertions | grep_quiet "^ *pid $sleep_probe_pid(" \
