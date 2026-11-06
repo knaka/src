@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -- _BIN_GIT_WDIFF_BASH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
+# Show a word-level `git diff` that also splits Japanese text by character class, in the same colors as delta(1), chosen according to the terminal background. Arguments are passed to `git diff`.
+
 pushd "${BASH_SOURCE[0]%[/\\]*}" &>/dev/null || pushd . >/dev/null
 . ../.lib/utils.sh
 . ./is-light-mode.bash
@@ -21,6 +23,18 @@ readonly color_diff_old_dark="normal #901011"
 readonly color_diff_new_dark="normal #006000"
 
 git_wdiff() {
+  local detect_dark_light=auto
+  local i=$#
+  while test "$i" -gt 0
+  do
+    case "$1" in
+      (--detect-dark-light=*) detect_dark_light="${1#*=}";;
+      (*) set -- "$@" "$1";;
+    esac
+    shift
+    i=$((i - 1))
+  done
+
   local locale=
   local wdiff_re
   if is_macos
@@ -45,7 +59,14 @@ git_wdiff() {
   fi
   local color_diff_old="$color_diff_old_dark"
   local color_diff_new="$color_diff_new_dark"
-  if is_light_mode
+  local should_query=false
+  case "$detect_dark_light" in
+    (auto) test -t 1 && should_query=true;;
+    (always) should_query=true;;
+    (never) ;;
+    (*) echo "$0: invalid value for --detect-dark-light -- $detect_dark_light" >&2; return 1;;
+  esac
+  if "$should_query" && is_light_mode
   then
     color_diff_old="$color_diff_old_light"
     color_diff_new="$color_diff_new_light"
