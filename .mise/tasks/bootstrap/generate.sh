@@ -3,6 +3,7 @@ set -- __MISE_TASKS_BOOTSTRAP_GENERATE_SH "$@"; eval "shift; \${$1-false} || ! $
 
 #MISE description="Generate Mise bootstrap scripts."
 
+# file://./.assets/_mise
 #EMBED: ./.assets/_mise
 cat_sh_e52f026() { cat <<'EOF'
 #!/usr/bin/env sh
@@ -60,7 +61,8 @@ mise() {
   command "$cmd_path" "$@"
 }
 
-if eval 'test "$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (generate.*) ;; (*) false;; esac # shpp:main_guard
+# Do not mark this with "# shpp:main_guard". This script is embedded in another script, and the embedded copy must not be rewritten.
+if eval 'test "$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (mise.*) ;; (*) false;; esac
 then
   set -o nounset -o errexit
   should_exec_9bf84a8=true
