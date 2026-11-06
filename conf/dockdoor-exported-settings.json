@@ -1,0 +1,35 @@
+{
+  "app" : "DockDoor",
+  "appVersion" : "1.42.2",
+  "exportedAt" : "2026-11-06T01:50:44Z",
+  "formatVersion" : 1,
+  "settings" : {
+    "includeHiddenWindowsInDockPreview" : false,
+    "lastKnownScreenRecordingPermission" : true,
+    "launched" : true,
+    "NSOSPLastRootDirectory" : {
+      "$data" : "Ym9va6wCAAAAAAUQQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIwBAAAEAAAAAwMAAAAAACAFAAAAAQEAAFVzZXJzAAAABQAAAAEBAABrbmFrYQAAAAkAAAABAQAARG93bmxvYWRzAAAADAAAAAEGAAAQAAAAIAAAADAAAAAIAAAABAMAAL5HAAAAAAAACAAAAAQDAAD8mAQAAAAAAAgAAAAEAwAAL5kEAAAAAAAMAAAAAQYAAFgAAABoAAAAeAAAAAgAAAAABAAAQcdwDB83MToYAAAAAQIAAAIAAAAAAAAADwAAAAAAAAAAAAAAAAAAAAAAAAABBQAACAAAAAQDAAABAAAAAAAAAAQAAAADAwAA9QEAAAgAAAABCQAAZmlsZTovLy8MAAAAAQEAAE1hY2ludG9zaCBIRAgAAAAEAwAAAFCBGHMAAAAIAAAAAAQAAEHHwdEIgAAAJAAAAAEBAAA0RkI0OEQ3QS02Rjc3LTQ0RkMtOEIzMy03MDA5OUZFRDA3QTIYAAAAAQIAAIEAAAABAAAA7xMAAAEAAAAAAAAAAAAAAAEAAAABAQAALwAAANgAAAD+\/\/\/\/AQAAAAAAAAARAAAABBAAAEQAAAAAAAAABRAAAIgAAAAAAAAAEBAAAKwAAAAAAAAAQBAAAJwAAAAAAAAAAiAAAIABAAAAAAAABSAAAPAAAAAAAAAAECAAAAABAAAAAAAAESAAADQBAAAAAAAAEiAAABQBAAAAAAAAEyAAACQBAAAAAAAAICAAAGABAAAAAAAAMCAAAMwAAAAAAAAAAcAAANQAAAAAAAAAEcAAACAAAAAAAAAAEsAAAOQAAAAAAAAAAdAAAMwAAAAAAAAAENAAAAQAAAAAAAAA"
+    },
+    "NSWindow Frame SUUpdateAlert2" : "469 390 619 402 0 0 1470 923 ",
+    "persistedWindowOrder" : [
+      "{\"bundleIdentifier\":\"com.googlecode.iterm2\",\"creationTime\":815504616.615608,\"lastAccessedTime\":815621809.420852,\"windowTitle\":\"git:src\"}",
+      "{\"bundleIdentifier\":\"com.google.Chrome\",\"creationTime\":815611486.253268,\"lastAccessedTime\":815621752.682916,\"windowTitle\":\"replayd uses a lot of CPU and I don't know why : r\\\/MacOSBeta - Google Chrome\"}",
+      "{\"bundleIdentifier\":\"com.microsoft.VSCode\",\"creationTime\":815474281.022522,\"lastAccessedTime\":815621642.72041,\"windowTitle\":\"src (Workspace)\"}",
+      "{\"bundleIdentifier\":\"com.apple.finder\",\"creationTime\":815579582.73869,\"lastAccessedTime\":815579582.73869,\"windowTitle\":\"“このMac”を検索\"}",
+      "{\"bundleIdentifier\":\"com.ethanbills.DockDoor\",\"creationTime\":815571516.392833,\"lastAccessedTime\":815578631.156423,\"windowTitle\":\"外観 – Backgrounds, sizes and titles\"}",
+      "{\"bundleIdentifier\":\"com.microsoft.VSCode\",\"creationTime\":815488085.005237,\"lastAccessedTime\":815578608.639014,\"windowTitle\":\"1100.md — doc (Workspace)\"}",
+      "{\"bundleIdentifier\":\"com.googlecode.iterm2\",\"creationTime\":815562765.447089,\"lastAccessedTime\":815562765.447089,\"windowTitle\":\"iTerm2をアップデート中\"}",
+      "{\"bundleIdentifier\":\"com.apple.systempreferences\",\"creationTime\":815474281.125958,\"lastAccessedTime\":815502783.614276,\"windowTitle\":\"リーダーと読み上げ\"}",
+      "{\"bundleIdentifier\":\"com.apple.Dictionary\",\"creationTime\":815474301.377137,\"lastAccessedTime\":815482576.491669,\"windowTitle\":\"辞書 – 5件見つかりました\"}"
+    ],
+    "SUAutomaticallyUpdate" : false,
+    "SUEnableAutomaticChecks" : true,
+    "SUHasLaunchedBefore" : true,
+    "SULastCheckTime" : {
+      "$date" : "2026-11-06T01:37:12Z"
+    },
+    "SUSendProfileInfo" : false,
+    "SUUpdateGroupIdentifier" : 74066845,
+    "unselectedContentOpacity" : 1
+  }
+}
