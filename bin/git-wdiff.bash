@@ -3,14 +3,22 @@ set -- _BIN_GIT_WDIFF_BASH "$@"; eval "shift; \${$1-false} || ! $1=true" && retu
 
 pushd "${BASH_SOURCE[0]%[/\\]*}" &>/dev/null || pushd . >/dev/null
 . ../.lib/utils.sh
+. ./is-light-mode.bash
 popd >/dev/null || exit
 
 # $ delta --light --show-config | grep minus-emph-style
 #     minus-emph-style              = normal "#ffc0c0"
 # $ delta --light --show-config | grep plus-emph-style
 #     plus-emph-style               = syntax "#a0efa0"
-readonly color_diff_old="normal #ffc0c0"
-readonly color_diff_new="normal #a0efa0"
+readonly color_diff_old_light="normal #ffc0c0"
+readonly color_diff_new_light="normal #a0efa0"
+
+# $ delta --dark --show-config | grep minus-emph-style
+#     minus-emph-style              = normal "#901011"
+# $ delta --dark --show-config | grep plus-emph-style
+#     plus-emph-style               = syntax "#006000"
+readonly color_diff_old_dark="normal #901011"
+readonly color_diff_new_dark="normal #006000"
 
 git_wdiff() {
   local locale=
@@ -34,6 +42,13 @@ git_wdiff() {
   else
     echo Not implemented yet. >&2
     exit 1
+  fi
+  local color_diff_old="$color_diff_old_dark"
+  local color_diff_new="$color_diff_new_dark"
+  if is_light_mode
+  then
+    color_diff_old="$color_diff_old_light"
+    color_diff_new="$color_diff_new_light"
   fi
   env \
     $locale \

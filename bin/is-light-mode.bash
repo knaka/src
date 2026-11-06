@@ -30,7 +30,7 @@ terminal_color_scheme_8823bbd_() {
   shift $((OPTIND-1))
 
   local saved
-  saved="$(stty -g </dev/tty)" || return 1
+  { saved="$(stty -g </dev/tty)"; } 2>/dev/null || return 1
   local reply=
   if is_bash_bin 4
   then
@@ -65,7 +65,8 @@ terminal_color_scheme_8823bbd_() {
   fi
   stty "$saved" </dev/tty
   case "$reply" in
-    (*rgb:[cdef]*/[cdef]*/[cdef]*)
+    # Regard the color as light if all channels are 0x80 or more, since black text has higher contrast than white text on such a background. By the WCAG contrast ratio, on 0x80 gray, black has about 5.3:1 and white about 3.9:1, and they are equal around 0x76.
+    (*rgb:[89a-f]*/[89a-f]*/[89a-f]*)
       result_0f11d2b=light
       ;;
     (*rgb:*)
@@ -76,11 +77,13 @@ terminal_color_scheme_8823bbd_() {
   esac
 }
 
+# Set $RESULT to "light" or "dark" according to the background color of the terminal, or to an empty string if it cannot be determined, such as when the terminal does not reply.
 terminal_color_scheme_() {
   terminal_color_scheme_8823bbd_ "$@"
   set_ "$result_0f11d2b"
 }
 
+# Check if the background color of the terminal is light. This is false also if it cannot be determined.
 is_light_mode() {
   terminal_color_scheme_8823bbd_ "$@"
   case "$result_0f11d2b" in
