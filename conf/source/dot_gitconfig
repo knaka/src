@@ -5,9 +5,8 @@
 	quotepath = false
 	excludesfile = /Users/knaka/.gitignore_global
 	autoCRLF = false
-	# pager = LESSCHARSET=utf-8 /opt/homebrew/bin/less
-	pager = delta --light
-	# pager = delta --detect-dark-light=always
+	# pager = LESSCHARSET=utf-8 less
+	pager = delta
 	symlinks = true
 [difftool "sourcetree"]
 	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
@@ -40,9 +39,14 @@
 [interactive]
 	diffFilter = delta --color-only
 [delta]
-	navigate = true  # use n and N to move between diff sections
-	# dark = true      # or light = true, or omit for auto-detection
-	light = true
+	# Use n and N to move between diff sections.
+	navigate = true
+	# Or light = true, or omit for auto-detection.
+	# dark = true
+	# --detect-dark-light auto|always|never
+	detect-dark-light = auto
+	# side-by-side = true
+	line-numbers = true
 [merge]
 	conflictStyle = zdiff3
 [color "diff"]

@@ -43,8 +43,9 @@ git_wdiff() {
     i=$((i - 1))
   done
 
-  local locale=
-  local wdiff_re="[a-zA-Z0-9_]+|[^[:space:]]"
+  local locale_assignation=
+  # local wdiff_re="[a-zA-Z0-9_]+|[^[:space:]]"
+  local wdiff_re=
   if is_macos
   then
     if is_ja_locale
@@ -56,7 +57,7 @@ git_wdiff() {
     if is_ja_locale
     then
       # マルチバイト文字としても Unicode 文字（`\u...`）も書けないので、UTF-8 のバイト列の正規表現であらわす。
-      locale="LC_ALL=C"
+      locale_assignation="LC_ALL=C"
       # ひらがな U+3041-3093
       local re_hira=$'\xe3(\x81[\x81-\xbf]|\x82[\x80-\x93])'
       # カタカナ U+30A1-30F6 と長音符 ー
@@ -87,16 +88,15 @@ git_wdiff() {
     color_diff_old="$color_diff_old_light"
     color_diff_new="$color_diff_new_light"
   fi
-  env \
-    $locale \
-    LESSCHARSET="utf-8" \
-    GIT_PAGER=less \
-    git \
+  local -x LESSCHARSET="utf-8"
+  local -x GIT_PAGER=less
+  test -n "$locale_assignation" && local -x "$locale_assignation"
+  tail_exec git \
     -c color.diff.old="$color_diff_old" \
     -c color.diff.new="$color_diff_new" \
     diff \
     --word-diff="$word_diff" \
-    --word-diff-regex="$wdiff_re" \
+    ${wdiff_re:+"--word-diff-regex=$wdiff_re"} \
     "$@"
 }
 
