@@ -14,8 +14,6 @@ EOF
 }
 
 sleepnow() {
-  local start
-  start="$(date +%s)"
   local mode
   mode="${1-}"
   if is_macos
@@ -48,11 +46,16 @@ sleepnow() {
           return 1
           ;;
       esac
+      local sleeptime
+      sleeptime="$(sysctl -n kern.sleeptime)"
       pmset -a disablesleep 0
       pmset sleepnow
-      while test $(($(date +%s) - start)) -lt 5
+      # Restore the settings after the system has actually slept, since restoring `disablesleep` too early aborts the sleep and leaves the system in DarkWake. Give up after a while in case the sleep is canceled.
+      local i=0
+      while test "$(sysctl -n kern.sleeptime)" = "$sleeptime" -a "$i" -lt 60
       do
         sleep 1
+        i=$((i + 1))
       done
       reset_macos_power_settings
     fi

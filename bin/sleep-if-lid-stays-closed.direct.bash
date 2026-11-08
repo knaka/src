@@ -3,7 +3,7 @@ set -- _BIN_SLEEP_IF_LID_STAYS_CLOSED_DIRECT_BASH "$@"; eval "shift; \${$1-false
 
 pushd "${BASH_SOURCE[0]%[/\\]*}" &>/dev/null || pushd . >/dev/null
 . ../.lib/utils.sh
-. ./sleep-utils.bash
+. ./sleep-utils-macos.bash
 popd >/dev/null || exit
 
 if test "$0" = "${BASH_SOURCE[0]}"

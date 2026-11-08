@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -- _BIN_SLEEP_UTILS_BASH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
+set -- _BIN_SLEEP_UTILS_MACOS_BASH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
 # Functions to get the conditions for deciding whether a Mac should sleep, and to put the system or display to sleep according to them. When executed directly, this script prints the current conditions and checks that the items they depend on still exist.
 
@@ -10,7 +10,7 @@ popd >/dev/null || exit
 
 if ! is_macos
 then
-  echo "This script does not work on platforms other than macOS yet." >&2
+  echo "This script does not work on platforms other than macOS." >&2
   exit 1
 fi
 
