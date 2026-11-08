@@ -215,11 +215,11 @@ sleep_conditions() {
 # ==========================================================================
 #region The following functions are expected to be called from cron at short intervals.
 
-say_it() {
+say() {
   # local voice="Daniel"
   local voice="Karen"
   # local voice="Samantha"
-  say -v "$voice" "$1" || :
+  command say --rate=120 --voice="$voice" "$1" || :
 }
 
 # Put the display to sleep when the user has been idle for 3 minutes, or 10 minutes on the charger, unless a process is preventing display sleep.
@@ -248,7 +248,8 @@ sleep_if_user_stays_idle() {
   test "$RESULT" -lt "$idle_limit_sec" && return 0
   is_sleep_prevented && return 0
   has_ssh_session && return 0
-  say_it "No activity detected. Going to sleep now."
+  say "No activity detected. Going to sleep now."
+  sleep 1
   sleepnow "$@"
 }
 
@@ -259,15 +260,18 @@ sleep_if_lid_stays_closed() {
   while test "$rest" -gt 0
   do
     is_lid_closed || return 0
+    is_sleep_prevented && return 0
     case "$rest" in
-      (180) say_it "Going to sleep in 3 minutes.";;
-      (60) say_it "Going to sleep in 1 minute.";;
+      (180) say "Checkpoint 1. Going to sleep in 3 minutes. Checkpoint 1." &;;
+      (60) say "Checkpoint 2. Going to sleep in 1 minute. Checkpoint 2." &;;
     esac
     sleep "$interval"
     rest=$((rest - interval))
   done
   is_lid_closed || return 0
-  say_it "Lid closed. Going to sleep now."
+  is_sleep_prevented && return 0
+  say "Checkpoint 3. Lid closed. Going to sleep now. Checkpoint 3."
+  sleep 1
   sleepnow "$@"
 }
 
@@ -280,7 +284,7 @@ warn_awake_if_lid_stays_closed() {
   is_lid_closed || return 0
   sleepnow display
   is_audio_playing && return 0
-  say_it "Still awake with the lid closed."
+  say "Checkpoint 4. Still awake with the lid closed. Checkpoint 4."
 }
 
 #endregion
