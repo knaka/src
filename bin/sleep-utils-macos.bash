@@ -117,12 +117,20 @@ check_sleep_conditions_6e2b4d1() {
   afplay -v 0 /System/Library/Sounds/Funk.aiff &
   # Hold an assertion preventing idle sleep for 3 seconds, and keep the PID to find the assertion among those of other processes.
   # -i: Create an assertion to prevent the system from idle sleeping.
-  caffeinate -i -t 3 &
+  caffeinate -i -t 5 &
   local sleep_probe_pid=$!
   # -d: Create an assertion to prevent the display from sleeping.
-  caffeinate -d -t 3 &
+  caffeinate -d -t 5 &
+  # Wait for caffeinate to create its assertions.
+  sleep 1
   local display_sleep_probe_pid=$!
-  sleep 0.5
+  local i=0
+  # The audio assertion may take longer to appear the first time, probably while the audio output starts up, so wait for it until shortly before the probes end.
+  while test "$(audio_assertions | wc -l || true)" -le "$audio_count" -a "$i" -lt 20
+  do
+    sleep 0.1
+    i=$((i + 1))
+  done
   test "$(audio_assertions | wc -l || true)" -gt "$audio_count" \
     || fail_check_6e2b4d1 "Playing a sound does not add an audio assertion."
   sleep_assertions | grep_quiet "^ *pid $sleep_probe_pid(" \
@@ -279,7 +287,7 @@ sleep_if_lid_stays_closed() {
 warn_awake_if_lid_stays_closed() {
   is_lid_closed || return 0
   is_audio_playing && return 0
-  # Wait until sleep-if-lid-stays-closed, run every minute, should have put the system to sleep.
+  # Wait until sleep-if-lid-stays-closed, which runs every minute, should have put the system to sleep.
   sleep $((6 * 60))
   is_lid_closed || return 0
   sleepnow display

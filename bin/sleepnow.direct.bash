@@ -49,7 +49,7 @@ sleepnow() {
       local sleeptime
       sleeptime="$(sysctl -n kern.sleeptime)"
       pmset -a disablesleep 0
-      pmset sleepnow
+      pmset sleepnow &>/dev/null
       # Restore the settings after the system has actually slept, since restoring `disablesleep` too early aborts the sleep and leaves the system in DarkWake. Give up after a while in case the sleep is canceled.
       local i=0
       while test "$(sysctl -n kern.sleeptime)" = "$sleeptime" -a "$i" -lt 60
