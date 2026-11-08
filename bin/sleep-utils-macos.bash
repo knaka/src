@@ -115,17 +115,17 @@ check_sleep_conditions_6e2b4d1() {
   audio_count="$(audio_assertions | wc -l || true)"
   # The assertion is held even with zero volume, so this is silent.
   afplay -v 0 /System/Library/Sounds/Funk.aiff &
-  # Hold an assertion preventing idle sleep for 3 seconds, and keep the PID to find the assertion among those of other processes.
+  # Hold an assertion preventing idle sleep until killed after the checks, with a timeout as a safeguard, and keep the PID to find the assertion among those of other processes.
   # -i: Create an assertion to prevent the system from idle sleeping.
-  caffeinate -i -t 5 &
+  caffeinate -i -t 10 &
   local sleep_probe_pid=$!
   # -d: Create an assertion to prevent the display from sleeping.
-  caffeinate -d -t 5 &
+  caffeinate -d -t 10 &
+  local display_sleep_probe_pid=$!
   # Wait for caffeinate to create its assertions.
   sleep 1
-  local display_sleep_probe_pid=$!
   local i=0
-  # The audio assertion may take longer to appear the first time, probably while the audio output starts up, so wait for it until shortly before the probes end.
+  # The audio assertion may take longer to appear the first time, probably while the audio output starts up, so wait for it for up to 2 more seconds.
   while test "$(audio_assertions | wc -l || true)" -le "$audio_count" -a "$i" -lt 20
   do
     sleep 0.1
@@ -137,7 +137,8 @@ check_sleep_conditions_6e2b4d1() {
     || fail_check_6e2b4d1 "caffeinate -i is not detected as preventing sleep."
   display_sleep_assertions | grep_quiet "^ *pid $display_sleep_probe_pid(" \
     || fail_check_6e2b4d1 "caffeinate -d is not detected as preventing display sleep."
-  wait
+  kill "$sleep_probe_pid" "$display_sleep_probe_pid"
+  wait 2>/dev/null
   echo "Finished checking the sleep conditions." >&2
 }
 

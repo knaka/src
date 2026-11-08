@@ -249,7 +249,7 @@ profiles:
         #       # from: { "consumer_key_code": "al_terminal_lock_or_screensaver" }
         #       to: [{key_code: left_arrow}]
         #       # to:
-        #       #   - shell_command: /Users/knaka/bin/beep
+        #       #   - shell_command: $HOME/bin/beep
         # - description: "Sleep"
         #   manipulators:
         #     - type: basic
@@ -260,7 +260,7 @@ profiles:
         #       # from: {key_code: spacebar, modifiers: {mandatory: [left_command]}}
         #       to: [{key_code: left_arrow}]
         #       # to:
-        #       #   - shell_command: /Users/knaka/bin/beep
+        #       #   - shell_command: $HOME/bin/beep
         - description: "左 Command → Backquotes (Backticks) / tilde"
           manipulators:
             - type: basic
@@ -333,7 +333,7 @@ profiles:
                 # power-state が変わると実行中のコマンドは kill されるみたいなので、long-running のコマンドはバックグラウンドへ逃す。
                 # console_user_server gets 'invalid shared secret' from daemon after wake from sleep (16.0.0) · Issue #4470 · pqrs-org/Karabiner-Elements https://github.com/pqrs-org/Karabiner-Elements/issues/4470
                 # Run in the background. Otherwise, the process is gone after waking from sleep and the settings are not restored.
-                - shell_command: "/Users/knaka/bin/sleepnow &"
+                - shell_command: "$HOME/bin/sleepnow hybrid &"
         - description: "&Hibernate"
           manipulators: 
             - type: basic
@@ -344,7 +344,7 @@ profiles:
                     # - option
                     - command
               to:
-                - shell_command: "/Users/knaka/bin/sleepnow hibernate &"
+                - shell_command: "$HOME/bin/sleepnow hibernate &"
         - description: "スクリーンロック, Screen &Lock"
           manipulators: 
             - type: basic

@@ -973,7 +973,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "/Users/knaka/bin/sleepnow &"
+                    "shell_command": "$HOME/bin/sleepnow hybrid &"
                   }
                 ]
               }
@@ -994,7 +994,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "/Users/knaka/bin/sleepnow hibernate &"
+                    "shell_command": "$HOME/bin/sleepnow hibernate &"
                   }
                 ]
               }

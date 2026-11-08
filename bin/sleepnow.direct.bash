@@ -6,7 +6,7 @@ pushd "${BASH_SOURCE[0]%[/\\]*}" &>/dev/null || pushd . >/dev/null
 . ./reset-system-settings.bash
 popd >/dev/null || exit
 
-show_usage_5ccb7a0() { cat <<EOF
+show_sleepnow_usage() { cat <<EOF
 Put the system to sleep in the specified mode. If the mode is omitted, the currently set mode is used.
 
 Usage: $0 [display|suspend|hybrid|hibernate]
@@ -37,12 +37,12 @@ sleepnow() {
         (hybrid|both)
           pmset -a hibernatemode 3
           ;;
-        (hibernate|disk)
+        (hibernate|disk|storage)
           pmset -a hibernatemode 25
           ;;
         (*)
           echo Unknown mode: "$mode" >&2
-          show_usage_5ccb7a0
+          show_sleepnow_usage
           return 1
           ;;
       esac
