@@ -53,9 +53,12 @@ brew 'pinchtab/tap/pinchtab' # pinchtab/pinchtab: High-performance browser autom
 #region homebrew-cask — Homebrew Formulae https://formulae.brew.sh/cask/
 
 cask "hammerspoon"
-# cask 'alt-tab' # alt-tab — Homebrew Formulae https://formulae.brew.sh/cask/alt-tab
+
+# cask 'alt-tab' # 無い？ thumbnail が出なくなった？ alt-tab — Homebrew Formulae https://formulae.brew.sh/cask/alt-tab
 # cask 'chromium'
-cask 'dockdoor'
+cask 'dockdoor' # replayd が重い…ような、そうでもないような？ switch しなければ落ち着くようだ
+# cask 'petercsauer/docktor/docktor' # Option-Tab ができない
+
 cask 'docker-desktop'
 # cask 'drawio' # jgraph/drawio-desktop: Official electron build of draw.io https://github.com/jgraph/drawio-desktop
 # cask 'dropbox' # 利用をやめる

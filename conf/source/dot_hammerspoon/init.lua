@@ -130,13 +130,14 @@ hs.hotkey.bind(
 hs.hotkey.bind(
   {"shift"}, "f16",
   function()
+    -- 奇数個だと closing quote 自動挿入で誤動作し得るので 4 つ入れる
     hs.eventtap.keyStrokes("````")
     -- Enter だとプロンプトから送られてしまうことがあるので、Shift + Enter を emit
-  hs.timer.usleep(1000)
+    hs.timer.usleep(1000)
     hs.eventtap.keyStroke({"shift"}, "return", 0)
     hs.eventtap.keyStroke({"shift"}, "return", 0)
     hs.eventtap.keyStrokes("````")
-  hs.timer.usleep(1000)
+    hs.timer.usleep(1000)
     hs.eventtap.keyStroke({"shift"}, "return", 0)
     hs.eventtap.keyStroke({}, "left", 0)
     hs.eventtap.keyStroke({}, "left", 0)

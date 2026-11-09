@@ -1,6 +1,6 @@
 "//2026012432": "もしこのファイルが JSON ファイルであるならば、それは YAML ファイルから生成されたものなので、直接編集しないでください。ソースの YAML は karabiner.yaml です。"
 "//2026012434": "タスク `karabiner_json:install` で、更新＆ハードリンクをします。"
-# configuration files の置き場所については右記を参照。 — File locations | Karabiner-Elements https://karabiner-elements.pqrs.org/docs/json/location/
+# Karbiner Elements の configuration files の置き場所については右記を参照。 — File locations | Karabiner-Elements https://karabiner-elements.pqrs.org/docs/json/location/
 # 設定ファイルの構成。 — karabiner.json data structure | Karabiner-Elements https://karabiner-elements.pqrs.org/docs/json/root-data-structure/
 global:
   check_for_updates_on_startup: true
@@ -26,8 +26,8 @@ profiles:
         mouse_motion_to_scroll.speed: 100
       rules:
         # First, configure settings for each individual application. Since each Karabiner-Elements rule is evaluated on a first-match basis, write per-application customizations before global settings.
-        - description: "ターミナル（iTerm2 + zsh + GNU Screen (tmux?)）"
-          # assing しない方が良い Ctrl + ? は？
+        - description: "Terminal （iTerm2）"
+          # assing しない方が良い Ctrl + ? は何？
           # Ctrl + C (intr, SIGINT)
           # Ctrl + D (eof, EOF)
           # Ctrl + Z (susp, SIGTSTP)
@@ -36,15 +36,25 @@ profiles:
           # Ctrl + Q (start)
           # では逆に、それらを例えば Command + *** などで送出するようにすれば、Ctrl + *** の方は好きにカスタマイズして良いことになる
           manipulators:
-            # 左
+            # 上へ移動
             - type: basic
               conditions: &conditions_terminal
                 - type: frontmost_application_if
                   bundle_identifiers:
                     - ^com.googlecode.iterm2$
+              from: {key_code: e, modifiers: {mandatory: [control], optional: [shift]}}
+              to: [{key_code: up_arrow}]
+            # 下へ移動
+            - type: basic
+              conditions: *conditions_terminal
+              from: {key_code: x, modifiers: {mandatory: [control], optional: [shift]}}
+              to: [{key_code: down_arrow}]
+            # 左へ移動
+            - type: basic
+              conditions: *conditions_terminal
               from: {key_code: s, modifiers: {mandatory: [control], optional: [shift]}}
               to: [{key_code: left_arrow}]
-            # 右
+            # 右へ移動
             - type: basic
               conditions: *conditions_terminal
               from: {key_code: d, modifiers: {mandatory: [control], optional: [shift]}}
@@ -79,16 +89,6 @@ profiles:
               conditions: *conditions_terminal
               from: {key_code: f, modifiers: {mandatory: [control, command]}}
               to: [{key_code: right_arrow, modifiers: [command]}]
-            # 上へ移動
-            - type: basic
-              conditions: *conditions_terminal
-              from: {key_code: e, modifiers: {mandatory: [control], optional: [shift]}}
-              to: [{key_code: up_arrow}]
-            # 下へ移動
-            - type: basic
-              conditions: *conditions_terminal
-              from: {key_code: x, modifiers: {mandatory: [control], optional: [shift]}}
-              to: [{key_code: down_arrow}]
             # 全選択
             - type: basic
               conditions: *conditions_terminal
@@ -133,7 +133,7 @@ profiles:
               conditions: *conditions_terminal
               from: {key_code: "tab", modifiers: {mandatory: ["control", "shift"]}}
               to: [{key_code: "open_bracket", modifiers: ["shift", "command"]}]
-            # Pane の split (Split Horizontally with Current Profile)
+            # Pane の split (Split Horizontally with Current Profile)。exit して閉じて
             - type: basic
               conditions: *conditions_terminal
               from: {key_code: d, modifiers: {mandatory: ["command"]}}
@@ -240,29 +240,29 @@ profiles:
               from: { "key_code": "tab", "modifiers": { "mandatory": ["control", "shift"] } }
               # to: [{ "key_code": "open_bracket", "modifiers": ["command", "shift"] }] # ？ Tahoe で？効かなくなった
               to: [{ "key_code": "left_arrow", "modifiers": ["option", "command"] }]
-        # 以下、システム全体の設定
-        # できないみたい？
-        # - description: "Power (Touch ID) button"
-        #   manipulators:
-        #     - type: basic
-        #       from: { "consumer_key_code": "menu" }
-        #       # from: { "consumer_key_code": "al_terminal_lock_or_screensaver" }
-        #       to: [{key_code: left_arrow}]
-        #       # to:
-        #       #   - shell_command: $HOME/bin/beep
-        # - description: "Sleep"
-        #   manipulators:
-        #     - type: basic
-        #       from: {key_code: "a", modifiers: {mandatory: []}}
-        #       # from: {consumer_key_code: "do_not_disturb", modifiers: {mandatory: []}}
-        #       # from: { "consumer_key_code": "do_not_disturb" }
-        #       # from: { "consumer_key_code": "al_terminal_lock_or_screensaver" }
-        #       # from: {key_code: spacebar, modifiers: {mandatory: [left_command]}}
-        #       to: [{key_code: left_arrow}]
-        #       # to:
-        #       #   - shell_command: $HOME/bin/beep
-        - description: "左 Command → Backquotes (Backticks) / tilde"
+        - description: "Others"
           manipulators:
+            # #できないみたい？
+            # # Power (Touch ID) button
+            # manipulators:
+            #   - type: basic
+            #     from: { "consumer_key_code": "menu" }
+            #     # from: { "consumer_key_code": "al_terminal_lock_or_screensaver" }
+            #     to: [{key_code: left_arrow}]
+            #     # to:
+            #     #   - shell_command: $HOME/bin/beep
+            # # Sleep"
+            # manipulators:
+            #   - type: basic
+            #     from: {key_code: "a", modifiers: {mandatory: []}}
+            #     # from: {consumer_key_code: "do_not_disturb", modifiers: {mandatory: []}}
+            #     # from: { "consumer_key_code": "do_not_disturb" }
+            #     # from: { "consumer_key_code": "al_terminal_lock_or_screensaver" }
+            #     # from: {key_code: spacebar, modifiers: {mandatory: [left_command]}}
+            #     to: [{key_code: left_arrow}]
+            #     # to:
+            #     #   - shell_command: $HOME/bin/beep
+            # 左 Command + Space → Backquotes (Backticks)
             - type: basic
               from: {key_code: spacebar, modifiers: {mandatory: [left_command]}}
               to: [
@@ -271,31 +271,28 @@ profiles:
                 # {key_code: "international3", modifiers: []},
                 {key_code: "grave_accent_and_tilde", modifiers: []},
               ]
+            # 左 Command + Shift + Space → tilde ~
             - type: basic
               from: {key_code: spacebar, modifiers: {mandatory: [left_command, shift]}}
               to: [
                 # 日本語変換をオフにしてから
                 {key_code: "japanese_eisuu", modifiers: []},
-                # {key_code: "international3", modifiers: [shift]}, # JANSI ではこれだった
                 {key_code: "grave_accent_and_tilde", modifiers: [shift]},
+                # {key_code: "international3", modifiers: [shift]}, # JANSI ではこれだった
               ]
-        - description: "右 Command + Space → Escape"
-          manipulators:
+            # - description: "右 Command + Space → Escape"
             - type: basic
               from: {key_code: spacebar, modifiers: {mandatory: [right_command]}}
               to: [{key_code: escape}]
-        - description: "IME オン（Option + Space → かな）"
-          manipulators:
+            # Option + Space → かな, IME オン
             - type: basic
               from: {key_code: spacebar, modifiers: {mandatory: [right_option]}}
               to: { key_code: "japanese_kana" }
-        - description: "IME オフ（Ctrl + Shift → 英数）"
-          manipulators:
+            # Ctrl + Shift → 英数, IME オフ
             - type: basic
               from: {key_code: spacebar, modifiers: {mandatory: [control]}}
               to: { key_code: "japanese_eisuu" }
-        - description: "かな → Option"
-          manipulators:
+            # かな → Option
             - type: basic
               from:
                 key_code: japanese_kana
@@ -304,8 +301,7 @@ profiles:
                   optional:
                     - any
               to: {key_code: right_option}
-        - description: "英数 → Control"
-          manipulators:
+            # 英数 → Control
             - type: basic
               from:
                 key_code: japanese_eisuu
@@ -314,14 +310,12 @@ profiles:
                   optional:
                     - any
               to: {key_code: left_control}
-        - description: "Ctrl + \ で、送信せず改行"
-          manipulators:
+            # Ctrl + \ で、送信せず改行
             - type: basic
               from: {key_code: "backslash", modifiers: {mandatory: [control], optional: []}}
               to: {key_code: "return_or_enter", modifiers: [shift]}
-        - description: "Slee&p"
-          # ログインの画面からでも働く。Hammerspoon だと働かない。
-          manipulators: 
+            # Slee&p
+            # ログインの画面からでも働く。Hammerspoon だと働かない。
             - type: basic
               from:
                 key_code: p
@@ -334,8 +328,7 @@ profiles:
                 # console_user_server gets 'invalid shared secret' from daemon after wake from sleep (16.0.0) · Issue #4470 · pqrs-org/Karabiner-Elements https://github.com/pqrs-org/Karabiner-Elements/issues/4470
                 # Run in the background. Otherwise, the process is gone after waking from sleep and the settings are not restored.
                 - shell_command: "$HOME/bin/sleepnow hybrid &"
-        - description: "&Hibernate"
-          manipulators: 
+            # &Hibernate
             - type: basic
               from:
                 key_code: h
@@ -345,8 +338,7 @@ profiles:
                     - command
               to:
                 - shell_command: "$HOME/bin/sleepnow hibernate &"
-        - description: "スクリーンロック, Screen &Lock"
-          manipulators: 
+            # スクリーンロック, Screen &Lock
             - type: basic
               from:
                 key_code: l
@@ -355,8 +347,7 @@ profiles:
                     - command
               to:
                 - shell_command: open -b com.apple.ScreenSaver.Engine
-        - description: "ダイヤモンドカーソル"
-          manipulators:
+            # ダイヤモンドカーソル
             # 上
             - type: basic
               conditions: &conditions_not_terminal
@@ -495,8 +486,8 @@ profiles:
               conditions: *conditions_not_terminal
               from: {key_code: p, modifiers: {mandatory: [control], optional: []}}
               to: [{key_code: up_arrow, modifiers: []}]
-        - description: "ランチャー (Option + Command + ?)"
-          manipulators:
+
+            # ランチャー (Option + Command + ?)
             # 1
             - type: basic
               from: {key_code: "1", modifiers: {mandatory: [option, command]}}
@@ -560,9 +551,9 @@ profiles:
               to: [{shell_command: "osascript $HOME/src/applescript/activate-browser-tab.applescript https://claude.ai https://gemini.google.com"}]
             # Y
             # Z
-        # HammerSpoon の設定は ~/.hammerspoon/init.lua
-        - description: "Hammerspoon"
-          manipulators:
+
+            # # HammerSpoon の設定は ~/.hammerspoon/init.lua
+            # Hammerspoon 機能（F13～）への assign
             - type: basic
               from: {key_code: "d", modifiers: {mandatory: [command, shift]}}
               to: [{key_code: f13, modifiers: [shift]}]
@@ -613,7 +604,6 @@ profiles:
             #   to: [{key_code: "right_shift"}]
             #   to_if_alone: [{key_code: "international3"}]
             #   to_if_held_down: [{key_code: "right_shift"}]
-
             # Insert hash (RAND7)
             - type: basic
               from: {key_code: "h", modifiers: {mandatory: [command, shift, control]}}
@@ -621,3 +611,4 @@ profiles:
             # - type: basic
             #   from: {key_code: open_bracket, modifiers: {mandatory: [option]}}
             #   to: [{key_code: f18, modifiers: [shift]}]
+    

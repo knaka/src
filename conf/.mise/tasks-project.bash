@@ -1,17 +1,15 @@
-#!/usr/bin/env sh
-# vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
-# shellcheck shell=sh
-_() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ 0648daa && return
+#!/usr/bin/env bash
+set -- _fb50c89 "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
-# shellcheck disable=SC3028,SC3054
-if test "${BASH_VERSION+set}"; then cd "${BASH_SOURCE[0]%[/\\]*}" || cd .; elif test "${1-}" = _SCRDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- _SCRDIR ../../.lib "$OLDPWD" "$@"
+pushd "${BASH_SOURCE[0]%[/\\]*}" &>/dev/null || pushd . >/dev/null
 . ../../.lib/utils.sh
 . ../../.lib/commands.sh
-cd "$1" || exit; shift
+. ../../.lib/build.sh
+popd >/dev/null || exit
 
 # Update karabiner.json
 task_karabiner_json__update() {
-  newer karabiner.yaml --than karabiner.json || return 0
+  updated karabiner.yaml --after karabiner.json || return 0
   echo "Updating karabiner.json" >&2
   yj -yj karabiner.yaml >karabiner.json
 }
