@@ -53,9 +53,10 @@ claude_conv_gen() {
     local epoch year month day
     # `fromdateiso8601` only accepts `%Y-%m-%dT%H:%M:%SZ`, so drop fractional seconds and normalize a `+00:00` offset to `Z` first.
     epoch="$(jq -r '.created_at | sub("\\.[0-9]+"; "") | sub("\\+00:00$"; "Z") | fromdateiso8601' "$file")"
-    year="$(jq -rn --argjson t "$epoch" '$t | strftime("%Y")')"
-    month="$(jq -rn --argjson t "$epoch" '$t | strftime("%m")')"
-    day="$(jq -rn --argjson t "$epoch" '$t | strftime("%d")')"
+    # `strflocaltime` formats in the local time zone, unlike `strftime`, which formats in UTC.
+    year="$(jq -rn --argjson t "$epoch" '$t | strflocaltime("%Y")')"
+    month="$(jq -rn --argjson t "$epoch" '$t | strflocaltime("%m")')"
+    day="$(jq -rn --argjson t "$epoch" '$t | strflocaltime("%d")')"
     mkdir -p "$doc_dir/$year"
     local id id7 name
     id="$(jq -r .uuid "$file")"

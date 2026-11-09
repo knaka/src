@@ -54,9 +54,18 @@ async function downloadClaudeConv() {
     fail("Couldn't read lastActiveOrg cookie");
   }
   const convId = window.location.pathname.split('/').pop();
+  const conv = await fetchConv(orgId, convId)
+  const createdAt = conv['created_at'];
+  // The date and time in the local time zone, zero-padded except for the year.
+  const date = new Date(createdAt);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
   download(
-    `claude-conv-${convId}.json`,
-    JSON.stringify(await fetchConv(orgId, convId)),
+    `claude-conv-${year}-${month}-${day}-${hours}${minutes}-${convId}.json`,
+    JSON.stringify(conv),
   );
 }
 
