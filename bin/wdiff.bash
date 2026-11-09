@@ -7,7 +7,7 @@ pushd "${BASH_SOURCE[0]%[/\\]*}" &>/dev/null || pushd . >/dev/null
 popd >/dev/null || exit
 
 wdiff() {
-  git_wdiff --no-index "$@"
+  tail_call git_wdiff --no-index "$@"
 }
 
 if test "$0" = "${BASH_SOURCE[0]}"

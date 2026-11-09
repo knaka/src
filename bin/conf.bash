@@ -69,7 +69,7 @@ conf() {
     set -- "$@" "$arg"
   done
   
-  chezmoi "${global_opts[@]}" "$@"
+  tail_exec chezmoi "${global_opts[@]}" "$@"
 }
 
 if test "$0" = "${BASH_SOURCE[0]}"

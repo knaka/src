@@ -1,4 +1,16 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 set -- _BIN_GIT_CDIFF_BASH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
-git diff --cached "$@"
+pushd "${BASH_SOURCE[0]%[/\\]*}" &>/dev/null || pushd . >/dev/null
+. ../.lib/utils.sh
+popd >/dev/null || exit
+
+git_cdiff() {
+  tail_exec git diff --cached "$@"
+}
+
+if test "$0" = "${BASH_SOURCE[0]}"
+then
+  set -o nounset -o errexit -o pipefail
+  TAIL_DEPTH=1 git_cdiff "$@"
+fi

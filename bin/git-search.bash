@@ -56,11 +56,11 @@ git_search() {
     fi
   } \
   | if is_terminal
-  then
-    less --raw-control-chars
-  else
-    cat
-  fi
+    then
+      less --raw-control-chars
+    else
+      cat
+    fi
 }
 
 if test "$0" = "${BASH_SOURCE[0]}"

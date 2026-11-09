@@ -442,12 +442,13 @@ cutbuffer-to-clipboard() {
   # -r: Ignore the escape conventions of echo.
   # -n: Do not add a newline to the output.
   # `--` は options 終わりの意味で、`$CUTBUFFER` が `-` で始まっても良いように。
-  print -rn -- "$CUTBUFFER" | if command -v pbcopy >/dev/null 2>&1
-  then
-    pbcopy
-  else
-    sc
-  fi
+  print -rn -- "$CUTBUFFER" \
+  | if command -v pbcopy >/dev/null 2>&1
+    then
+      pbcopy
+    else
+      sc
+    fi
 }
 
 # region を killring とクリップボードへ送って削除

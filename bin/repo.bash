@@ -15,7 +15,7 @@ ghq_list() {
     -maxdepth 4 \
     -type d \
     -name ".git" \
-  2>/dev/null \
+    2>/dev/null \
   | while read -r p
     do
       p="${p%/.git}"
