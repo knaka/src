@@ -260,7 +260,12 @@ Usage: $0 [display|suspend|hybrid|hibernate]
 EOF
 }
 
+restore_disablesleep_2db9e97() {
+  pmset -a disablesleep 1
+}
+
 sleepnow() {
+  trap_terminating_signals
   local mode
   mode="${1-}"
   if is_macos
@@ -296,6 +301,7 @@ sleepnow() {
       local sleeptime
       sleeptime="$(sysctl -n kern.sleeptime)"
       pmset -a disablesleep 0
+      add_exit_handler restore_disablesleep_2db9e97
       pmset sleepnow &>/dev/null
       # Restore the settings after the system has actually slept, since restoring `disablesleep` too early aborts the sleep and leaves the system in DarkWake. Give up after a while in case the sleep is canceled.
       local i=0
@@ -309,7 +315,6 @@ sleepnow() {
       do
         sleep 10
       done
-      pmset -a disablesleep 1
     fi
   fi
 }
