@@ -14,6 +14,12 @@ then
   exit 1
 fi
 
+if test "$EUID" -ne 0 && ! sudo -k -n /usr/bin/pmset -g >/dev/null 2>&1
+then
+  echo "pmset cannot be run with sudo without a password. Run reset-system-settings first." >&2
+  exit 1
+fi
+
 pmset() {
   if test "$EUID" -ne 0
   then
