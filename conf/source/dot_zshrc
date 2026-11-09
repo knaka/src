@@ -326,118 +326,152 @@ PS1='%F{${__prompt_fgcolor}}%K{${__prompt_bgcolor}}$__prompt_bold$__prompt_str%b
 stty stop undef
 stty start undef
 
-# zshzle(1): zsh editor - Linux man page https://linux.die.net/man/1/zshzle
+# zshzle(1): Zsh command Line Editor - Linux man page https://linux.die.net/man/1/zshzle
 
+# EOF で抜けないように。
 setopt ignore_eof
 
 # zshのzstyleでの補完時の挙動について - voidy21の日記 https://voidy21.hatenablog.jp/entry/20090902/1251918174
 
-unsetopt auto_menu # 補完キー連打で順に補完候補をローテートで補完
-setopt magic_equal_subst # コマンドラインの引数で --prefix=/usr などの = 以降でも補完できる
+# 補完キー連打で順に補完候補をローテートで補完
+unsetopt auto_menu
 
-# Emacs モードだと ^x がマルチストロークの 1 キー目になってしまうので、vi モードに（これ、何とか Emacs モードから ^x～ だけ削除できないものか）
+# コマンドラインの引数で --prefix=/usr などの = 以降でも補完できる
+setopt magic_equal_subst
 
+# Emacs モードだと ^x がマルチストロークの 1 キー目になってしまうので、vi モードにする（これ、何とか Emacs モードから ^x～ だけ削除できないものか）
 # bindkey -v
 
 # To use C-s
 # stty コマンド - IBM Documentation https://www.ibm.com/docs/ja/aix/7.1?topic=s-stty-command
 stty -ixon
 
-# Delete と Backspace は、リージョンありならばそれを消すように
+# 以下、ターミナル上でシーケンスして拾えないキーアサインは、Karabiner Elements で F13～ のファンクションキーに割り当て、そこへ bind する。今は F13～F18 が使われている。
+
+# Comprehensive keyboard handling in terminals - kitty https://sw.kovidgoyal.net/kitty/keyboard-protocol
+# zle-line-init()   { print -n '\e[>1u' }   # 行編集開始時に有効化
+# zle-line-finish() { print -n '\e[<u' }    # コマンド実行前に解除
+# zle -N zle-line-init
+# zle -N zle-line-finish
+
+# ターミナルが右 Option + . で Esc + . を送出している必要がある
+bindkey '^[.' insert-last-word
 
 function delete-region() {
   zle kill-region
   CUTBUFFER=$killring[1]
   shift killring
 }
-# -“N widget [ function ]” で、New Widget の意 // zshzle(1): zsh editor - Linux man page https://linux.die.net/man/1/zshzle
+# "-N widget [ function ]" で、New Widget の意味。関数を `-N` してはじめて widget として使えるらしい // zshzle(1): zsh editor - Linux man page https://linux.die.net/man/1/zshzle
 zle -N delete-region
 
 function backward-delete-char-or-region() {
-  ((REGION_ACTIVE)) && zle delete-region || zle backward-delete-char
+  # [18 Zsh Line Editor (zsh)](https://zsh.sourceforge.io/Doc/Release/Zsh-Line-Editor.html)
+  # REGION_ACTIVE (integer) : Indicates if the region is currently active. It can be assigned 0 or 1 to deactivate and activate the region respectively. 
+  if ((REGION_ACTIVE))
+  then
+    zle delete-region
+  else
+    zle backward-delete-char
+  fi
 }
 zle -N backward-delete-char-or-region
 
-function delete-char-or-list-or-region() {
-  ((REGION_ACTIVE)) && zle delete-region || zle delete-char-or-list
+bindkey '^h' backward-delete-char-or-region
+
+# region があればそれを削除（killring には残さない）。無ければ通常どおり、カーソル位置の 1 文字を削除する
+function delete-char-or-region() {
+  if ((REGION_ACTIVE))
+  then
+    zle delete-region
+  else
+    zle delete-char
+  fi
 }
-zle -N delete-char-or-list-or-region
+zle -N delete-char-or-region
 
-# shell - Zsh zle shift selection - Stack Overflow https://stackoverflow.com/questions/5407916/zsh-zle-shift-selection
+bindkey '^g' delete-char-or-region
 
-# Shift + カーソル移動で、マークをしつつ region を拡縮する
+# 元ネタ // shell - Zsh zle shift selection - Stack Overflow https://stackoverflow.com/questions/5407916/zsh-zle-shift-selection
+
+# Shift + カーソル移動で、必要ならばマークを開始しつつ region を拡縮する
 shift-move() {
   ((REGION_ACTIVE)) || zle set-mark-command
-  zle $1
+  zle "$1"
 }
 
 # Shift + カーソル移動に key を bind
-# “kcap” は terminfo(5) に載っている
-# terminfo(5) - Linux manual page https://man7.org/linux/man-pages/man5/terminfo.5.html
-for key             kcap seq         widget (
-    left            LFT  $'\e[1;2D'  backward-char
-    right           RIT  $'\e[1;2C'  forward-char
-    alt-shift-left  x    $'\e[1;4D'  backward-word
-    alt-shift-right x    $'\e[1;4C'  forward-word
-    f13             x    $'\e[1;2P'  beginning-of-line
-    f14             x    $'\e[1;2Q'  end-of-line
-    # f17             x    $'\e[15;2~' end-of-line
-    # ？ f14～ に remap できなくなった。consumer key が先に取ってしまうようなのだ。これ Shift + F20
-    f20 x    $'\e[18;5~'  end-of-line
+for key              seq         widget (
+    shift-left       $'\e[1;2D'  backward-char
+    shift-right      $'\e[1;2C'  forward-char
+    shift-alt-left   $'\e[1;4D'  backward-word
+    shift-alt-right  $'\e[1;4C'  forward-word
+    f13              $'\e[1;2P'  beginning-of-line
+    f14              $'\e[1;2Q'  end-of-line
 ) {
   functions[shift-$key]="shift-move $widget"
-  zle -N shift-$key
-  bindkey ${terminfo[$kcap]:-$seq} shift-$key
+  zle -N shift-"$key"
+  bindkey "$seq" shift-"$key"
 }
 
-# カーソル移動（モダンな GUI のように、単純なカーソル移動でリージョン選択無効化）
+# カーソル移動でリージョン選択を解除するラッパー
 unmark-move() {
   ((REGION_ACTIVE)) && zle deactivate-region
   zle $1
 }
 
-for widget (
-  backward-char
-  forward-char
-  backward-word
-  forward-word
-  up-line-or-history
-  down-line-or-history
-  beginning-of-line
-  end-of-line
+# リージョン解除しつつカーソル移動に key を bind
+for key        seq      widget (
+    left       $'\e[D'  backward-char
+    # right      $'\e[C'  forward-char
+    right      '^d'     forward-char
+    opt-left   $'\eb'   backward-word
+    opt-right  $'\ef'   forward-word
+    # iTerm2 上での Cmd + left, right は ^A, ^E を発行する
+    cmd-left   '^a'     beginning-of-line
+    cmd-right  '^e'     end-of-line
+    # up-line-or-history
+    # down-line-or-history
 ) {
   functions[unmark-$widget]="unmark-move $widget"
-  zle -N unmark-$widget
+  zle -N unmark-"$widget"
+  bindkey "$seq" unmark-"$widget"
 }
 
-# Cut
+cutbuffer-to-clipboard() {
+  # -r: Ignore the escape conventions of echo.
+  # -n: Do not add a newline to the output.
+  # `--` は options 終わりの意味で、`$CUTBUFFER` が `-` で始まっても良いように。
+  print -rn -- "$CUTBUFFER" | if command -v pbcopy >/dev/null 2>&1
+  then
+    pbcopy
+  else
+    sc
+  fi
+}
+
+# region を killring とクリップボードへ送って削除
 x-kill-region() {
-  ((REGION_ACTIVE)) || return
+  ((REGION_ACTIVE)) || return 0
   zle kill-region
-  print -rn -- "$CUTBUFFER" \
-  | if command -v pbcopy >/dev/null 2>&1
-    then
-      pbcopy
-    else
-      sc
-    fi
+  cutbuffer-to-clipboard
 }
 zle -N x-kill-region
 
-# Copy
+# F16: カット
+bindkey '\e[1;2S' x-kill-region
+
+# region を、killring とクリップボードへ送る
 x-copy-region-as-kill() {
-  ((REGION_ACTIVE)) || return
+  ((REGION_ACTIVE)) || return 0
   # zsh: 18 Zsh Line Editor https://zsh.sourceforge.io/Doc/Release/Zsh-Line-Editor.html
   zle copy-region-as-kill
-  print -rn -- "$CUTBUFFER" \
-  | if command -v pbcopy >/dev/null 2>&1
-    then
-      pbcopy
-    else
-      sc
-    fi
+  cutbuffer-to-clipboard
 }
 zle -N x-copy-region-as-kill
+
+# F17: コピー
+bindkey '\e[15;2~' x-copy-region-as-kill
 
 # 全選択
 select-all() {
@@ -452,69 +486,8 @@ select-all() {
 }
 zle -N select-all
 
-# ターミナルが右 Option + . で Esc + . を送出している必要がある
-bindkey '^[.' insert-last-word
-
-# ←
-bindkey "\e[D" unmark-backward-char
-# bindkey "^s" unmark-backward-char
-# →
-bindkey "\e[C" unmark-forward-char
-# bindkey "^d" unmark-forward-char
-
-# Esc + ←
-bindkey '^[b' unmark-backward-word
-# Esc + →
-bindkey '^[f' unmark-forward-word
-
-# Command + ←
-bindkey '^a' unmark-beginning-of-line
-# Command + →
-bindkey '^e' unmark-end-of-line
-
 # F15: 全選択
 bindkey '\e[1;2R' select-all
-
-# F16: カット
-bindkey '\e[1;2S' x-kill-region
-
-# F17: コピー
-bindkey '\e[15;2~' x-copy-region-as-kill
-
-bindkey '^g' delete-char-or-list-or-region
-
-# bindkey '^[[F' unmark-end-of-line
-# bindkey '^[[H' unmark-beginning-of-line
-# bindkey  "^[[1~"   unmark-beginning-of-line
-# bindkey  "^[[4~"   unmark-end-of-line
-# bindkey '^[a' select-all
-# # 効いていない
-# # bindkey '^[w' x-copy-region-as-kill
-# # これなら karabiner での remap が効く
-# bindkey '^z' x-copy-region-as-kill
-# bindkey '^a' unmark-backward-word
-# bindkey '^e' unmark-up-line-or-history
-# bindkey '^f' unmark-forward-word
-# bindkey '^[f' unmark-forward-word
-# bindkey '^n' down-line-or-history
-# bindkey '^p' up-line-or-history
-# bindkey '^r' history-incremental-search-backward
-# bindkey "\e[D" unmark-backward-char # left
-# bindkey "\e[C" unmark-forward-char # right
-# # 効いている
-# bindkey '^w' x-kill-region
-# bindkey '^x' unmark-down-line-or-history
-
-# function peco-history-selection() {
-#   #
-#   # BUFFER=$(printf "$(history -n 1 | tac | awk '!a[$0]++' | peco)")
-#   BUFFER=$(printf "$(history -n 1 | tac | peco)")
-#   CURSOR=$#BUFFER
-#   zle reset-prompt
-# }
-
-# zle -N peco-history-selection
-# bindkey '^R' peco-history-selection
 
 # macos - How to expand aliases inline in zsh? - Super User https://superuser.com/questions/1514569/how-to-expand-aliases-inline-in-zsh
 # *エイリアスをコマンドライン上の補完で展開することもできる

@@ -127,16 +127,18 @@
                   "key_code": "d",
                   "modifiers": {
                     "mandatory": [
-                      "control"
-                    ],
-                    "optional": [
+                      "control",
                       "shift"
-                    ]
+                    ],
+                    "optional": []
                   }
                 },
                 "to": [
                   {
-                    "key_code": "right_arrow"
+                    "key_code": "right_arrow",
+                    "modifiers": [
+                      "shift"
+                    ]
                   }
                 ]
               },
@@ -249,10 +251,8 @@
                 },
                 "to": [
                   {
-                    "key_code": "f19",
-                    "modifiers": [
-                      "shift"
-                    ]
+                    "key_code": "f14",
+                    "modifiers": []
                   }
                 ]
               },
