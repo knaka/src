@@ -11,7 +11,9 @@ foo() {
 
 x_59daf55() {
   foo # Does not exec(2).
-  TAIL_DEPTH=$((TAIL_DEPTH+1)) foo # Does exec(2).
+  # TAIL_DEPTH=$((TAIL_DEPTH+1)) foo # Does exec(2).
+  tail_call foo # Does exec(2).
+  # tail_call /bin/echo Hello # Causes warning.
   echo Not reached. >&2
   exit 1
 }

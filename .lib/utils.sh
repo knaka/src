@@ -659,22 +659,43 @@ is_fd_open() {
   { command : >&"$1"; } 2>/dev/null
 }
 
-# Number of ancestor calls on the Bash function call stack that have
-# explicitly opted in to being skipped over by `tail_exec` (see below), by
-# invoking their own callee with `TAIL_DEPTH=$((TAIL_DEPTH+1))` prefixed to
-# the call. Compared against `${#FUNCNAME[@]}` to detect whether every
-# frame between the top-level entry point and `tail_exec` has opted in.
+# Number of frames on the Bash function call stack, excluding the top-level
+# `main`, that have been declared to be in tail position. A call is declared so
+# either by `tail_call` (see below), which adds 2 for its own frame and its
+# callee's, or by prefixing `TAIL_DEPTH=$((TAIL_DEPTH+1))` to a direct call.
+# This also applies to the call of the entry function from the top level.
+# `tail_exec` compares this number with `${#FUNCNAME[@]}` to detect whether every
+# frame between the top level and `tail_exec` is in tail position.
 : "${TAIL_DEPTH:=0}"
 
-# Exec only if every caller on the function call stack has declared that this is a "tail" call. Otherwise simply call it.
+# Exec only if every caller on the function call stack has declared that this is
+# a "tail" call. Otherwise simply call it.
 tail_exec() {
   # `+2` accounts for excluding the top-level frame (`main`) and this function itself.
-  if "${FORCE_EXEC-false}" || { test "${BASH_VERSION+set}" && eval 'test ${#FUNCNAME[@]} -eq $((TAIL_DEPTH+2))'; }
+  if "${FORCE_EXEC-false}" || { test "${BASH_VERSION+set}" && eval 'test ${#FUNCNAME[@]} -eq $((TAIL_DEPTH + 2))'; }
   then
     set -- exec "$@"
     run_exit_handlers
   fi
   "$@"
+}
+
+# Call the given command in tail position, so that a `tail_exec` at the end of
+# that command replaces the current process via exec(2) instead of forking.
+# TAIL_DEPTH is increased by 2: one for this function's own call frame and one
+# for the call frame of the target command. The target must be a shell function,
+# since other commands do not push a frame and would also receive TAIL_DEPTH as
+# an environment variable. Otherwise, a warning is printed and the command is
+# simply called.
+tail_call() {
+  # shellcheck disable=SC3044
+  if is_bash_bin && ! declare -F "$1" >/dev/null
+  then
+    echo "tail_call: Not a shell function: $1" >&2
+    "$@"
+    return
+  fi
+  TAIL_DEPTH=$((TAIL_DEPTH + 2)) "$@"
 }
 
 #endregion
