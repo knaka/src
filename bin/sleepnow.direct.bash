@@ -3,64 +3,8 @@ set -- _BIN_SLEEPNOW_DIRECT_BASH "$@"; eval "shift; \${$1-false} || ! $1=true" &
 
 pushd "${BASH_SOURCE[0]%[/\\]*}" &>/dev/null || pushd . >/dev/null
 . ../.lib/utils.sh
-. ./reset-system-settings.bash
+. ./sleep-utils-macos.bash
 popd >/dev/null || exit
-
-show_sleepnow_usage() { cat <<EOF
-Put the system to sleep in the specified mode. If the mode is omitted, the currently set mode is used.
-
-Usage: $0 [display|suspend|hybrid|hibernate]
-EOF
-}
-
-sleepnow() {
-  local mode
-  mode="${1-}"
-  if is_macos
-  then
-    if test -t 2
-    then
-      echo Entering sleep... >&2
-    fi
-    # The system does not enter sleep unless we wait for the key pressed to run this command to be released.
-    sleep 1
-    if test "$mode" = display
-    then
-      pmset displaysleepnow
-    else
-      case "$mode" in
-        ("")
-          ;;
-        (suspend|memory)
-          pmset -a hibernatemode 0
-          ;;
-        (hybrid|both)
-          pmset -a hibernatemode 3
-          ;;
-        (hibernate|disk|storage)
-          pmset -a hibernatemode 25
-          ;;
-        (*)
-          echo Unknown mode: "$mode" >&2
-          show_sleepnow_usage
-          return 1
-          ;;
-      esac
-      local sleeptime
-      sleeptime="$(sysctl -n kern.sleeptime)"
-      pmset -a disablesleep 0
-      pmset sleepnow &>/dev/null
-      # Restore the settings after the system has actually slept, since restoring `disablesleep` too early aborts the sleep and leaves the system in DarkWake. Give up after a while in case the sleep is canceled.
-      local i=0
-      while test "$(sysctl -n kern.sleeptime)" = "$sleeptime" -a "$i" -lt 60
-      do
-        sleep 1
-        i=$((i + 1))
-      done
-      reset_macos_power_settings
-    fi
-  fi
-}
 
 if test "$0" = "${BASH_SOURCE[0]}"
 then

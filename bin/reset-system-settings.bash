@@ -3,6 +3,7 @@ set -- _BIN_RESET_SYSTEM_SETTINGS_BASH "$@"; eval "shift; \${$1-false} || ! $1=t
 
 pushd "${BASH_SOURCE[0]%[/\\]*}" &>/dev/null || pushd . >/dev/null
 . ../.lib/utils.sh
+. ./sleep-utils-macos.bash
 popd >/dev/null || exit
 
 # $ pmset -g custom
@@ -99,15 +100,6 @@ reset_macos_system_settings() {
 
   reset_macos_power_settings
 
-}
-
-pmset() {
-  if test "$EUID" -ne 0
-  then
-    sudo /usr/bin/pmset "$@"
-  else
-    /usr/bin/pmset "$@"
-  fi
 }
 
 reset_system_settings() {

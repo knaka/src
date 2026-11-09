@@ -14,6 +14,15 @@ then
   exit 1
 fi
 
+pmset() {
+  if test "$EUID" -ne 0
+  then
+    sudo /usr/bin/pmset "$@"
+  else
+    /usr/bin/pmset "$@"
+  fi
+}
+
 # For ioreg(8)
 prepend_path /usr/sbin
 
@@ -65,6 +74,11 @@ is_screen_locked() {
   ioreg -n Root -d 1 | grep_quiet '"CGSSessionScreenIsLocked"=Yes'
 }
 
+# Check if the system is in DarkWake, where it is running without Graphics, such as during a maintenance wake. Return false if the capabilities are not found.
+is_dark_wake() {
+  pmset -g systemstate | grep '^Current System Capabilities are:' | grep_quiet -v ' Graphics'
+}
+
 # Set $RESULT to the seconds elapsed since the last user input event.
 user_idle_seconds_() {
   local idle_ns
@@ -108,6 +122,8 @@ check_sleep_conditions_6e2b4d1() {
   # CGSSessionScreenIsLocked seems to exist only while the screen is locked, so check the console user information that it belongs to instead.
   ioreg -n Root -d 1 | grep_quiet '"kCGSSessionOnConsoleKey"=' \
     || fail_check_6e2b4d1 "The console user information is not found in ioreg."
+  pmset -g systemstate | grep_quiet '^Current System Capabilities are:' \
+    || fail_check_6e2b4d1 "The system capabilities are not found in pmset."
   test -z "${SSH_CONNECTION-}" || has_ssh_session \
     || fail_check_6e2b4d1 "No SSH server process is found in this SSH session."
 
@@ -201,6 +217,13 @@ sleep_conditions() {
     echo "The screen is not locked." >&2
   fi
 
+  if is_dark_wake
+  then
+    echo "The system is in DarkWake." >&2
+  else
+    echo "The system is not in DarkWake." >&2
+  fi
+
   if user_idle_seconds_
   then
     echo "The user has been idle for $RESULT seconds." >&2
@@ -220,6 +243,72 @@ sleep_conditions() {
   check_sleep_conditions_6e2b4d1
   test "$failed" = false
 }
+
+# ==========================================================================
+#region Put the system to sleep in the specified mode.
+
+show_sleepnow_usage() { cat <<EOF
+Put the system to sleep in the specified mode. If the mode is omitted, the currently set mode is used.
+
+Usage: $0 [display|suspend|hybrid|hibernate]
+EOF
+}
+
+sleepnow() {
+  local mode
+  mode="${1-}"
+  if is_macos
+  then
+    if test -t 2
+    then
+      echo Entering sleep... >&2
+    fi
+    # The system does not enter sleep unless we wait for the key pressed to run this command to be released.
+    sleep 1
+    if test "$mode" = display
+    then
+      pmset displaysleepnow
+    else
+      case "$mode" in
+        ("")
+          ;;
+        (suspend|memory)
+          pmset -a hibernatemode 0
+          ;;
+        (hybrid|both)
+          pmset -a hibernatemode 3
+          ;;
+        (hibernate|disk|storage)
+          pmset -a hibernatemode 25
+          ;;
+        (*)
+          echo Unknown mode: "$mode" >&2
+          show_sleepnow_usage
+          return 1
+          ;;
+      esac
+      local sleeptime
+      sleeptime="$(sysctl -n kern.sleeptime)"
+      pmset -a disablesleep 0
+      pmset sleepnow &>/dev/null
+      # Restore the settings after the system has actually slept, since restoring `disablesleep` too early aborts the sleep and leaves the system in DarkWake. Give up after a while in case the sleep is canceled.
+      local i=0
+      while test "$(sysctl -n kern.sleeptime)" = "$sleeptime" -a "$i" -lt 60
+      do
+        sleep 1
+        i=$((i + 1))
+      done
+      # Do not restore the settings during DarkWake, such as one for maintenance, since the system cannot go back to sleep from it while `disablesleep` is set.
+      while is_dark_wake
+      do
+        sleep 10
+      done
+      pmset -a disablesleep 1
+    fi
+  fi
+}
+
+#endregion
 
 # ==========================================================================
 #region The following functions are expected to be called from cron at short intervals.
