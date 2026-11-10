@@ -70,6 +70,14 @@ reset_macos_power_settings() {
   # “Power Nap is a macOS feature that lets your Mac perform background tasks—such as checking for Mail, Calendar, Contacts, Notes, and iCloud updates—while the computer is in sleep mode.”
   # Powernap をオフにしておけば、カバンの中で勝手に復帰することはなくなるかな？ なくなって欲しい
   pmset -a powernap 0
+  pmset -a womp 0
+  pmset -a tcpkeepalive 0 >/dev/null
+  pmset -a ttyskeepawake 0
+  pmset -a networkoversleep 0
+  pmset schedule cancelall
+
+  # 効いてる？
+  defaults -currentHost write com.apple.Bluetooth RemoteWakeEnabled -bool false
 
   # standbydelayhigh and standbydelaylow は Intel 用（“Intel Standby Mode”）で、Apple Sillicon にはないらしい
 }

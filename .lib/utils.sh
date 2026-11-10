@@ -537,13 +537,17 @@ grep_quiet() {
 
 # Prepend a directory to $PATH unless it is already included.
 prepend_path() {
-  case ":$PATH:" in
-    (*:"$1":*)
-      ;;
-    (*)
-      PATH="$1:$PATH"
-      ;;
-  esac
+  while test $# -gt 0
+  do
+    case ":$PATH:" in
+      (*:"$1":*)
+        ;;
+      (*)
+        PATH="$1:$PATH"
+        ;;
+    esac
+    shift
+  done
 }
 
 # The file descriptor of the lock held by this shell, or empty if none.

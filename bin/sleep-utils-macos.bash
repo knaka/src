@@ -6,6 +6,7 @@ set -- _BIN_SLEEP_UTILS_MACOS_BASH "$@"; eval "shift; \${$1-false} || ! $1=true"
 pushd "${BASH_SOURCE[0]%[/\\]*}" &>/dev/null || pushd . >/dev/null
 . ../.lib/utils.sh
 . ./sleepnow.direct.bash
+. ../.lib/time.sh
 popd >/dev/null || exit
 
 if ! is_macos
@@ -30,7 +31,11 @@ pmset() {
 }
 
 # For ioreg(8)
-prepend_path /usr/sbin
+prepend_path \
+  /usr/sbin \
+  /usr/local/bin \
+  /opt/homebrew/bin \
+  #nop
 
 is_lid_closed() {
   ioreg -r -k AppleClamshellState -d 1 | grep_quiet -E '"AppleClamshellState" = Yes'
@@ -260,11 +265,22 @@ Usage: $0 [display|suspend|hybrid|hibernate]
 EOF
 }
 
+restore_wifi_98761f3=false
+restore_bt_f0de03b=false
+
 restore_disablesleep_2db9e97() {
   pmset -a disablesleep 1
+  "$restore_wifi_98761f3" && networksetup -setairportpower en0 on
+  # blueutil -p 1
+  if "$restore_bt_f0de03b" && shortcuts list | grep_quiet -x FluToothOn
+  then
+    shortcuts run FluToothOn
+  fi
 }
 
 sleepnow() {
+  sleep_log "Calling ${FUNCNAME[0]}"
+
   trap_terminating_signals
   local mode
   mode="${1-}"
@@ -298,13 +314,37 @@ sleepnow() {
           return 1
           ;;
       esac
+      pmset displaysleepnow
       local sleeptime
       sleeptime="$(sysctl -n kern.sleeptime)"
-      pmset -a disablesleep 0
+      # Register the handler before turning anything off, so that whatever has been turned off is restored even if this fails partway. It restores only what the flags mark.
       add_exit_handler restore_disablesleep_2db9e97
+      local i
+      if networksetup -getairportpower en0 | grep_quiet ': On$'
+      then
+        networksetup -setairportpower en0 off
+        restore_wifi_98761f3=true
+      fi
+      # blueutil -p 0 is aborted by TCC when run from Karabiner-Elements, so turn Bluetooth off with a shortcut instead, since Shortcuts has access to Bluetooth.
+      if system_profiler SPBluetoothDataType | grep_quiet 'State: On' \
+        && shortcuts list | grep_quiet -x FluToothOff
+      then
+        shortcuts run FluToothOff
+        restore_bt_f0de03b=true
+        i=0
+        while system_profiler SPBluetoothDataType | grep_quiet 'State: On' && test "$i" -lt 10
+        do
+          sleep 1
+          i=$((i + 1))
+        done
+        # The system does not sleep if put to sleep right after Bluetooth is reported off, for an unknown reason. It is not the assertion of bluetoothd, which is released immediately, so just wait for a while.
+        sleep 5
+      fi
+      pmset -a disablesleep 0
+      sleep_log "CP10"
       pmset sleepnow &>/dev/null
       # Restore the settings after the system has actually slept, since restoring `disablesleep` too early aborts the sleep and leaves the system in DarkWake. Give up after a while in case the sleep is canceled.
-      local i=0
+      i=0
       while test "$(sysctl -n kern.sleeptime)" = "$sleeptime" -a "$i" -lt 60
       do
         sleep 1
@@ -324,6 +364,8 @@ sleepnow() {
 # ==========================================================================
 #region The following functions are expected to be called from cron at short intervals.
 
+readonly logfile=/tmp/sleep.log
+
 say() {
   # local voice="Daniel"
   local voice="Karen"
@@ -331,8 +373,25 @@ say() {
   command say --rate=120 --voice="$voice" "$1" || :
 }
 
+ja_say() {
+  local voice="Kyoko"
+  command say --voice="$voice" "$1" || :
+}
+
+sleep_log() {
+  local dark_wake=false
+  is_dark_wake && dark_wake=true
+  local sleep_prevented=false
+  is_sleep_prevented && sleep_prevented=true
+  local lid_closed=false
+  is_lid_closed && lid_closed=true
+  echo "$(date_iso): $* (lid_closed: $lid_closed, dark_wake: $dark_wake, sleep_prevented: $sleep_prevented)" >>"$logfile"
+}
+
 # Put the display to sleep when the user has been idle for 3 minutes, or 10 minutes on the charger, unless a process is preventing display sleep.
 displaysleep_if_user_stays_idle() {
+  sleep_log "Calling ${FUNCNAME[0]}"
+
   local idle_limit_sec=$((3 * 60))
   is_charger_connected && idle_limit_sec=$((10 * 60))
   user_idle_seconds_ || return
@@ -344,6 +403,8 @@ displaysleep_if_user_stays_idle() {
 
 # Put the system to sleep when the user has been idle for 10 minutes, or 60 minutes on the charger, unless a process is preventing sleep or an SSH session is active.
 sleep_if_user_stays_idle() {
+  sleep_log "Calling ${FUNCNAME[0]}"
+
   local idle_limit_sec=$((10 * 60))
   is_charger_connected && idle_limit_sec=$((60 * 60))
   # Sleep sooner even on the charger during the night, from 1:00 to 5:00.
@@ -357,13 +418,16 @@ sleep_if_user_stays_idle() {
   test "$RESULT" -lt "$idle_limit_sec" && return 0
   is_sleep_prevented && return 0
   has_ssh_session && return 0
-  say "No activity detected. Going to sleep now."
+  sleep_log "CP0"
+  say "Checkpoint 0. No activity detected. Going to sleep now. Checkpoint 0."
   sleep 1
   sleepnow "$@"
 }
 
 # Put the system to sleep if the lid stays closed for 5 minutes, announcing it by voice beforehand. Return as soon as the lid is found open.
 sleep_if_lid_stays_closed() {
+  sleep_log "Calling ${FUNCNAME[0]}"
+
   local rest=$((5 * 60))
   local interval=20
   while test "$rest" -gt 0
@@ -371,14 +435,21 @@ sleep_if_lid_stays_closed() {
     is_lid_closed || return 0
     is_sleep_prevented && return 0
     case "$rest" in
-      (180) say "Checkpoint 1. Going to sleep in 3 minutes. Checkpoint 1." &;;
-      (60) say "Checkpoint 2. Going to sleep in 1 minute. Checkpoint 2." &;;
+      (180)
+        sleep_log "CP1"
+        say "Checkpoint 1. Going to sleep in 3 minutes. Checkpoint 1." &
+        ;;
+      (60)
+        sleep_log "CP2"
+        say "Checkpoint 2. Going to sleep in 1 minute. Checkpoint 2." &
+        ;;
     esac
     sleep "$interval"
     rest=$((rest - interval))
   done
   is_lid_closed || return 0
   is_sleep_prevented && return 0
+  sleep_log "CP3"
   say "Checkpoint 3. Lid closed. Going to sleep now. Checkpoint 3."
   sleep 1
   sleepnow "$@"
@@ -386,6 +457,8 @@ sleep_if_lid_stays_closed() {
 
 # Put the display to sleep and warn by voice if the system is still awake 6 minutes after the lid was found closed. Do not warn while audio is playing.
 warn_awake_if_lid_stays_closed() {
+  sleep_log "Calling ${FUNCNAME[0]}"
+
   is_lid_closed || return 0
   is_audio_playing && return 0
   # Wait until sleep-if-lid-stays-closed, which runs every minute, should have put the system to sleep.
@@ -393,6 +466,7 @@ warn_awake_if_lid_stays_closed() {
   is_lid_closed || return 0
   sleepnow display
   is_audio_playing && return 0
+  sleep_log "CP4"
   say "Checkpoint 4. Still awake with the lid closed. Checkpoint 4."
 }
 

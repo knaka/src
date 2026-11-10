@@ -353,7 +353,8 @@ profiles:
                   mandatory:
                     - command
               to:
-                - shell_command: open -b com.apple.ScreenSaver.Engine
+                # - shell_command: open -b com.apple.ScreenSaver.Engine
+                - shell_command: "$HOME/bin/sleepnow display"
             # ダイヤモンドカーソル
             # 上
             - type: basic

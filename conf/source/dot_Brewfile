@@ -11,6 +11,7 @@ tap 'jmespath/jmespath' # for 'jp'
 # ==========================================================================
 #region fomulae 一覧・検索 https://formulae.brew.sh/formula/
 
+brew 'blueutil'
 brew 'dwdiff'
 brew 'git-delta'
 # brew 'bash'
