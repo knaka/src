@@ -278,9 +278,11 @@ restore_disablesleep_2db9e97() {
   fi
 }
 
+# Put the display or the system to sleep in the specified mode.
+# To keep the system from waking up during sleep, Wi-Fi and Bluetooth are turned off before sleeping and turned back on after waking up, since a Bluetooth incoming connection or HID activity triggers a full wake. reset_macos_power_settings in reset-system-settings.bash also disables Power Nap, Wake on LAN (womp), TCP keepalive, ttyskeepawake, network over sleep, scheduled power events, and Bluetooth remote wake.
+# The remaining DarkWakes are tolerated, since they last from a few seconds to about 45 seconds without Graphics and the system goes back to sleep by itself: maintenance wakes by PowerUIAgent for Optimized Battery Charging (com.apple.obc) every 15 minutes, only on the charger; CSPNEvaluation (Smart Power Nap) by powerd every hour, which can only be disabled with an undocumented feature flag; user-invisible alarms such as calendar travel time updates; and occasional wakes by the AOP.
 sleepnow() {
   sleep_log "Calling ${FUNCNAME[0]}"
-
   trap_terminating_signals
   local mode
   mode="${1-}"
@@ -378,7 +380,9 @@ ja_say() {
   command say --voice="$voice" "$1" || :
 }
 
+# shellcheck disable=SC2317
 sleep_log() {
+  return 0
   local dark_wake=false
   is_dark_wake && dark_wake=true
   local sleep_prevented=false
@@ -391,7 +395,6 @@ sleep_log() {
 # Put the display to sleep when the user has been idle for 3 minutes, or 10 minutes on the charger, unless a process is preventing display sleep.
 displaysleep_if_user_stays_idle() {
   sleep_log "Calling ${FUNCNAME[0]}"
-
   local idle_limit_sec=$((3 * 60))
   is_charger_connected && idle_limit_sec=$((10 * 60))
   user_idle_seconds_ || return
@@ -404,7 +407,6 @@ displaysleep_if_user_stays_idle() {
 # Put the system to sleep when the user has been idle for 10 minutes, or 60 minutes on the charger, unless a process is preventing sleep or an SSH session is active.
 sleep_if_user_stays_idle() {
   sleep_log "Calling ${FUNCNAME[0]}"
-
   local idle_limit_sec=$((10 * 60))
   is_charger_connected && idle_limit_sec=$((60 * 60))
   # Sleep sooner even on the charger during the night, from 1:00 to 5:00.
@@ -427,7 +429,6 @@ sleep_if_user_stays_idle() {
 # Put the system to sleep if the lid stays closed for 5 minutes, announcing it by voice beforehand. Return as soon as the lid is found open.
 sleep_if_lid_stays_closed() {
   sleep_log "Calling ${FUNCNAME[0]}"
-
   local rest=$((5 * 60))
   local interval=20
   while test "$rest" -gt 0
@@ -460,7 +461,6 @@ sleep_if_lid_stays_closed() {
 # Put the display to sleep and warn by voice if the system is still awake 6 minutes after the lid was found closed. Do not warn while audio is playing.
 warn_awake_if_lid_stays_closed() {
   sleep_log "Calling ${FUNCNAME[0]}"
-
   is_lid_closed || return 0
   is_audio_playing && return 0
   is_dark_wake && return 0
