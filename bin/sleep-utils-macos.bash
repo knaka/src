@@ -434,6 +434,7 @@ sleep_if_lid_stays_closed() {
   do
     is_lid_closed || return 0
     is_sleep_prevented && return 0
+    is_dark_wake && return 0
     case "$rest" in
       (180)
         sleep_log "CP1"
@@ -449,6 +450,7 @@ sleep_if_lid_stays_closed() {
   done
   is_lid_closed || return 0
   is_sleep_prevented && return 0
+  is_dark_wake && return 0
   sleep_log "CP3"
   say "Checkpoint 3. Lid closed. Going to sleep now. Checkpoint 3."
   sleep 1
@@ -461,11 +463,13 @@ warn_awake_if_lid_stays_closed() {
 
   is_lid_closed || return 0
   is_audio_playing && return 0
+  is_dark_wake && return 0
   # Wait until sleep-if-lid-stays-closed, which runs every minute, should have put the system to sleep.
   sleep $((6 * 60))
   is_lid_closed || return 0
   sleepnow display
   is_audio_playing && return 0
+  is_dark_wake && return 0
   sleep_log "CP4"
   say "Checkpoint 4. Still awake with the lid closed. Checkpoint 4."
 }
