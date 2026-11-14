@@ -247,6 +247,15 @@ profiles:
               from: { "key_code": "tab", "modifiers": { "mandatory": ["control", "shift"] } }
               # to: [{ "key_code": "open_bracket", "modifiers": ["command", "shift"] }] # ？ Tahoe で？効かなくなった
               to: [{ "key_code": "left_arrow", "modifiers": ["option", "command"] }]
+        - description: "Chrome"
+          manipulators:
+            - type: basic
+              conditions: &conditions_chrome
+                - type: frontmost_application_if
+                  bundle_identifiers:
+                    - ^com\.google\.Chrome$
+              from: {key_code: t, modifiers: {mandatory: [shift, command]}}
+              to: [{key_code: f13, modifiers: []}]
         - description: "Others"
           manipulators:
             # #できないみたい？

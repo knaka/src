@@ -1,0 +1,12 @@
+{
+  "name": "js",
+  "version": "1.0.0",
+  "description": "JavaScript",
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "download-claude-conv.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}

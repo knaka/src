@@ -421,7 +421,7 @@ sleep_if_user_stays_idle() {
   is_sleep_prevented && return 0
   has_ssh_session && return 0
   sleep_log "CP0"
-  say "Checkpoint 0. No activity detected. Going to sleep now. Checkpoint 0."
+  say "No activity detected. Going to sleep now."
   sleep 1
   sleepnow "$@"
 }
@@ -439,11 +439,11 @@ sleep_if_lid_stays_closed() {
     case "$rest" in
       (180)
         sleep_log "CP1"
-        say "Checkpoint 1. Going to sleep in 3 minutes. Checkpoint 1." &
+        say "Going to sleep in 3 minutes." &
         ;;
       (60)
         sleep_log "CP2"
-        say "Checkpoint 2. Going to sleep in 1 minute. Checkpoint 2." &
+        say "Going to sleep in 1 minute." &
         ;;
     esac
     sleep "$interval"
@@ -453,7 +453,7 @@ sleep_if_lid_stays_closed() {
   is_sleep_prevented && return 0
   is_dark_wake && return 0
   sleep_log "CP3"
-  say "Checkpoint 3. Lid closed. Going to sleep now. Checkpoint 3."
+  say "Lid closed. Going to sleep now."
   sleep 1
   sleepnow "$@"
 }
@@ -471,7 +471,7 @@ warn_awake_if_lid_stays_closed() {
   is_audio_playing && return 0
   is_dark_wake && return 0
   sleep_log "CP4"
-  say "Checkpoint 4. Still awake with the lid closed. Checkpoint 4."
+  say "Still awake with the lid closed."
 }
 
 #endregion
