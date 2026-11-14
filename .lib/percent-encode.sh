@@ -7,7 +7,7 @@ cd "$3" || exit; shift 3 # /shpp:sources
 
 # Percent-encode the arguments joined with spaces, or the standard input if none, byte by byte, leaving only the unreserved characters of RFC 3986 as they are. Every byte, including newlines and those of multibyte characters, is encoded regardless of the locale, since od converts the input to hex codes before awk reads it. No newline is written at the end.
 # [Percent-encoding - Wikipedia](https://en.wikipedia.org/wiki/Percent-encoding)
-urlencode() {
+percent_encode() {
   # od(1)
   #   -An: no address
   #   -v: write out all input
@@ -98,8 +98,8 @@ BEGIN {
 '
 }
 
-# Decode the percent-encoded arguments, or the standard input if none, and write out the bytes as they are. Raw newlines are regarded as the terminators of encoded lines, such as the one urlencode writes, and are discarded, so that `urlencode | urldecode` gives back the original bytes. A NUL byte (%00) cannot be decoded, since awk cannot handle it.
-urldecode() {
+# Decode the percent-encoded arguments, or the standard input if none, and write out the bytes as they are. Raw newlines are regarded as the terminators of encoded lines, such as the one percent_encode writes, and are discarded, so that `percent_encode | percent_decode` gives back the original bytes. A NUL byte (%00) cannot be decoded, since awk cannot handle it.
+percent_decode() {
   if test $# -gt 0
   then
     printf "%s" "$*"
@@ -124,8 +124,8 @@ BEGIN {
 '
 }
 
-if eval 'test "$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (urlencode.*) ;; (*) false;; esac # shpp:main_guard
+if eval 'test "$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (percent-encode.*) ;; (*) false;; esac # shpp:main_guard
 then
   set -o nounset -o errexit
-  urlencode "$@"
+  percent_encode "$@"
 fi

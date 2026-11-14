@@ -3,7 +3,7 @@ set -- _0859dd3 "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:s
 
 pushd "${BASH_SOURCE[0]%[/\\]*}" &>/dev/null || pushd . >/dev/null
 . ../../.lib/utils.sh
-. ../../.lib/urlencode.sh
+. ../../.lib/percent-encode.sh
 popd >/dev/null || exit
 
 # [files...] Create bookmarklet.
@@ -18,7 +18,7 @@ task_bookmarklet() {
       cat "$file"
       printf "\n})();\n"
     } \
-    | urlencode
+    | percent_encode
     echo
   done
 }
