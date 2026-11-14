@@ -8,10 +8,10 @@ if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; e
 cd "$3" || exit; shift 3 # /shpp:sources
 
 test_urlencode() {
-  local original="hello world & café"
+  local original="hello world & Café"
   local encoded
   encoded="$(printf "%s" "$original" | urlencode)"
-  assert_eq -m "89491cd" "$encoded" "hello%20world%20%26%20caf%C3%A9"
+  assert_eq -m "89491cd" "$encoded" "hello%20world%20%26%20Caf%C3%A9"
   local decoded
   decoded="$(printf "%s" "$encoded" | urldecode)"
   assert_eq -m "627183a" "$original" "$decoded"

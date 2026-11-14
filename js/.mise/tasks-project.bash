@@ -16,8 +16,9 @@ task_bookmarklet() {
     {
       printf "(() => {\n"
       cat "$file"
-      printf "})();"
+      printf "\n})();\n"
     } \
     | urlencode
+    echo
   done
 }
