@@ -497,7 +497,7 @@ assign_stdin() {
   done
 }
 
-printf_v() {
+assignf() {
   local var_name_126cf04="$1"
   shift
   if is_bash_bin
@@ -517,7 +517,7 @@ printf_v() {
 }
 
 printf_() {
-  printf_v RESULT "$@"
+  assignf RESULT "$@"
 }
 
 # Canonicalize path
