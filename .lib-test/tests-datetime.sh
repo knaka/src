@@ -55,4 +55,12 @@ test_datetime() {
   assert_eq "$RESULT" 12
   assert_eq "23" "$(iso_datetime_minute "$iso_datetime")"
   assert_eq "34" "$(iso_datetime_second "$iso_datetime")"
+
+  # Converts to UTC.
+  assert_eq "2025-01-01T00:00:00Z" "$(iso_datetime_to_utc "2025-01-01T09:00:00+0900")"
+  assert_eq "2025-01-01T00:00:00Z" "$(iso_datetime_to_utc "2025-01-01T00:00:00Z")"
+  assert_eq "2024-02-29T16:00:00Z" "$(iso_datetime_to_utc "2024-03-01T01:00:00+09:00")"
+  assert_eq "2025-01-01T01:30:00Z" "$(iso_datetime_to_utc "2024-12-31T20:00:00.123-05:30")"
+  assert_eq "1969-12-31T15:00:00Z" "$(iso_datetime_to_utc "1970-01-01T00:00:00+09")"
+  assert_false iso_datetime_to_utc "2025-01-01T09:00:00"
 }

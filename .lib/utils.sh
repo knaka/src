@@ -497,21 +497,27 @@ assign_stdin() {
   done
 }
 
-printf_() {
+printf_v() {
+  local var_name_126cf04="$1"
+  shift
   if is_bash_bin
   then
     # shellcheck disable=SC2059
     # shellcheck disable=SC3045
-    printf -v RESULT "$@"
+    printf -v "$var_name_126cf04" "$@"
   else
     local file_path
     file_path="$(mktemp)"
     # shellcheck disable=SC2059
     printf "$@" >"$file_path"
-    RESULT=
-    assign_stdin RESULT <"$file_path"
+    eval "$var_name_126cf04="
+    assign_stdin "$var_name_126cf04" <"$file_path"
     rm -f "$file_path"
   fi
+}
+
+printf_() {
+  printf_v RESULT "$@"
 }
 
 # Canonicalize path

@@ -66,6 +66,21 @@ set -o nounset -o errexit
 task_test "$@"
 '''
 
+[tasks."dash:test"]
+description='''[tests...] Run tests with Dash shell. If no test names are provided, all tests are run.'''
+run='''
+#!/usr/bin/env sh
+# .mise/tasks-lib-test.sh:task_dash__test
+saved_pwd_85053ae="$PWD"
+cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
+set -- _SCRDIR "$PWD" "$@"
+. ./"tasks-lib-test.sh"
+shift 2
+cd "$saved_pwd_85053ae" || exit 1
+set -o nounset -o errexit
+task_dash__test "$@"
+'''
+
 [tasks."foo"]
 description='''Foo'''
 run='''

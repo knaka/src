@@ -164,6 +164,11 @@ task_test() {
   run_tests "$@"
 }
 
+# [tests...] Run tests with Dash shell. If no test names are provided, all tests are run.
+task_dash__test() {
+  run_tests --sh=dash "$@"
+}
+
 if eval 'test "$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (tasks-lib-test.*) ;; (*) false;; esac # shpp:main_guard
 then
   set -o nounset -o errexit
