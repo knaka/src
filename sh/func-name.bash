@@ -3,7 +3,7 @@ set -- _986c663 "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:s
 
 pushd "${BASH_SOURCE[0]%[/\\]*}" &>/dev/null || pushd . >/dev/null
 . ../.lib/utils.sh
-. ../.lib/time.sh
+. ../.lib/datetime.sh
 popd >/dev/null || exit
 
 func_name() {

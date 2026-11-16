@@ -469,7 +469,7 @@ has_external_command() {
   which "$1" >/dev/null
 }
 
-: "${RESULT-}"
+RESULT=
 
 set_() {
   RESULT="$1"

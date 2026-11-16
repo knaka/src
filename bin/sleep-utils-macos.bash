@@ -6,7 +6,7 @@ set -- _BIN_SLEEP_UTILS_MACOS_BASH "$@"; eval "shift; \${$1-false} || ! $1=true"
 pushd "${BASH_SOURCE[0]%[/\\]*}" &>/dev/null || pushd . >/dev/null
 . ../.lib/utils.sh
 . ./sleepnow.direct.bash
-. ../.lib/time.sh
+. ../.lib/datetime.sh
 popd >/dev/null || exit
 
 if ! is_macos

@@ -1,16 +1,14 @@
-# vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
-# shellcheck shell=sh
-"${sourced_6cc6268-false}" && return 0; sourced_6cc6268=true
+#!/usr/bin/env sh
+set -- __LIB_TEST_TESTS_DATETIME_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
-# shellcheck disable=SC3028,SC3054
-if test "${BASH_VERSION+set}"; then cd "${BASH_SOURCE[0]%[/\\]*}" || cd .; elif test "${1-}" = _SCRDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- _SCRDIR ../.lib "$OLDPWD" "$@"
+if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = _SCRDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- _SCRDIR ../.lib "$OLDPWD" "$@" # shpp:sources
 . ../.lib/utils.sh
-. ../.lib/time.sh
+. ../.lib/datetime.sh
 . ../.lib/assert.sh
 . ../.lib/test.sh
-cd "$3" || exit; shift 3
+cd "$3" || exit; shift 3 # /shpp:sources
 
-test_time() {
+test_datetime() {
   skip_if is_bbwin
 
   init_temp_dir
@@ -29,12 +27,12 @@ test_time() {
   touch "$file"
 
   # Sets timestamp with UTC date.
-  touch_time_iso --mtime="2024-01-01T12:00:00Z" "$file"
+  touch_iso --mtime="2024-01-01T12:00:00Z" "$file"
   assert_eq "$(TZ=UTC0 last_mod_iso "$file")" "2024-01-01T12:00:00+0000"
   assert_eq "$(TZ=Asia/Tokyo last_mod_iso "$file")" "2024-01-01T21:00:00+0900"
 
   # Sets timestamp with a date with timezone offset.
-  touch_time_iso --mtime="2024-01-01T09:00:00+0900" "$file"
+  touch_iso --mtime="2024-01-01T09:00:00+0900" "$file"
   assert_eq "$(TZ=UTC0 last_mod_iso "$file")" "2024-01-01T00:00:00+0000"
   assert_eq "$(TZ=Asia/Tokyo last_mod_iso "$file")" "2024-01-01T09:00:00+0900"
 
@@ -45,4 +43,16 @@ test_time() {
   # Converts epoch to date.
   assert_eq "2025-01-01T12:00:00+0000" "$(TZ=UTC0 epoch_to_iso 1735732800)"
   assert_eq "2025-01-01T12:00:00+0900" "$(TZ=Asia/Tokyo epoch_to_iso 1735700400)"
+
+  # Extracts each component.
+  local iso_datetime="2025-01-02T12:23:34+0000"
+  assert_eq "2025" "$(iso_datetime_year "$iso_datetime")"
+  assert_eq "01" "$(iso_datetime_month "$iso_datetime")"
+  assert_eq "02" "$(iso_datetime_day "$iso_datetime")"
+  assert_eq "12" "$(iso_datetime_hour "$iso_datetime")"
+  iso_datetime_hour_ "$iso_datetime"
+  # shellcheck disable=SC2153
+  assert_eq "$RESULT" 12
+  assert_eq "23" "$(iso_datetime_minute "$iso_datetime")"
+  assert_eq "34" "$(iso_datetime_second "$iso_datetime")"
 }

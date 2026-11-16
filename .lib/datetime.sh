@@ -1,6 +1,6 @@
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
-set -- __LIB_TIME_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
+set -- __LIB_DATETIME_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
 if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = _SCRDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- _SCRDIR . "$OLDPWD" "$@" # shpp:sources
 . ./utils.sh
@@ -63,25 +63,25 @@ epoch_to_iso() {
 }
 
 # Touch files, setting their modification time to the given ISO-8601 time.
-# Usage: touch_time_iso --mtime=<ISO_time> <file>...
-# Example: touch_time_iso --mtime=2024-01-01T12:00:00Z file.txt
-touch_time_iso() {
-  local time=
+# Usage: touch_iso --mtime=<ISO_time> <file>...
+# Example: touch_iso --mtime=2024-01-01T12:00:00Z file.txt
+touch_iso() {
+  local mtime=
   OPTIND=1; while getopts _-:d: OPT
   do
     test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
     case "$OPT" in
-      (d|mtime) time="$OPTARG";;
+      (d|mtime) mtime="$OPTARG";;
       (?) return 1;;
       (*) echo "$0: illegal option -- $OPT" >&2; return 1;;
     esac
   done
   shift $((OPTIND-1))
 
-  if test -z "$time"
+  if test -z "$mtime"
   then
-    touch "$@" || return $?
-    return
+    echo "Usage: ${0##*[/\\]} --mtime=<ISO_time> <file>..." >&2
+    return 1
   fi
   if is_bbwin
   then
@@ -89,7 +89,7 @@ touch_time_iso() {
     local file
     for file in "$@"
     do
-      pwsh.exe -NoProfile -Command "Set-ItemProperty \"$file\" -Name LastWriteTime -Value \"$time\""
+      pwsh.exe -NoProfile -Command "Set-ItemProperty \"$file\" -Name LastWriteTime -Value \"$mtime\""
     done
     return
   fi
@@ -97,12 +97,12 @@ touch_time_iso() {
   then
     # BSD touch(1) does not accept ISO time with timezone. Convert to UTC.
     local time_utc
-    if time_utc="$(TZ=UTC0 date -j -f "$iso_date_format_590c473" "$time" +"$iso_date_format_utc_590c473" 2>/dev/null)"
+    if time_utc="$(TZ=UTC0 date -j -f "$iso_date_format_590c473" "$mtime" +"$iso_date_format_utc_590c473" 2>/dev/null)"
     then
-      time="${time_utc}"
+      mtime="${time_utc}"
     fi
   fi
-  touch -d "$time" "$@"
+  touch -d "$mtime" "$@"
 }
 
 # Output last modification time of a file in ISO-8601 format.
@@ -124,3 +124,110 @@ last_mod_iso() {
     date --date "$(stat --format "%y" "$file")" +"$iso_date_format_590c473"
   fi
 }
+
+# ==========================================================================
+#region Extract ISO datetime components.
+
+result_b20e134=
+
+iso_datetime_year_25dd9ce() {
+  local iso_datetime="$1"
+  result_b20e134="${iso_datetime%%-*}"
+}
+
+iso_datetime_year_() {
+  iso_datetime_year_25dd9ce "$@"
+  set_ "$result_b20e134"
+}
+
+iso_datetime_year() {
+  iso_datetime_year_25dd9ce "$@"
+  printf "%s\n" "$result_b20e134"
+}
+
+iso_datetime_month_ec3e4f1() {
+  local iso_datetime="$1"
+  result_b20e134="${iso_datetime#*-}"
+  result_b20e134="${result_b20e134%%-*}"
+}
+
+iso_datetime_month_() {
+  iso_datetime_month_ec3e4f1 "$@"
+  set_ "$result_b20e134"
+}
+
+iso_datetime_month() {
+  iso_datetime_month_ec3e4f1 "$@"
+  printf "%s\n" "$result_b20e134"
+}
+
+iso_datetime_day_bc6befe() {
+  local iso_datetime="$1"
+  result_b20e134="${iso_datetime#*-}"
+  result_b20e134="${result_b20e134#*-}"
+  result_b20e134="${result_b20e134%%T*}"
+}
+
+iso_datetime_day_() {
+  iso_datetime_day_bc6befe "$@"
+  set_ "$result_b20e134"
+}
+
+iso_datetime_day() {
+  iso_datetime_day_bc6befe "$@"
+  printf "%s\n" "$result_b20e134"
+}
+
+iso_datetime_hour_2d32609() {
+  local iso_datetime="$1"
+  result_b20e134="${iso_datetime#*T}"
+  result_b20e134="${result_b20e134%%:*}"
+}
+
+iso_datetime_hour_() {
+  iso_datetime_hour_2d32609 "$@"
+  set_ "$result_b20e134"
+}
+
+iso_datetime_hour() {
+  iso_datetime_hour_2d32609 "$@"
+  printf "%s\n" "$result_b20e134"
+}
+
+iso_datetime_minute_cbdb6d5() {
+  local iso_datetime="$1"
+  result_b20e134="${iso_datetime#*T}"
+  result_b20e134="${result_b20e134#*:}"
+  result_b20e134="${result_b20e134%%:*}"
+}
+
+iso_datetime_minute_() {
+  iso_datetime_minute_cbdb6d5 "$@"
+  set_ "$result_b20e134"
+}
+
+iso_datetime_minute() {
+  iso_datetime_minute_cbdb6d5 "$@"
+  printf "%s\n" "$result_b20e134"
+}
+
+iso_datetime_second_a08d944() {
+  local iso_datetime="$1"
+  result_b20e134="${iso_datetime#*T}"
+  result_b20e134="${result_b20e134#*:}"
+  result_b20e134="${result_b20e134#*:}"
+  # Drop what follows the digits, such as the fraction of a second and the time zone ("Z" or "+0900").
+  result_b20e134="${result_b20e134%%[!0-9]*}"
+}
+
+iso_datetime_second_() {
+  iso_datetime_second_a08d944 "$@"
+  set_ "$result_b20e134"
+}
+
+iso_datetime_second() {
+  iso_datetime_second_a08d944 "$@"
+  printf "%s\n" "$result_b20e134"
+}
+
+#endregion

@@ -4,7 +4,7 @@ set -- _BIN_CHECK_SLEEP_COND_BASH "$@"; eval "shift; \${$1-false} || ! $1=true" 
 pushd "${BASH_SOURCE[0]%[/\\]*}" &>/dev/null || pushd . >/dev/null
 . ../.lib/utils.sh
 . ./sleep-utils-macos.bash
-. ../.lib/time.sh
+. ../.lib/datetime.sh
 popd >/dev/null || exit
 
 say_and_log() {
