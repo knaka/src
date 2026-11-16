@@ -53,14 +53,11 @@ brew 'pinchtab/tap/pinchtab' # pinchtab/pinchtab: High-performance browser autom
 # ==========================================================================
 #region homebrew-cask — Homebrew Formulae https://formulae.brew.sh/cask/
 
-cask "rectangle"
-cask "hammerspoon"
-
+cask '1password-cli' # 1password-cli — Homebrew Formulae https://formulae.brew.sh/cask/1password-cli
+cask '1password' # 1password — Homebrew Formulae https://formulae.brew.sh/cask/1password
 # cask 'alt-tab' # 無い？ thumbnail が出なくなった？ alt-tab — Homebrew Formulae https://formulae.brew.sh/cask/alt-tab
 # cask 'chromium'
 cask 'dockdoor' # replayd が重い…ような、そうでもないような？ switch しなければ落ち着くようだ
-# cask 'petercsauer/docktor/docktor' # Option-Tab ができない
-
 cask 'docker-desktop'
 # cask 'drawio' # jgraph/drawio-desktop: Official electron build of draw.io https://github.com/jgraph/drawio-desktop
 # cask 'dropbox' # 利用をやめる
@@ -68,9 +65,10 @@ cask 'google-chrome'
 # cask 'google-japanese-ime' # システムに近いところにあるので、Homebrew が勝手に上げると変なことになるようなので、やめておく
 cask 'iterm2'
 cask 'karabiner-elements'
+# cask 'petercsauer/docktor/docktor' # Option-Tab ができない
 cask 'visual-studio-code'
-cask '1password' # 1password — Homebrew Formulae https://formulae.brew.sh/cask/1password
-cask '1password-cli' # 1password-cli — Homebrew Formulae https://formulae.brew.sh/cask/1password-cli
+cask "hammerspoon"
+cask "rectangle"
 
 #endregion
 
@@ -79,7 +77,8 @@ cask '1password-cli' # 1password-cli — Homebrew Formulae https://formulae.brew
 
 # $ mas search ...
 
-# mas "Slack", id: 803453959
 # mas "Amphetamine", id: 937984704
+mas "Line", id: 539883307
+# mas "Slack", id: 803453959
 
 #endregion
