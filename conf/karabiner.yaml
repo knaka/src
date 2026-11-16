@@ -26,7 +26,7 @@ profiles:
         mouse_motion_to_scroll.speed: 100
       rules:
         # First, configure settings for each individual application. Since each Karabiner-Elements rule is evaluated on a first-match basis, write per-application customizations before global settings.
-        - description: "Terminal （iTerm2）"
+        - description: "Terminal"
           # assing しない方が良い Ctrl + ? は何？
           # Ctrl + C (intr, SIGINT)
           # Ctrl + D (eof, EOF)
@@ -247,16 +247,16 @@ profiles:
               from: { "key_code": "tab", "modifiers": { "mandatory": ["control", "shift"] } }
               # to: [{ "key_code": "open_bracket", "modifiers": ["command", "shift"] }] # ？ Tahoe で？効かなくなった
               to: [{ "key_code": "left_arrow", "modifiers": ["option", "command"] }]
-        - description: "Chrome"
-          manipulators:
-            - type: basic
-              conditions: &conditions_chrome
-                - type: frontmost_application_if
-                  bundle_identifiers:
-                    - ^com\.google\.Chrome$
-              from: {key_code: t, modifiers: {mandatory: [shift, command]}}
-              to: [{key_code: f13, modifiers: []}]
-        - description: "Others"
+        # - description: "Chrome"
+        #   manipulators:
+        #     - type: basic
+        #       conditions: &conditions_chrome
+        #         - type: frontmost_application_if
+        #           bundle_identifiers:
+        #             - ^com\.google\.Chrome$
+        #       from: {key_code: t, modifiers: {mandatory: [shift, command]}}
+        #       to: [{key_code: f13, modifiers: []}]
+        - description: "ALL"
           manipulators:
             # #できないみたい？
             # # Power (Touch ID) button

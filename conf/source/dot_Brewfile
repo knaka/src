@@ -53,6 +53,7 @@ brew 'pinchtab/tap/pinchtab' # pinchtab/pinchtab: High-performance browser autom
 # ==========================================================================
 #region homebrew-cask — Homebrew Formulae https://formulae.brew.sh/cask/
 
+cask "rectangle"
 cask "hammerspoon"
 
 # cask 'alt-tab' # 無い？ thumbnail が出なくなった？ alt-tab — Homebrew Formulae https://formulae.brew.sh/cask/alt-tab

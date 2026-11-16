@@ -30,7 +30,7 @@
         },
         "rules": [
           {
-            "description": "Terminal （iTerm2）",
+            "description": "Terminal",
             "manipulators": [
               {
                 "type": "basic",
@@ -789,38 +789,7 @@
             ]
           },
           {
-            "description": "Chrome",
-            "manipulators": [
-              {
-                "type": "basic",
-                "conditions": [
-                  {
-                    "type": "frontmost_application_if",
-                    "bundle_identifiers": [
-                      "^com\\.google\\.Chrome$"
-                    ]
-                  }
-                ],
-                "from": {
-                  "key_code": "t",
-                  "modifiers": {
-                    "mandatory": [
-                      "shift",
-                      "command"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "key_code": "f13",
-                    "modifiers": []
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "description": "Others",
+            "description": "ALL",
             "manipulators": [
               {
                 "type": "basic",

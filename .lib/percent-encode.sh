@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-set -- _1685ad5 "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
+set -- __LIB_PERCENT_ENCODE_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
 if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = _SCRDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- _SCRDIR ../.lib "$OLDPWD" "$@" # shpp:sources
 . ../.lib/utils.sh
@@ -22,8 +22,10 @@ percent_encode() {
   | awk '
 BEGIN {
   # Map the hex codes of the unreserved characters to themselves.
+
   keep["2d"] = "-"
   keep["2e"] = "."
+
   keep["30"] = "0"
   keep["31"] = "1"
   keep["32"] = "2"
@@ -34,6 +36,7 @@ BEGIN {
   keep["37"] = "7"
   keep["38"] = "8"
   keep["39"] = "9"
+
   keep["41"] = "A"
   keep["42"] = "B"
   keep["43"] = "C"
@@ -60,7 +63,9 @@ BEGIN {
   keep["58"] = "X"
   keep["59"] = "Y"
   keep["5a"] = "Z"
+
   keep["5f"] = "_"
+
   keep["61"] = "a"
   keep["62"] = "b"
   keep["63"] = "c"
@@ -87,6 +92,7 @@ BEGIN {
   keep["78"] = "x"
   keep["79"] = "y"
   keep["7a"] = "z"
+
   keep["7e"] = "~"
 }
 
