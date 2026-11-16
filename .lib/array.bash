@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -- _a7b3112 "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
+set -- __LIB_ARRAY_BASH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
 # Append the lines of the standard input to the array whose name is given, one element per line. The array is assigned through `read` and `unset`, which take a variable name, including an array element, as an argument, so `eval` is not needed.
 # Usage: array_append_stdin array_name <...

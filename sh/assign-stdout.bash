@@ -7,13 +7,11 @@ pushd "${BASH_SOURCE[0]%[/\\]*}" &>/dev/null || pushd . >/dev/null
 popd >/dev/null || exit
 
 foo_c368879() {
-  echo Hello
-  echo World
-  echo Foo
-  echo Bar
+  echo Hello World
+  echo Foo Bar
 }
 
-assign_stdout() {
+assign_stdout1() {
   local -a my_array=(Bar Baz)
   array_append_stdin my_array < <(foo_c368879)
   array_for_each my_array echo "d1:"
@@ -57,15 +55,37 @@ assign_stdout_to_array() {
 }
 
 assign_stdout3() {
-  local my_array=()
+  # shellcheck disable=SC2034
+  local -a my_array=()
   assign_stdout_to_array -v my_array foo_c368879
   array_for_each my_array echo "d3:"
+}
+
+not_assign() {
+  while read -r
+  do
+    echo d4: "$REPLY"
+  done \
+  < <(foo_c368879) \
+  | cat -n
+}
+
+assign_stdout() {
+  assign_stdout1 "$@"
+  echo
+
+  assign_stdout2 "$@"
+  echo
+
+  assign_stdout3 "$@"
+  echo
+
+  not_assign "$@"
+  echo
 }
 
 if test "$0" = "${BASH_SOURCE[0]}"
 then
   set -o nounset -o errexit -o pipefail
   TAIL_DEPTH=1 assign_stdout "$@"
-  TAIL_DEPTH=1 assign_stdout2 "$@"
-  TAIL_DEPTH=1 assign_stdout3 "$@"
 fi
