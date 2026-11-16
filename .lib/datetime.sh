@@ -125,8 +125,6 @@ last_mod_iso() {
   fi
 }
 
-
-
 # ==========================================================================
 #region Extract ISO datetime components.
 
