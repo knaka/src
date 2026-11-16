@@ -15,6 +15,9 @@ assign_stdout1() {
   local -a my_array=(Bar Baz)
   array_append_stdin my_array < <(foo_c368879)
   array_for_each my_array echo "d1:"
+
+  array_assign_stdin my_array < <(foo_c368879)
+  array_for_each my_array echo "d1-2:"
 }
 
 assign_stdout2() {

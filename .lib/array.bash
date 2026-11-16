@@ -17,6 +17,13 @@ array_append_stdin() {
   test -n "${!last_ref_802d075}" || unset "${array_name_59794c1}[$i_f0ff9e3]"
 }
 
+# Assign the lines of the standard input to the array whose name is given, one element per line, replacing the current elements.
+# Usage: array_assign_stdin array_name <...
+array_assign_stdin() {
+  read -r -a "$1" </dev/null || :
+  array_append_stdin "$1"
+}
+
 # Run the command given after the array name once for each element of the array, with the element appended as the last argument.
 # Usage: array_foreach array_name command [args...]
 array_for_each() {
