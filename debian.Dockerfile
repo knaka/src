@@ -18,5 +18,6 @@ RUN \
     ca-certificates \
     curl \
     procps \
+    python3 \
   && rm -rf /var/lib/apt/lists/*
 WORKDIR /work

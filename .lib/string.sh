@@ -7,8 +7,13 @@ if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; e
 . ./utils.sh
 cd "$3" || exit; shift 3 # /shpp:sources
 
-# AWK-like string functions not using subshell.
+# ==========================================================================
+#region AWK-like string functions not using subshell.
 
+# Each function below sets its result to $RESULT instead of printing it, so that the caller does not need a command substitution, which forks a subshell. Positions are counted from 1, as in AWK.
+
+# Convert the lowercase letters of the arguments, joined with spaces, to uppercase. Without Bash 4 or later, only the ASCII letters are converted.
+# Usage: toupper_ string...
 toupper_() {
   # shellcheck disable=SC3059
   is_bash_bin 4 && set_ "${*^^}" && return
@@ -52,6 +57,8 @@ toupper_() {
   set_ "$result"
 }
 
+# Convert the uppercase letters of the arguments, joined with spaces, to lowercase. Without Bash 4 or later, only the ASCII letters are converted.
+# Usage: tolower_ string...
 tolower_() {
   # shellcheck disable=SC3059
   is_bash_bin 4 && set_ "${*,,}" && return
@@ -95,6 +102,8 @@ tolower_() {
   set_ "$result"
 }
 
+# Extract the substring of the given length that starts at the given position. Without the length, the substring extends to the end of the string.
+# Usage: substr_ string start [length]
 substr_() {
   local result=
   local s="$1"
@@ -118,26 +127,36 @@ substr_() {
   set_ "$result"
 }
 
+# Replace the first occurrence of the search string with the replacement. The string is left unchanged if the search string is empty or not found.
+# Usage: sub_ string search replacement
 sub_() {
   local s="$1"
   local from="$2"
   test -z "$from" && set_ "$s" && return
   local to="$3"
+  # Quote the search string so that it is matched literally, not as a pattern. Quote the replacement so that "&" is not replaced with the matched string on Bash 5.2 or later, where patsub_replacement is on by default. Bash before 4.3 does not remove the quotes from the replacement, so leave it unquoted there, where "&" has no special meaning anyway.
   # shellcheck disable=SC3060
-  is_bash_bin && set_ "${s/$from/$to}" && return
+  is_bash_bin 5 && set_ "${s/"$from"/"$to"}" && return
+  # shellcheck disable=SC3060
+  is_bash_bin && set_ "${s/"$from"/$to}" && return
   local left="${s%%"$from"*}"
   test "$left" = "$s" && set_ "$s" && return
   set_ "$left$to${s#*"$from"}"
 }
 
+# Replace every occurrence of the search string with the replacement. The string is left unchanged if the search string is empty or not found.
+# Usage: gsub_ string search replacement
 gsub_() {
   local result=
   local s="$1"
   local from="$2"
   test -z "$from" && set_ "$s" && return
   local to="$3"
+  # Quote the search string and the replacement for the same reason as in sub_.
   # shellcheck disable=SC3060
-  is_bash_bin && set_ "${s//$from/$to}" && return
+  is_bash_bin 5 && set_ "${s//"$from"/"$to"}" && return
+  # shellcheck disable=SC3060
+  is_bash_bin && set_ "${s//"$from"/$to}" && return
   while test -n "$s"
   do
     local left="${s%%"$from"*}"
@@ -148,6 +167,8 @@ gsub_() {
   set_ "$result"
 }
 
+# Get the position of the first occurrence of the search string, or 0 if the search string is empty or not found.
+# Usage: index_ string search
 index_() {
   local s="$1"
   local find="$2"
@@ -157,10 +178,14 @@ index_() {
   set_ $((${#left}+1))
 }
 
+# Get the number of characters in the string.
+# Usage: length_ string
 length_() {
   set_ ${#1}
 }
 
+# Replace every occurrence of the separator with the delimiter, a space by default, so that the fields can be split by setting IFS to the delimiter.
+# Usage: split_ [--delim=delimiter] string separator
 split_() {
   local delim=" "
   OPTIND=1; while getopts _-: OPT
@@ -177,6 +202,7 @@ split_() {
   gsub_ "$1" "$2" "$delim"
 }
 
+# Test the functions above. Run when this file is executed directly.
 # shellcheck disable=SC2153
 test_lib_string_sh() {
   set -- _SCRDIR .
@@ -193,11 +219,18 @@ test_lib_string_sh() {
   assert_eq "$RESULT" "foo xyz baz bar"
   gsub_ "foo bar baz bar 123" "bar" "xyz"
   assert_eq "$RESULT" "foo xyz baz xyz 123"
+  # The search string and the replacement are taken literally.
+  sub_ "a*b?c a*b?c" "*b?" "[&]"
+  assert_eq "$RESULT" "a[&]c a*b?c"
+  gsub_ "a*b?c a*b?c" "*b?" "[&]"
+  assert_eq "$RESULT" "a[&]c a[&]c"
   index_ "peanut" "an"
   assert_eq "$RESULT" 3
 
   echo OK. >&2
 }
+
+#endregion 
 
 _() { case "${0##*[/\\]}" in ("$1"|"$1".*) ;; (*) false;; esac; }; if _ string
 then
