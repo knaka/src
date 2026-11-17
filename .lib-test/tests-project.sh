@@ -72,7 +72,7 @@ test_abs2rel() {
     assert_eq "../bin" "$relpath"
     relpath="$(abs2rel /usr/bin /usr/bin)"
     assert_eq -m "e057121" "." "$relpath"
-    relpath="$(abs2rel / /usr/bin)"
+    abs2rel -v relpath / /usr/bin
     assert_eq -m "6724104" "../.." "$relpath"
   fi
 }

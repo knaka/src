@@ -7,8 +7,9 @@ if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; e
 . ./utils.sh
 cd "$3" || exit; shift 3 # /shpp:sources
 
-# [<target> [source=$PWD]] Convert absolute path to relative path
-abs2rel() {
+result_a5cc99a=
+
+abs2rel_f9277be() {
   local target="$1"
   shift
   local source="$PWD"
@@ -37,7 +38,7 @@ abs2rel() {
     source_drive="${source%%:*}:"
     if test -n "$drive" && ! test "$source_drive" = "$drive"
     then
-      echo "$drive$target"
+      result_a5cc99a="$drive$target"
       return 0
     fi
     source="${source#*:}"
@@ -46,7 +47,7 @@ abs2rel() {
   # Same path
   if test "$target" = "$source"
   then
-    echo "${drive}."
+    result_a5cc99a="${drive}."
     return 0
   fi
 
@@ -98,9 +99,9 @@ abs2rel() {
     # Target is an ancestor of source
     if test -z "$back"
     then
-      echo "${drive}."
+      result_a5cc99a="${drive}."
     else
-      echo "${drive}${back%/}"
+      result_a5cc99a="${drive}${back%/}"
     fi
   else
     # Remove common prefix from target
@@ -111,6 +112,15 @@ abs2rel() {
     else
       suffix="${target#"$common"/}"
     fi
-    echo "${drive}${back}${suffix}"
+    result_a5cc99a="${drive}${back}${suffix}"
   fi
+}
+
+# Convert the absolute path of the target to the path relative to the source, which defaults to the current directory, and print it, or assign it to the variable given with "-v var".
+# Usage: abs2rel [-v var] target [source]
+abs2rel() {
+  local var_name_c8e3a25=
+  test "${1-}" = "-v" && var_name_c8e3a25="$2" && shift 2
+  abs2rel_f9277be "$@" || return $?
+  print_to "$var_name_c8e3a25" "$result_a5cc99a"
 }
