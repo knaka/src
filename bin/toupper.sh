@@ -10,6 +10,5 @@ cd "$3" || exit; shift 3 # /shpp:sources
 if eval 'test "$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (toupper.*) ;; (*) false;; esac # shpp:main_guard
 then
   set -o nounset -o errexit
-  toupper_ "$@"
-  printf "%s\n" "$RESULT"
+  toupper "$@"
 fi

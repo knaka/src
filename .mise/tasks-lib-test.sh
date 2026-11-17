@@ -169,6 +169,22 @@ task_dash__test() {
   run_tests --sh=dash "$@"
 }
 
+task_bash5__test() {
+  for path in \
+    /opt/homebrew/Cellar/bash/5.*/bin/bash \
+    bash
+  do
+    # shellcheck disable=SC2016
+    if test 5 = "$("$path" -c 'echo ${BASH_VERSINFO[0]}' 2>/dev/null)"
+    then
+      echo Using Bash 5: "$path" >&2
+      run_tests --sh="$path" "$@" || return $?
+      return 0
+    fi
+  done
+  echo No Bash 5. >&2
+}
+
 if eval 'test "$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (tasks-lib-test.*) ;; (*) false;; esac # shpp:main_guard
 then
   set -o nounset -o errexit

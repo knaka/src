@@ -250,7 +250,6 @@ iso_datetime_second_a08d944() {
   local iso_datetime="$1"
   result_b20e134="${iso_datetime#*T}"
   result_b20e134="${result_b20e134#*:}"
-  result_b20e134="${result_b20e134#*:}"
   # Drop what follows the digits, such as the fraction of a second and the time zone ("Z" or "+0900").
   result_b20e134="${result_b20e134%%[!0-9]*}"
 }

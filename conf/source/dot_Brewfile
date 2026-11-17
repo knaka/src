@@ -2,7 +2,8 @@
 # vim: set filetype=sh tabstop=2 shiftwidth=2 expandtab :
 # shellcheck shell=sh
 
-# Usage — Homebrew-file documentation https://homebrew-file.readthedocs.io/en/latest/usage.html
+# [Usage — Homebrew-file documentation](https://homebrew-file.readthedocs.io/en/latest/usage.html)
+# [Homebrew Documentation: Homebrew Bundle, brew bundle and Brewfile](https://docs.brew.sh/Brew-Bundle-and-Brewfile)
 
 cask_args appdir: '/Applications'
 
@@ -14,7 +15,7 @@ tap 'jmespath/jmespath' # for 'jp'
 brew 'blueutil'
 brew 'dwdiff'
 brew 'git-delta'
-# brew 'bash'
+brew 'bash', link: false
 # brew 'coreutils'
 # brew 'cpulimit' # https://github.com/opsengine/cpulimit
 brew 'duti' # moretension/duti: A command-line tool to select default applications for document types and URL schemes on Mac OS X https://github.com/moretension/duti/
@@ -62,7 +63,7 @@ cask 'docker-desktop'
 # cask 'drawio' # jgraph/drawio-desktop: Official electron build of draw.io https://github.com/jgraph/drawio-desktop
 # cask 'dropbox' # 利用をやめる
 cask 'google-chrome'
-# cask 'google-japanese-ime' # システムに近いところにあるので、Homebrew が勝手に上げると変なことになるようなので、やめておく
+# cask 'google-japanese-ime' # システムに近いところにあるので、Homebrew でアップグレードすると変なことになるようなので、管理しない。
 cask 'iterm2'
 cask 'karabiner-elements'
 # cask 'petercsauer/docktor/docktor' # Option-Tab ができない

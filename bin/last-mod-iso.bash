@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -- _1765728 "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
+set -- _BIN_LAST_MOD_ISO_BASH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
 pushd "${BASH_SOURCE[0]%[/\\]*}" &>/dev/null || pushd . >/dev/null
 . ../.lib/utils.sh
