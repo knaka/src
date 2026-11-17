@@ -71,7 +71,8 @@ our $last = "_c4e448e_";
 
 sub puts {
   my ($line) = @_;
-  print "$line" if "$line" ne "$last";
+  # Squeeze consecutive blank lines into one, but keep the other repeated lines, which may be intended.
+  print "$line" unless $line =~ /^\s*$/ && $last =~ /^\s*$/;
   $last = $line;
 }
 
