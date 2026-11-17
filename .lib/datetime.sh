@@ -80,7 +80,7 @@ touch_iso() {
 
   if test -z "$mtime"
   then
-    echo "Usage: ${0##*[/\\]} --mtime=<ISO_time> <file>..." >&2
+    echo "Usage: $(arg0_basename) --mtime=<ISO_time> <file>..." >&2
     return 1
   fi
   if is_bbwin

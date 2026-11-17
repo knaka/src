@@ -229,6 +229,10 @@ readonly FD_FLOCK=9
 readonly FD_MEMOIZE_STDOUT=8
 readonly FD_WATCH_EVENTS=7
 
+arg0_basename() {
+  echo "${0##*[/\\]}"
+}
+
 #endregion
 
 # ==========================================================================
