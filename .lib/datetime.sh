@@ -389,7 +389,7 @@ iso_datetime_to_utc_827ddcc() {
   month=$((mp + (mp < 10 ? 3 : -9)))
   year=$((yoe + era * 400 + (month <= 2)))
 
-  assignf result_b20e134 "%04d-%02d-%02dT%02d:%02d:%02dZ" "$year" "$month" "$day" \
+  printf_v result_b20e134 "%04d-%02d-%02dT%02d:%02d:%02dZ" "$year" "$month" "$day" \
     $((seconds / 3600)) $((seconds % 3600 / 60)) $((seconds % 60))
 }
 

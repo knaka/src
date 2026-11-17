@@ -90,30 +90,56 @@ is_dark_wake() {
   pmset -g systemstate | grep '^Current System Capabilities are:' | grep_quiet -v ' Graphics'
 }
 
-# Set $RESULT to the seconds elapsed since the last user input event.
-user_idle_seconds_() {
+result_9f990ac=
+
+user_idle_seconds_62fd207() {
   local idle_ns
   # HIDIdleTime is in nanoseconds.
   idle_ns="$(ioreg -r -k HIDIdleTime -d 1 | awk '/"HIDIdleTime"/ { print $NF }')"
   test -n "$idle_ns" || return 1
-  set_ $((idle_ns / 1000000000))
+  result_9f990ac=$((idle_ns / 1000000000))
 }
 
-# Set $RESULT to the seconds elapsed since the system last woke from sleep.
-seconds_since_wake_() {
+# Print the seconds elapsed since the last user input event, or assign them to the variable given with "-v var". Fail if they cannot be obtained.
+# Usage: user_idle_seconds [-v var]
+user_idle_seconds() {
+  local var_name_7b658e6=
+  test "${1-}" = "-v" && var_name_7b658e6="$2" && shift 2
+  user_idle_seconds_62fd207 "$@" || return $?
+  print_to "$var_name_7b658e6" "$result_9f990ac"
+}
+
+seconds_since_wake_93c8cf9() {
   local wake_time
   wake_time="$(sysctl -n kern.waketime | sed -n -e 's/^{ sec = \([0-9]*\),.*/\1/p')"
   test -n "$wake_time" || return 1
-  set_ $(($(date +%s) - wake_time))
+  result_9f990ac=$(($(date +%s) - wake_time))
 }
 
-# Set $RESULT to the remaining battery percentage. Machines without a battery are regarded as 100.
-battery_percent_() {
+# Print the seconds elapsed since the system last woke from sleep, or assign them to the variable given with "-v var". Fail if they cannot be obtained.
+# Usage: seconds_since_wake [-v var]
+seconds_since_wake() {
+  local var_name_7d3c030=
+  test "${1-}" = "-v" && var_name_7d3c030="$2" && shift 2
+  seconds_since_wake_93c8cf9 "$@" || return $?
+  print_to "$var_name_7d3c030" "$result_9f990ac"
+}
+
+battery_percent_140c0d7() {
   local status
   status="$(pmset -g ps)" || return 1
   local percent
   percent="$(echo "$status" | sed -n -e '/InternalBattery/s/.*[^0-9]\([0-9]*\)%;.*/\1/p')"
-  set_ "${percent:-100}"
+  result_9f990ac="${percent:-100}"
+}
+
+# Print the remaining battery percentage, or assign it to the variable given with "-v var". Machines without a battery are regarded as 100.
+# Usage: battery_percent [-v var]
+battery_percent() {
+  local var_name_28392f3=
+  test "${1-}" = "-v" && var_name_28392f3="$2" && shift 2
+  battery_percent_140c0d7 "$@" || return $?
+  print_to "$var_name_28392f3" "$result_9f990ac"
 }
 
 fail_check_6e2b4d1() {
@@ -235,22 +261,24 @@ sleep_conditions() {
     echo "The system is not in DarkWake." >&2
   fi
 
-  if user_idle_seconds_
+  local seconds
+  if user_idle_seconds -v seconds
   then
-    echo "The user has been idle for $RESULT seconds." >&2
+    echo "The user has been idle for $seconds seconds." >&2
   else
     fail_check_6e2b4d1 "HIDIdleTime is not found in ioreg."
   fi
 
-  if seconds_since_wake_
+  if seconds_since_wake -v seconds
   then
-    echo "The system woke $RESULT seconds ago." >&2
+    echo "The system woke $seconds seconds ago." >&2
   else
     fail_check_6e2b4d1 "kern.waketime cannot be parsed."
   fi
 
-  battery_percent_
-  echo "The battery is at $RESULT%." >&2
+  local percent
+  battery_percent -v percent
+  echo "The battery is at $percent%." >&2
   check_sleep_conditions_6e2b4d1
   test "$failed" = false
 }
@@ -397,9 +425,10 @@ displaysleep_if_user_stays_idle() {
   sleep_log "Calling ${FUNCNAME[0]}"
   local idle_limit_sec=$((3 * 60))
   is_charger_connected && idle_limit_sec=$((10 * 60))
-  user_idle_seconds_ || return
+  local idle_sec
+  user_idle_seconds -v idle_sec || return
   # This runs every minute, so the display is put to sleep only once when the idle time crosses the limit.
-  test "$RESULT" -ge "$idle_limit_sec" -a "$RESULT" -lt $((idle_limit_sec + 60)) || return 0
+  test "$idle_sec" -ge "$idle_limit_sec" -a "$idle_sec" -lt $((idle_limit_sec + 60)) || return 0
   is_display_sleep_prevented && return 0
   sleepnow display
 }
@@ -413,11 +442,13 @@ sleep_if_user_stays_idle() {
   case "$(date +%H)" in
     (01|02|03|04) idle_limit_sec=$((10 * 60));;
   esac
-  user_idle_seconds_ || return
-  test "$RESULT" -lt "$idle_limit_sec" && return 0
+  local idle_sec
+  user_idle_seconds -v idle_sec || return
+  test "$idle_sec" -lt "$idle_limit_sec" && return 0
   # Waking up may not reset the idle time, so do not put the system back to sleep right after that.
-  seconds_since_wake_ || return
-  test "$RESULT" -lt "$idle_limit_sec" && return 0
+  local wake_sec
+  seconds_since_wake -v wake_sec || return
+  test "$wake_sec" -lt "$idle_limit_sec" && return 0
   is_sleep_prevented && return 0
   has_ssh_session && return 0
   sleep_log "CP0"

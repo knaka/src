@@ -39,9 +39,7 @@ run_tests() {
   local test_path="$PWD"/.lib-test
   local lib_path="$PWD"/.lib
 
-  local RESULT=
-
-  map_
+  local test_file_map=
   local file
   for file in \
     "$test_path"/*-test.shlib \
@@ -66,7 +64,7 @@ run_tests() {
       (test_*)
         test="${base#test_}"
         test="${test%.*}"
-        mput_ "$RESULT" "$test" "$file"
+        mput -v test_file_map "$test_file_map" "$test" "$file"
         continue
         ;;
     esac
@@ -74,10 +72,9 @@ run_tests() {
     # shellcheck disable=SC2013
     for test in $(sed -n -e 's/^test_\([_a-zA-Z0-9]*\)[[:space:]]*()[[:space:]]*{[[:space:]]*$/\1/p' "$file")
     do
-      mput_ "$RESULT" "$test" "$file"
+      mput -v test_file_map "$test_file_map" "$test" "$file"
     done
   done
-  local test_file_map="$RESULT"
   if test -z "$test_file_map"
   then
     echo No test available. >&2
@@ -87,12 +84,10 @@ run_tests() {
   local tests_to_run
   if test $# -gt 0
   then
-    vec_ "$@"
-    tests_to_run="$RESULT"
+    vec -v tests_to_run "$@"
   else
-    mkeys_ "$test_file_map"
-    # vshuf_ "$RESULT"
-    tests_to_run="$RESULT"
+    mkeys -v tests_to_run "$test_file_map"
+    # vshuf -v tests_to_run "$tests_to_run"
   fi
 
   init_temp_dir
@@ -100,7 +95,8 @@ run_tests() {
   local some_failed=false
   _() {
     local test="$1"
-    if ! mget_ "$test_file_map" "$test"
+    local file
+    if ! mget -v file "$test_file_map" "$test"
     then
       case "$test" in
         (test_*)
@@ -111,14 +107,13 @@ run_tests() {
           test="${test%.*}"
           ;;
       esac
-      if ! mget_ "$test_file_map" "$test"
+      if ! mget -v file "$test_file_map" "$test"
       then
         printf "%sTest \"%s\" is not defined\n" "$RED" "$test" >&2
         some_failed=true
         return
       fi
     fi
-    local file="$RESULT"
     local rc=0
     local dir="${file%[/\\]*}"
     local base="${file##*[/\\]}"

@@ -71,14 +71,13 @@ test_string_split() {
   IFS="$saved_ifs"
 }
 
-# shellcheck disable=SC2153
 test_cmdbase_snake() {
-  cmdbase_snake_ "/home/foo/bin/some"
-  assert_eq "some" "$RESULT"
-  cmdbase_snake_ "/home/foo/bin/some_name"
-  assert_eq "some_name" "$RESULT"
-  cmdbase_snake_ "/home/foo/bin/some-name"
-  assert_eq "some_name" "$RESULT"
-  cmdbase_snake_ "/home/foo/bin/some-name.sh"
-  assert_eq "some_name" "$RESULT"
+  local result
+  cmdbase_snake -v result "/home/foo/bin/some"
+  assert_eq "some" "$result"
+  cmdbase_snake -v result "/home/foo/bin/some_name"
+  assert_eq "some_name" "$result"
+  cmdbase_snake -v result "/home/foo/bin/some-name"
+  assert_eq "some_name" "$result"
+  assert_eq "some_name" "$(cmdbase_snake "/home/foo/bin/some-name.sh")"
 }

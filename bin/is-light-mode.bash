@@ -15,7 +15,7 @@ readonly osc_query_background
 
 result_0f11d2b=
 
-terminal_color_scheme_8823bbd_() {
+terminal_color_scheme_8823bbd() {
   result_0f11d2b=
   local fixed_wait=false
   OPTIND=1; while getopts _-: OPT
@@ -77,15 +77,19 @@ terminal_color_scheme_8823bbd_() {
   esac
 }
 
-# Set $RESULT to "light" or "dark" according to the background color of the terminal, or to an empty string if it cannot be determined, such as when the terminal does not reply.
-terminal_color_scheme_() {
-  terminal_color_scheme_8823bbd_ "$@"
-  set_ "$result_0f11d2b"
+# Print "light" or "dark" according to the background color of the terminal, or assign it to the variable given with "-v var". The result is an empty string if it cannot be determined, such as when the terminal does not reply.
+# Usage: terminal_color_scheme [-v var] [--fixed-wait]
+terminal_color_scheme() {
+  local var_name_bf375c2=
+  test "${1-}" = "-v" && var_name_bf375c2="$2" && shift 2
+  # Ignore the failure, such as when there is no terminal, so that the result is an empty string as well as when the terminal does not reply.
+  terminal_color_scheme_8823bbd "$@" || :
+  print_to "$var_name_bf375c2" "$result_0f11d2b"
 }
 
 # Check if the background color of the terminal is light. This is false also if it cannot be determined.
 is_light_mode() {
-  terminal_color_scheme_8823bbd_ "$@"
+  terminal_color_scheme_8823bbd "$@"
   case "$result_0f11d2b" in
     (light) return 0;;
   esac

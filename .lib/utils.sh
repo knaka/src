@@ -66,8 +66,8 @@ is_linux() {
   test -d /proc -a -d /sys/kernel
   # Strict check
   # test -r /proc/sys/kernel/ostype \
-  #   && read -r RESULT </proc/sys/kernel/ostype \
-  #   && test "$RESULT" = Linux
+  #   && read -r REPLY </proc/sys/kernel/ostype \
+  #   && test "$REPLY" = Linux
 }
 
 is_debian() {
@@ -473,12 +473,6 @@ has_external_command() {
   which "$1" >/dev/null
 }
 
-RESULT=
-
-set_() {
-  RESULT="$1"
-}
-
 # Assign stdin input stream to variable, preserving whether the input ends with
 # a trailing newline.
 assign_stdin() {
@@ -501,7 +495,9 @@ assign_stdin() {
   done
 }
 
-assignf() {
+# Assign the output of printf to the variable whose name is given, as `printf -v` of Bash does. Other shells write the output to a temporary file and read it back, rather than using a command substitution, which would strip the trailing newlines. The local variable has a hash-suffixed name, so that it does not shadow the variable whose name is given.
+# Usage: printf_v var_name format [args...]
+printf_v() {
   local var_name_126cf04="$1"
   shift
   if is_bash_bin
@@ -518,10 +514,6 @@ assignf() {
     assign_stdin "$var_name_126cf04" <"$file_path"
     rm -f "$file_path"
   fi
-}
-
-printf_() {
-  assignf RESULT "$@"
 }
 
 # Assign the value to the variable whose name is given, or print it if the name is empty.

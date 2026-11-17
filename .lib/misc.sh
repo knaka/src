@@ -7,8 +7,10 @@ if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; e
 . ./utils.sh
 cd "$3" || exit; shift 3 # /shpp:sources
 
-cmdbase_snake_() {
-  RESULT=
+result_712a8b2=
+
+cmdbase_snake_f48cb94() {
+  result_712a8b2=
   local s="$1"
   s="${s##*[/\\]}"
   s="${s%.sh}"
@@ -17,10 +19,19 @@ cmdbase_snake_() {
   while test -n "$s"
   do
     left=${s%%-*}
-    test "$left" = "$s" && RESULT="$RESULT$s" && return
-    RESULT="$RESULT$left"_
+    test "$left" = "$s" && result_712a8b2="$result_712a8b2$s" && return
+    result_712a8b2="$result_712a8b2$left"_
     s="${s#*-}"
   done
+}
+
+# Convert the path of a command to the base name in snake case, without the directory, the extension ".sh" or ".bash", and with hyphens replaced with underscores, such as "/path/to/some-name.sh" to "some_name". Print it, or assign it to the variable given with "-v var".
+# Usage: cmdbase_snake [-v var] path
+cmdbase_snake() {
+  local var_name_1b43ce8=
+  test "${1-}" = "-v" && var_name_1b43ce8="$2" && shift 2
+  cmdbase_snake_f48cb94 "$@"
+  print_to "$var_name_1b43ce8" "$result_712a8b2"
 }
 
 # Check if a directory is empty.
