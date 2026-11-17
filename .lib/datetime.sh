@@ -2,6 +2,10 @@
 # shellcheck shell=sh
 set -- __LIB_DATETIME_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
+# The ISO datetime strings handled here are of the ISO 8601 extended format, with the date and the time joined by "T" and a time zone always given, as RFC 3339 requires:
+#   Input:  YYYY-MM-DDThh:mm:ss[.fraction](Z|+hh:mm|+hhmm|+hh), where "+" may be "-" and "Z" may be "z". The fraction of a second is accepted but dropped.
+#   Output: YYYY-MM-DDThh:mm:ss(Z|+hh:mm), with "Z" for UTC.
+# A datetime without a time zone, which ISO 8601 regards as local time, is rejected as an error, so that every datetime can be normalized unambiguously. The epoch seconds are counted in UTC.
 # [RFC 3339 vs ISO 8601](https://ijmacd.github.io/rfc3339-iso8601/)
 
 if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = _SCRDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- _SCRDIR . "$OLDPWD" "$@" # shpp:sources
@@ -108,6 +112,13 @@ touch_iso() {
     echo "Usage: $(arg0_basename) --mtime=<ISO_time> <file>..." >&2
     return 1
   fi
+  local zone
+  iso_datetime_timezone_8324622 "$mtime"; zone="$result_b20e134"
+  if test -z "$zone"
+  then
+    echo "No time zone in \"$mtime\"." >&2
+    return 1
+  fi
   if is_bbwin
   then
     # BusyBox date(1) does not seem to handle "%z". Use PowerShell to do this.
@@ -120,15 +131,10 @@ touch_iso() {
   fi
   if is_macos
   then
-    # BSD touch(1) accepts no time zone other than "Z". Convert to UTC through the epoch, so that any form that iso_to_epoch accepts can be given. A time without a time zone is passed as it is, and regarded as local.
-    local zone
-    iso_datetime_timezone_8324622 "$mtime"; zone="$result_b20e134"
-    if test -n "$zone"
-    then
-      local epoch
-      epoch="$(iso_to_epoch "$mtime")" || return $?
-      mtime="$(TZ=UTC0 date -j -r "$epoch" +"$iso_datetime_format_utc_590c473")"
-    fi
+    # BSD touch(1) accepts no time zone other than "Z". Convert to UTC through the epoch, so that any form that iso_to_epoch accepts can be given.
+    local epoch
+    epoch="$(iso_to_epoch "$mtime")" || return $?
+    mtime="$(TZ=UTC0 date -j -r "$epoch" +"$iso_datetime_format_utc_590c473")"
   fi
   touch -d "$mtime" "$@"
 }
