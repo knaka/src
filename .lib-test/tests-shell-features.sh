@@ -132,3 +132,18 @@ test_extglob() {
   assert_eq -m=e390cdd "$3" "./foo bar/hello world.txt"
   assert_eq -m=b98ff71 "$4" "./foo bar/hoge/hello.txt"
 }
+
+func_972b954() {
+  local x
+  x="hello world"
+  assert_eq -m 26e1d53 "hello world" "$x"
+  local x
+  x="foo bar"
+  assert_eq -m bfa3d75 "foo bar" "$x"
+}
+
+test_multiple_local() {
+  local x='bar baz'
+  func_972b954
+  assert_eq -m 8b650af "bar baz" "$x"
+}

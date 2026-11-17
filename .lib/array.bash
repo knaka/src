@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 set -- __LIB_ARRAY_BASH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
+pushd "${BASH_SOURCE[0]%[/\\]*}" &>/dev/null || pushd . >/dev/null
+. ./utils.sh
+popd >/dev/null || exit
+
 # Append the lines of the standard input to the array whose name is given, one element per line. The array is assigned through `read` and `unset`, which take a variable name, including an array element, as an argument, so `eval` is not needed.
 # Usage: array_append_stdin array_name <...
 array_append_stdin() {
@@ -25,7 +29,7 @@ array_assign_stdin() {
 }
 
 # Run the command given after the array name once for each element of the array, with the element appended as the last argument.
-# Usage: array_foreach array_name command [args...]
+# Usage: array_for_each array_name command [args...]
 array_for_each() {
   # The array is referred to by name through indirect expansion, which works even on Bash 3, where namerefs are not available. Nothing is run for an empty array, even with nounset.
   # Give the local variables unique names so that they do not conflict with the variable names of the caller.
@@ -38,12 +42,93 @@ array_for_each() {
   done
 }
 
-array() {
-  echo "Function \"array\" is not implemented yet."
+# ==========================================================================
+#region Map, an associative array implemented as a property list.
+
+result_array_6b44f76=()
+
+print_result_array_to() {
+  if test -n "$1"
+  then
+    eval "$1=(\${result_array_6b44f76[@]+\"\${result_array_6b44f76[@]}\"})"
+  else
+    test ${#result_array_6b44f76[@]} -eq 0 || printf '%s\n' "${result_array_6b44f76[@]}"
+  fi
 }
 
-if test "$0" = "${BASH_SOURCE[0]}"
-then
-  set -o nounset -o errexit -o pipefail
-  TAIL_DEPTH=1 array "$@"
-fi
+array_mkeys_3d2a089() {
+  local array_ref="$1[@]"
+  local in_array=(${!array_ref+"${!array_ref}"})
+  local result=()
+  while test ${#in_array[@]} -ge 2
+  do
+    result+=("${in_array[0]}")
+    in_array=("${in_array[@]:2}")
+  done
+  result_array_6b44f76=(${result[@]+"${result[@]}"})
+}
+
+# Print the keys of the array whose name is given, treating it as an alternating list of keys and values, one key per line, or assign them to the array given with "-v var" without using a subshell.
+# Usage: array_mkeys [-v var] array_name
+array_mkeys() {
+  local var_name_43adc06=
+  test "${1-}" = "-v" && var_name_43adc06="$2" && shift 2
+  array_mkeys_3d2a089 "$@"
+  print_result_array_to "$var_name_43adc06"
+}
+
+array_mput_3ff445a() {
+  local array_ref="$1[@]"
+  local key="$2"
+  local value="$3"
+  local in_array=(${!array_ref+"${!array_ref}"})
+  local result=()
+  while test ${#in_array[@]} -ge 2
+  do
+    if test "${in_array[0]}" != "$key"
+    then
+      result+=("${in_array[0]}" "${in_array[1]}")
+    fi
+    in_array=("${in_array[@]:2}")
+  done
+  result+=("$key" "$value")
+  result_array_6b44f76=("${result[@]}")
+}
+
+# Put the value for the key in the array whose name is given, treating it as an alternating list of keys and values, and print the elements of the resulting array, one element per line, or assign them to the array given with "-v var". The current entry for the key, if any, is removed, and the new one is put at the end. The variable can be the same as the given array, to update it in place.
+# Usage: array_mput [-v var] array_name key value
+array_mput() {
+  local var_name_d8b6ad6=
+  test "${1-}" = "-v" && var_name_d8b6ad6="$2" && shift 2
+  array_mput_3ff445a "$@"
+  print_result_array_to "$var_name_d8b6ad6"
+}
+
+result_c5d37ac=
+
+array_mget_b0d29f2() {
+  local array_ref="$1[@]"
+  local key="$2"
+  local in_array=(${!array_ref+"${!array_ref}"})
+  while test ${#in_array[@]} -ge 2
+  do
+    if test "${in_array[0]}" = "$key"
+    then
+      result_c5d37ac="${in_array[1]}"
+      return 0
+    fi
+    in_array=("${in_array[@]:2}")
+  done
+  return 1
+}
+
+# Print the value for the key in the array whose name is given, treating it as an alternating list of keys and values, or assign it to the variable given with "-v var". Fail if the key is not found.
+# Usage: array_mget [-v var] array_name key
+array_mget() {
+  local var_name_c37dd41=
+  test "${1-}" = "-v" && var_name_c37dd41="$2" && shift 2
+  array_mget_b0d29f2 "$@" || return $?
+  print_to "$var_name_c37dd41" "$result_c5d37ac"
+}
+
+#endregion

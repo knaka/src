@@ -21,15 +21,22 @@ assign_stdout1() {
 }
 
 assign_stdout2() {
+  local x
   local my_array=()
   IFS=$'\n' read -r -d '' -a my_array < <(foo_c368879) || :
   local count=0
-  _() {
+  # _() {
+  #   ((++count))
+  #   echo "d2-0:" "$1"
+  #   echo "d2-1:" "$1"
+  # }
+  # array_for_each my_array _
+  for x in "${my_array[@]}"
+  do
     ((++count))
-    echo "d2-0:" "$1"
-    echo "d2-1:" "$1"
-  }
-  array_for_each my_array _
+    echo "d2-0:" "$x"
+    echo "d2-1:" "$x"
+  done
   echo count "$count"
 }
 
