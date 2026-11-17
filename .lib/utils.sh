@@ -524,6 +524,17 @@ printf_() {
   assignf RESULT "$@"
 }
 
+# Assign the value to the variable whose name is given, or print it if the name is empty.
+# Usage: print_to var_name value
+print_to() {
+  if test -n "$1"
+  then
+    eval "$1=\$2"
+  else
+    printf '%s\n' "$2"
+  fi
+}
+
 # Canonicalize path
 canon_path() {
   local target="$1"

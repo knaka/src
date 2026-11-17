@@ -39,6 +39,8 @@ test_datetime() {
   # Converts date to epoch.
   assert_eq 1735732800 "$(iso_to_epoch "2025-01-01T12:00:00Z")"
   assert_eq 1735700400 "$(iso_to_epoch "2025-01-01T12:00:00+0900")"
+  iso_to_epoch -v result "2025-01-01T12:00:00+0900"
+  assert_eq 1735700400 "$result"
 
   # Converts epoch to date.
   assert_eq "2025-01-01T12:00:00Z" "$(TZ=UTC0 epoch_to_iso 1735732800)"
@@ -50,9 +52,8 @@ test_datetime() {
   assert_eq "01" "$(iso_datetime_month "$iso_datetime")"
   assert_eq "02" "$(iso_datetime_day "$iso_datetime")"
   assert_eq "12" "$(iso_datetime_hour "$iso_datetime")"
-  iso_datetime_hour_ "$iso_datetime"
-  # shellcheck disable=SC2153
-  assert_eq "$RESULT" 12
+  iso_datetime_hour -v result "$iso_datetime"
+  assert_eq "$result" 12
   assert_eq "23" "$(iso_datetime_minute "$iso_datetime")"
   assert_eq "34" "$(iso_datetime_second "$iso_datetime")"
   assert_eq "+0000" "$(iso_datetime_timezone "$iso_datetime")"
@@ -63,6 +64,8 @@ test_datetime() {
   assert_eq "2024-02-29T16:00:00Z" "$(iso_datetime_to_utc "2024-03-01T01:00:00+09:00")"
   assert_eq "2025-01-01T01:30:00Z" "$(iso_datetime_to_utc "2024-12-31T20:00:00.123-05:30")"
   assert_eq "1969-12-31T15:00:00Z" "$(iso_datetime_to_utc "1970-01-01T00:00:00+09")"
+  iso_datetime_to_utc -v result "2024-03-01T01:00:00+09:00"
+  assert_eq "2024-02-29T16:00:00Z" "$result"
   assert_false iso_datetime_to_utc "2025-01-01T09:00:00"
 }
 

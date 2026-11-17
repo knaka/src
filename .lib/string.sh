@@ -13,17 +13,6 @@ cd "$3" || exit; shift 3 # /shpp:sources
 # Each function below prints its result, or assigns it to the variable given with "-v var" as printf of Bash does, so that the caller does not need a command substitution, which forks a subshell. Positions are counted from 1, as in AWK.
 # A function with any logic consists of an inner function with a hash-suffixed name, which sets the result to result_db1c0eb and is free to use any local variables, and an outer function, which has no local variables other than hash-suffixed ones, so that they do not shadow the variable whose name is given by the caller.
 
-# Assign the value to the variable whose name is given, or print it if the name is empty.
-# Usage: print_to var_name value
-print_to() {
-  if test -n "$1"
-  then
-    eval "$1=\$2"
-  else
-    printf '%s\n' "$2"
-  fi
-}
-
 result_db1c0eb=
 
 toupper_51d18b8() {

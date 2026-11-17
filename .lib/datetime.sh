@@ -7,6 +7,7 @@ set -- __LIB_DATETIME_SH "$@"; eval "shift; \${$1-false} || ! $1=true" && return
 #   Output: YYYY-MM-DDThh:mm:ss(Z|+hh:mm), with "Z" for UTC.
 # A datetime without a time zone, which ISO 8601 regards as local time, is rejected as an error, so that every datetime can be normalized unambiguously. The epoch seconds are counted in UTC.
 # [RFC 3339 vs ISO 8601](https://ijmacd.github.io/rfc3339-iso8601/)
+# Each function that outputs a value prints it, or assigns it to the variable given with "-v var" as printf of Bash does. The value is computed by an inner function with a hash-suffixed name, which sets it to result_b20e134 and is free to use any local variables, so that they do not shadow the variable whose name is given by the caller.
 
 if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = _SCRDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- _SCRDIR . "$OLDPWD" "$@" # shpp:sources
 . ./utils.sh
@@ -15,6 +16,8 @@ cd "$3" || exit; shift 3 # /shpp:sources
 iso_datetime_format_590c473='%Y-%m-%dT%H:%M:%S%z'
 iso_datetime_format_utc_590c473='%Y-%m-%dT%H:%M:%SZ'
 
+result_b20e134=
+
 # Normalize the time zone at the end of each ISO datetime line, which date(1) writes as "+0900" or "+09:00", into "Z" for UTC or "+09:00" otherwise.
 normalize_timezone_590c473() {
   sed -E \
@@ -22,10 +25,7 @@ normalize_timezone_590c473() {
     -e 's/([+-][0-9]{2})([0-9]{2})$/\1:\2/'
 }
 
-# Output current date and time in ISO-8601 format.
-# Usage: date_iso
-# Example: date_iso  # => 2024-01-01T12:00:00+09:00
-date_iso() {
+date_iso_print_c466a97() {
   if is_bbwin
   then
     # -I[SPEC]: Output ISO-8601 date / SPEC=date (default), hours, minutes, seconds or ns
@@ -40,10 +40,21 @@ date_iso() {
   | normalize_timezone_590c473
 }
 
-# Convert an ISO-8601 date string to UNIX epoch seconds.
-# Usage: iso_to_epoch <ISO_time>
-# Example: iso_to_epoch 2024-01-01T12:00:00+0900  # => 1704078000
-iso_to_epoch() {
+date_iso_64440b6() {
+  result_b20e134="$(date_iso_print_c466a97 "$@")"
+}
+
+# Output current date and time in ISO-8601 format.
+# Usage: date_iso [-v var]
+# Example: date_iso  # => 2024-01-01T12:00:00+09:00
+date_iso() {
+  local var_name_6b8cd62=
+  test "${1-}" = "-v" && var_name_6b8cd62="$2" && shift 2
+  date_iso_64440b6 "$@" || return $?
+  print_to "$var_name_6b8cd62" "$result_b20e134"
+}
+
+iso_to_epoch_print_1d6235e() {
   local iso_date="$1"
   # Reject a datetime without a time zone on every platform, rather than regarding it as local.
   local zone
@@ -73,10 +84,21 @@ iso_to_epoch() {
   fi
 }
 
-# Convert UNIX epoch seconds to an ISO-8601 date string.
-# Usage: epoch_to_iso <epoch>
-# Example: epoch_to_iso 1704078000  # => 2024-01-01T12:00:00+09:00
-epoch_to_iso() {
+iso_to_epoch_7e83daf() {
+  result_b20e134="$(iso_to_epoch_print_1d6235e "$@")"
+}
+
+# Convert an ISO-8601 date string to UNIX epoch seconds.
+# Usage: iso_to_epoch [-v var] <ISO_time>
+# Example: iso_to_epoch 2024-01-01T12:00:00+0900  # => 1704078000
+iso_to_epoch() {
+  local var_name_b273087=
+  test "${1-}" = "-v" && var_name_b273087="$2" && shift 2
+  iso_to_epoch_7e83daf "$@" || return $?
+  print_to "$var_name_b273087" "$result_b20e134"
+}
+
+epoch_to_iso_print_22ee245() {
   local epoch="$1"
   if test -z "$epoch"
   then
@@ -89,6 +111,20 @@ epoch_to_iso() {
     date -d @"$epoch" +"$iso_datetime_format_590c473"
   fi \
   | normalize_timezone_590c473
+}
+
+epoch_to_iso_0cf9002() {
+  result_b20e134="$(epoch_to_iso_print_22ee245 "$@")"
+}
+
+# Convert UNIX epoch seconds to an ISO-8601 date string.
+# Usage: epoch_to_iso [-v var] <epoch>
+# Example: epoch_to_iso 1704078000  # => 2024-01-01T12:00:00+09:00
+epoch_to_iso() {
+  local var_name_9e0e638=
+  test "${1-}" = "-v" && var_name_9e0e638="$2" && shift 2
+  epoch_to_iso_0cf9002 "$@" || return $?
+  print_to "$var_name_9e0e638" "$result_b20e134"
 }
 
 # Touch files, setting their modification time to the given ISO-8601 time.
@@ -139,10 +175,7 @@ touch_iso() {
   touch -d "$mtime" "$@"
 }
 
-# Output last modification time of a file in ISO-8601 format.
-# Usage: last_mod_iso <file>
-# Example: last_mod_iso file.txt  # => 2024-01-01T12:00:00+09:00
-last_mod_iso() {
+last_mod_iso_print_bb54c05() {
   local file="$1"
   if is_macos
   then
@@ -160,24 +193,35 @@ last_mod_iso() {
   | normalize_timezone_590c473
 }
 
+last_mod_iso_2622fbe() {
+  result_b20e134="$(last_mod_iso_print_bb54c05 "$@")"
+}
+
+# Output last modification time of a file in ISO-8601 format.
+# Usage: last_mod_iso [-v var] <file>
+# Example: last_mod_iso file.txt  # => 2024-01-01T12:00:00+09:00
+last_mod_iso() {
+  local var_name_ccb3c5a=
+  test "${1-}" = "-v" && var_name_ccb3c5a="$2" && shift 2
+  last_mod_iso_2622fbe "$@" || return $?
+  print_to "$var_name_ccb3c5a" "$result_b20e134"
+}
+
 # ==========================================================================
 #region Extract ISO datetime components.
-
-result_b20e134=
 
 iso_datetime_year_25dd9ce() {
   local iso_datetime="$1"
   result_b20e134="${iso_datetime%%-*}"
 }
 
-iso_datetime_year_() {
-  iso_datetime_year_25dd9ce "$@"
-  set_ "$result_b20e134"
-}
-
+# Extract the year of the ISO datetime.
+# Usage: iso_datetime_year [-v var] <ISO_datetime>
 iso_datetime_year() {
-  iso_datetime_year_25dd9ce "$@"
-  printf "%s\n" "$result_b20e134"
+  local var_name_2d11c00=
+  test "${1-}" = "-v" && var_name_2d11c00="$2" && shift 2
+  iso_datetime_year_25dd9ce "$@" || return $?
+  print_to "$var_name_2d11c00" "$result_b20e134"
 }
 
 iso_datetime_month_ec3e4f1() {
@@ -186,14 +230,13 @@ iso_datetime_month_ec3e4f1() {
   result_b20e134="${result_b20e134%%-*}"
 }
 
-iso_datetime_month_() {
-  iso_datetime_month_ec3e4f1 "$@"
-  set_ "$result_b20e134"
-}
-
+# Extract the month of the ISO datetime.
+# Usage: iso_datetime_month [-v var] <ISO_datetime>
 iso_datetime_month() {
-  iso_datetime_month_ec3e4f1 "$@"
-  printf "%s\n" "$result_b20e134"
+  local var_name_ee105db=
+  test "${1-}" = "-v" && var_name_ee105db="$2" && shift 2
+  iso_datetime_month_ec3e4f1 "$@" || return $?
+  print_to "$var_name_ee105db" "$result_b20e134"
 }
 
 iso_datetime_day_bc6befe() {
@@ -203,14 +246,13 @@ iso_datetime_day_bc6befe() {
   result_b20e134="${result_b20e134%%T*}"
 }
 
-iso_datetime_day_() {
-  iso_datetime_day_bc6befe "$@"
-  set_ "$result_b20e134"
-}
-
+# Extract the day of the ISO datetime.
+# Usage: iso_datetime_day [-v var] <ISO_datetime>
 iso_datetime_day() {
-  iso_datetime_day_bc6befe "$@"
-  printf "%s\n" "$result_b20e134"
+  local var_name_f0b630f=
+  test "${1-}" = "-v" && var_name_f0b630f="$2" && shift 2
+  iso_datetime_day_bc6befe "$@" || return $?
+  print_to "$var_name_f0b630f" "$result_b20e134"
 }
 
 iso_datetime_hour_2d32609() {
@@ -219,14 +261,13 @@ iso_datetime_hour_2d32609() {
   result_b20e134="${result_b20e134%%:*}"
 }
 
-iso_datetime_hour_() {
-  iso_datetime_hour_2d32609 "$@"
-  set_ "$result_b20e134"
-}
-
+# Extract the hour of the ISO datetime.
+# Usage: iso_datetime_hour [-v var] <ISO_datetime>
 iso_datetime_hour() {
-  iso_datetime_hour_2d32609 "$@"
-  printf "%s\n" "$result_b20e134"
+  local var_name_8915ff5=
+  test "${1-}" = "-v" && var_name_8915ff5="$2" && shift 2
+  iso_datetime_hour_2d32609 "$@" || return $?
+  print_to "$var_name_8915ff5" "$result_b20e134"
 }
 
 iso_datetime_minute_cbdb6d5() {
@@ -236,32 +277,31 @@ iso_datetime_minute_cbdb6d5() {
   result_b20e134="${result_b20e134%%:*}"
 }
 
-iso_datetime_minute_() {
-  iso_datetime_minute_cbdb6d5 "$@"
-  set_ "$result_b20e134"
-}
-
+# Extract the minute of the ISO datetime.
+# Usage: iso_datetime_minute [-v var] <ISO_datetime>
 iso_datetime_minute() {
-  iso_datetime_minute_cbdb6d5 "$@"
-  printf "%s\n" "$result_b20e134"
+  local var_name_6d1af76=
+  test "${1-}" = "-v" && var_name_6d1af76="$2" && shift 2
+  iso_datetime_minute_cbdb6d5 "$@" || return $?
+  print_to "$var_name_6d1af76" "$result_b20e134"
 }
 
 iso_datetime_second_a08d944() {
   local iso_datetime="$1"
   result_b20e134="${iso_datetime#*T}"
   result_b20e134="${result_b20e134#*:}"
+  result_b20e134="${result_b20e134#*:}"
   # Drop what follows the digits, such as the fraction of a second and the time zone ("Z" or "+0900").
   result_b20e134="${result_b20e134%%[!0-9]*}"
 }
 
-iso_datetime_second_() {
-  iso_datetime_second_a08d944 "$@"
-  set_ "$result_b20e134"
-}
-
+# Extract the second of the ISO datetime.
+# Usage: iso_datetime_second [-v var] <ISO_datetime>
 iso_datetime_second() {
-  iso_datetime_second_a08d944 "$@"
-  printf "%s\n" "$result_b20e134"
+  local var_name_2c8d9a8=
+  test "${1-}" = "-v" && var_name_2c8d9a8="$2" && shift 2
+  iso_datetime_second_a08d944 "$@" || return $?
+  print_to "$var_name_2c8d9a8" "$result_b20e134"
 }
 
 # The time zone is what follows the time, starting with "Z", "+" or "-", such as "Z", "+0900" or "-05:00". It is empty if not given.
@@ -271,14 +311,13 @@ iso_datetime_timezone_8324622() {
   result_b20e134="${result_b20e134#"${result_b20e134%%[Zz+-]*}"}"
 }
 
-iso_datetime_timezone_() {
-  iso_datetime_timezone_8324622 "$@"
-  set_ "$result_b20e134"
-}
-
+# Extract the time zone of the ISO datetime.
+# Usage: iso_datetime_timezone [-v var] <ISO_datetime>
 iso_datetime_timezone() {
-  iso_datetime_timezone_8324622 "$@"
-  printf "%s\n" "$result_b20e134"
+  local var_name_ad4f11f=
+  test "${1-}" = "-v" && var_name_ad4f11f="$2" && shift 2
+  iso_datetime_timezone_8324622 "$@" || return $?
+  print_to "$var_name_ad4f11f" "$result_b20e134"
 }
 
 #endregion
@@ -355,22 +394,20 @@ iso_datetime_to_utc_827ddcc() {
 }
 
 iso_datetime_to_utc_a8c54bd() {
-  result_b20e134="$(TZ=UTC epoch_to_iso "$(iso_to_epoch "$@")")"
-}
-
-iso_datetime_to_utc_() {
-  # iso_datetime_to_utc_827ddcc "$@" || return $?
-  iso_datetime_to_utc_a8c54bd "$@" || return $?
-  set_ "$result_b20e134"
+  local epoch_seconds
+  iso_to_epoch -v epoch_seconds "$1" || return $?
+  result_b20e134="$(TZ=UTC0 epoch_to_iso_print_22ee245 "$epoch_seconds")"
 }
 
 # Convert the ISO datetime with a time zone to UTC.
-# Usage: iso_datetime_to_utc <ISO_datetime>
+# Usage: iso_datetime_to_utc [-v var] <ISO_datetime>
 # Example: iso_datetime_to_utc 2025-01-01T09:00:00+0900  # => 2025-01-01T00:00:00Z
 iso_datetime_to_utc() {
+  local var_name_d364541=
+  test "${1-}" = "-v" && var_name_d364541="$2" && shift 2
   # iso_datetime_to_utc_827ddcc "$@" || return $?
   iso_datetime_to_utc_a8c54bd "$@" || return $?
-  printf "%s\n" "$result_b20e134"
+  print_to "$var_name_d364541" "$result_b20e134"
 }
 
 #endregion
