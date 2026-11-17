@@ -11,21 +11,29 @@ cd "$3" || exit; shift 3 # /shpp:sources
 iso_datetime_format_590c473='%Y-%m-%dT%H:%M:%S%z'
 iso_datetime_format_utc_590c473='%Y-%m-%dT%H:%M:%SZ'
 
+# Normalize the time zone at the end of each ISO datetime line, which date(1) writes as "+0900" or "+09:00", into "Z" for UTC or "+09:00" otherwise.
+normalize_timezone_590c473() {
+  sed -E \
+    -e 's/[+-]00:?00$/Z/' \
+    -e 's/([+-][0-9]{2})([0-9]{2})$/\1:\2/'
+}
+
 # Output current date and time in ISO-8601 format.
 # Usage: date_iso
-# Example: date_iso  # => 2024-01-01T12:00:00+0900
+# Example: date_iso  # => 2024-01-01T12:00:00+09:00
 date_iso() {
   if is_bbwin
   then
     # -I[SPEC]: Output ISO-8601 date / SPEC=date (default), hours, minutes, seconds or ns
-    date -Iseconds | sed -E -e 's/([[:digit:]]{2}):([[:digit:]]{2})$/\1\2/'
+    date -Iseconds
   elif is_macos
   then
     # -j: Do not try to set the dates
     date -j +"$iso_datetime_format_590c473"
   else
     date +"$iso_datetime_format_590c473"
-  fi
+  fi \
+  | normalize_timezone_590c473
 }
 
 # Convert an ISO-8601 date string to UNIX epoch seconds.
@@ -33,14 +41,26 @@ date_iso() {
 # Example: iso_to_epoch 2024-01-01T12:00:00+0900  # => 1704078000
 iso_to_epoch() {
   local iso_date="$1"
+  # Reject a datetime without a time zone on every platform, rather than regarding it as local.
+  local zone
+  iso_datetime_timezone_8324622 "$iso_date"; zone="$result_b20e134"
+  if test -z "$zone"
+  then
+    echo "No time zone in \"$iso_date\"." >&2
+    return 1
+  fi
   if is_macos
   then
-    local epoch
-    if ! epoch="$(date -j -f "$iso_datetime_format_590c473" "$iso_date" +%s 2>/dev/null)"
-    then
-      epoch="$(TZ=UTC0 date -j -f "$iso_datetime_format_utc_590c473" "$iso_date" +%s)"
-    fi
-    echo "$epoch"
+    # BSD date(1) reads the time zone with "%z" only as "+0900". Normalize "Z", "+09:00" and "+09" into that form, and drop the fraction of a second, which it cannot read either.
+    local time="${iso_date#*T}"
+    time="${time%%[.,Zz+-]*}"
+    local datetime="${iso_date%%T*}T$time"
+    case "$zone" in
+      ([Zz]) zone=+0000;;
+      ([+-][0-9][0-9]:[0-9][0-9]) zone="${zone%:*}${zone##*:}";;
+      ([+-][0-9][0-9]) zone="${zone}00";;
+    esac
+    date -j -f "$iso_datetime_format_590c473" "$datetime$zone" +%s
   elif is_windows
   then
     pwsh.exe -NoProfile -Command "Get-Date \"$iso_date\" -UFormat %s"
@@ -51,15 +71,20 @@ iso_to_epoch() {
 
 # Convert UNIX epoch seconds to an ISO-8601 date string.
 # Usage: epoch_to_iso <epoch>
-# Example: epoch_to_iso 1704078000  # => 2024-01-01T12:00:00+0900
+# Example: epoch_to_iso 1704078000  # => 2024-01-01T12:00:00+09:00
 epoch_to_iso() {
   local epoch="$1"
+  if test -z "$epoch"
+  then
+    return 1
+  fi
   if is_macos
   then
     date -j -r "$epoch" +"$iso_datetime_format_590c473"
   else
     date -d @"$epoch" +"$iso_datetime_format_590c473"
-  fi
+  fi \
+  | normalize_timezone_590c473
 }
 
 # Touch files, setting their modification time to the given ISO-8601 time.
@@ -95,11 +120,14 @@ touch_iso() {
   fi
   if is_macos
   then
-    # BSD touch(1) does not accept ISO time with timezone. Convert to UTC.
-    local time_utc
-    if time_utc="$(TZ=UTC0 date -j -f "$iso_datetime_format_590c473" "$mtime" +"$iso_datetime_format_utc_590c473" 2>/dev/null)"
+    # BSD touch(1) accepts no time zone other than "Z". Convert to UTC through the epoch, so that any form that iso_to_epoch accepts can be given. A time without a time zone is passed as it is, and regarded as local.
+    local zone
+    iso_datetime_timezone_8324622 "$mtime"; zone="$result_b20e134"
+    if test -n "$zone"
     then
-      mtime="${time_utc}"
+      local epoch
+      epoch="$(iso_to_epoch "$mtime")" || return $?
+      mtime="$(TZ=UTC0 date -j -r "$epoch" +"$iso_datetime_format_utc_590c473")"
     fi
   fi
   touch -d "$mtime" "$@"
@@ -107,7 +135,7 @@ touch_iso() {
 
 # Output last modification time of a file in ISO-8601 format.
 # Usage: last_mod_iso <file>
-# Example: last_mod_iso file.txt  # => 2024-01-01T12:00:00+0900
+# Example: last_mod_iso file.txt  # => 2024-01-01T12:00:00+09:00
 last_mod_iso() {
   local file="$1"
   if is_macos
@@ -119,10 +147,11 @@ last_mod_iso() {
   then
     local epoch
     epoch="$(stat -c "%Y" "$file")"
-    date -d @"$epoch" -Iseconds | sed -E -e 's/([[:digit:]]{2}):([[:digit:]]{2})$/\1\2/'
+    date -d @"$epoch" -Iseconds
   else
     date --date "$(stat --format "%y" "$file")" +"$iso_datetime_format_590c473"
-  fi
+  fi \
+  | normalize_timezone_590c473
 }
 
 # ==========================================================================
@@ -230,6 +259,23 @@ iso_datetime_second() {
   printf "%s\n" "$result_b20e134"
 }
 
+# The time zone is what follows the time, starting with "Z", "+" or "-", such as "Z", "+0900" or "-05:00". It is empty if not given.
+iso_datetime_timezone_8324622() {
+  local iso_datetime="$1"
+  result_b20e134="${iso_datetime#*T}"
+  result_b20e134="${result_b20e134#"${result_b20e134%%[Zz+-]*}"}"
+}
+
+iso_datetime_timezone_() {
+  iso_datetime_timezone_8324622 "$@"
+  set_ "$result_b20e134"
+}
+
+iso_datetime_timezone() {
+  iso_datetime_timezone_8324622 "$@"
+  printf "%s\n" "$result_b20e134"
+}
+
 #endregion
 
 # ==========================================================================
@@ -253,9 +299,8 @@ iso_datetime_to_utc_827ddcc() {
   minute=$((1$minute - 100))
   second=$((1$second - 100))
 
-  # The time zone is what follows the time, starting with "Z", "+" or "-".
-  local zone="${iso_datetime#*T}"
-  zone="${zone#"${zone%%[Zz+-]*}"}"
+  local zone
+  iso_datetime_timezone_8324622 "$iso_datetime"; zone="$result_b20e134"
   local offset=0
   case "$zone" in
     ([Zz]) ;;
@@ -304,8 +349,13 @@ iso_datetime_to_utc_827ddcc() {
     $((seconds / 3600)) $((seconds % 3600 / 60)) $((seconds % 60))
 }
 
+iso_datetime_to_utc_a8c54bd() {
+  result_b20e134="$(TZ=UTC epoch_to_iso "$(iso_to_epoch "$@")")"
+}
+
 iso_datetime_to_utc_() {
-  iso_datetime_to_utc_827ddcc "$@" || return $?
+  # iso_datetime_to_utc_827ddcc "$@" || return $?
+  iso_datetime_to_utc_a8c54bd "$@" || return $?
   set_ "$result_b20e134"
 }
 
@@ -313,7 +363,8 @@ iso_datetime_to_utc_() {
 # Usage: iso_datetime_to_utc <ISO_datetime>
 # Example: iso_datetime_to_utc 2025-01-01T09:00:00+0900  # => 2025-01-01T00:00:00Z
 iso_datetime_to_utc() {
-  iso_datetime_to_utc_827ddcc "$@" || return $?
+  # iso_datetime_to_utc_827ddcc "$@" || return $?
+  iso_datetime_to_utc_a8c54bd "$@" || return $?
   printf "%s\n" "$result_b20e134"
 }
 
