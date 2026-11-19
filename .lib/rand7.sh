@@ -28,17 +28,18 @@ rand7_3c3619b() {
   result_96fd1f7="$(awk -v seed="$seed" 'BEGIN { srand(seed); printf "%07x\n", int(rand() * 268435456) }')"
 }
 
-# Print a random 7-digit hexadecimal number, or assign it to the variable given with "-v var".
+# Print a random 7-digit hexadecimal number which contains at least one of the letters a-f, or assign it to the variable given with "-v var".
 # Usage: rand7 [-v var]
 rand7() {
   local var_name_cd81b77=
   test "${1-}" = "-v" && var_name_cd81b77="$2" && shift 2
-  rand7_3c3619b "$@" || return $?
+  # Generate again if the number has only decimal digits, which could be taken for a decimal number. About 4% of the numbers are so, since 10^7 / 16^7 is about 0.037.
+  while :
+  do
+    rand7_3c3619b "$@" || return $?
+    case "$result_96fd1f7" in
+      (*[a-f]*) break;;
+    esac
+  done
   print_to "$var_name_cd81b77" "$result_96fd1f7"
 }
-
-if eval 'test "$0" = "${BASH_SOURCE-}"' || case "${0##*[/\\]}." in (rand7.*) ;; (*) false;; esac # shpp:main_guard
-then
-  set -o nounset -o errexit
-  rand7 "$@"
-fi
