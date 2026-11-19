@@ -325,74 +325,6 @@ iso_datetime_timezone() {
 # ==========================================================================
 #region Convert ISO datetime.
 
-# Convert the ISO datetime to UTC only with the shell arithmetic, without the extensions of date(1), which differ among platforms. The time zone must be given as "Z", "+0900", "+09:00" or "+09", since a local time cannot be converted without the time zone database. The fraction of a second is dropped.
-iso_datetime_to_utc_827ddcc() {
-  local iso_datetime="$1"
-  local year month day hour minute second
-  iso_datetime_year_25dd9ce "$iso_datetime"; year="$result_b20e134"
-  iso_datetime_month_ec3e4f1 "$iso_datetime"; month="$result_b20e134"
-  iso_datetime_day_bc6befe "$iso_datetime"; day="$result_b20e134"
-  iso_datetime_hour_2d32609 "$iso_datetime"; hour="$result_b20e134"
-  iso_datetime_minute_cbdb6d5 "$iso_datetime"; minute="$result_b20e134"
-  iso_datetime_second_a08d944 "$iso_datetime"; second="$result_b20e134"
-  # Prefix "1" and subtract it back, since a number with a leading zero, such as "08", is regarded as octal.
-  year=$((1$year - 10000))
-  month=$((1$month - 100))
-  day=$((1$day - 100))
-  hour=$((1$hour - 100))
-  minute=$((1$minute - 100))
-  second=$((1$second - 100))
-
-  local zone
-  iso_datetime_timezone_8324622 "$iso_datetime"; zone="$result_b20e134"
-  local offset=0
-  case "$zone" in
-    ([Zz]) ;;
-    ([+-][0-9][0-9]*)
-      local zone_hour zone_minute
-      zone_hour="${zone#?}"
-      zone_minute="${zone_hour#??}"
-      zone_hour="${zone_hour%"$zone_minute"}"
-      zone_minute="${zone_minute#:}"
-      offset=$(((1$zone_hour - 100) * 3600 + (1${zone_minute:-00} - 100) * 60))
-      test "${zone%"${zone#?}"}" = - && offset=$((-offset))
-      ;;
-    (*)
-      echo "No time zone in \"$iso_datetime\"." >&2
-      return 1
-      ;;
-  esac
-
-  # Count the days since the epoch. The year is regarded as starting in March, so that the leap day comes at the end of it.
-  # [chrono-Compatible Low-Level Date Algorithms](https://howardhinnant.github.io/date_algorithms.html#days_from_civil)
-  local y=$((year - (month <= 2)))
-  local era=$(((y >= 0 ? y : y - 399) / 400))
-  local yoe=$((y - era * 400))
-  local doy=$(((153 * (month + (month > 2 ? -3 : 9)) + 2) / 5 + day - 1))
-  local doe=$((yoe * 365 + yoe / 4 - yoe / 100 + doy))
-  local days=$((era * 146097 + doe - 719468))
-
-  local seconds=$((days * 86400 + hour * 3600 + minute * 60 + second - offset))
-  # Floor the division, which truncates toward zero, for the times before the epoch.
-  days=$(((seconds - (seconds < 0 ? 86399 : 0)) / 86400))
-  seconds=$((seconds - days * 86400))
-
-  # Convert the days back to the date in the same way.
-  # [chrono-Compatible Low-Level Date Algorithms](https://howardhinnant.github.io/date_algorithms.html#civil_from_days)
-  days=$((days + 719468))
-  era=$(((days >= 0 ? days : days - 146096) / 146097))
-  doe=$((days - era * 146097))
-  yoe=$(((doe - doe / 1460 + doe / 36524 - doe / 146096) / 365))
-  doy=$((doe - (365 * yoe + yoe / 4 - yoe / 100)))
-  local mp=$(((5 * doy + 2) / 153))
-  day=$((doy - (153 * mp + 2) / 5 + 1))
-  month=$((mp + (mp < 10 ? 3 : -9)))
-  year=$((yoe + era * 400 + (month <= 2)))
-
-  printf_v result_b20e134 "%04d-%02d-%02dT%02d:%02d:%02dZ" "$year" "$month" "$day" \
-    $((seconds / 3600)) $((seconds % 3600 / 60)) $((seconds % 60))
-}
-
 iso_datetime_to_utc_a8c54bd() {
   local epoch_seconds
   iso_to_epoch -v epoch_seconds "$1" || return $?
@@ -405,7 +337,6 @@ iso_datetime_to_utc_a8c54bd() {
 iso_datetime_to_utc() {
   local var_name_d364541=
   test "${1-}" = "-v" && var_name_d364541="$2" && shift 2
-  # iso_datetime_to_utc_827ddcc "$@" || return $?
   iso_datetime_to_utc_a8c54bd "$@" || return $?
   print_to "$var_name_d364541" "$result_b20e134"
 }
