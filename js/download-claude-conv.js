@@ -8,6 +8,8 @@
 // * [Claudeai Sync (Grade A) - Claude Skill | Skills Directory](https://www.skillsdirectory.com/skills/tonydzi-claudeai-sync)
 // * [Providers · cheaper-inference/OmniRoute Wiki · GitHub](https://github.com/cheaper-inference/OmniRoute/wiki/Providers)
 
+import { showToast } from "./lib/toast.js";
+
 function fail(message) {
   alert(message);
   throw new Error(message);
@@ -63,10 +65,12 @@ async function downloadClaudeConv() {
   const day = String(date.getDate()).padStart(2, '0');
   const hours = String(date.getHours()).padStart(2, '0');
   const minutes = String(date.getMinutes()).padStart(2, '0');
+  const filename = `claude-conv-${year}-${month}-${day}-${hours}${minutes}-${convId}.json`;
   download(
-    `claude-conv-${year}-${month}-${day}-${hours}${minutes}-${convId}.json`,
+    filename,
     JSON.stringify(conv),
   );
+  showToast(`Downloaded: ${filename}`);
 }
 
 downloadClaudeConv();
