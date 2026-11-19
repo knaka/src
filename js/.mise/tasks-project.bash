@@ -23,8 +23,14 @@ gen_bookmarklet() {
   echo
 }
 
-# Bundle the scripts into dist/ with build.mjs.
+# Check the types of the TypeScript files with tsc, without emitting any files.
+task_check() {
+  tsc --project "$PROJECT_DIR"/tsconfig.json
+}
+
+# Check the types, and bundle the scripts into dist/ with build.mjs.
 task_build() {
+  task_check
   # file://./../build.mjs
   node "$PROJECT_DIR"/build.mjs
 }

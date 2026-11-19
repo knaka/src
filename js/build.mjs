@@ -15,7 +15,7 @@ const minifiedCssText = {
 };
 
 await esbuild.build({
-  entryPoints: ["./*.js"],
+  entryPoints: ["./*.js", "./*.ts"],
   bundle: true,
   minify: true,
   format: "iife",

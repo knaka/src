@@ -1,17 +1,17 @@
 import { showToast } from "./lib/toast.js";
 
-async function copyTitle() {
+async function copyLink(): Promise<string> {
   const title = document.title;
-  const url = window.location;
+  const url = window.location.href;
   const link = `[${title}](${url})`;
   await navigator.clipboard.writeText(link);
   return link;
 }
 
 // Pass both handlers to then(), rather than chaining catch() after it, so that an error in showing the toast is not reported as a failure to copy.
-copyTitle().then(
+copyLink().then(
   (link) => showToast(`Copied: ${link}`),
-  (error) => {
+  (error: unknown) => {
     console.error(error);
     alert(`Failed to copy the link: ${error}`);
   },

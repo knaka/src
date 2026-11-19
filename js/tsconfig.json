@@ -1,0 +1,18 @@
+{
+  // Only type checking with tsc. esbuild compiles and bundles the scripts.
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "noEmit": true,
+    // Let the TypeScript files import the JavaScript ones, without checking the latter.
+    "allowJs": true,
+    "checkJs": false,
+    // Fail on what esbuild cannot compile file by file.
+    "isolatedModules": true,
+    "skipLibCheck": true
+  },
+  "include": ["*.ts", "lib", "types"]
+}
