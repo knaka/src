@@ -23,6 +23,12 @@ gen_bookmarklet() {
   echo
 }
 
+# Bundle the scripts into dist/ with build.mjs.
+task_build() {
+  # file://./../build.mjs
+  node "$PROJECT_DIR"/build.mjs
+}
+
 # [files...] Create bookmarklet.
 task_bookmarklet() {
   local file

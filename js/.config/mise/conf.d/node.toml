@@ -1,0 +1,25 @@
+[settings]
+# The `devEngines` field in package.json is referenced.
+# * [Node.js | mise-en-place](https://mise.jdx.dev/lang/node.html)
+# * [package.json | npm Docs](https://docs.npmjs.com/cli/v11/configuring-npm/package-json)
+#
+# Example:
+#   "devEngines": {
+#     "runtime": {
+#       "name": "node",
+#       "version": ">=24.0.0",
+#       "onFail": "error"
+#     },
+#     "packageManager": {
+#       "name": "npm",
+#       "onFail": "error"
+#     }
+#   },
+idiomatic_version_file_enable_tools = ['node']
+experimental = true
+
+[deps.npm]
+auto = true
+
+[env]
+_.path = ["{{config_root}}/node_modules/.bin"]
