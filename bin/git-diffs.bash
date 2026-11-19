@@ -1,6 +1,5 @@
-# vim: set filetype=bash tabstop=2 shiftwidth=2 expandtab :
-# shellcheck shell=bash
-_() { case "${_ids-}" in (*$1*) ;; (*) _ids="$1,${_ids-}"; false;; esac; }; _ 63cb631 && return 0
+#!/usr/bin/env bash
+set -- _BIN_GIT_DIFFS_BASH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
 git_diffs() {
   git log --patch -- "$@"
@@ -9,5 +8,5 @@ git_diffs() {
 if test "$0" = "${BASH_SOURCE[0]}"
 then
   set -o nounset -o errexit -o pipefail
-  git_diffs "$@"
+  TAIL_DEPTH=1 git_diffs "$@"
 fi

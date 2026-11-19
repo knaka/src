@@ -6,16 +6,15 @@ pushd "${BASH_SOURCE[0]%[/\\]*}" &>/dev/null || pushd . >/dev/null
 popd >/dev/null || exit
 
 git_co_default() {
-  if git show-ref --verify --quiet refs/heads/master
-  then
-    git checkout master
-  elif git show-ref --verify --quiet refs/heads/main
-  then
-    git checkout main
-  else
-    echo "Neither \"master\" nor \"main\" branch found." >&2
-    exit 1
-  fi
+  local branch
+  for branch in master main
+  do
+    git show-ref --verify --quiet "refs/heads/$branch" || continue
+    git checkout "$branch"
+    return 0
+  done
+  echo 'Neither "master" nor "main" branch found.' >&2
+  return 1
 }
 
 if test "$0" = "${BASH_SOURCE[0]}"
