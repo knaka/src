@@ -8,19 +8,40 @@ popd >/dev/null || exit
 
 # Wrap the code in an IIFE so that it does not pollute or conflict with the variables of the page and does not replace the page with its result, and URL-encode it, since the browser percent-decodes a javascript: URL before running it and the URL cannot contain raw newlines.
 gen_bookmarklet() {
+  local newline="$CH_LF"
+  OPTIND=1; while getopts _-: OPT
+  do
+    test "$OPT" = - && OPT="${OPTARG%%=*}" && OPTARG="${OPTARG#"$OPT"=}"
+    case "$OPT" in
+      (compact ) newline="";;
+      (?) return 1;;
+      (*) echo "$0: illegal option -- $OPT" >&2; return 1;;
+    esac
+  done
+  shift $((OPTIND-1))
+
   printf "javascript:"
   {
-    printf "(() => {\n"
+    printf "(() => {%s" "$newline"
     if test $# -gt 0
     then
       cat "$1"
     else
       cat
     fi
-    printf "\n})();\n"
+    printf "%s})();%s" "$newline" "$newline"
   } \
   | percent_encode
   echo
+}
+
+# [files...] Create bookmarklet.
+task_bookmarklet() {
+  local file
+  for file in "$@"
+  do
+    gen_bookmarklet <"$file"
+  done
 }
 
 # Check the types of the TypeScript files with tsc, without emitting any files.
@@ -33,13 +54,10 @@ task_build() {
   task_check
   # file://./../build.mjs
   node "$PROJECT_DIR"/build.mjs
-}
-
-# [files...] Create bookmarklet.
-task_bookmarklet() {
-  local file
-  for file in "$@"
+  local x
+  # shellcheck disable=SC2043
+  for x in copy-link
   do
-    gen_bookmarklet <"$file"
+    gen_bookmarklet --compact "$PROJECT_DIR"/dist/"$x".js >"$PROJECT_DIR"/dist/"$x".bookmarklet
   done
 }
