@@ -75,7 +75,7 @@ touchsh() {
     fi
   fi
   local unique_id
-  unique_id="$(rand7)"
+  rand7 -v unique_id
   local file_base
   if test "$path" = -
   then
