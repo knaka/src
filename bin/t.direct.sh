@@ -11,21 +11,24 @@ cd "$3" || exit; shift 3 # /shpp:sources
 is_mise_project_dir() {
   local dir=.
   test $# -gt 0 && dir="$1"
+
   # 6 files, 1 dir // Configuration | mise-en-place https://mise.jdx.dev/configuration.html
+  test -r "$dir"/mise.local.toml && return 0
+  test -r "$dir"/mise.toml && return 0
+  test -r "$dir"/mise/config.toml && return 0
+  test -r "$dir"/.mise/config.toml && return 0
+  test -r "$dir"/.config/mise.toml && return 0
+  test -r "$dir"/.config/mise/config.toml && return 0
+  test -d "$dir"/.config/mise/conf.d && return 0
+
   # 5 dirs // File Tasks | mise-en-place https://mise.jdx.dev/tasks/file-tasks.html
-     test -r "$dir"/mise.local.toml \
-  || test -r "$dir"/mise.toml \
-  || test -r "$dir"/mise/config.toml \
-  || test -r "$dir"/.mise/config.toml \
-  || test -r "$dir"/.config/mise.toml \
-  || test -r "$dir"/.config/mise/config.toml \
-  || test -d "$dir"/.config/mise/conf.d \
-  || test -d "$dir"/mise-tasks \
-  || test -d "$dir"/mise/tasks \
-  || test -d "$dir"/.mise-tasks \
-  || test -d "$dir"/.mise/tasks \
-  || test -d "$dir"/.config/mise/tasks \
-  #nop
+  test -d "$dir"/mise-tasks && return 0
+  test -d "$dir"/mise/tasks && return 0
+  test -d "$dir"/.mise-tasks && return 0
+  test -d "$dir"/.mise/tasks && return 0
+  test -d "$dir"/.config/mise/tasks && return 0
+
+  return 1
 }
 
 t() {
