@@ -140,7 +140,12 @@ expand() {
       test -r "$file" || continue
       local TASKS_DIR TASKS_REL_DIR
       TASKS_DIR="${file%/*}"
-      TASKS_REL_DIR="${TASKS_DIR#"$PWD/"}"
+      if test "$TASKS_DIR" = "$PWD"
+      then
+        TASKS_REL_DIR=.
+      else
+        TASKS_REL_DIR="${TASKS_DIR#"$PWD/"}"
+      fi
       extract_task_info "$file" | generate_tasks
     done
   } >./.config/mise/conf.d/expanded-tasks.toml
