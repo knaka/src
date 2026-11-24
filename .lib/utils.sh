@@ -660,10 +660,10 @@ field() {
 extglob() {
   if is_macos # Zsh
   then
-    zsh -c 'setopt extendedglob nullglob; printf "%s\n" $~*' "" "$@"
+    zsh -c 'setopt extendedglob nullglob dotglob; printf "%s\n" $~*' "" "$@"
   elif is_msys2 || is_linux # Bash >= 4
   then
-    bash -O extglob -O globstar -c 'shopt -s nullglob; IFS=; printf "%s\n" $*' "" "$@"
+    bash -O extglob -O globstar -c 'shopt -s nullglob dotglob; IFS=; printf "%s\n" $*' "" "$@"
   else
     echo "No shell interpreter available that can expand extended glob patterns." >&2
     return 1
