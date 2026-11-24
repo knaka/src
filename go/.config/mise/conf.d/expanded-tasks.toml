@@ -3,59 +3,74 @@
 [tasks."hello_sh:gen"]
 description='''Generate Go-inlined sample scripts.'''
 run='''
-#!/usr/bin/env bash
-# .mise/tasks-project.bash:task_hello_sh__gen
-pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
-. ./"tasks-project.bash"
-popd >/dev/null || exit 1
-set -o nounset -o errexit -o pipefail
+#!/usr/bin/env sh
+# ./.mise-tasks.sh:task_hello_sh__gen
+saved_pwd_85053ae="$PWD"
+cd "$MISE_PROJECT_ROOT"/"." || exit 1
+set -- _SCRDIR "$PWD" "$@"
+. ./".mise-tasks.sh"
+shift 2
+cd "$saved_pwd_85053ae" || exit 1
+set -o nounset -o errexit
 task_hello_sh__gen "$@"
 '''
 
 [tasks."gen"]
 description='''Generate files.'''
 run='''
-#!/usr/bin/env bash
-# .mise/tasks-project.bash:task_gen
-pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
-. ./"tasks-project.bash"
-popd >/dev/null || exit 1
-set -o nounset -o errexit -o pipefail
+#!/usr/bin/env sh
+# ./.mise-tasks.sh:task_gen
+saved_pwd_85053ae="$PWD"
+cd "$MISE_PROJECT_ROOT"/"." || exit 1
+set -- _SCRDIR "$PWD" "$@"
+. ./".mise-tasks.sh"
+shift 2
+cd "$saved_pwd_85053ae" || exit 1
+set -o nounset -o errexit
 task_gen "$@"
 '''
 
-[tasks."depbuild"]
+[tasks."incbuild"]
 description='''Build Go source packages (*.go, ./cmd/*/) incrementally.'''
 run='''
-#!/usr/bin/env bash
-# .mise/tasks-project.bash:task_depbuild
-pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
-. ./"tasks-project.bash"
-popd >/dev/null || exit 1
-set -o nounset -o errexit -o pipefail
-task_depbuild "$@"
+#!/usr/bin/env sh
+# ./.mise-tasks.sh:task_incbuild
+saved_pwd_85053ae="$PWD"
+cd "$MISE_PROJECT_ROOT"/"." || exit 1
+set -- _SCRDIR "$PWD" "$@"
+. ./".mise-tasks.sh"
+shift 2
+cd "$saved_pwd_85053ae" || exit 1
+set -o nounset -o errexit
+task_incbuild "$@"
 '''
 
 [tasks."build"]
 description='''Build'''
 run='''
-#!/usr/bin/env bash
-# .mise/tasks-project.bash:task_build
-pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
-. ./"tasks-project.bash"
-popd >/dev/null || exit 1
-set -o nounset -o errexit -o pipefail
+#!/usr/bin/env sh
+# ./.mise-tasks.sh:task_build
+saved_pwd_85053ae="$PWD"
+cd "$MISE_PROJECT_ROOT"/"." || exit 1
+set -- _SCRDIR "$PWD" "$@"
+. ./".mise-tasks.sh"
+shift 2
+cd "$saved_pwd_85053ae" || exit 1
+set -o nounset -o errexit
 task_build "$@"
 '''
 
 [tasks."install"]
 description='''Install Go tools.'''
 run='''
-#!/usr/bin/env bash
-# .mise/tasks-project.bash:task_install
-pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
-. ./"tasks-project.bash"
-popd >/dev/null || exit 1
-set -o nounset -o errexit -o pipefail
+#!/usr/bin/env sh
+# ./.mise-tasks.sh:task_install
+saved_pwd_85053ae="$PWD"
+cd "$MISE_PROJECT_ROOT"/"." || exit 1
+set -- _SCRDIR "$PWD" "$@"
+. ./".mise-tasks.sh"
+shift 2
+cd "$saved_pwd_85053ae" || exit 1
+set -o nounset -o errexit
 task_install "$@"
 '''

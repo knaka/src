@@ -1,10 +1,11 @@
-#!/usr/bin/env bash
-set -- _GO__MISE_TASKS_PROJECT_BASH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
+#!/usr/bin/env sh
+set -- _e868e8f "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
-pushd "${BASH_SOURCE[0]%[/\\]*}" &>/dev/null || pushd . >/dev/null
-. ../../.lib/utils.sh
-. ../../.lib/commands.sh
-popd >/dev/null || exit
+if test "${BASH_VERSION+set}"; then eval 'cd "${BASH_SOURCE%[/\\]*}"' || cd .; elif test "${1-}" = _SCRDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null && set -- _SCRDIR ../.lib "$OLDPWD" "$@" # shpp:sources
+. ../.lib/utils.sh
+. ../.lib/commands.sh
+. ../.lib/build.sh
+cd "$3" || exit && shift 3 # /shpp:sources
 
 # Generate Go-inlined sample scripts.
 task_hello_sh__gen() {
@@ -20,7 +21,6 @@ task_gen() {
 
 # Build Go source packages (*.go, ./cmd/*/) incrementally.
 task_incbuild() {
-  push_dir "$PROJECT_DIR"
   local go_bin_dir_path=./build
   mkdir -p "$go_bin_dir_path"
   if test $# = 0
@@ -37,24 +37,23 @@ task_incbuild() {
     if test -r "$arg.go"
     then
       local target_cmd_path="$go_bin_dir_path/$arg$EXE_EXT"
-      if ! test -x "$target_cmd_path" || newer "$arg.go" --than "$target_cmd_path"
+      if updated "$arg.go" --after "$target_cmd_path"
       then
-        "$VERBOSE" && echo "Building $arg.go" >&2
-        go build -o "$target_cmd_path" "$arg.go"
+        "${VERBOSE-false}" && echo "Building $arg.go" >&2
+        mise exec -- go build -o "$target_cmd_path" "$arg.go"
       fi
     elif test -d ./cmd/"$arg"
     then
       local target_cmd_path="$go_bin_dir_path/$arg$EXE_EXT"
-      if ! test -x "$target_cmd_path" || newer ./cmd/"$arg" --than "$target_cmd_path"
+      if updated ./cmd/"$arg" --after "$target_cmd_path"
       then
-        "$VERBOSE" && echo "Building ./cmd/$arg" >&2
-        go build -o "$target_cmd_path" ./cmd/"$arg"
+        "${VERBOSE-false}" && echo "Building ./cmd/$arg" >&2
+        mise exec -- go build -o "$target_cmd_path" ./cmd/"$arg"
       fi
     else
       :
     fi
   done
-  pop_dir
 }
 
 # Build
@@ -74,7 +73,8 @@ EOF
 gen_unixy_shim_3b0072c() { cat <<EOF
 #!/usr/bin/env sh
 cd "$PWD" || exit 1
-./task "$task" "$name"
+. ./.mise-tasks.sh
+task_incbuild "$name"
 cd "\$OLDPWD" || exit 1
 exec "$PWD"/build/$name "\$@"
 EOF
@@ -82,7 +82,7 @@ EOF
 
 # Install Go tools.
 task_install() {
-  local task="tasks-project.sh:task_incbuild"
+  local task=".mise-tasks.sh:task_incbuild"
   local go_shim_dir_path="$HOME"/go-bin
   mkdir -p "$go_shim_dir_path"
   rm -f "$go_shim_dir_path"/*
