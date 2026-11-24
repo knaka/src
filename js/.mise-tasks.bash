@@ -46,7 +46,7 @@ task_bookmarklet() {
 
 # Check the types of the TypeScript files with tsc, without emitting any files.
 task_check() {
-  tsc --project "$PROJECT_DIR"/tsconfig.json
+  tsc --project ./tsconfig.json
 }
 
 # Check the types, and bundle the scripts into dist/ with build.mjs.
@@ -57,6 +57,6 @@ task_build() {
   # shellcheck disable=SC2043
   for x in copy-link
   do
-    gen_bookmarklet --compact "$PROJECT_DIR"/dist/"$x".js >"$PROJECT_DIR"/dist/"$x".bookmarklet
+    gen_bookmarklet --compact ./dist/"$x".js >./dist/"$x".bookmarklet
   done
 }
