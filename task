@@ -9,7 +9,9 @@ resolve_file() {
   for cand in \
     "$APPDIR"/"$file" \
     "$APPDIR"/mise/"$file" \
+    "$APPDIR"/mise/conf.d/"$file" \
     "$APPDIR"/.mise/"$file" \
+    "$APPDIR"/.mise/conf.d/"$file" \
     "$APPDIR"/.config/"$file" \
     "$APPDIR"/.config/mise/"$file" \
     "$APPDIR"/.config/mise/conf.d/"$file"

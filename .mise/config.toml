@@ -26,8 +26,6 @@ LSV_SHPP_TARGETS = """
 {{ config_root }}/.lib-test/*.bash
 {{ config_root }}/.mise/**/*.sh
 {{ config_root }}/.mise/**/*.bash
-{{ config_root }}/.config/mise/**/*.sh
-{{ config_root }}/.config/mise/**/*.bash
 {{ config_root }}/go/*.sh
 {{ config_root }}/go/*.bash
 {{ config_root }}/py/.mise/**/*.sh

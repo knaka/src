@@ -9,7 +9,7 @@ pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
 . ./"tasks-project.bash"
 popd >/dev/null || exit 1
 set -o nounset -o errexit -o pipefail
-task_install "$@"
+TAIL_DEPTH=1 task_install "$@"
 '''
 
 [tasks."run"]
@@ -21,7 +21,7 @@ pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
 . ./"tasks-project.bash"
 popd >/dev/null || exit 1
 set -o nounset -o errexit -o pipefail
-task_run "$@"
+TAIL_DEPTH=1 task_run "$@"
 '''
 
 [tasks."sync"]
@@ -33,7 +33,7 @@ pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
 . ./"tasks-project.bash"
 popd >/dev/null || exit 1
 set -o nounset -o errexit -o pipefail
-task_sync "$@"
+TAIL_DEPTH=1 task_sync "$@"
 '''
 
 [tasks."foo"]
@@ -45,5 +45,5 @@ pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
 . ./"tasks-project.bash"
 popd >/dev/null || exit 1
 set -o nounset -o errexit -o pipefail
-task_foo "$@"
+TAIL_DEPTH=1 task_foo "$@"
 '''

@@ -4,7 +4,7 @@ description: Manage project-local tool versions and tasks with mise. Use when a 
 ---
 # “Mise” — tool version and task manager
 
-mise manages project-local tool versions and runs tasks. Tool versions are listed in `.mise/config*.toml` and `.config/mise/conf.d/*.toml`.
+mise manages project-local tool versions and runs tasks. Tool versions are listed in `.mise/config*.toml` and `.mise/conf.d/*.toml`.
 
 mise can be invoked without a global installation using the bootstrap scripts: `./mise` on Linux and macOS, or `.\mise.cmd` on Windows.
 

@@ -1,7 +1,7 @@
 <!-- +INCLUDE: ./.claude/skills/mise/SKILL.md -->
 # “Mise” — tool version and task manager
 
-mise manages project-local tool versions and runs tasks. Tool versions are listed in `.mise/config*.toml` and `.config/mise/conf.d/*.toml`.
+mise manages project-local tool versions and runs tasks. Tool versions are listed in `.mise/config*.toml` and `.mise/conf.d/*.toml`.
 
 mise can be invoked without a global installation using the bootstrap scripts: `./mise` on Linux and macOS, or `.\mise.cmd` on Windows.
 
@@ -65,7 +65,7 @@ Special shell variables like `$IFS` can be overridden with `local` declarations.
 <!-- +INCLUDE: ./.claude/skills/mise-msys2/SKILL.md -->
 # MSYS2 commands in Mise environment on Windows
 
-On Windows, `mise install` installs a base MSYS2 environment (the `http:msys2` tool defined in `.config/mise/conf.d/msys2.toml`) and adds its `msys64/usr/bin` to `PATH`, giving access to standard UNIXy commands (bash, coreutils, sed, grep, awk, perl, tar, curl, ...). This tool is Windows-only; on Linux and macOS these commands come from the system instead.
+On Windows, `mise install` installs a base MSYS2 environment (the `http:msys2` tool defined in `.mise/conf.d/msys2.toml`) and adds its `msys64/usr/bin` to `PATH`, giving access to standard UNIXy commands (bash, coreutils, sed, grep, awk, perl, tar, curl, ...). This tool is Windows-only; on Linux and macOS these commands come from the system instead.
 
 The `postinstall` step additionally installs `bc`, `diffutils`, and `patch`, so the installed package set is narrower than a full MSYS2 install.
 
