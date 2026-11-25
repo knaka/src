@@ -444,11 +444,11 @@ print_call_stack() {
     # shellcheck disable=SC2059
     echo "$@" >&2
   fi
-  # shellcheck disable=SC3018
-  # shellcheck disable=SC3044
   if is_bash_bin
   then
-    local i=0 frame
+    local frame
+    local i=0
+    # shellcheck disable=SC3044
     while frame="$(caller $i)"
     do
       # shellcheck disable=SC2086
@@ -457,7 +457,8 @@ print_call_stack() {
       local sub="$2"
       local file="$3"
       printf "  at %s (%s:%s)\n" "$sub" "$(realpath -q "$file" || echo "$file")" "$line" >&2
-      i=$((i + 1))
+      # shellcheck disable=SC3006,SC3018
+      ((++i))
     done
   else
     echo "  at $0" >&2

@@ -1,7 +1,8 @@
 # README.md
 
-* [Markdown からコードの特定行へのリンク](./task.cmd 'set "ARG0=%~f0"')
-* [./bin/cowsay.sh の特定行へのリンク](./bin/cowsay.sh "set -o nounset -o errexit")
+* [ファイルへのリンク](./task.cmd)
+* [ファイルの特定文字列へのリンク single quoted](./task.cmd 'set "ARG0=%~f0"')
+* [ファイルの特定文字列へのリンク double quoted](./bin/cowsay.sh "set -o nounset -o errexit")
 
 # <a name=0d8322b></a>Foo Bar
 
