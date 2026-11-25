@@ -1,0 +1,18 @@
+[tools."http:elan"]
+# [Releases · leanprover/elan](https://github.com/leanprover/elan/releases)
+version = "4.4.0"
+url = 'https://github.com/leanprover/elan/releases/download/v{{ version }}/elan-{{ arch(x64="x86_64",arm64="aarch64") }}-{{ os(macos="apple-darwin",linux="unknown-linux-gnu",windows="pc-windows-msvc") }}{{ os_family(unix=".tar.gz",windows=".zip") }}'
+
+[env]
+# ELAN_HOME = "{{config_root}}/.elan"
+# _.path = ["{{config_root}}/.elan/bin"]
+_.path = ["$HOME/.elan/bin"]
+
+[tasks.setup]
+run = "elan-init -y --no-modify-path --default-toolchain none"
+
+[tasks.build]
+run = "lake build foo && lake query foo"
+
+[tasks.exe]
+run = "lake exe foo"
