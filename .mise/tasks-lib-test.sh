@@ -164,6 +164,7 @@ task_dash__test() {
   run_tests --sh=dash "$@"
 }
 
+# [tests...] Run tests with Bash5.
 task_bash5__test() {
   for path in \
     /opt/homebrew/Cellar/bash/5.*/bin/bash \

@@ -1,0 +1,14 @@
+name = "playground"
+version = "0.1.0"
+defaultTargets = ["foo", "bar"]
+
+[[lean_lib]]
+name = "Foo"
+
+[[lean_exe]]
+name = "foo"
+root = "FooMain"
+
+[[lean_exe]]
+name = "bar"
+root = "BarMain"

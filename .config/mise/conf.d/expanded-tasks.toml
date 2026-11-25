@@ -82,7 +82,7 @@ task_dash__test "$@"
 '''
 
 [tasks."bash5:test"]
-description=''''''
+description='''[tests...] Run tests with Bash5.'''
 run='''
 #!/usr/bin/env sh
 # .mise/tasks-lib-test.sh:task_bash5__test
