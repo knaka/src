@@ -66,6 +66,10 @@ claude_conv_gen() {
     base="$(basename "$out")"
     echo "* [](./$base)<!-- +SYNC_TITLE -->" >&2
     name="$(jq -r .name "$file")"
+    # Remove “archived” marker.
+    name="${name%[.。]}"
+    name="${name#[*]}"
+    name="${name#[ ]}"
     created_at="$(jq -r .created_at "$file")"
     {
       gen_markdown_frontmatter
