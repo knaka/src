@@ -4,10 +4,10 @@ set -- _PY__MISE_TASKS_BASH "$@"; eval "shift; \${$1-false} || ! $1=true" && ret
 pushd "${BASH_SOURCE[0]%[/\\]*}" &>/dev/null || pushd . >/dev/null
 . ../.lib/utils.sh
 . ../.lib/commands.sh
+. ../.lib/embed-script.sh
 popd >/dev/null || exit
 
 # TODO: Fix runner path.
-
 gen_cmd_script_5712688() { cat <<EOF
 @ECHO OFF
 set INITIAL_DIR=%CD%
@@ -45,18 +45,17 @@ task_install() {
   pop_dir
 }
 
-py_scr_db89bdf='import sys;original_wokrking_dir_path = sys.argv[1];import os;import subprocess;scr_path = os.path.abspath(sys.argv[2]);os.chdir(original_wokrking_dir_path);process = subprocess.Popen([sys.executable, scr_path] + sys.argv[3:]);process.wait();sys.exit(process.returncode);' #EMBED: ./_runner.py
-
-# Run a script.
-task_run() (
-  cd "$PROJECT_DIR" || exit 1
-  mise exec uv -- uv run python -c "$py_scr_db89bdf" "$INITIAL_DIR" "$@"
-)
-
 # Updates the UV virtualenv.
 task_sync() {
   cd "$PROJECT_DIR" || exit
   uv sync "$@"
+}
+
+# Embed scripts.
+task_embed() {
+  embed_minified \
+    ./.mise-tasks-run.bash \
+    #nop
 }
 
 # Foo

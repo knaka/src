@@ -12,18 +12,6 @@ set -o nounset -o errexit -o pipefail
 TAIL_DEPTH=1 task_install "$@"
 '''
 
-[tasks."run"]
-description='''Run a script.'''
-run='''
-#!/usr/bin/env bash
-# ./.mise-tasks.bash:task_run
-pushd "$MISE_PROJECT_ROOT"/"." >/dev/null || exit 1
-. ./".mise-tasks.bash"
-popd >/dev/null || exit 1
-set -o nounset -o errexit -o pipefail
-TAIL_DEPTH=1 task_run "$@"
-'''
-
 [tasks."sync"]
 description='''Updates the UV virtualenv.'''
 run='''
@@ -46,4 +34,28 @@ pushd "$MISE_PROJECT_ROOT"/"." >/dev/null || exit 1
 popd >/dev/null || exit 1
 set -o nounset -o errexit -o pipefail
 TAIL_DEPTH=1 task_foo "$@"
+'''
+
+[tasks."embed"]
+description='''Embed scripts.'''
+run='''
+#!/usr/bin/env bash
+# ./.mise-tasks.bash:task_embed
+pushd "$MISE_PROJECT_ROOT"/"." >/dev/null || exit 1
+. ./".mise-tasks.bash"
+popd >/dev/null || exit 1
+set -o nounset -o errexit -o pipefail
+TAIL_DEPTH=1 task_embed "$@"
+'''
+
+[tasks."run"]
+description='''Run a script.'''
+run='''
+#!/usr/bin/env bash
+# ./.mise-tasks-run.bash:task_run
+pushd "$MISE_PROJECT_ROOT"/"." >/dev/null || exit 1
+. ./".mise-tasks-run.bash"
+popd >/dev/null || exit 1
+set -o nounset -o errexit -o pipefail
+TAIL_DEPTH=1 task_run "$@"
 '''
