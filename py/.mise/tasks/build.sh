@@ -8,7 +8,7 @@ cd "$3" || exit; shift 3 # /shpp:sources
 
 build() {
   embed_minified \
-    "$TASK_PROJECT_DIR"/.mise/tasks-project.bash \
+    "$TASK_PROJECT_DIR"/.mise-tasks.bash \
     #nop
 }
 

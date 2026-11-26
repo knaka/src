@@ -64,11 +64,11 @@ TAIL_DEPTH=1 task_docker__archlinux__run "$@"
 description='''Clears the session environment.'''
 run='''
 #!/usr/bin/env sh
-# .mise/tasks-lib-session.sh:task_session__init
+# .mise/tasks-session.sh:task_session__init
 set -- "$PWD" "$@"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
 set -- _SCRDIR "$PWD" "$@"
-. ./"tasks-lib-session.sh"
+. ./"tasks-session.sh"
 shift 2
 cd "$1" || exit 1
 shift
@@ -81,11 +81,11 @@ hide=true
 description='''Ensures the application environment variable $APP_ENV is set.'''
 run='''
 #!/usr/bin/env sh
-# .mise/tasks-lib-session.sh:task_appenv__ensure
+# .mise/tasks-session.sh:task_appenv__ensure
 set -- "$PWD" "$@"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
 set -- _SCRDIR "$PWD" "$@"
-. ./"tasks-lib-session.sh"
+. ./"tasks-session.sh"
 shift 2
 cd "$1" || exit 1
 shift
@@ -100,11 +100,11 @@ tools={"gum"="0.17.0"}
 description='''Confirms a critical operation.'''
 run='''
 #!/usr/bin/env sh
-# .mise/tasks-lib-session.sh:task_critical__confirm
+# .mise/tasks-session.sh:task_critical__confirm
 set -- "$PWD" "$@"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
 set -- _SCRDIR "$PWD" "$@"
-. ./"tasks-lib-session.sh"
+. ./"tasks-session.sh"
 shift 2
 cd "$1" || exit 1
 shift
@@ -118,11 +118,11 @@ depends=["appenv:ensure"]
 description='''[tests...] Run tests. If no test names are provided, all tests are run.'''
 run='''
 #!/usr/bin/env sh
-# .mise/tasks-lib-test.sh:task_test
+# .mise/tasks-test.sh:task_test
 set -- "$PWD" "$@"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
 set -- _SCRDIR "$PWD" "$@"
-. ./"tasks-lib-test.sh"
+. ./"tasks-test.sh"
 shift 2
 cd "$1" || exit 1
 shift
@@ -134,11 +134,11 @@ task_test "$@"
 description='''[tests...] Run tests with Dash shell. If no test names are provided, all tests are run.'''
 run='''
 #!/usr/bin/env sh
-# .mise/tasks-lib-test.sh:task_dash__test
+# .mise/tasks-test.sh:task_dash__test
 set -- "$PWD" "$@"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
 set -- _SCRDIR "$PWD" "$@"
-. ./"tasks-lib-test.sh"
+. ./"tasks-test.sh"
 shift 2
 cd "$1" || exit 1
 shift
@@ -150,11 +150,11 @@ task_dash__test "$@"
 description='''[tests...] Run tests with Bash5.'''
 run='''
 #!/usr/bin/env sh
-# .mise/tasks-lib-test.sh:task_bash5__test
+# .mise/tasks-test.sh:task_bash5__test
 set -- "$PWD" "$@"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
 set -- _SCRDIR "$PWD" "$@"
-. ./"tasks-lib-test.sh"
+. ./"tasks-test.sh"
 shift 2
 cd "$1" || exit 1
 shift
@@ -166,9 +166,9 @@ task_bash5__test "$@"
 description='''[password] Create hash from password with bcrypt.'''
 run='''
 #!/usr/bin/env bash
-# .mise/tasks-lib-bcrypt.bash:task_bcrypt__hash
+# .mise/tasks-bcrypt.bash:task_bcrypt__hash
 pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
-. ./"tasks-lib-bcrypt.bash"
+. ./"tasks-bcrypt.bash"
 popd >/dev/null || exit 1
 set -o nounset -o errexit -o pipefail
 TAIL_DEPTH=1 task_bcrypt__hash "$@"
@@ -179,9 +179,9 @@ tools={"uv"="0.10"}
 description='''[--password=<password> --hash=<hash>] Verify password against bcrypt hash.'''
 run='''
 #!/usr/bin/env bash
-# .mise/tasks-lib-bcrypt.bash:task_bcrypt__verify
+# .mise/tasks-bcrypt.bash:task_bcrypt__verify
 pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
-. ./"tasks-lib-bcrypt.bash"
+. ./"tasks-bcrypt.bash"
 popd >/dev/null || exit 1
 set -o nounset -o errexit -o pipefail
 TAIL_DEPTH=1 task_bcrypt__verify "$@"
@@ -192,9 +192,9 @@ tools={"uv"="0.10"}
 description='''Show the status of Docker.'''
 run='''
 #!/usr/bin/env bash
-# .mise/tasks-lib-docker.bash:task_docker__status
+# .mise/tasks-docker.bash:task_docker__status
 pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
-. ./"tasks-lib-docker.bash"
+. ./"tasks-docker.bash"
 popd >/dev/null || exit 1
 set -o nounset -o errexit -o pipefail
 TAIL_DEPTH=1 task_docker__status "$@"
@@ -204,9 +204,9 @@ TAIL_DEPTH=1 task_docker__status "$@"
 description='''Start Docker.'''
 run='''
 #!/usr/bin/env bash
-# .mise/tasks-lib-docker.bash:task_docker__start
+# .mise/tasks-docker.bash:task_docker__start
 pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
-. ./"tasks-lib-docker.bash"
+. ./"tasks-docker.bash"
 popd >/dev/null || exit 1
 set -o nounset -o errexit -o pipefail
 TAIL_DEPTH=1 task_docker__start "$@"
@@ -216,9 +216,9 @@ TAIL_DEPTH=1 task_docker__start "$@"
 description='''Stop Docker.'''
 run='''
 #!/usr/bin/env bash
-# .mise/tasks-lib-docker.bash:task_docker__stop
+# .mise/tasks-docker.bash:task_docker__stop
 pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
-. ./"tasks-lib-docker.bash"
+. ./"tasks-docker.bash"
 popd >/dev/null || exit 1
 set -o nounset -o errexit -o pipefail
 TAIL_DEPTH=1 task_docker__stop "$@"
@@ -228,9 +228,9 @@ TAIL_DEPTH=1 task_docker__stop "$@"
 description='''Start Docker service temporarily. If Docker is already running, do nothing when the task runner exits.'''
 run='''
 #!/usr/bin/env bash
-# .mise/tasks-lib-docker.bash:task_docker__start__temp
+# .mise/tasks-docker.bash:task_docker__start__temp
 pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
-. ./"tasks-lib-docker.bash"
+. ./"tasks-docker.bash"
 popd >/dev/null || exit 1
 set -o nounset -o errexit -o pipefail
 TAIL_DEPTH=1 task_docker__start__temp "$@"
@@ -241,9 +241,9 @@ hide=true
 description='''Install npm packages if "package.json" has been updated.'''
 run='''
 #!/usr/bin/env bash
-# .mise/tasks-lib-node.bash:task_npm__install
+# .mise/tasks-node.bash:task_npm__install
 pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
-. ./"tasks-lib-node.bash"
+. ./"tasks-node.bash"
 popd >/dev/null || exit 1
 set -o nounset -o errexit -o pipefail
 TAIL_DEPTH=1 task_npm__install "$@"
@@ -253,9 +253,9 @@ TAIL_DEPTH=1 task_npm__install "$@"
 description='''Generate the Git exclude configuration for the overlaid files.'''
 run='''
 #!/usr/bin/env bash
-# .mise/tasks-lib-overlay.bash:task_overlay__exclude__gen
+# .mise/tasks-overlay.bash:task_overlay__exclude__gen
 pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
-. ./"tasks-lib-overlay.bash"
+. ./"tasks-overlay.bash"
 popd >/dev/null || exit 1
 set -o nounset -o errexit -o pipefail
 TAIL_DEPTH=1 task_overlay__exclude__gen "$@"
@@ -265,9 +265,9 @@ TAIL_DEPTH=1 task_overlay__exclude__gen "$@"
 description='''[files...] Add overlaid files. If no file is specified, re-add managed files.'''
 run='''
 #!/usr/bin/env bash
-# .mise/tasks-lib-overlay.bash:task_overlay__add
+# .mise/tasks-overlay.bash:task_overlay__add
 pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
-. ./"tasks-lib-overlay.bash"
+. ./"tasks-overlay.bash"
 popd >/dev/null || exit 1
 set -o nounset -o errexit -o pipefail
 TAIL_DEPTH=1 task_overlay__add "$@"
@@ -277,9 +277,9 @@ TAIL_DEPTH=1 task_overlay__add "$@"
 description='''Show diff for managed overlaid files.'''
 run='''
 #!/usr/bin/env bash
-# .mise/tasks-lib-overlay.bash:task_overlay__diff
+# .mise/tasks-overlay.bash:task_overlay__diff
 pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
-. ./"tasks-lib-overlay.bash"
+. ./"tasks-overlay.bash"
 popd >/dev/null || exit 1
 set -o nounset -o errexit -o pipefail
 TAIL_DEPTH=1 task_overlay__diff "$@"
@@ -289,9 +289,9 @@ TAIL_DEPTH=1 task_overlay__diff "$@"
 description='''Show managed overlaid files.'''
 run='''
 #!/usr/bin/env bash
-# .mise/tasks-lib-overlay.bash:task_overlay__managed
+# .mise/tasks-overlay.bash:task_overlay__managed
 pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
-. ./"tasks-lib-overlay.bash"
+. ./"tasks-overlay.bash"
 popd >/dev/null || exit 1
 set -o nounset -o errexit -o pipefail
 TAIL_DEPTH=1 task_overlay__managed "$@"
@@ -301,9 +301,9 @@ TAIL_DEPTH=1 task_overlay__managed "$@"
 description='''Remove overlaid targets from the source state.'''
 run='''
 #!/usr/bin/env bash
-# .mise/tasks-lib-overlay.bash:task_overlay__forget
+# .mise/tasks-overlay.bash:task_overlay__forget
 pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
-. ./"tasks-lib-overlay.bash"
+. ./"tasks-overlay.bash"
 popd >/dev/null || exit 1
 set -o nounset -o errexit -o pipefail
 TAIL_DEPTH=1 task_overlay__forget "$@"

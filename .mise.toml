@@ -26,11 +26,12 @@ LSV_SHPP_TARGETS = """
 {{ config_root }}/.lib-test/*.bash
 {{ config_root }}/.mise/**/*.sh
 {{ config_root }}/.mise/**/*.bash
-{{ config_root }}/go/*.sh
-{{ config_root }}/go/*.bash
-{{ config_root }}/py/.mise/**/*.sh
-{{ config_root }}/js/*.sh
-{{ config_root }}/js/*.bash
+{{ config_root }}/go/**/*.sh
+{{ config_root }}/go/**/*.bash
+{{ config_root }}/py/**/*.sh
+{{ config_root }}/py/**/*.bash
+{{ config_root }}/js/**/*.sh
+{{ config_root }}/js/**/*.bash
 """
 _.path = [
   # "{{ config_root }}/.mise/preferred-sh",

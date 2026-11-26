@@ -4,9 +4,9 @@
 _() { eval "\${_LOADED_$1-false}" || ! eval "_LOADED_$1=true"; }; _ c75cafd && return
 
 # shellcheck disable=SC3028,SC3054
-if test "${BASH_VERSION+set}"; then cd "${BASH_SOURCE[0]%[/\\]*}" || cd .; elif test "${1-}" = _SCRDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- _SCRDIR ../../.lib "$OLDPWD" "$@"
-. ../../.lib/utils.sh
-. ../../.lib/edit.sh
+if test "${BASH_VERSION+set}"; then cd "${BASH_SOURCE[0]%[/\\]*}" || cd .; elif test "${1-}" = _SCRDIR; then cd "$2" || exit; else cd "${0%[/\\]*}" || cd .; fi 2>/dev/null; set -- _SCRDIR ../.lib "$OLDPWD" "$@"
+. ../.lib/utils.sh
+. ../.lib/edit.sh
 cd "$3" || exit; shift 3
 
 # Generate a Sh-inlined batch script that embeds shell code for Windows

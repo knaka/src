@@ -4,9 +4,9 @@
 description='''Install scripts.'''
 run='''
 #!/usr/bin/env bash
-# .mise/tasks-project.bash:task_install
-pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
-. ./"tasks-project.bash"
+# ./.mise-tasks.bash:task_install
+pushd "$MISE_PROJECT_ROOT"/"." >/dev/null || exit 1
+. ./".mise-tasks.bash"
 popd >/dev/null || exit 1
 set -o nounset -o errexit -o pipefail
 TAIL_DEPTH=1 task_install "$@"
@@ -16,9 +16,9 @@ TAIL_DEPTH=1 task_install "$@"
 description='''Run a script.'''
 run='''
 #!/usr/bin/env bash
-# .mise/tasks-project.bash:task_run
-pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
-. ./"tasks-project.bash"
+# ./.mise-tasks.bash:task_run
+pushd "$MISE_PROJECT_ROOT"/"." >/dev/null || exit 1
+. ./".mise-tasks.bash"
 popd >/dev/null || exit 1
 set -o nounset -o errexit -o pipefail
 TAIL_DEPTH=1 task_run "$@"
@@ -28,9 +28,9 @@ TAIL_DEPTH=1 task_run "$@"
 description='''Updates the UV virtualenv.'''
 run='''
 #!/usr/bin/env bash
-# .mise/tasks-project.bash:task_sync
-pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
-. ./"tasks-project.bash"
+# ./.mise-tasks.bash:task_sync
+pushd "$MISE_PROJECT_ROOT"/"." >/dev/null || exit 1
+. ./".mise-tasks.bash"
 popd >/dev/null || exit 1
 set -o nounset -o errexit -o pipefail
 TAIL_DEPTH=1 task_sync "$@"
@@ -40,9 +40,9 @@ TAIL_DEPTH=1 task_sync "$@"
 description='''Foo'''
 run='''
 #!/usr/bin/env bash
-# .mise/tasks-project.bash:task_foo
-pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
-. ./"tasks-project.bash"
+# ./.mise-tasks.bash:task_foo
+pushd "$MISE_PROJECT_ROOT"/"." >/dev/null || exit 1
+. ./".mise-tasks.bash"
 popd >/dev/null || exit 1
 set -o nounset -o errexit -o pipefail
 TAIL_DEPTH=1 task_foo "$@"

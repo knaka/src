@@ -4,11 +4,11 @@
 description='''Generate a Sh-inlined sample .cmd file.'''
 run='''
 #!/usr/bin/env sh
-# .mise/tasks-project.sh:task_hello_cmd__gen
+# ./.mise-tasks.sh:task_hello_cmd__gen
 set -- "$PWD" "$@"
-cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
+cd "$MISE_PROJECT_ROOT"/"." || exit 1
 set -- _SCRDIR "$PWD" "$@"
-. ./"tasks-project.sh"
+. ./".mise-tasks.sh"
 shift 2
 cd "$1" || exit 1
 shift
@@ -20,11 +20,11 @@ task_hello_cmd__gen "$@"
 description='''Generate sourced sh sample.'''
 run='''
 #!/usr/bin/env sh
-# .mise/tasks-project.sh:task_hello_sourced_sh__gen
+# ./.mise-tasks.sh:task_hello_sourced_sh__gen
 set -- "$PWD" "$@"
-cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
+cd "$MISE_PROJECT_ROOT"/"." || exit 1
 set -- _SCRDIR "$PWD" "$@"
-. ./"tasks-project.sh"
+. ./".mise-tasks.sh"
 shift 2
 cd "$1" || exit 1
 shift
@@ -36,11 +36,11 @@ task_hello_sourced_sh__gen "$@"
 description='''Install shell scripts.'''
 run='''
 #!/usr/bin/env sh
-# .mise/tasks-project.sh:task_install
+# ./.mise-tasks.sh:task_install
 set -- "$PWD" "$@"
-cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
+cd "$MISE_PROJECT_ROOT"/"." || exit 1
 set -- _SCRDIR "$PWD" "$@"
-. ./"tasks-project.sh"
+. ./".mise-tasks.sh"
 shift 2
 cd "$1" || exit 1
 shift
@@ -52,11 +52,11 @@ task_install "$@"
 description='''bin foo'''
 run='''
 #!/usr/bin/env sh
-# .mise/tasks-project.sh:task_foo
+# ./.mise-tasks.sh:task_foo
 set -- "$PWD" "$@"
-cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
+cd "$MISE_PROJECT_ROOT"/"." || exit 1
 set -- _SCRDIR "$PWD" "$@"
-. ./"tasks-project.sh"
+. ./".mise-tasks.sh"
 shift 2
 cd "$1" || exit 1
 shift

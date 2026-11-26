@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
-set -- _3b2018c "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
+set -- _PY__MISE_TASKS_BASH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
 pushd "${BASH_SOURCE[0]%[/\\]*}" &>/dev/null || pushd . >/dev/null
-. ../../.lib/utils.sh
-. ../../.lib/commands.sh
+. ../.lib/utils.sh
+. ../.lib/commands.sh
 popd >/dev/null || exit
+
+# TODO: Fix runner path.
 
 gen_cmd_script_5712688() { cat <<EOF
 @ECHO OFF
@@ -43,7 +45,7 @@ task_install() {
   pop_dir
 }
 
-py_scr_db89bdf='import sys;original_wokrking_dir_path = sys.argv[1];import os;import subprocess;scr_path = os.path.abspath(sys.argv[2]);os.chdir(original_wokrking_dir_path);process = subprocess.Popen([sys.executable, scr_path] + sys.argv[3:]);process.wait();sys.exit(process.returncode);' #EMBED: ./runner.py
+py_scr_db89bdf='import sys;original_wokrking_dir_path = sys.argv[1];import os;import subprocess;scr_path = os.path.abspath(sys.argv[2]);os.chdir(original_wokrking_dir_path);process = subprocess.Popen([sys.executable, scr_path] + sys.argv[3:]);process.wait();sys.exit(process.returncode);' #EMBED: ./_runner.py
 
 # Run a script.
 task_run() (

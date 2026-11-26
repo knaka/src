@@ -4,9 +4,9 @@
 description='''Update karabiner.json'''
 run='''
 #!/usr/bin/env bash
-# .mise/tasks-project.bash:task_karabiner_json__update
-pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
-. ./"tasks-project.bash"
+# ./.mise-tasks.bash:task_karabiner_json__update
+pushd "$MISE_PROJECT_ROOT"/"." >/dev/null || exit 1
+. ./".mise-tasks.bash"
 popd >/dev/null || exit 1
 set -o nounset -o errexit -o pipefail
 TAIL_DEPTH=1 task_karabiner_json__update "$@"
@@ -16,9 +16,9 @@ TAIL_DEPTH=1 task_karabiner_json__update "$@"
 description='''Install karabiner.json to $HOME/.config/karabiner as hard link'''
 run='''
 #!/usr/bin/env bash
-# .mise/tasks-project.bash:task_karabiner_json__install
-pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
-. ./"tasks-project.bash"
+# ./.mise-tasks.bash:task_karabiner_json__install
+pushd "$MISE_PROJECT_ROOT"/"." >/dev/null || exit 1
+. ./".mise-tasks.bash"
 popd >/dev/null || exit 1
 set -o nounset -o errexit -o pipefail
 TAIL_DEPTH=1 task_karabiner_json__install "$@"
@@ -28,9 +28,9 @@ TAIL_DEPTH=1 task_karabiner_json__install "$@"
 description='''Install PS1 profile.'''
 run='''
 #!/usr/bin/env bash
-# .mise/tasks-project.bash:task_ps1__install
-pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
-. ./"tasks-project.bash"
+# ./.mise-tasks.bash:task_ps1__install
+pushd "$MISE_PROJECT_ROOT"/"." >/dev/null || exit 1
+. ./".mise-tasks.bash"
 popd >/dev/null || exit 1
 set -o nounset -o errexit -o pipefail
 TAIL_DEPTH=1 task_ps1__install "$@"
@@ -40,9 +40,9 @@ TAIL_DEPTH=1 task_ps1__install "$@"
 description='''Install configuration files.'''
 run='''
 #!/usr/bin/env bash
-# .mise/tasks-project.bash:task_install
-pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
-. ./"tasks-project.bash"
+# ./.mise-tasks.bash:task_install
+pushd "$MISE_PROJECT_ROOT"/"." >/dev/null || exit 1
+. ./".mise-tasks.bash"
 popd >/dev/null || exit 1
 set -o nounset -o errexit -o pipefail
 TAIL_DEPTH=1 task_install "$@"
@@ -52,9 +52,9 @@ TAIL_DEPTH=1 task_install "$@"
 description='''Generate Gemini stuff from Claude configurations.'''
 run='''
 #!/usr/bin/env bash
-# .mise/tasks-project.bash:task_gemini__gen
-pushd "$MISE_PROJECT_ROOT"/".mise" >/dev/null || exit 1
-. ./"tasks-project.bash"
+# ./.mise-tasks.bash:task_gemini__gen
+pushd "$MISE_PROJECT_ROOT"/"." >/dev/null || exit 1
+. ./".mise-tasks.bash"
 popd >/dev/null || exit 1
 set -o nounset -o errexit -o pipefail
 TAIL_DEPTH=1 task_gemini__gen "$@"

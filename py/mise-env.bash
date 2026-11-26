@@ -1,7 +1,7 @@
 #!/usr/bin/env mise exec -- uv run bash
 # shellcheck disable=SC1008
 # shellcheck disable=SC2096
-set -- _4d88df2 "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
+set -- _PY_MISE_ENV_BASH "$@"; eval "shift; \${$1-false} || ! $1=true" && return # shpp:source_guard
 
 # Shell tricks | mise-en-place https://mise.jdx.dev/mise-cookbook/shell-tricks.html
 

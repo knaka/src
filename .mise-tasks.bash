@@ -3,7 +3,7 @@ set -- __MISE_TASKS_BASH "$@"; eval "shift; \${$1-false} || ! $1=true" && return
 
 pushd "${BASH_SOURCE[0]%[/\\]*}" &>/dev/null || pushd . >/dev/null
 . ./.lib/utils.sh
-. ./.mise/tasks-lib-docker.bash
+. ./.mise/tasks-docker.bash
 popd >/dev/null || exit
 
 # Foo
