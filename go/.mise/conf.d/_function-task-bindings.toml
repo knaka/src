@@ -5,12 +5,13 @@ description='''Generate Go-inlined sample scripts.'''
 run='''
 #!/usr/bin/env sh
 # ./.mise-tasks.sh:task_hello_sh__gen
-saved_pwd_85053ae="$PWD"
+set -- "$PWD" "$@"
 cd "$MISE_PROJECT_ROOT"/"." || exit 1
 set -- _SCRDIR "$PWD" "$@"
 . ./".mise-tasks.sh"
 shift 2
-cd "$saved_pwd_85053ae" || exit 1
+cd "$1" || exit 1
+shift
 set -o nounset -o errexit
 task_hello_sh__gen "$@"
 '''
@@ -20,12 +21,13 @@ description='''Generate files.'''
 run='''
 #!/usr/bin/env sh
 # ./.mise-tasks.sh:task_gen
-saved_pwd_85053ae="$PWD"
+set -- "$PWD" "$@"
 cd "$MISE_PROJECT_ROOT"/"." || exit 1
 set -- _SCRDIR "$PWD" "$@"
 . ./".mise-tasks.sh"
 shift 2
-cd "$saved_pwd_85053ae" || exit 1
+cd "$1" || exit 1
+shift
 set -o nounset -o errexit
 task_gen "$@"
 '''
@@ -35,12 +37,13 @@ description='''Build Go source packages (*.go, ./cmd/*/) incrementally.'''
 run='''
 #!/usr/bin/env sh
 # ./.mise-tasks.sh:task_incbuild
-saved_pwd_85053ae="$PWD"
+set -- "$PWD" "$@"
 cd "$MISE_PROJECT_ROOT"/"." || exit 1
 set -- _SCRDIR "$PWD" "$@"
 . ./".mise-tasks.sh"
 shift 2
-cd "$saved_pwd_85053ae" || exit 1
+cd "$1" || exit 1
+shift
 set -o nounset -o errexit
 task_incbuild "$@"
 '''
@@ -50,12 +53,13 @@ description='''Build'''
 run='''
 #!/usr/bin/env sh
 # ./.mise-tasks.sh:task_build
-saved_pwd_85053ae="$PWD"
+set -- "$PWD" "$@"
 cd "$MISE_PROJECT_ROOT"/"." || exit 1
 set -- _SCRDIR "$PWD" "$@"
 . ./".mise-tasks.sh"
 shift 2
-cd "$saved_pwd_85053ae" || exit 1
+cd "$1" || exit 1
+shift
 set -o nounset -o errexit
 task_build "$@"
 '''
@@ -65,12 +69,13 @@ description='''Install Go tools.'''
 run='''
 #!/usr/bin/env sh
 # ./.mise-tasks.sh:task_install
-saved_pwd_85053ae="$PWD"
+set -- "$PWD" "$@"
 cd "$MISE_PROJECT_ROOT"/"." || exit 1
 set -- _SCRDIR "$PWD" "$@"
 . ./".mise-tasks.sh"
 shift 2
-cd "$saved_pwd_85053ae" || exit 1
+cd "$1" || exit 1
+shift
 set -o nounset -o errexit
 task_install "$@"
 '''

@@ -65,12 +65,13 @@ description='''Clears the session environment.'''
 run='''
 #!/usr/bin/env sh
 # .mise/tasks-lib-session.sh:task_session__init
-saved_pwd_85053ae="$PWD"
+set -- "$PWD" "$@"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
 set -- _SCRDIR "$PWD" "$@"
 . ./"tasks-lib-session.sh"
 shift 2
-cd "$saved_pwd_85053ae" || exit 1
+cd "$1" || exit 1
+shift
 set -o nounset -o errexit
 task_session__init "$@"
 '''
@@ -81,12 +82,13 @@ description='''Ensures the application environment variable $APP_ENV is set.'''
 run='''
 #!/usr/bin/env sh
 # .mise/tasks-lib-session.sh:task_appenv__ensure
-saved_pwd_85053ae="$PWD"
+set -- "$PWD" "$@"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
 set -- _SCRDIR "$PWD" "$@"
 . ./"tasks-lib-session.sh"
 shift 2
-cd "$saved_pwd_85053ae" || exit 1
+cd "$1" || exit 1
+shift
 set -o nounset -o errexit
 task_appenv__ensure "$@"
 '''
@@ -99,12 +101,13 @@ description='''Confirms a critical operation.'''
 run='''
 #!/usr/bin/env sh
 # .mise/tasks-lib-session.sh:task_critical__confirm
-saved_pwd_85053ae="$PWD"
+set -- "$PWD" "$@"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
 set -- _SCRDIR "$PWD" "$@"
 . ./"tasks-lib-session.sh"
 shift 2
-cd "$saved_pwd_85053ae" || exit 1
+cd "$1" || exit 1
+shift
 set -o nounset -o errexit
 task_critical__confirm "$@"
 '''
@@ -116,12 +119,13 @@ description='''[tests...] Run tests. If no test names are provided, all tests ar
 run='''
 #!/usr/bin/env sh
 # .mise/tasks-lib-test.sh:task_test
-saved_pwd_85053ae="$PWD"
+set -- "$PWD" "$@"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
 set -- _SCRDIR "$PWD" "$@"
 . ./"tasks-lib-test.sh"
 shift 2
-cd "$saved_pwd_85053ae" || exit 1
+cd "$1" || exit 1
+shift
 set -o nounset -o errexit
 task_test "$@"
 '''
@@ -131,12 +135,13 @@ description='''[tests...] Run tests with Dash shell. If no test names are provid
 run='''
 #!/usr/bin/env sh
 # .mise/tasks-lib-test.sh:task_dash__test
-saved_pwd_85053ae="$PWD"
+set -- "$PWD" "$@"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
 set -- _SCRDIR "$PWD" "$@"
 . ./"tasks-lib-test.sh"
 shift 2
-cd "$saved_pwd_85053ae" || exit 1
+cd "$1" || exit 1
+shift
 set -o nounset -o errexit
 task_dash__test "$@"
 '''
@@ -146,12 +151,13 @@ description='''[tests...] Run tests with Bash5.'''
 run='''
 #!/usr/bin/env sh
 # .mise/tasks-lib-test.sh:task_bash5__test
-saved_pwd_85053ae="$PWD"
+set -- "$PWD" "$@"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
 set -- _SCRDIR "$PWD" "$@"
 . ./"tasks-lib-test.sh"
 shift 2
-cd "$saved_pwd_85053ae" || exit 1
+cd "$1" || exit 1
+shift
 set -o nounset -o errexit
 task_bash5__test "$@"
 '''

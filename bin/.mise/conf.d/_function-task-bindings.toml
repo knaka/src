@@ -5,12 +5,13 @@ description='''Generate a Sh-inlined sample .cmd file.'''
 run='''
 #!/usr/bin/env sh
 # .mise/tasks-project.sh:task_hello_cmd__gen
-saved_pwd_85053ae="$PWD"
+set -- "$PWD" "$@"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
 set -- _SCRDIR "$PWD" "$@"
 . ./"tasks-project.sh"
 shift 2
-cd "$saved_pwd_85053ae" || exit 1
+cd "$1" || exit 1
+shift
 set -o nounset -o errexit
 task_hello_cmd__gen "$@"
 '''
@@ -20,12 +21,13 @@ description='''Generate sourced sh sample.'''
 run='''
 #!/usr/bin/env sh
 # .mise/tasks-project.sh:task_hello_sourced_sh__gen
-saved_pwd_85053ae="$PWD"
+set -- "$PWD" "$@"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
 set -- _SCRDIR "$PWD" "$@"
 . ./"tasks-project.sh"
 shift 2
-cd "$saved_pwd_85053ae" || exit 1
+cd "$1" || exit 1
+shift
 set -o nounset -o errexit
 task_hello_sourced_sh__gen "$@"
 '''
@@ -35,12 +37,13 @@ description='''Install shell scripts.'''
 run='''
 #!/usr/bin/env sh
 # .mise/tasks-project.sh:task_install
-saved_pwd_85053ae="$PWD"
+set -- "$PWD" "$@"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
 set -- _SCRDIR "$PWD" "$@"
 . ./"tasks-project.sh"
 shift 2
-cd "$saved_pwd_85053ae" || exit 1
+cd "$1" || exit 1
+shift
 set -o nounset -o errexit
 task_install "$@"
 '''
@@ -50,12 +53,13 @@ description='''bin foo'''
 run='''
 #!/usr/bin/env sh
 # .mise/tasks-project.sh:task_foo
-saved_pwd_85053ae="$PWD"
+set -- "$PWD" "$@"
 cd "$MISE_PROJECT_ROOT"/".mise" || exit 1
 set -- _SCRDIR "$PWD" "$@"
 . ./"tasks-project.sh"
 shift 2
-cd "$saved_pwd_85053ae" || exit 1
+cd "$1" || exit 1
+shift
 set -o nounset -o errexit
 task_foo "$@"
 '''

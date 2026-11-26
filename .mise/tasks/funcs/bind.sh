@@ -26,12 +26,13 @@ description='''$body'''
 run='''
 #!/usr/bin/env sh
 # $TASKS_REL_DIR/$base:$func_name
-saved_pwd_85053ae="\$PWD"
+set -- "\$PWD" "\$@"
 cd "\$MISE_PROJECT_ROOT"/"$TASKS_REL_DIR" || exit 1
 set -- _SCRDIR "\$PWD" "\$@"
 . ./"$base"
 shift 2
-cd "\$saved_pwd_85053ae" || exit 1
+cd "\$1" || exit 1
+shift
 set -o nounset -o errexit
 ${func_name} "\$@"
 '''
