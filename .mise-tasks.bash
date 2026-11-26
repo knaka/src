@@ -6,13 +6,6 @@ pushd "${BASH_SOURCE[0]%[/\\]*}" &>/dev/null || pushd . >/dev/null
 . ./.mise/tasks-docker.bash
 popd >/dev/null || exit
 
-# Foo
-task_foo() {
-  printf "<%s>, <%s>\n" "$HEREDOC" "$APP_ENV"
-  echo 6aa11dd "$@"
-  echo d468476 "$MISE_BIN"
-}
-
 # Update documentation files.
 task_doc() {
   mdpp --in-place --allow-remote \
@@ -37,5 +30,6 @@ task_docker__busybox__run() {
 # Run Arch Linux Docker container.
 task_docker__archlinux__run() {
   run_once task_docker__start__temp
+  # Arch Linux officially supports only x86-64, so the official image is amd64 only and runs under emulation on arm64 hosts. "Currently we have official packages optimized for the x86-64 architecture." — Arch Linux https://archlinux.org/
   docker run --platform linux/amd64 --rm -it -v "$PWD:/work" "$(docker build  --platform linux/amd64 --quiet --file ./archlinux.Dockerfile .)" "$@"
 }
